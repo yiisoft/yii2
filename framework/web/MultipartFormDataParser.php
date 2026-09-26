@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -18,7 +19,7 @@ use yii\helpers\StringHelper;
  *
  * In order to enable this parser you should configure [[Request::parsers]] in the following way:
  *
- * ```php
+ * ```
  * return [
  *     'components' => [
  *         'request' => [
@@ -41,7 +42,7 @@ use yii\helpers\StringHelper;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * use yii\web\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();
@@ -54,8 +55,7 @@ use yii\helpers\StringHelper;
  *
  * > Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
  * files, which are available via `tmp_name` key, will not be recognized by PHP as uploaded ones.
- * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
- * means [[UploadedFile::saveAs()]] will fail as well.
+ * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them.
  *
  * @property int $uploadFileMaxCount Maximum upload files count.
  * @property int $uploadFileMaxSize Upload file max size in bytes.
@@ -110,7 +110,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     public function getUploadFileMaxCount()
     {
         if ($this->_uploadFileMaxCount === null) {
-            $this->_uploadFileMaxCount = ini_get('max_file_uploads');
+            $this->_uploadFileMaxCount = (int)ini_get('max_file_uploads');
         }
 
         return $this->_uploadFileMaxCount;
@@ -142,10 +142,11 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             return [];
         }
 
-        if (!preg_match('/boundary=(.*)$/is', $contentType, $matches)) {
+        if (!preg_match('/boundary="?(.*)"?$/is', $contentType, $matches)) {
             return [];
         }
-        $boundary = $matches[1];
+
+        $boundary = trim($matches[1], '"');
 
         $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary, '/') . '/s', $rawBody);
         array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`
@@ -191,6 +192,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                             @fclose($tmpResource);
                         } else {
                             fwrite($tmpResource, $value);
+                            rewind($tmpResource);
                             $fileInfo['tmp_name'] = $tmpFileName;
                             $fileInfo['tmp_resource'] = $tmpResource; // save file resource, otherwise it will be deleted
                         }
@@ -217,7 +219,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     private function parseHeaders($headerContent)
     {
         $headers = [];
-        $headerParts = preg_split('/\\R/s', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
+        $headerParts = preg_split('/\\R/su', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
             if (strpos($headerPart, ':') === false) {
                 continue;

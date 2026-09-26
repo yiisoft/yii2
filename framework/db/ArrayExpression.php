@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -15,7 +16,7 @@ use yii\base\InvalidConfigException;
  *
  * Expressions of this type can be used in conditions as well:
  *
- * ```php
+ * ```
  * $query->andWhere(['@>', 'items', new ArrayExpression([1, 2, 3], 'integer')])
  * ```
  *
@@ -24,11 +25,15 @@ use yii\base\InvalidConfigException;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
+ *
+ * @implements \ArrayAccess<array-key, mixed>
+ * @implements \IteratorAggregate<array-key, mixed>
  */
 class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {
     /**
-     * @var null|string the type of the array elements. Defaults to `null` which means the type is
+     * @var string|null the type of the array elements. Defaults to `null` which means the type is
      * not explicitly specified.
      *
      * Note that in case when type is not specified explicitly and DBMS can not guess it from the context,
@@ -68,8 +73,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     }
 
     /**
-     * @return null|string
-     * @see type
+     * @return string|null
      */
     public function getType()
     {
@@ -78,7 +82,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return array|mixed|QueryInterface
-     * @see value
      */
     public function getValue()
     {
@@ -87,7 +90,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return int the number of indices needed to select an element
-     * @see dimensions
      */
     public function getDimension()
     {
@@ -97,8 +99,8 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Whether a offset exists
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetexists.php
-     * @param mixed $offset <p>
+     * @link https://www.php.net/manual/en/arrayaccess.offsetexists.php
+     * @param int|string $offset <p>
      * An offset to check for.
      * </p>
      * @return bool true on success or false on failure.
@@ -107,6 +109,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 2.0.14
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->value[$offset]);
@@ -115,13 +118,14 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to retrieve
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetget.php
-     * @param mixed $offset <p>
+     * @link https://www.php.net/manual/en/arrayaccess.offsetget.php
+     * @param int|string $offset <p>
      * The offset to retrieve.
      * </p>
      * @return mixed Can return all value types.
      * @since 2.0.14
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->value[$offset];
@@ -130,8 +134,8 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to set
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetset.php
-     * @param mixed $offset <p>
+     * @link https://www.php.net/manual/en/arrayaccess.offsetset.php
+     * @param int|string $offset <p>
      * The offset to assign the value to.
      * </p>
      * @param mixed $value <p>
@@ -140,6 +144,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * @return void
      * @since 2.0.14
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->value[$offset] = $value;
@@ -148,13 +153,14 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to unset
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetunset.php
-     * @param mixed $offset <p>
+     * @link https://www.php.net/manual/en/arrayaccess.offsetunset.php
+     * @param int|string $offset <p>
      * The offset to unset.
      * </p>
      * @return void
      * @since 2.0.14
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->value[$offset]);
@@ -163,13 +169,14 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Count elements of an object
      *
-     * @link https://secure.php.net/manual/en/countable.count.php
+     * @link https://www.php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
      * <p>
      * The return value is cast to an integer.
      * @since 2.0.14
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->value);
@@ -178,12 +185,13 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Retrieve an external iterator
      *
-     * @link https://secure.php.net/manual/en/iteratoraggregate.getiterator.php
+     * @link https://www.php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
      * @since 2.0.14.1
      * @throws InvalidConfigException when ArrayExpression contains QueryInterface object
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         $value = $this->getValue();

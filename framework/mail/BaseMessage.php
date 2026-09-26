@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mail;
@@ -25,7 +26,7 @@ use yii\base\ErrorHandler;
 abstract class BaseMessage extends BaseObject implements MessageInterface
 {
     /**
-     * @var MailerInterface the mailer instance that created this message.
+     * @var MailerInterface|null the mailer instance that created this message.
      * For independently created messages this is `null`.
      */
     public $mailer;
@@ -33,12 +34,12 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
 
     /**
      * Sends this email message.
-     * @param MailerInterface $mailer the mailer that should be used to send this message.
+     * @param MailerInterface|null $mailer the mailer that should be used to send this message.
      * If no mailer is given it will first check if [[mailer]] is set and if not,
      * the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
-    public function send(MailerInterface $mailer = null)
+    public function send(?MailerInterface $mailer = null)
     {
         if ($mailer === null && $this->mailer === null) {
             $mailer = Yii::$app->getMailer();
@@ -59,9 +60,14 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
         // use trigger_error to bypass this limitation
         try {
             return $this->toString();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
+        } catch (\Throwable $e) {
+            if (PHP_VERSION_ID < 70400) {
+                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+
+                return '';
+            }
+
+            throw $e;
         }
     }
 }

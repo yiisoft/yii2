@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -29,7 +30,7 @@ use yii\i18n\Formatter;
  *
  * A typical usage of DetailView is as follows:
  *
- * ```php
+ * ```
  * echo DetailView::widget([
  *     'model' => $model,
  *     'attributes' => [
@@ -76,7 +77,7 @@ class DetailView extends Widget
      *   according to the `format` option. Since version 2.0.11 it can be defined as closure with the following
      *   parameters:
      *
-     *   ```php
+     *   ```
      *   function ($model, $widget)
      *   ```
      *
@@ -96,7 +97,7 @@ class DetailView extends Widget
      * and `{value}` will be replaced with the label and the value of the corresponding attribute.
      * If a callback (e.g. an anonymous function), the signature must be as follows:
      *
-     * ```php
+     * ```
      * function ($attribute, $index, $widget)
      * ```
      *
@@ -108,13 +109,13 @@ class DetailView extends Widget
      */
     public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
-     * @var array the HTML attributes for the container tag of this widget. The `tag` option specifies
+     * @var array|null the HTML attributes for the container tag of this widget. The `tag` option specifies
      * what container tag should be used. It defaults to `table` if not set.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'table table-striped table-bordered detail-view'];
     /**
-     * @var array|Formatter the formatter used to format model attribute values into displayable texts.
+     * @var array|Formatter|null the formatter used to format model attribute values into displayable texts.
      * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
      * instance. If this property is not set, the `formatter` application component will be used.
      */

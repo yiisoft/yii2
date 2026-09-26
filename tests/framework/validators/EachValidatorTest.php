@@ -1,17 +1,23 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
-use yii\db\ArrayExpression;
+use yii\base\InvalidConfigException;
 use yii\validators\EachValidator;
+use yii\validators\NumberValidator;
 use yiiunit\data\base\ArrayAccessObject;
-use yiiunit\data\base\TraversableObject;
+use yiiunit\data\base\Speaker;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\ValidatorTestTypedPropModel;
+use yiiunit\data\validators\models\ValidatorTestEachAndInlineMethodModel;
 use yiiunit\TestCase;
 
 /**
@@ -19,15 +25,21 @@ use yiiunit\TestCase;
  */
 class EachValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
-    public function testArrayFormat()
+    public function testArrayFormat(): void
     {
         $validator = new EachValidator(['rule' => ['required']]);
 
@@ -38,7 +50,7 @@ class EachValidatorTest extends TestCase
     /**
      * @depends testArrayFormat
      */
-    public function testValidate()
+    public function testValidate(): void
     {
         $validator = new EachValidator(['rule' => ['integer']]);
 
@@ -49,7 +61,7 @@ class EachValidatorTest extends TestCase
     /**
      * @depends testArrayFormat
      */
-    public function testFilter()
+    public function testFilter(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -64,7 +76,7 @@ class EachValidatorTest extends TestCase
     /**
      * @depends testValidate
      */
-    public function testAllowMessageFromRule()
+    public function testAllowMessageFromRule(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -75,18 +87,18 @@ class EachValidatorTest extends TestCase
 
         $validator->allowMessageFromRule = true;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringContainsString('integer', $model->getFirstError('attr_one'));
 
         $model->clearErrors();
         $validator->allowMessageFromRule = false;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertNotContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringNotContainsString('integer', $model->getFirstError('attr_one'));
     }
 
     /**
      * @depends testValidate
      */
-    public function testCustomMessageValue()
+    public function testCustomMessageValue(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -110,7 +122,7 @@ class EachValidatorTest extends TestCase
      *
      * @depends testValidate
      */
-    public function testSkipOnEmpty()
+    public function testSkipOnEmpty(): void
     {
         $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
         $this->assertTrue($validator->validate(['']));
@@ -138,7 +150,7 @@ class EachValidatorTest extends TestCase
      *
      * @depends testValidate
      */
-    public function testCompare()
+    public function testCompare(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -169,7 +181,7 @@ class EachValidatorTest extends TestCase
     /**
      * @depends testValidate
      */
-    public function testStopOnFirstError()
+    public function testStopOnFirstError(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -188,7 +200,7 @@ class EachValidatorTest extends TestCase
         $this->assertCount(2, $model->getErrors('attr_one'));
     }
 
-    public function testValidateArrayAccess()
+    public function testValidateArrayAccess(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_array' => new ArrayAccessObject([1,2,3]),
@@ -199,5 +211,109 @@ class EachValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('array'));
 
         $this->assertTrue($validator->validate($model->attr_array));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17810
+     *
+     * Do not reuse model property for storing value
+     * of different type during validation.
+     * (ie: public array $dummy; where $dummy is array of booleans,
+     * validator will try to assign these booleans one by one to $dummy)
+     */
+    public function testTypedProperties(): void
+    {
+        $model = new ValidatorTestTypedPropModel();
+
+        $validator = new EachValidator(['rule' => ['boolean']]);
+        $validator->validateAttribute($model, 'arrayTypedProperty');
+        $this->assertFalse($model->hasErrors('arrayTypedProperty'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18011
+     */
+    public function testErrorMessage(): void
+    {
+        $model = new Speaker();
+        $model->customLabel = ['invalid_ip'];
+
+        $validator = new EachValidator(['rule' => ['ip']]);
+        $validator->validateAttribute($model, 'customLabel');
+        $validator->validateAttribute($model, 'firstName');
+
+        $this->assertEquals('This is the custom label must be a valid IP address.', $model->getFirstError('customLabel'));
+        $this->assertEquals('First Name is invalid.', $model->getFirstError('firstName'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18051
+     */
+    public function testCustomMethod(): void
+    {
+        $model = new Speaker();
+        $model->firstName = ['a', 'b'];
+
+        $validator = new EachValidator(['rule' => ['customValidatingMethod']]);
+        $validator->validateAttribute($model, 'firstName');
+
+        $this->assertEquals('Custom method error', $model->getFirstError('firstName'));
+        // make sure each value of attribute array is checked separately
+        $this->assertEquals(['a', 'b'], $model->getCheckedValues());
+        // make sure original array is restored at the end
+        $this->assertEquals(['a', 'b'], $model->firstName);
+    }
+
+    public function testAnonymousMethod(): void
+    {
+        $model = new ValidatorTestEachAndInlineMethodModel();
+
+        $model->validate();
+        $this->assertFalse($model->hasErrors('arrayProperty'));
+    }
+
+    public function testThrowInvalidConfigExceptionForEmptyRule(): void
+    {
+        $validator = new EachValidator(['rule' => []]);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Invalid validation rule: a rule must be an array specifying validator type.');
+
+        $validator->validate([1]);
+    }
+
+    public function testRuleAsValidatorInstance(): void
+    {
+        $validator = new EachValidator(['rule' => new NumberValidator()]);
+
+        $this->assertTrue(
+            $validator->validate([1, 2]),
+            'Numeric items must pass the embedded instance.'
+        );
+        $this->assertFalse(
+            $validator->validate([1, 'a']),
+            'A non-numeric item must fail.'
+        );
+    }
+
+    public function testValidateValueUsesOwnMessageWhenRuleMessageIsDisallowed(): void
+    {
+        $validator = new EachValidator([
+            'rule' => ['integer'],
+            'allowMessageFromRule' => false,
+            'message' => 'each fail',
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate([1, 'a'], $error),
+            'A non-integer item must fail.',
+        );
+        $this->assertSame(
+            'each fail',
+            $error,
+            'Own message must replace the embedded rule message.',
+        );
     }
 }

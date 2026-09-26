@@ -1,15 +1,18 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\mail;
 
+use Exception;
 use Yii;
-use yii\mail\BaseMailer;
-use yii\mail\BaseMessage;
+use yiiunit\framework\mail\stubs\TestMailer;
+use yiiunit\framework\mail\stubs\TestMessage;
+use yiiunit\framework\mail\stubs\TestMessageWithException;
 use yiiunit\TestCase;
 
 /**
@@ -17,7 +20,7 @@ use yiiunit\TestCase;
  */
 class BaseMessageTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -27,7 +30,7 @@ class BaseMessageTest extends TestCase
     }
 
     /**
-     * @return Mailer test email component instance.
+     * @return TestMailer test email component instance.
      */
     protected function createTestEmailComponent()
     {
@@ -46,7 +49,7 @@ class BaseMessageTest extends TestCase
 
     // Tests :
 
-    public function testSend()
+    public function testSend(): void
     {
         $mailer = $this->getMailer();
         $message = $mailer->compose();
@@ -54,127 +57,59 @@ class BaseMessageTest extends TestCase
         $this->assertEquals($message, $mailer->sentMessages[0], 'Unable to send message!');
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $mailer = $this->getMailer();
+        /** @var TestMessage $message */
         $message = $mailer->compose();
         $this->assertEquals($message->toString(), '' . $message);
     }
-}
 
-/**
- * Test Mailer class.
- */
-class TestMailer extends BaseMailer
-{
-    public $messageClass = 'yiiunit\framework\mail\TestMessage';
-    public $sentMessages = [];
-
-    protected function sendMessage($message)
+    public function testExceptionToString(): void
     {
-        $this->sentMessages[] = $message;
-    }
-}
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped('This test is for PHP 7.4+ only');
+        }
 
-/**
- * Test Message class.
- */
-class TestMessage extends BaseMessage
-{
-    public $text;
-    public $html;
+        $message = new TestMessageWithException();
 
-    public function getCharset()
-    {
-        return '';
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Test exception in toString.');
+
+        (string) $message;
     }
 
-    public function setCharset($charset)
+    public function testExceptionToStringLegacy(): void
     {
-    }
+        if (PHP_VERSION_ID >= 70400) {
+            $this->markTestSkipped('This test is for PHP < 7.4 only');
+        }
 
-    public function getFrom()
-    {
-        return '';
-    }
+        $message = new TestMessageWithException();
 
-    public function setFrom($from)
-    {
-    }
+        $errorTriggered = false;
+        $errorMessage = '';
 
-    public function getReplyTo()
-    {
-        return '';
-    }
+        set_error_handler(
+            function ($severity, $message, $file, $line) use (&$errorTriggered, &$errorMessage) {
+                if ($severity === E_USER_ERROR) {
+                    $errorTriggered = true;
+                    $errorMessage = $message;
 
-    public function setReplyTo($replyTo)
-    {
-    }
+                    return true;
+                }
 
-    public function getTo()
-    {
-        return '';
-    }
+                return false;
+            },
+            E_USER_ERROR,
+        );
 
-    public function setTo($to)
-    {
-    }
+        $result = (string) $message;
 
-    public function getCc()
-    {
-        return '';
-    }
+        restore_error_handler();
 
-    public function setCc($cc)
-    {
-    }
-
-    public function getBcc()
-    {
-        return '';
-    }
-
-    public function setBcc($bcc)
-    {
-    }
-
-    public function getSubject()
-    {
-        return '';
-    }
-
-    public function setSubject($subject)
-    {
-    }
-
-    public function setTextBody($text)
-    {
-        $this->text = $text;
-    }
-
-    public function setHtmlBody($html)
-    {
-        $this->html = $html;
-    }
-
-    public function attachContent($content, array $options = [])
-    {
-    }
-
-    public function attach($fileName, array $options = [])
-    {
-    }
-
-    public function embed($fileName, array $options = [])
-    {
-    }
-
-    public function embedContent($content, array $options = [])
-    {
-    }
-
-    public function toString()
-    {
-        return get_class($this);
+        $this->assertTrue($errorTriggered, 'E_USER_ERROR should have been triggered');
+        $this->assertStringContainsString('Test exception in toString.', $errorMessage);
+        $this->assertSame('', $result, 'Result should be an empty string');
     }
 }

@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-Additionally to the [rich set of PHP array functions](https://secure.php.net/manual/en/book.array.php), the Yii array helper provides
+Additionally to the [rich set of PHP array functions](https://www.php.net/manual/en/book.array.php), the Yii array helper provides
 extra static methods allowing you to deal with arrays more efficiently.
 
 
@@ -117,7 +117,7 @@ After executing the code `$array` will contain `['options' => [1, 2]]` and `$typ
 
 ## Checking Existence of Keys <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` works the same way as [array_key_exists](https://secure.php.net/manual/en/function.array-key-exists.php)
+`ArrayHelper::keyExists` works the same way as [array_key_exists](https://www.php.net/manual/en/function.array-key-exists.php)
 except that it also supports case-insensitive key comparison. For example,
 
 ```php
@@ -322,7 +322,7 @@ Third argument is direction. In case of sorting by a single key it could be eith
 sort direction.
 
 Last argument is PHP sort flag that could take the same values as the ones passed to
-PHP [sort()](https://secure.php.net/manual/en/function.sort.php).
+PHP [sort()](https://www.php.net/manual/en/function.sort.php).
 
 
 ## Detecting Array Types <span id="detecting-array-types"></span>
@@ -357,7 +357,7 @@ Encoding will use application charset and could be changed via third argument.
 
 You can use [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] to merge two or more arrays into one recursively.
 If each array has an element with the same string key value, the latter will overwrite the former
-(different from [array_merge_recursive()](https://secure.php.net/manual/en/function.array-merge-recursive.php)).
+(different from [array_merge_recursive()](https://www.php.net/manual/en/function.array-merge-recursive.php)).
 Recursive merging will be conducted if both arrays have an element of array type and are having the same key.
 For integer-keyed elements, the elements from the latter array will be appended to the former array.
 You can use [[yii\helpers\UnsetArrayValue]] object to unset value from previous array or
@@ -472,7 +472,7 @@ While PHP offers `in_array()`, this does not support subsets or `\Traversable` o
 
 To aid these kinds of tests, [[yii\helpers\ArrayHelper]] provides [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 and [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] with the same signature as
-[in_array()](https://secure.php.net/manual/en/function.in-array.php).
+[in_array()](https://www.php.net/manual/en/function.in-array.php).
 
 ```php
 // true
@@ -482,4 +482,141 @@ ArrayHelper::isIn('a', new ArrayObject(['a']));
 
 // true 
 ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
+```
+
+## Flattening Arrays <span id="flattening-arrays"></span>
+
+The `ArrayHelper::flatten()` method allows you to convert a multi-dimensional array into a single-dimensional array by concatenating keys.
+
+### Basic Usage
+
+To flatten a nested array, simply pass the array to the `flatten()` method:
+
+```php
+$array = [
+    'a' => [
+        'b' => [
+            'c' => 1,
+            'd' => 2,
+        ],
+        'e' => 3,
+    ],
+    'f' => 4,
+];
+
+$flattenedArray = ArrayHelper::flatten($array);
+// Result:
+// [
+//     'a.b.c' => 1,
+//     'a.b.d' => 2,
+//     'a.e' => 3,
+//     'f' => 4,
+// ]
+```
+
+### Custom Separator
+
+You can specify a custom separator to use when concatenating keys:
+
+```php
+$array = [
+    'a' => [
+        'b' => [
+            'c' => 1,
+            'd' => 2,
+        ],
+        'e' => 3,
+    ],
+    'f' => 4,
+];
+
+$flattenedArray = ArrayHelper::flatten($array, '_');
+// Result:
+// [
+//     'a_b_c' => 1,
+//     'a_b_d' => 2,
+//     'a_e' => 3,
+//     'f' => 4,
+// ]
+```
+
+### Handling Special Characters in Keys
+
+The `flatten()` method can handle keys with special characters:
+
+```php
+$array = [
+    'a.b' => [
+        'c.d' => 1,
+    ],
+    'e.f' => 2,
+];
+
+$flattenedArray = ArrayHelper::flatten($array);
+// Result:
+// [
+//     'a.b.c.d' => 1,
+//     'e.f' => 2,
+// ]
+```
+
+### Mixed Data Types
+
+The `flatten()` method works with arrays containing different data types:
+
+```php
+$array = [
+    'a' => [
+        'b' => 'string',
+        'c' => 123,
+        'd' => true,
+        'e' => null,
+    ],
+    'f' => [1, 2, 3],
+];
+
+$flattenedArray = ArrayHelper::flatten($array);
+// Result:
+// [
+//     'a.b' => 'string',
+//     'a.c' => 123,
+//     'a.d' => true,
+//     'a.e' => null,
+//     'f.0' => 1,
+//     'f.1' => 2,
+//     'f.2' => 3,
+// ]
+```
+
+### Edge Cases
+
+The `flatten()` method handles various edge cases, such as empty arrays and non-array values:
+
+```php
+// Empty array
+$array = [];
+$flattenedArray = ArrayHelper::flatten($array);
+// Result: []
+
+// Non-array value
+$array = 'string';
+$flattenedArray = ArrayHelper::flatten($array);
+// Result:
+// yii\base\InvalidArgumentException: Argument $array must be an array or implement Traversable
+```
+
+### Key Collisions
+
+When keys collide, the `flatten()` method will overwrite the previous value:
+
+```php
+$array = [
+    'a' => [
+        'b' => 1,
+    ],
+    'a.b' => 2,
+];
+
+$flattenedArray = ArrayHelper::flatten($array);
+// Result: ['a.b' => 2]
 ```

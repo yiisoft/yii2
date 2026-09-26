@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -23,10 +24,11 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Je potrebné nahrať aspoň {limit, number} {limit, plural, =1{súbor} =2{súbory} =3{súbory} =4{súbory} other{súborov}}.',
     ' and ' => ' a ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" nepodporuje operátor "{operator}".',
     '(not set)' => '(nie je nastavené)',
+    'Action not found.' => 'Akcia nebola nájdená.',
+    'Aliases available: {aliases}' => 'Dostupné aliasy: {aliases}',
     'An internal server error occurred.' => 'Vyskytla sa interná chyba servera.',
     'Are you sure you want to delete this item?' => 'Skutočne chcete odstrániť tento záznam?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Podmienkou pre "{attribute}" by mala byť hodnota alebo platná špecifikácia operátora.',
@@ -44,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Povolené sú len súbory s nasledovnými príponami: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Operátor "{operator}" musí byť použitý s atribútom vyhľadávania.',
     'Operator "{operator}" requires multiple operands.' => 'Operátor "{operator}" vyžaduje viac operandov.',
+    'Options available: {options}' => 'Dostupné možnosti: {options}',
     'Page not found.' => 'Stránka nebola nájdená.',
     'Please fix the following errors:' => 'Opravte prosím nasledujúce chyby:',
     'Please upload a file.' => 'Nahrajte prosím súbor.',
-    'Powered by {yii}' => 'Beží na {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Zobrazujem <b>{begin, number}-{end, number}</b> z <b>{totalCount, number}</b> záznamov.',
     'The combination {values} of {attributes} has already been taken.' => 'Kombinácia {values} pre {attributes} je už použitá.',
     'The file "{file}" is not an image.' => 'Súbor "{file}" nie je obrázok.',
@@ -69,9 +71,9 @@ return [
     'Update' => 'Upraviť',
     'View' => 'Náhľad',
     'Yes' => 'Áno',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Nemáte oprávnenie pre požadovanú akciu.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Nahrať môžete najviac {limit, number} {limit, plural, =1{súbor} =2{súbory} =3{súbory} =4{súbory} other{súborov}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Je potrebné nahrať aspoň {limit, number} {limit, plural, =1{súbor} =2{súbory} =3{súbory} =4{súbory} other{súborov}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'o {delta, plural, =1{deň} =2{dni} =3{dni} =4{dni} other{# dní}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'o {delta, plural, =1{minútu} =2{minúty} =3{minúty} =4{minúty} other{# minút}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'o {delta, plural, =1{mesiac} =2{mesiace} =3{mesiace} =4{mesiace} other{# mesiacov}}',
@@ -108,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} musí obsahovať aspoň {min, number} {min, plural, =1{znak} =2{znaky} =3{znaky} =4{znaky} other{znakov}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} môže obsahovať najviac {max, number} {max, plural, =1{znak} =2{znaky} =3{znaky} =4{znaky} other{znakov}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} musí obsahovať {length, number} {length, plural, =1{znak} =2{znaky} =3{znaky} =4{znaky} other{znakov}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 deň} =2{2 dni} =3{3 dni} =4{4 dni} other{# dní}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 hodina} =2{2 hodiny} =3{3 hodiny} =4{4 hodiny} other{# hodín}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minúta} =2{2 minúty} =3{3 minúty} =4{4 minúty} other{# minút}}',
@@ -123,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -131,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{bajt} =2{bajty} =3{bajty} =4{bajty} other{bajtov}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{gibibajt} =2{gibibajty} =3{gibibajty} =4{gibibajty} other{gibibajtov}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gigabajt} =2{gigabajty} =3{gigabajty} =4{gigabajty} other{gigabajtov}}',

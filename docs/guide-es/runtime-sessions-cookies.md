@@ -120,8 +120,8 @@ Por defecto la clase [[yii\web\Session]] almacena los datos de sesión como fich
 
 * [[yii\web\DbSession]]: almacena los datos de sesión en una tabla en la base de datos.
 * [[yii\web\CacheSession]]: almacena los datos de sesión en una caché con la ayuda de la configuración del [componente caché](caching-data.md#cache-components).
-* [[yii\redis\Session]]: almacena los datos de sesión usando [redis](http://redis.io/) como medio de almacenamiento.
-* [[yii\mongodb\Session]]: almacena los datos de sesión en [MongoDB](http://www.mongodb.org/).
+* [[yii\redis\Session]]: almacena los datos de sesión usando [redis](https://redis.io/) como medio de almacenamiento.
+* [[yii\mongodb\Session]]: almacena los datos de sesión en [MongoDB](https://www.mongodb.com/).
 
 Todas estas clases de sesión soportan los mismos métodos de la API. Como consecuencia, puedes cambiar el uso de diferentes almacenamientos de sesión sin la necesidad de modificar el código de tu aplicación que usa sesiones.
 
@@ -262,7 +262,7 @@ unset($cookies['language']);
 
 Además de [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] las propiedades que se muestran en los anteriores ejemplos, la clase [[yii\web\Cookie]] también define otras propiedades para representar toda la información posible de las cookies, tal como [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. Puedes configurar estas propiedades según sea necesario para preparar una cookie y luego añadirlo a la colección de cookies de la respuesta.
 
-> Note: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es `true`. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
+> Note: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es `true`. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://owasp.org/www-community/HttpOnly) para más detalles.
 
 
 ### Validación de la Cookie <span id="cookie-validation"></span>

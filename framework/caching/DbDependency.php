@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\di\Instance;
@@ -26,11 +26,11 @@ use yii\di\Instance;
 class DbDependency extends Dependency
 {
     /**
-     * @var string the application component ID of the DB connection.
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
      */
     public $db = 'db';
     /**
-     * @var string the SQL query whose result is used to determine if the dependency has been changed.
+     * @var string|null the SQL query whose result is used to determine if the dependency has been changed.
      * Only the first row of the query result will be used.
      */
     public $sql;
@@ -49,7 +49,7 @@ class DbDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException('DbDependency::sql must be set.');

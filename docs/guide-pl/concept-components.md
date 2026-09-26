@@ -73,7 +73,7 @@ Postępowanie zgodnie z tymi zasadami zapewni [konfigurowalność](concept-confi
 $component = new MyClass(1, 2, ['prop1' => 3, 'prop2' => 4]);
 // lub alternatywnie
 $component = \Yii::createObject([
-    'class' => MyClass::className(),
+    'class' => MyClass::class,
     'prop1' => 3,
     'prop2' => 4,
 ], [1, 2]);

@@ -6,8 +6,8 @@ a real browser. In both cases the browsers are communicating via HTTP so applica
 
 Acceptance testing is implemented with the help of Codeception framework which has a nice documentation about it:
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Acceptance Tests](https://codeception.com/docs/03-AcceptanceTests)
 
 ## Running basic and advanced template tests
 

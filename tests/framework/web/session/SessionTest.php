@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
@@ -15,10 +16,12 @@ use yiiunit\TestCase;
  */
 class SessionTest extends TestCase
 {
+    use SessionTestTrait;
+
     /**
      * Test to prove that after Session::destroy session id set to old value.
      */
-    public function testDestroySessionId()
+    public function testDestroySessionId(): void
     {
         $session = new Session();
         $session->open();
@@ -37,7 +40,7 @@ class SessionTest extends TestCase
      * Test to prove that after Session::open changing session parameters will not throw exceptions
      * and its values will be changed as expected.
      */
-    public function testParamsAfterSessionStart()
+    public function testParamsAfterSessionStart(): void
     {
         $session = new Session();
         $session->open();
@@ -45,8 +48,13 @@ class SessionTest extends TestCase
         $oldUseTransparentSession = $session->getUseTransparentSessionID();
         $session->setUseTransparentSessionID(true);
         $newUseTransparentSession = $session->getUseTransparentSessionID();
-        $this->assertNotEquals($oldUseTransparentSession, $newUseTransparentSession);
-        $this->assertTrue($newUseTransparentSession);
+        if (PHP_VERSION_ID < 80400) {
+            $this->assertNotEquals($oldUseTransparentSession, $newUseTransparentSession);
+            $this->assertTrue($newUseTransparentSession);
+        } else {
+            $this->assertEquals($oldUseTransparentSession, $newUseTransparentSession);
+            $this->assertFalse($newUseTransparentSession);
+        }
         //without this line phpunit will complain about risky tests due to unclosed buffer
         $session->setUseTransparentSessionID(false);
 
@@ -63,18 +71,20 @@ class SessionTest extends TestCase
             $this->assertNotEquals($oldUseCookies, $newUseCookies);
             $this->assertFalse($newUseCookies);
         }
+        $session->setUseCookies($oldUseCookies);
 
         $oldGcProbability = $session->getGCProbability();
         $session->setGCProbability(100);
         $newGcProbability = $session->getGCProbability();
         $this->assertNotEquals($oldGcProbability, $newGcProbability);
         $this->assertEquals(100, $newGcProbability);
+        $session->setGCProbability($oldGcProbability);
     }
 
     /**
      * Test set name. Also check set name twice and after open
      */
-    public function testSetName()
+    public function testSetName(): void
     {
         $session = new Session();
         $session->setName('oldName');
@@ -87,5 +97,25 @@ class SessionTest extends TestCase
         $this->assertEquals('newName', $session->getName());
 
         $session->destroy();
+    }
+
+    public function testInitUseStrictMode(): void
+    {
+        $this->initStrictModeTest(Session::class);
+    }
+
+    public function testUseStrictMode(): void
+    {
+        //Manual garbage collection since native storage module might not support removing data via Session::destroySession()
+        $sessionSavePath = session_save_path() ?: sys_get_temp_dir();
+        // Only perform garbage collection if "N argument" is not used,
+        // see https://www.php.net/manual/en/session.configuration.php#ini.session.save-path
+        if (strpos($sessionSavePath, ';') === false) {
+            foreach (['non-existing-non-strict', 'non-existing-strict'] as $sessionId) {
+                @unlink($sessionSavePath . '/sess_' . $sessionId);
+            }
+        }
+
+        $this->useStrictModeTest(Session::class);
     }
 }

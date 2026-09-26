@@ -13,8 +13,8 @@
 
 **Не повідомляйте про проблему, якщо:**
 
-* Ви хочете спитати як використовувати ту чи іншу можливість Yii. Для цього користуйтесь [форумом](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) або [чатом](http://www.yiiframework.com/chat/).
-* Проблема стосується безпеки. Будь ласка, [звертайтесь безпосередньо до розробників](http://www.yiiframework.com/security/), щодо проблем з безпекою.
+* Ви хочете спитати як використовувати ту чи іншу можливість Yii. Для цього користуйтесь [форумом](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) або [чатом](https://www.yiiframework.com/chat/).
+* Проблема стосується безпеки. Будь ласка, [звертайтесь безпосередньо до розробників](https://www.yiiframework.com/security/), щодо проблем з безпекою.
 
 **Уникайте дублювання питань**
 

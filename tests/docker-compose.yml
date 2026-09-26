@@ -1,6 +1,4 @@
-version: '2'
 services:
-
   php:
     build:
       context: ..
@@ -9,11 +7,5 @@ services:
     working_dir: /project
     volumes:
       - ../tests/data/config-docker.php:/project/tests/data/config.php
-      # Enable for debugging, enabling tests might be slow for file access (data) on host-volume
-      - ../tests:/project/tests
-      - ../framework:/project/framework
-    # Tmpfs volume (experimental, asset tests may fail)
-    #tmpfs:
-    #  - /project/tests/runtime
     environment:
-      - TEST_RUNTIME_PATH=/tmp/runtime
+      IS_LOCAL_TESTS: 1

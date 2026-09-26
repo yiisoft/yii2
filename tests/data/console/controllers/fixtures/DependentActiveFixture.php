@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\data\console\controllers\fixtures;
 
@@ -18,9 +21,9 @@ class DependentActiveFixture extends ActiveFixture
         'yiiunit\data\console\controllers\fixtures\SecondIndependentActiveFixture',
     ];
 
-    public function load()
+    public function load(): void
     {
-        FixtureStorage::$activeFixtureSequence[] = self::className();
+        FixtureStorage::$activeFixtureSequence[] = self::class;
         parent::load();
     }
 }

@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
+namespace yiiunit\framework\console\stubs;
+
+use yii\console\controllers\HelpController;
+
+class FakeHelpControllerWithoutOutput extends HelpController
+{
+    public $outputString = '';
+
+    public function stdout($string)
+    {
+        $this->outputString .= $string;
+        return 0;
+    }
+}

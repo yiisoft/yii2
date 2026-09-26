@@ -3,8 +3,8 @@ Yii 2 寄稿者のための Git ワークフロー
 
 で、Yii の開発に貢献したい、と。すばらしい。 
 でも、あなたの修正案が速やかに採用されるチャンスを増やすために、以下のステップを踏むようにしてください。
-あなたが git と github については初めてだという場合は、最初に [github help](http://help.github.com/) や [try git](https://try.github.com) を精査したり、
-[git internal data model](http://nfarina.com/post/9868516270/git-is-simpler) についていくらか学習したりする必要があるかもしれません。
+あなたが git と github については初めてだという場合は、最初に [github help](https://help.github.com/) や [try git](https://try.github.com) を精査したり、
+[git internal data model](https://nfarina.com/post/9868516270/git-is-simpler) についていくらか学習したりする必要があるかもしれません。
 
 あなたの開発環境を準備する
 --------------------------
@@ -12,14 +12,14 @@ Yii 2 寄稿者のための Git ワークフロー
 以下のステップを踏むと Yii の開発環境を作成し、それを使って Yii フレームワークのコア・コードに取り組むことが出来るようになります。
 これらのステップは、あなたが最初に寄稿するときにだけ必要になります。
 
-### 1. github で Yii リポジトリを [Fork](http://help.github.com/fork-a-repo/) し、あなたのフォークをあなたの開発環境にクローンする
+### 1. github で Yii リポジトリを [Fork](https://help.github.com/fork-a-repo/) し、あなたのフォークをあなたの開発環境にクローンする
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 ```
 
 Linux において、GitHub で GIT を設定するのに問題が生じたり、"Permission Denied (publickey)" のようなエラーが発生したりする場合は、
-[setup your GIT installation to work with GitHub](http://help.github.com/linux-set-up-git/) に従ってください。
+[setup your GIT installation to work with GitHub](https://help.github.com/linux-set-up-git/) に従ってください。
 
 > Tip: あなたが Git に精通していない場合は、素晴らしい無料の [プロ Git ブック](https://git-scm.com/book/en/v2) を読むことをお勧めします。
 
@@ -28,7 +28,7 @@ Linux において、GitHub で GIT を設定するのに問題が生じたり�
 Yii をクローンしたディレクトリ、通常は "yii2" に入って、以下のコマンドを打ち込みます。
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
@@ -154,7 +154,7 @@ Enh #999: 機能拡張の内容説明 (あなたの名前)
 
 ### 6. 修正をコミットする
 
-以下のコマンドを使って、コミットしたいファイルや変更を [staging area](http://git.github.io/git-reference/basic/#add) に追加します。
+以下のコマンドを使って、コミットしたいファイルや変更を [staging area](https://git.github.io/git-reference/basic/#add) に追加します。
 
 ```
 git add path/to/my/file.php
@@ -217,7 +217,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ### 注意:
 
-退行 (regression) を早期に発見するために、github 上の Yii コード・ベースへのマージは、すべて [Travis CI](http://travis-ci.org) に取り上げられて、自動化されたテストにかけられます。
+退行 (regression) を早期に発見するために、github 上の Yii コード・ベースへのマージは、すべて [Travis CI](https://travis-ci.com) に取り上げられて、自動化されたテストにかけられます。
 コア・チームとしては、このサービスに過大な負担をかけたくないために、以下の場合にはマージの説明に 
 [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) が含まれるようにしてください。
 すなわち、プル・リクエストが下記のものである場合がそうです。
@@ -232,7 +232,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

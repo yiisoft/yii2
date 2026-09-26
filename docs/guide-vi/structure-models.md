@@ -1,7 +1,7 @@
 Model
 ======
 
-Model là phần trong mô hình [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Model là phần trong mô hình [MVC](https://vi.wikipedia.org/wiki/MVC).
 Là đối tượng đại diện cho phần dữ liệu, phương thức xử lý và nghiệp vụ logic.
 
 Bạn có thể tạo mới các lớp model bằng việc kế thừa từ lớp [[yii\base\Model]] hoặc các lớp con của nó. Lớp cơ sở
@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 Bạn có thể truy cập các thuộc tính như truy cập mảng các phần tử, nhờ sự hỗ trợ từ lớp
-[ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](https://www.php.net/manual/en/class.arrayiterator.php)
 bởi [[yii\base\Model]]:
 
 ```php

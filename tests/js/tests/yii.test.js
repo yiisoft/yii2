@@ -74,7 +74,8 @@ describe('yii', function () {
 
     jsdom({
         html: fs.readFileSync('tests/js/data/yii.html', 'utf-8'),
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {
@@ -742,6 +743,7 @@ describe('yii', function () {
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],
+            'query parameter with empty value': ['/posts/index?foo=1&foo2', {'foo': '1', 'foo2': ''}],
             'anchor': ['/posts/index#post', {}],
             'query parameters, anchor': ['/posts/index?foo=1&bar=2#post', {foo: '1', bar: '2'}],
             'relative url, query parameters': ['?foo=1&bar=2', {foo: '1', bar: '2'}],

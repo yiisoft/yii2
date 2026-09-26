@@ -20,7 +20,7 @@ class SiteController extends Controller
    {
        return [
            'access' => [
-               'class' => AccessControl::className(),
+               'class' => AccessControl::class,
                'only' => ['login', 'logout', 'signup'],
                'rules' => [
                    [
@@ -59,7 +59,7 @@ Você pode personalizar este behavior configurando a propriedade  [[yii\filters\
 
 ```php
 [
-   'class' => AccessControl::className(),
+   'class' => AccessControl::class,
    ...
    'denyCallback' => function ($rule, $action) {
        throw new \Exception('Você não está autorizado a acessar esta página');
@@ -103,7 +103,7 @@ class SiteController extends Controller
    {
        return [
            'access' => [
-               'class' => AccessControl::className(),
+               'class' => AccessControl::class,
                'only' => ['special-callback'],
                'rules' => [
                    [
@@ -129,9 +129,9 @@ class SiteController extends Controller
 
 ## Controle de Acesso Baseado em Role (RBAC) <span id="rbac"></span>
 
-Controle de Acesso Baseado em Role (RBAC) fornece um simples porém poderoso controle de acesso centralizado. Por favor, consulte [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) para obter detalhes sobre comparação de RBAC com outros sistemas de controle de acesso mais tradicionais.
+Controle de Acesso Baseado em Role (RBAC) fornece um simples porém poderoso controle de acesso centralizado. Por favor, consulte [Wikipedia](https://pt.wikipedia.org/wiki/Controle_de_acesso_baseado_em_fun%C3%A7%C3%B5es) para obter detalhes sobre comparação de RBAC com outros sistemas de controle de acesso mais tradicionais.
 
-Yii implementa um RBAC Hierárquico genérico, conforme [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf). Ele fornece as funcionalidades RBAC através do [componente de aplicação](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
+Yii implementa um RBAC Hierárquico genérico, conforme [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf). Ele fornece as funcionalidades RBAC através do [componente de aplicação](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
 
 O uso do RBAC divide-se em duas partes. A primeira parte é construir os dados de autorização RBAC, e a segunda parte é usar os dados de autorização para executar verificação de acesso em locais onde ela é necessária.
 

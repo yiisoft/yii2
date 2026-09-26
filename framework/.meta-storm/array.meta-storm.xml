@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\helpers\BaseArrayHelper" method="getValue" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseArrayHelper" method="index" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseArrayHelper" method="getColumn" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseArrayHelper" method="map" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseArrayHelper" method="map" argument="2">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+    </definitions>
+</meta-storm>

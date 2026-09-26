@@ -69,7 +69,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -80,7 +80,7 @@ public function behaviors()
 コントローラに [CORS (クロス・オリジン・リソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
 と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
 また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
-[CORS プリフライト・リクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
+[CORS プリフライト・リクエスト](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS#preflighted_requests)
 の認証を無効にする必要もあります。
 下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに
 [[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
@@ -98,7 +98,7 @@ public function behaviors()
     
     // CORS フィルタを追加する
     $behaviors['corsFilter'] = [
-        'class' => \yii\filters\Cors::className(),
+        'class' => \yii\filters\Cors::class,
     ];
     
     // 認証フィルタを再度追加する

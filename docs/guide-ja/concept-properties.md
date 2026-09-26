@@ -80,7 +80,7 @@ getter と setter で定義されたプロパティには、いくつかの特�
 * 通常の `property_exists()` の呼び出しでは、マジック・プロパティが存在するかどうかを知ることは出来ません。
   それぞれ、[[yii\base\BaseObject::canGetProperty()|canGetProperty()]] または [[yii\base\BaseObject::canSetProperty()|canSetProperty()]] を呼び出さなければなりません。
 
-このガイドの冒頭で説明した問題に戻ると、 `label` に値が代入されているあらゆる箇所で `trim()` を呼ぶのではなく、
-もう `setLabel()` という setter の内部だけで `trim()` を呼べば済むのです。
+このガイドの冒頭で説明した問題に戻ると、`label` に値が代入されているあらゆる箇所で `trim()` を呼ぶのではなく、
+`setLabel()` という setter の内部だけで `trim()` を呼べば済むようになります。
 さらに、新しい要求でラベルの先頭を大文字にする必要が発生しても、他のいっさいのコードに触れることなく、
 すぐに `setLabel()` メソッドを変更することができます。一箇所の変更は、すべての `label` への代入に普遍的に作用します。

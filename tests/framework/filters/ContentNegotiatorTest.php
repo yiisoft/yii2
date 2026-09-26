@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
 
+use yii\web\BadRequestHttpException;
 use Yii;
 use yii\base\Action;
 use yii\filters\ContentNegotiator;
@@ -20,7 +22,7 @@ use yiiunit\TestCase;
  */
 class ContentNegotiatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +40,7 @@ class ContentNegotiatorTest extends TestCase
         return [$action, $filter];
     }
 
-    public function testWhenLanguageGETParamIsArray()
+    public function testWhenLanguageGETParamIsArray(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
 
@@ -55,11 +57,7 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    /**
-     * @expectedException yii\web\BadRequestHttpException
-     * @expectedExceptionMessageRegExp |Invalid data received for GET parameter '.+'|
-     */
-    public function testWhenFormatGETParamIsArray()
+    public function testWhenFormatGETParamIsArray(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
 
@@ -74,10 +72,13 @@ class ContentNegotiatorTest extends TestCase
             'application/xml' => Response::FORMAT_XML,
         ];
 
+        $this->expectException(BadRequestHttpException::class);
+        $this->expectExceptionMessage('Invalid data received for GET parameter');
+
         $filter->beforeAction($action);
     }
 
-    public function testVaryHeader()
+    public function testVaryHeader(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [];
@@ -116,5 +117,20 @@ class ContentNegotiatorTest extends TestCase
         $varyHeader = $filter->response->getHeaders()->get('Vary', [], false);
         $this->assertContains('Accept', $varyHeader);
         $this->assertContains('Accept-Language', $varyHeader);
+    }
+
+    public function testNegotiateContentType(): void
+    {
+        $filter = new ContentNegotiator([
+            'formats' => [
+                'application/json' => Response::FORMAT_JSON,
+            ],
+        ]);
+        Yii::$app->request->setAcceptableContentTypes(['application/json' => ['q' => 1, 'version' => '1.0']]);
+        $filter->negotiate();
+        $this->assertSame('json', Yii::$app->response->format);
+        $this->expectException('\yii\web\NotAcceptableHttpException');
+        Yii::$app->request->setAcceptableContentTypes(['application/xml' => ['q' => 1, 'version' => '2.0']]);
+        $filter->negotiate();
     }
 }

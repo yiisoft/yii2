@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+namespace yiiunit\framework\console;
 
 use yii\console\Request;
 use yiiunit\TestCase;
@@ -13,7 +16,7 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function provider()
+    public static function provider(): array
     {
         return [
             [
@@ -122,6 +125,16 @@ class RequestTest extends TestCase
                     ],
                 ],
             ],
+            [
+                // Case: Special argument "End of Options" placed instead of route
+                'params' => [
+                    '--', // Special argument "End of Options"
+                ],
+                'expected' => [
+                    'route' => '',
+                    'params' => [],
+                ],
+            ],
             // Case: `--<option> <value>` and `-<alias> <value>` syntax
             [
                 'params' => [
@@ -184,7 +197,7 @@ class RequestTest extends TestCase
      * @param array $expected
      * @param array|null $expectedException
      */
-    public function testResolve($params, $expected, $expectedException = null)
+    public function testResolve($params, $expected, $expectedException = null): void
     {
         if (isset($expectedException)) {
             $this->expectException($expectedException[0]);

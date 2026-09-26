@@ -5,8 +5,8 @@
 
 Приемочное тестирование реализуется с помощью фреймворка Codeception, который имеет отличную документацию:
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Acceptance Tests](https://codeception.com/docs/03-AcceptanceTests)
 
 Запуск тестов в шаблонах проектов basic и advanced
 --------------------------------------------------

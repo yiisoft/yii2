@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rest;
@@ -20,13 +21,13 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    public function testInitControllerNamePluralization()
+    public function testInitControllerNamePluralization(): void
     {
         $suites = $this->getTestsForControllerNamePluralization();
         foreach ($suites as $i => $suite) {
@@ -39,7 +40,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequest()
+    public function testParseRequest(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD']);
@@ -61,7 +62,6 @@ class UrlRuleTest extends TestCase
             }
         }
     }
-
 
     protected function getTestsForParseRequest()
     {
@@ -86,6 +86,8 @@ class UrlRuleTest extends TestCase
                 ['controller' => 'post', 'prefix' => 'admin'],
                 [
                     ['admin/posts', 'post/index'],
+                    ['different/posts', false],
+                    ['posts', false],
                 ],
             ],
             [
@@ -160,6 +162,13 @@ class UrlRuleTest extends TestCase
                     ['posts/1338', 'post/view', ['id' => 1338]],
                 ],
             ],
+            [
+                'prefix with token',
+                ['controller' => 'post', 'prefix' => 'admin/<name>'],
+                [
+                    ['admin/aaa/posts', 'post/index', ['name' => 'aaa']],
+                ],
+            ],
         ];
     }
 
@@ -215,7 +224,7 @@ class UrlRuleTest extends TestCase
      *   - first element is the route to create
      *   - second element is the expected URL
      */
-    public function createUrlDataProvider()
+    public static function createUrlDataProvider(): array
     {
         return [
             // with pluralize
@@ -323,7 +332,7 @@ class UrlRuleTest extends TestCase
                     'extraPatterns' => [
                         '{id}/my' => 'my',
                         'my' => 'my',
-                        // this should not create a URL, no GET definition
+                        // since 2.0.41 this should create a URL (previously it was false)
                         'POST {id}/my2' => 'my2',
                     ],
                 ],
@@ -339,7 +348,7 @@ class UrlRuleTest extends TestCase
                     [['v1/channel/my'], 'v1/channels/my'],
                     [['v1/channel/my', 'id' => 42], 'v1/channels/42/my'],
                     [['v1/channel/my2'], false],
-                    [['v1/channel/my2', 'id' => 42], false],
+                    [['v1/channel/my2', 'id' => 42], 'v1/channels/42/my2'],
                 ],
             ],
         ];
@@ -350,7 +359,7 @@ class UrlRuleTest extends TestCase
      * @param array $ruleConfig
      * @param array $tests
      */
-    public function testCreateUrl($ruleConfig, $tests)
+    public function testCreateUrl($ruleConfig, $tests): void
     {
         foreach ($tests as $test) {
             list($params, $expected) = $test;
@@ -368,11 +377,12 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
+     * @dataProvider getCreateUrlStatusProvider
+     *
      * @param array $ruleConfig
      * @param array $tests
      */
-    public function testGetCreateUrlStatus($ruleConfig, $tests)
+    public function testGetCreateUrlStatus($ruleConfig, $tests): void
     {
         foreach ($tests as $test) {
             list($params, $expected, $status) = $test;
@@ -405,7 +415,7 @@ class UrlRuleTest extends TestCase
      *   - second element is the expected URL
      *   - third element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
         return [
             'single controller' => [
@@ -419,11 +429,16 @@ class UrlRuleTest extends TestCase
                     [['v1/channel/index'], 'v1/channels', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/channel/view', 'id' => 42], 'v1/channels/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
                     [['v1/channel/options'], 'v1/channels', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/channel/options', 'id' => 42], 'v1/channels/42', WebUrlRule::CREATE_STATUS_SUCCESS],
-                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
+                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/channel/delete', 'id' => 43], 'v1/channels/43', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/create'], 'v1/channels', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/update', 'id' => 44], 'v1/channels/44', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/update'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+
                     [['v1/missing/view'], false, WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH],
-                    [['v1/channel/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
                 ],
             ],
             'multiple controllers' => [
@@ -438,13 +453,23 @@ class UrlRuleTest extends TestCase
                     [['v1/channel/view', 'id' => 42], 'v1/channel/42', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/channel/options'], 'v1/channel', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/channel/options', 'id' => 42], 'v1/channel/42', WebUrlRule::CREATE_STATUS_SUCCESS],
-                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
+                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/channel/delete', 'id' => 43], 'v1/channel/43', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/create'], 'v1/channel', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/update'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/channel/update', 'id' => 45], 'v1/channel/45', WebUrlRule::CREATE_STATUS_SUCCESS],
+
                     [['v1/user/index'], 'v1/u', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/user/view', 'id' => 1], 'v1/u/1', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
                     [['v1/user/options'], 'v1/u', WebUrlRule::CREATE_STATUS_SUCCESS],
                     [['v1/user/options', 'id' => 42], 'v1/u/42', WebUrlRule::CREATE_STATUS_SUCCESS],
-                    [['v1/user/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
-                    [['v1/user/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/user/delete', 'id' => 44], 'v1/u/44', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/delete'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/user/create'], 'v1/u', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/update', 'id' => 46], 'v1/u/46', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/update'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+
                     [['v1/missing/view'], false, WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH],
                 ],
             ],

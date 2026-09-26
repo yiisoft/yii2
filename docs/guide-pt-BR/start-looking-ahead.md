@@ -11,28 +11,28 @@ Web uma tarefa tão simples quanto preencher alguns formulários.
 Esta seção resume recursos Yii disponíveis que o ajudarão a ser mais produtivo usando o framework.
 
 * Documentação
-    - [O Guia Definitivo](http://www.yiiframework.com/doc-2.0/guide-README.html):
+    - [O Guia Definitivo](https://www.yiiframework.com/doc-2.0/guide-README.html):
       Conforme o nome indica, o guia define precisamente como o Yii deve funcionar
       e fornece orientações gerais sobre como usá-lo. É o tutorial mais importante e que você deveria ler antes de escrever qualquer código Yii.
-    - [A Referência de Classes](http://www.yiiframework.com/doc-2.0/index.html):
+    - [A Referência de Classes](https://www.yiiframework.com/doc-2.0/index.html):
       Especifica o uso de todas as classes fornecidas pelo Yii. Deve ser
       principalmente usada quando você estiver escrevendo código e quiser entender o uso de uma classe, método ou propriedade específicos. O uso da referência
       de classes é idealmente melhor somente depois de um entendimento contextual do framework como um todo.
-    - [Os Artigos Wiki](http://www.yiiframework.com/wiki/?tag=yii2):
+    - [Os Artigos Wiki](https://www.yiiframework.com/wiki/?tag=yii2):
       Os artigos wiki são escritos por usuários do Yii baseados em suas próprias experiências. A maioria deles são escritos como receitas de bolo e mostram
       como resolver problemas específicos usando o Yii. Ainda que a qualidade desses artigos possa não ser tão boa quanto a do Guia Definitivo, eles são úteis porque são abrangem assuntos adicionais e frequentemente fornecem
       soluções prontas para serem usadas.
-    - [Livros](http://www.yiiframework.com/doc/)
-* [Extensões](http://www.yiiframework.com/extensions/):
+    - [Livros](https://www.yiiframework.com/books)
+* [Extensões](https://www.yiiframework.com/extensions/):
   O Yii ostenta uma biblioteca de milhares de extensões contribuídas por usuários que podem facilmente ser plugadas em suas aplicações, tornando
   o seu desenvolvimento ainda mais rápido e mais fácil.
 * Comunidade
-    - Fórum: <http://www.yiiframework.com/forum/>
-    - Chat IRC: O canal #yii na rede freenode (<irc://irc.freenode.net/yii>)
+    - Fórum: <https://forum.yiiframework.com/>
+    - Chat IRC: O canal #yii na rede Libera (<ircs://irc.libera.chat:6697/yii>)
     - Canal Slack: <https://yii.slack.com>
     - Chat Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
     - Twitter: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow: <https://stackoverflow.com/questions/tagged/yii2>

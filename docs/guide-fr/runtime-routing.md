@@ -156,7 +156,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // crée une  URL avec ancre : /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// crée une URL absolue : http://www.example.com/index.php?r=post%2Findex
+// crée une URL absolue : https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
 // crée une URL absolue en utilisant le schéma https : https://www.example.com/index.php?r=post%2Findex
@@ -214,11 +214,11 @@ use yii\helpers\Url;
 // URL couramment requise : /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// un alias d'URL: http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// un alias d'URL: https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// une URL absolue : http://example.com/images/logo.gif
+// une URL absolue : https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -235,7 +235,7 @@ echo Url::home();
 echo Url::base();
 
 // l'URL canonique de l'URL couramment requise 
-// voir https://en.wikipedia.org/wiki/Canonical_link_element
+// voir https://fr.wikipedia.org/wiki/%C3%89l%C3%A9ment_de_lien_canonique
 echo Url::canonical();
 
 // mémorise l'URL couramment requise et la retrouve dans les requêtes subséquentes
@@ -442,18 +442,18 @@ le premier paramètre peut être omis seulement si tous les autres paramètres l
 ### Règles avec des noms de serveur <span id="rules-with-server-names"></span>
 
 Il est possible d'inclure des noms de serveur Web dans le motif d'une règle d'URL. Cela est principalement utilisé lorsque votre application doit se comporter différemment selon le nom du serveur Web. 
-Par exemple, les règles suivantes analysent et résolvent l'URL `http://admin.example.com/login` en la route `admin/user/login` 
-et `http://www.example.com/login` en la route `site/login`.
+Par exemple, les règles suivantes analysent et résolvent l'URL `https://admin.example.com/login` en la route `admin/user/login` 
+et `https://www.example.com/login` en la route `site/login`.
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 Vous pouvez aussi inclure des paramètres  dans les noms de serveurs pour en extraire de l'information dynamique. 
-Par exemple, la règle suivante analyse et résout l'URL `http://en.example.com/posts` en la route `post/index` et le paramètre  `language=en`.
+Par exemple, la règle suivante analyse et résout l'URL `https://en.example.com/posts` en la route `post/index` et le paramètre  `language=en`.
 
 ```php
 [
@@ -465,7 +465,7 @@ Depuis la version 2.0.11, vous pouvez également utiliser des motifs relatifs au
 La syntaxe est la même que ci-dessus mais en sautant la partie `http`, p. ex. `'//www.example.com/login' => 'site/login'`.
 
 > Note: les règles avec des noms de serveur ne doivent **pas** comprendre le sous-dossier du script d'entrée dans leur motif. 
-Par exemple, si l'application est sous  `http://www.example.com/sandbox/blog`, alors vous devez utiliser le motif `http://www.example.com/posts` au lieu de  `http://www.example.com/sandbox/blog/posts`. 
+Par exemple, si l'application est sous  `https://www.example.com/sandbox/blog`, alors vous devez utiliser le motif `https://www.example.com/posts` au lieu de  `https://www.example.com/sandbox/blog/posts`. 
 Cela permet à votre application d'être déployée sous n'importe quel dossier sans avoir à changer son code. 
 Yii détecte automatiquement l'URL de base de l'application.
 
@@ -633,9 +633,9 @@ Et utilisez la nouvelle classe de règle dans la configuration de [[yii\web\UrlM
 Depuis la version 2.0.10, le [[yii\web\UrlManager|gestionnaire d'URL]] peut être configuré pour utiliser le [[yii\web\UrlNormalizer|normalisateur d'URL]] pour prendre en compte les variations de la même URL, p. ex. avec et sans la barre oblique de division de fin.
 
 
-Parce que, techniquement,  `http://example.com/path`
-et `http://example.com/path/` sont des URL différentes, servir le même  contenu pour chacune d'elles peut dégrader le classement SEO.
-Par défaut, le normalisateur fusionne les barres obliques de division consécutives, ajoute ou retire des barres de division de fin selon que le suffixe comporte une barre de division de fin ou pas, et redirige vers la version normalisée de l'URL en utilisant la [redirection permanente](https://en.wikipedia.org/wiki/HTTP_301).
+Parce que, techniquement,  `https://example.com/path`
+et `https://example.com/path/` sont des URL différentes, servir le même  contenu pour chacune d'elles peut dégrader le classement SEO.
+Par défaut, le normalisateur fusionne les barres obliques de division consécutives, ajoute ou retire des barres de division de fin selon que le suffixe comporte une barre de division de fin ou pas, et redirige vers la version normalisée de l'URL en utilisant la [redirection permanente](https://fr.wikipedia.org/wiki/HTTP_301).
 Le normalisateur peut être configuré globalement pour le gestionnaire d'URL ou individuellement pour chacune des règles — par défaut, chacune des règles utilise le normalisateur du gestionnaire d'URL. 
 Vous pouvez définir [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] à `false` pour désactiver la normalisation pour une règle d'URL particulière.
 

@@ -57,9 +57,9 @@ De même, le code qui suit est le code du script de démarrage d'une application
 /**
  * Yii console bootstrap file.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);

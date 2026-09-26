@@ -42,7 +42,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 --------------------------------
 
 模板调整好后，通过其创建一个 Git 仓库并提交你的代码。
-如果你希望将你的应用程序模板开源，[Github](http://github.com) 将是最好的托管服务。
+如果你希望将你的应用程序模板开源，[Github](https://github.com) 将是最好的托管服务。
 如果你不喜欢其他的人来跟你一起协作，你可以使用任意的 Git 仓库服务。
 
 接下来，你需要为 Composer 注册你的 package。对于公有的模板，你可以将 package 注册到 [Packagist](https://packagist.org/)。对于私有的模板，

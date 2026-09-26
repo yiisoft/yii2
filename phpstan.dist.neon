@@ -1,0 +1,33 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 3
+
+    reportIgnoresWithoutComments: true
+
+    paths:
+        - build
+        - framework
+        - tests
+
+    excludePaths:
+        analyse:
+            - tests/data
+            - tests/framework/db/enums
+            - tests/framework/*/stubs/*
+            - tests/framework/*/mocks/*
+
+    bootstrapFiles:
+        - framework/BaseYii.php
+
+    dynamicConstantNames:
+        - YII_DEBUG
+        - YII_ENV
+        - YII_ENV_DEV
+        - YII_ENV_PROD
+        - YII_ENV_TEST
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\).#'

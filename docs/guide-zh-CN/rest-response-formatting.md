@@ -5,7 +5,7 @@
 来处理响应格式：
 
 1. 确定可能影响响应格式的各种因素，例如媒介类型，语言，版本，等等。
-   这个过程也被称为 [content negotiation](http://en.wikipedia.org/wiki/Content_negotiation)。
+   这个过程也被称为 [content negotiation](https://zh.wikipedia.org/wiki/%E5%86%85%E5%AE%B9%E5%8D%8F%E5%95%86)。
 2. 资源对象转换为数组，如在 [Resources](rest-resources.md) 部分中所描述的。
    通过 [[yii\rest\Serializer]] 来完成。
 3. 通过内容协商步骤将数组转换成字符串。
@@ -164,7 +164,7 @@ JSON 响应将由 [[yii\web\JsonResponseFormatter|JsonResponseFormatter]] 类来
 比如 [[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]]，这对于开发更好的可读式响应更有用，
 或者用 [[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] 去控制 JSON 编码的输出。
 
-格式化程序可以在 [configuration](concept-configuration.md) 的 `response` 应用程序组件 [[yii\web\Response::formatters|formatters]] 的属性进行配置，
+格式化程序可以在 [configuration](concept-configurations.md) 的 `response` 应用程序组件 [[yii\web\Response::formatters|formatters]] 的属性进行配置，
 如下所示：
 
 ```php

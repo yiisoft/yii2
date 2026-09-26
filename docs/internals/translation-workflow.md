@@ -14,7 +14,7 @@ In order to start with message translation:
 
 1. Check `framework/messages/config.php` and make sure your language is listed in `languages`. If not,
    add your language there (remember to keep the list in alphabetical order). The format of language code
-   should follow [IETF language tag spec](http://en.wikipedia.org/wiki/IETF_language_tag), for example,
+   should follow [IETF language tag spec](https://en.wikipedia.org/wiki/IETF_language_tag), for example,
    `ru`, `zh-CN`.
 2. Go to `framework` and run `./yii message/extract @yii/messages/config.php --languages=<your_language>`.
 3. Translate messages in `framework/messages/your_language/yii.php`. Make sure file is saved using UTF-8 encoding.

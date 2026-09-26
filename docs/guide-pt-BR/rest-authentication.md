@@ -5,9 +5,9 @@ Ao contrário de aplicações Web, APIs RESTful são geralmente stateless, o que
 
 Existem diferentes maneiras de enviar um token de acesso:
 
-* [Autenticação Básica HTTP](http://en.wikipedia.org/wiki/Basic_access_authentication): o token de acesso é enviado como um nome de usuário. Isso só deve ser usado quando um token de acesso puder ser armazenado com segurança no lado do consumidor da API. Por exemplo, o consumidor API é um programa executado em um servidor.
+* [Autenticação Básica HTTP](https://en.wikipedia.org/wiki/Basic_access_authentication): o token de acesso é enviado como um nome de usuário. Isso só deve ser usado quando um token de acesso puder ser armazenado com segurança no lado do consumidor da API. Por exemplo, o consumidor API é um programa executado em um servidor.
 * Parâmetro de consulta da URL: o token de acesso é enviado como um parâmetro de consulta na URL da API, ex., `https://example.com/users?access-token=xxxxxxxx`. Como a maioria dos servidores Web manterão os parâmetros de consulta nos logs do servidor, esta abordagem deve ser utilizada principalmente para servir requisições `JSONP` que não pode usar cabeçalhos HTTP para enviar tokens de acesso.
-* [OAuth 2](http://oauth.net/2/): o token de acesso é obtido pelo consumidor a partir de um servidor de autorização e enviado para o servidor da API via [HTTP Bearer Tokens] (http://tools.ietf.org/html/rfc6750),  de acordo com o protocolo OAuth2.
+* [OAuth 2](https://oauth.net/2/): o token de acesso é obtido pelo consumidor a partir de um servidor de autorização e enviado para o servidor da API via [HTTP Bearer Tokens] (https://datatracker.ietf.org/doc/html/rfc6750),  de acordo com o protocolo OAuth2.
 
 Yii suporta todos os métodos de autenticação descritos acima. Você também pode criar facilmente um novo método de autenticação.
 
@@ -42,7 +42,7 @@ public function behaviors()
 {
    $behaviors = parent::behaviors();
    $behaviors['authenticator'] = [
-       'class' => HttpBasicAuth::className(),
+       'class' => HttpBasicAuth::class,
    ];
    return $behaviors;
 }
@@ -60,11 +60,11 @@ public function behaviors()
 {
    $behaviors = parent::behaviors();
    $behaviors['authenticator'] = [
-       'class' => CompositeAuth::className(),
+       'class' => CompositeAuth::class,
        'authMethods' => [
-           HttpBasicAuth::className(),
-           HttpBearerAuth::className(),
-           QueryParamAuth::className(),
+           HttpBasicAuth::class,
+           HttpBearerAuth::class,
+           QueryParamAuth::class,
        ],
    ];
    return $behaviors;

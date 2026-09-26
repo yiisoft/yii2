@@ -7,9 +7,9 @@
 
 Yii的单元测试框架 Codeception 基于 PHPUnit，Codeception 建议遵从 PHPUnit 的文档的进行开发：
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests)
-- [PHPUnit docs starting from chapter 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Unit Tests](https://codeception.com/docs/05-UnitTests)
+- [PHPUnit docs starting from chapter 2](https://phpunit.readthedocs.io/en/9.5/writing-tests-for-phpunit.html)
 
 ## 运行基本和高级模板测试
 

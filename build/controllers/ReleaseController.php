@@ -1,21 +1,23 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * ReleaseController is there to help preparing releases.
+ * ReleaseController is there to help to prepare releases.
  *
  * Get a version overview:
  *
@@ -39,6 +41,8 @@ use yii\helpers\FileHelper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class ReleaseController extends Controller
 {
@@ -53,7 +57,7 @@ class ReleaseController extends Controller
      */
     public $dryRun = false;
     /**
-     * @var bool whether to fetch latest tags.
+     * @var bool whether to fetch the latest tags.
      */
     public $update = false;
     /**
@@ -206,7 +210,7 @@ class ReleaseController extends Controller
                 $newVersions[$k] = $this->version;
             }
         } else {
-            // otherwise get next patch or minor
+            // otherwise, get next patch or minor
             $newVersions = $this->getNextVersions($versions, self::PATCH);
         }
 
@@ -218,12 +222,12 @@ class ReleaseController extends Controller
         $gitDir = reset($what) === 'framework' ? 'framework/' : '';
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. {$gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
-        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. {$gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
-        $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
+        $this->stdout("- are unit tests passing on travis? https://travis-ci.com/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
         $this->stdout("\n");
@@ -436,15 +440,7 @@ class ReleaseController extends Controller
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('updating mimetype magic file and mime aliases...', Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"], ["$frameworkPath/helpers/mimeAliases.php"]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$frameworkPath]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$frameworkPath]);
+        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('sorting changelogs...', Console::BOLD);
@@ -489,22 +485,22 @@ class ReleaseController extends Controller
         // $this->composerSetStability($what, $version);
 
 
-//        $this->resortChangelogs($what, $version);
-  //        $this->closeChangelogs($what, $version);
-  //        $this->composerSetStability($what, $version);
-  //        if (in_array('framework', $what)) {
-  //            $this->updateYiiVersion($version);
-  //        }
+        //        $this->resortChangelogs($what, $version);
+        //        $this->closeChangelogs($what, $version);
+        //        $this->composerSetStability($what, $version);
+        //        if (in_array('framework', $what)) {
+        //            $this->updateYiiVersion($version);
+        //        }
 
 
         // if done:
         //     * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
         //     * ./build/build release/done redis 2.0.0-dev 2.0.0-rc
-//            $this->openChangelogs($what, $nextVersion);
-//            $this->composerSetStability($what, 'dev');
-//            if (in_array('framework', $what)) {
-//                $this->updateYiiVersion($devVersion);
-//            }
+        //            $this->openChangelogs($what, $nextVersion);
+        //            $this->composerSetStability($what, 'dev');
+        //            if (in_array('framework', $what)) {
+        //                $this->updateYiiVersion($devVersion);
+        //            }
 
 
 
@@ -566,18 +562,6 @@ class ReleaseController extends Controller
 
         // adjustments
 
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->setAppAliases($name, $path);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path, 'skipFrameworkRequirements' => true]);
-        $this->resetAppAliases();
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->setAppAliases($name, $path);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$path, 'skipFrameworkRequirements' => true]);
-        $this->resetAppAliases();
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
         $this->stdout("updating composer stability...\n", Console::BOLD);
         $this->dryRun || $this->composerSetStability(["app-$name"], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
@@ -629,30 +613,9 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework release at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
-    }
-
-    private $_oldAlias;
-
-    protected function setAppAliases($app, $path)
-    {
-        $this->_oldAlias = Yii::getAlias('@app');
-        switch ($app) {
-            case 'basic':
-                Yii::setAlias('@app', $path);
-                break;
-            case 'advanced':
-                // setup @frontend, @backend etc...
-                require "$path/common/config/bootstrap.php";
-                break;
-        }
-    }
-
-    protected function resetAppAliases()
-    {
-        Yii::setAlias('@app', $this->_oldAlias);
     }
 
     protected function packageApplication($name, $version, $packagePath)
@@ -683,14 +646,6 @@ class ReleaseController extends Controller
         $this->runGit('git pull', $path);
 
         // adjustments
-
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$path]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('sorting changelogs...', Console::BOLD);
         $this->dryRun || $this->resortChangelogs([$name], $version);
@@ -803,7 +758,7 @@ class ReleaseController extends Controller
         try {
             chdir($path);
         } catch (\yii\base\ErrorException $e) {
-            throw new Exception('Failed to getch git tags in ' . $path . ': ' . $e->getMessage());
+            throw new Exception('Failed to fetch git tags in ' . $path . ': ' . $e->getMessage());
         }
         exec('git fetch --tags', $output, $ret);
         if ($ret != 0) {
@@ -850,10 +805,27 @@ class ReleaseController extends Controller
     protected function resortChangelogs($what, $version)
     {
         foreach ($this->getChangelogs($what) as $file) {
+            $this->updateChangelogDevelopmentVersion($file, $version);
             // split the file into relevant parts
             list($start, $changelog, $end) = $this->splitChangelog($file, $version);
             $changelog = $this->resortChangelog($changelog);
             file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
+        }
+    }
+
+    protected function updateChangelogDevelopmentVersion($file, $version)
+    {
+        $contents = file_get_contents($file);
+        $headline = $version . ' under development';
+        $updatedContents = preg_replace(
+            '/^([^\s]+) under development\R-+\R/m',
+            $headline . "\n" . str_repeat('-', \strlen($headline)) . "\n",
+            $contents,
+            1
+        );
+
+        if ($updatedContents !== $contents) {
+            file_put_contents($file, $updatedContents);
         }
     }
 
@@ -873,11 +845,15 @@ class ReleaseController extends Controller
         $end = [];
 
         $state = 'start';
+        $found = false;
         foreach ($lines as $l => $line) {
             // starting from the changelogs headline
-            if (isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
-                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0) {
+            if (
+                isset($lines[$l - 2]) && $this->matchesChangelogVersion($lines[$l - 2], $version) &&
+                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0
+            ) {
                 $state = 'changelog';
+                $found = true;
             }
             if ($state === 'changelog' && isset($lines[$l + 1]) && strncmp($lines[$l + 1], '---', 3) === 0) {
                 $state = 'end';
@@ -885,13 +861,26 @@ class ReleaseController extends Controller
             // add continued lines to the last item to keep them together
             if (!empty(${$state}) && trim($line) !== '' && strncmp($line, '- ', 2) !== 0) {
                 end(${$state});
-                ${$state}[key(${$state})] .= "\n" . $line;
+
+                if (($k = key(${$state})) !== null) {
+                    ${$state}[$k] .= "\n" . $line;
+                }
             } else {
                 ${$state}[] = $line;
             }
         }
 
+        if (!$found) {
+            throw new Exception("Changelog section for version $version was not found in $file.");
+        }
+
         return [$start, $changelog, $end];
+    }
+
+    protected function matchesChangelogVersion($line, $version)
+    {
+        $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
+        return preg_match('/^' . $v . '(?:\s|$)/', $line) === 1;
     }
 
     /**
@@ -904,6 +893,7 @@ class ReleaseController extends Controller
         // cleanup whitespace
         foreach ($changelog as $i => $line) {
             $changelog[$i] = rtrim($line);
+            $changelog[$i] = preg_replace('/^- Fix(?= #\d+(, #\d+)*: )/', '- Bug', $changelog[$i]);
         }
         $changelog = array_filter($changelog);
 
@@ -990,9 +980,10 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
+            '/function getVersion\(\)\R {4}\{\R {8}return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            $frameworkPath . '/BaseYii.php');
+            $frameworkPath . '/BaseYii.php'
+        );
     }
 
     protected function sed($pattern, $replace, $files)
@@ -1021,8 +1012,7 @@ class ReleaseController extends Controller
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
 
             // exclude 3.0.0-alpha1 tag
-            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false)
-            {
+            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false) {
                 unset($tags[$key]);
             }
 
@@ -1032,8 +1022,8 @@ class ReleaseController extends Controller
         return $versions;
     }
 
-    const MINOR = 'minor';
-    const PATCH = 'patch';
+    public const MINOR = 'minor';
+    public const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {
@@ -1045,14 +1035,14 @@ class ReleaseController extends Controller
             $parts = explode('.', $v);
             switch ($type) {
                 case self::MINOR:
-                    $parts[1]++;
+                    $parts[1] = (int) $parts[1] + 1;
                     $parts[2] = 0;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }
                     break;
                 case self::PATCH:
-                    $parts[2]++;
+                    $parts[2] = (int) $parts[2] + 1;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }

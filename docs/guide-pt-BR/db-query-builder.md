@@ -220,7 +220,7 @@ onde cada um dos operandos pode ser especificado no formato string, formato hash
 
 - `like`: o operando 1 deve ser uma coluna ou uma expressão DB, e o operando 2 deve ser uma string ou um array representando o valor que a coluna ou expressão DB devem atender. Por exemplo, `['like', 'name', 'tester']` irá gerar `name LIKE '%tester%'`. Quando a faixa de valor é dado como um array, múltiplos predicados `LIKE` serão gerados e concatenadas utilizando `AND`. Por exemplo, `['like', 'name', ['test', 'sample']]` irá gerar `name LIKE '%test%' AND name LIKE '%sample%'`. Você também pode fornecer um terceiro operando opcional para especificar como escapar caracteres especiais nos valores. O operando deve ser um array de mapeamentos de caracteres especiais. Se este operando não for fornecido, um mapeamento de escape padrão será usado. Você pode usar `false` ou um array vazio para indicar que os valores já estão escapados e nenhum escape deve ser aplicado. Note-se que ao usar um mapeamento de escape (ou o terceiro operando não é fornecido), os valores serão automaticamente fechado dentro de um par de caracteres percentuais.
 
- > Observação: Ao utilizar o SGDB PostgreSQL você também pode usar [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
+ > Observação: Ao utilizar o SGDB PostgreSQL você também pode usar [`ilike`](https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE)
  > em vez de `like` para diferenciar maiúsculas de minúsculas.
 
 - `or like`: similar ao operador `like` exceto pelo fato de que `OR` é usado para concatenar os predicados `LIKE` quando o operando 2 é um array.

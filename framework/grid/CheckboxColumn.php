@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\grid;
@@ -17,7 +18,7 @@ use yii\helpers\Json;
  *
  * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [
@@ -30,7 +31,7 @@ use yii\helpers\Json;
  * Users may click on the checkboxes to select rows of the grid. The selected rows may be
  * obtained by calling the following JavaScript code:
  *
- * ```javascript
+ * ```
  * var keys = $('#grid').yiiGridView('getSelectedRows');
  * // keys is an array consisting of the keys associated with the selected rows
  * ```
@@ -56,7 +57,7 @@ class CheckboxColumn extends Column
      * Specifically if you want to set a different value for the checkbox
      * you can use this option in the following way (in this example using the `name` attribute of the model):
      *
-     * ```php
+     * ```
      * 'checkboxOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->name];
      * }

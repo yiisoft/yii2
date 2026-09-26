@@ -1,13 +1,18 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\ActiveQuery;
+use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\DefaultPk;
+use yiiunit\data\ar\DefaultMultiplePk;
+use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 
 /**
@@ -18,10 +23,9 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     protected $driverName = 'oci';
 
-    public function testCastValues()
+    public function testCastValues(): void
     {
         // pass, because boolean casting is not available
-        return;
         $model = new Type();
         $model->int_col = 123;
         $model->int_col2 = 456;
@@ -35,7 +39,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $model->bool_col2 = 0;
         $model->save(false);
 
-        /* @var $model Type */
+        /** @var Type $model */
         $model = Type::find()->one();
         $this->assertSame(123, $model->int_col);
         $this->assertSame(456, $model->int_col2);
@@ -43,13 +47,13 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame('1337', trim($model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-//        $this->assertSame(1337.42, $model->float_col);
-//        $this->assertSame(42.1337, $model->float_col2);
-//        $this->assertTrue($model->bool_col);
-//        $this->assertFalse($model->bool_col2);
+        $this->assertSame(3.742, $model->float_col);
+        $this->assertSame(42.1337, $model->float_col2);
+        $this->assertSame('1', $model->bool_col);
+        $this->assertSame('0', $model->bool_col2);
     }
 
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $model = new Type();
         $model->loadDefaultValues();
@@ -57,7 +61,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertTrue($model->bool_col2);
+        $this->assertEquals('1', $model->bool_col2);
 
         // not testing $model->time, because oci\Schema can't read default value
 
@@ -74,9 +78,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertEquals('something', $model->char_col2);
     }
 
-    public function testFindAsArray()
+    public function testFindAsArray(): void
     {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -114,11 +117,150 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertArrayHasKey('bool_status', $customers[2]);
     }
 
-    public function testPrimaryKeyAfterSave()
+    public function testPrimaryKeyAfterSave(): void
     {
         $record = new DefaultPk();
         $record->type = 'type';
         $record->save(false);
         $this->assertEquals(5, $record->primaryKey);
+    }
+
+    public function testMultiplePrimaryKeyAfterSave(): void
+    {
+        $record = new DefaultMultiplePk();
+        $record->id = 5;
+        $record->second_key_column = 'secondKey';
+        $record->type = 'type';
+        $record->save(false);
+        $this->assertEquals(5, $record->id);
+        $this->assertEquals('secondKey', $record->second_key_column);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9006
+     */
+    public function testBit(): void
+    {
+        $falseBit = BitValues::findOne(1);
+        $this->assertEquals('0', $falseBit->val);
+
+        $trueBit = BitValues::findOne(2);
+        $this->assertEquals('1', $trueBit->val);
+    }
+
+    /**
+     * Some PDO implementations(e.g. cubrid) do not support boolean values.
+     * Make sure this does not affect AR layer.
+     */
+    public function testBooleanAttribute(): void
+    {
+        $customerClass = $this->getCustomerClass();
+        $customer = new $customerClass();
+        $customer->name = 'boolean customer';
+        $customer->email = 'mail@example.com';
+        $customer->status = 1;
+        $customer->save(false);
+
+        $customer->refresh();
+        $this->assertSame(1, $customer->status);
+
+        $customer->status = 0;
+        $customer->save(false);
+
+        $customer->refresh();
+        $this->assertSame(0, $customer->status);
+
+        $customers = $customerClass::find()->where(['[[status]]' => '1'])->all();
+        $this->assertCount(2, $customers);
+
+        $customers = $customerClass::find()->where(['[[status]]' => '0'])->all();
+        $this->assertCount(1, $customers);
+    }
+
+    public function testJoinWithAlias(): void
+    {
+        // left join and eager loading
+        $query = Order::find()->joinWith(['customer c']);
+        $orders = $query->orderBy('c.id DESC, order.id')->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+
+        // inner join filtering and eager loading
+        $query = Order::find()->innerJoinWith(['customer c']);
+        $orders = $query->where('{{c}}.[[id]]=2')->orderBy('order.id')->all();
+        $this->assertCount(2, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+
+        // inner join filtering without eager loading
+        $query = Order::find()->innerJoinWith(['customer c'], false);
+        $orders = $query->where('{{c}}.[[id]]=2')->orderBy('order.id')->all();
+        $this->assertCount(2, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertFalse($orders[0]->isRelationPopulated('customer'));
+        $this->assertFalse($orders[1]->isRelationPopulated('customer'));
+
+        // join with via-relation
+        $query = Order::find()->innerJoinWith(['books b']);
+        $orders = $query->where(['b.name' => 'Yii 1.1 Application Development Cookbook'])->orderBy('order.id')->all();
+        $this->assertCount(2, $orders);
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('books'));
+        $this->assertTrue($orders[1]->isRelationPopulated('books'));
+        $this->assertCount(2, $orders[0]->books);
+        $this->assertCount(1, $orders[1]->books);
+
+        // joining sub relations
+        $query = Order::find()->innerJoinWith([
+            'items i' => function (ActiveQuery $q) {
+                $q->orderBy('{{i}}.id');
+            },
+            'items.category c' => function (ActiveQuery $q) {
+                $q->where('{{c}}.[[id]] = 2');
+            },
+        ]);
+        $orders = $query->orderBy('{{i}}.id')->all();
+        $this->assertCount(1, $orders);
+        $this->assertTrue($orders[0]->isRelationPopulated('items'));
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertCount(3, $orders[0]->items);
+        $this->assertTrue($orders[0]->items[0]->isRelationPopulated('category'));
+        $this->assertEquals(2, $orders[0]->items[0]->category->id);
+
+        $relationName = 'booksExplicit';
+        $orders = Order::find()->joinWith(["$relationName b"])->orderBy('order.id')->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(2, $orders[1]->id);
+        $this->assertEquals(3, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated($relationName));
+        $this->assertTrue($orders[1]->isRelationPopulated($relationName));
+        $this->assertTrue($orders[2]->isRelationPopulated($relationName));
+        $this->assertCount(2, $orders[0]->$relationName);
+        $this->assertCount(0, $orders[1]->$relationName);
+        $this->assertCount(1, $orders[2]->$relationName);
+
+        // join with ON condition and alias in relation definition
+        $relationName = 'booksExplicitA';
+        $orders = Order::find()->joinWith([(string)$relationName])->orderBy('order.id')->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(2, $orders[1]->id);
+        $this->assertEquals(3, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated($relationName));
+        $this->assertTrue($orders[1]->isRelationPopulated($relationName));
+        $this->assertTrue($orders[2]->isRelationPopulated($relationName));
+        $this->assertCount(2, $orders[0]->$relationName);
+        $this->assertCount(0, $orders[1]->$relationName);
+        $this->assertCount(1, $orders[2]->$relationName);
     }
 }

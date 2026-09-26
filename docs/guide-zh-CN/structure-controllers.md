@@ -1,7 +1,7 @@
 控制器
 ===========
 
-控制器是 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分，
+控制器是 [MVC](https://zh.wikipedia.org/wiki/MVC) 模式中的一部分，
 是继承[[yii\base\Controller]]类的对象，负责处理请求和生成响应。
 具体来说，控制器从[应用主体](structure-applications.md)
 接管控制后会分析请求数据并传送到[模型](structure-models.md)，
@@ -83,7 +83,7 @@ ControllerID/ActionID
 ModuleID/ControllerID/ActionID
 ```
 
-如果用户的请求地址为 `http://hostname/index.php?r=site/index`, 
+如果用户的请求地址为 `https://hostname/index.php?r=site/index`, 
 会执行`site` 控制器的`index` 操作。
 更多关于处理路由的详情请参阅 [路由](runtime-routing.md) 一节。
 
@@ -179,7 +179,7 @@ class SiteController extends Controller
 每个应用有一个由[[yii\base\Application::defaultRoute]]属性指定的默认控制器；
 当请求没有指定 [路由](#ids-routes)，该属性值作为路由使用。
 对于[[yii\web\Application|Web applications]]网页应用，它的值为 `'site'`，对于 [[yii\console\Application|console applications]]
-控制台应用，它的值为 `help`，所以URL为 `http://hostname/index.php` 表示由 `site` 控制器来处理。
+控制台应用，它的值为 `help`，所以URL为 `https://hostname/index.php` 表示由 `site` 控制器来处理。
 
 可以在 [应用配置](structure-applications.md#application-configurations) 中修改默认控制器，如下所示：
 
@@ -323,8 +323,8 @@ class HelloWorldAction extends Action
 ```php
 public function actionForward()
 {
-    // 用户浏览器跳转到 http://example.com
-    return $this->redirect('http://example.com');
+    // 用户浏览器跳转到 https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -354,13 +354,13 @@ class PostController extends Controller
 
 动作参数会被不同的参数填入，如下所示：
 
-* `http://hostname/index.php?r=post/view&id=123`: `$id` 会填入`'123'`，
+* `https://hostname/index.php?r=post/view&id=123`: `$id` 会填入`'123'`，
   `$version` 仍为 null 空因为没有`version`请求参数;
-* `http://hostname/index.php?r=post/view&id=123&version=2`: 
+* `https://hostname/index.php?r=post/view&id=123&version=2`: 
   $id` 和 `$version` 分别填入 `'123'` 和 `'2'`；
-* `http://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
+* `https://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为请求没有提供参数给必须赋值参数`$id`；
-* `http://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
+* `https://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为 `$id` 参数收到数组值 `['123']` 而不是字符串.
 
 如果你想要一个动作参数来接受数组值，你应该使用 `array` 来提示它，如下所示：
@@ -372,8 +372,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-现在如果请求为 `http://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值 `['123']`，
-如果请求为 `http://hostname/index.php?r=post/view&id=123`，
+现在如果请求为 `https://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值 `['123']`，
+如果请求为 `https://hostname/index.php?r=post/view&id=123`，
 参数 `$id` 会获取相同数组值，因为无类型的 `'123'` 会自动转成数组。
 
 上述例子主要描述网页应用的操作参数，对于控制台应用，

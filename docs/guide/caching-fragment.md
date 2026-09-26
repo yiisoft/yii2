@@ -24,6 +24,11 @@ is called, the generated content will be captured and stored in the cache.
 
 Like [data caching](caching-data.md), a unique `$id` is needed to identify a content cache.
 
+To delete fragment caching you can use
+```php
+Yii::$app->cache->delete(['yii\widgets\FragmentCache', $id]);
+```
+
 
 ## Caching Options <span id="caching-options"></span>
 

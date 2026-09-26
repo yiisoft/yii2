@@ -130,7 +130,7 @@ Se tudo estiver certo, a action renderizará a view chamada `confirmar-registro`
 e seu formulário HTML voltará a ser exibido mas, dessa vez, juntamente com as mensagens de erro de validação.
 
 > Nota: Neste exemplo muito simples, renderizamos a página de confirmação somente se os dados enviados eram válidos. Na prática, você deve considerar usar [[yii\web\Controller::refresh()|refresh()]] ou [[yii\web\Controller::redirect()|redirect()]]
-  para evitar [problemas de reenvio de formulário](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+  para evitar [problemas de reenvio de formulário](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Criando Views <span id="creating-views"></span>
@@ -175,7 +175,7 @@ use yii\widgets\ActiveForm;
 A view usa um poderoso [widget](structure-widgets.md) chamado
 [[yii\widgets\ActiveForm|ActiveForm]] para construir o formulário HTML. Os métodos
 `begin()` e `end()` do widget renderizam as tags de abertura e de fechamento do formulário.
-Entre as duas chamadas de métido, campos são criados pelo
+Entre as duas chamadas de método, campos são criados pelo
 método [[yii\widgets\ActiveForm::field()|field()]]. O primeiro campo é para o nome e o segundo é para o e-mail. Após os campos,
 o método [[yii\helpers\Html::submitButton()]] é chamado para criar um botão de envio do formulário (submit).
 
@@ -186,7 +186,7 @@ Conferindo <span id="trying-it-out"></span>
 Para ver como funciona, utilize seu navegador para acessar a seguinte URL:
 
 ```
-http://hostname/index.php?r=site/registro
+https://hostname/index.php?r=site/registro
 ```
 
 Você verá uma página exibindo um formulário com dois campos. Na frente de cada campo, um *label* indica quais dados devem ser inseridos. Se você clicar

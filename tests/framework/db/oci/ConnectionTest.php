@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\Connection;
 use yii\db\Transaction;
 
 /**
@@ -17,7 +19,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
     protected $driverName = 'oci';
 
-    public function testSerialize()
+    public function testSerialize(): void
     {
         $connection = $this->getConnection(false, false);
         $connection->open();
@@ -28,7 +30,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals(123, $unserialized->createCommand('SELECT 123 FROM DUAL')->queryScalar());
     }
 
-    public function testQuoteTableName()
+    public function testQuoteTableName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('"table"', $connection->quoteTableName('table'));
@@ -40,7 +42,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
 
-    public function testQuoteColumnName()
+    public function testQuoteColumnName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('"column"', $connection->quoteColumnName('column'));
@@ -53,7 +55,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"column"', $connection->quoteSql('{{column}}'));
     }
 
-    public function testQuoteFullColumnName()
+    public function testQuoteFullColumnName(): void
     {
         $connection = $this->getConnection(false, false);
         $this->assertEquals('"table"."column"', $connection->quoteColumnName('table.column'));
@@ -75,7 +77,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}."column"'));
     }
 
-    public function testTransactionIsolation()
+    public function testTransactionIsolation(): void
     {
         $connection = $this->getConnection(true);
 
@@ -84,5 +86,38 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Note: The READ UNCOMMITTED isolation level allows dirty reads. Oracle Database doesn't use dirty reads, nor does
+     * it even allow them.
+     *
+     * Change Transaction::READ_UNCOMMITTED => Transaction::READ_COMMITTED.
+     */
+    public function testTransactionShortcutCustom(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $result = $connection->transaction(static function (Connection $db) {
+            $db->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+            return true;
+        }, Transaction::READ_COMMITTED);
+
+        $this->assertTrue($result, 'transaction shortcut valid value should be returned from callback');
+
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
+        $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
+    }
+
+    public function testQuoteValue(): void
+    {
+        $connection = $this->getConnection(false);
+        $this->assertEquals(123, $connection->quoteValue(123));
+        $this->assertEquals("'string'", $connection->quoteValue('string'));
+        $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 }

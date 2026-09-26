@@ -107,8 +107,8 @@ DB と関係しないフィクスチャ (例えば、何らかのファイルや
 
 ## フィクスチャを使用する
 
-[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスについては、
-内蔵されているサポートを使用することが出来ます。
+[Codeception](https://codeception.com/) を使ってコードをテストしている場合は、
+フィクスチャのローディングとアクセスについて、内蔵されているサポートを使用することが出来ます。
 
 その他のテスト・フレームワークを使っている場合は、テスト・ケースで [[yii\test\FixtureTrait]]
 を使って同じ目的を達することが出来ます。
@@ -130,7 +130,7 @@ class UserProfileTest extends \Codeception\Test\Unit
     {
         return [
             'profiles' => [
-                'class' => UserProfileFixture::className(),
+                'class' => UserProfileFixture::class,
                 // フィクスチャ・データは tests/_data/user.php に配置されている
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],

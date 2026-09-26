@@ -24,7 +24,7 @@ Yii::$app->response->statusCode = 200;
 ```
 
 Однако в большинстве случаев явная установка не требуется так как значение [[yii\web\Response::statusCode]] 
-по умолчанию равно 200. Если же вам нужно показать, что запрос не удался, вы можете выбросить соответствующее
+по умолчанию равно 200. Если вам нужно показать, что запрос не удался, вы можете выбросить соответствующее
 HTTP-исключение:
 
 ```php
@@ -166,7 +166,7 @@ Yii имеет средства для её использования.
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -178,7 +178,7 @@ public function actionOld()
 содержимое.
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: По умолчанию метод [[yii\web\Response::redirect()]] устанавливает код состояния ответа равным 302, сообщая
@@ -216,8 +216,8 @@ public function actionDownload()
 }
 ```
 
-При вызове метода отправки файла вне методов действий чтобы быть уверенным, что к ответу не будет добавлено никакое
-нежелательное содержимое, следует вызвать сразу после него [[yii\web\Response::send()]].
+Чтобы быть уверенным, что к ответу не будет добавлено никакое
+нежелательное содержимое, при вызове метода [[yii\web\Response::sendFile()]] вне методов action, следует вызвать сразу после него [[yii\web\Response::send()]].
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
@@ -229,17 +229,17 @@ public function actionDownload()
 методом [[yii\web\Response::xSendFile()]]. Далее приведены ссылки на то, как включить `X-Sendfile` для популярных
 Web-серверов:
 
-- Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
-- Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
-- Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+- Apache: [X-Sendfile](https://tn123.org/mod_xsendfile)
+- Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+- Cherokee: [X-Sendfile and X-Accel-Redirect](https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
 ## Отправка ответа <span id="sending-response"></span>
 
 Содержимое ответа не отправляется пользователю до вызова метода [[yii\web\Response::send()]]. По умолчанию он вызывается
-автоматически в конце метода [[yii\base\Application::run()]]. Однако, чтобы ответ был отправлен немедленно, вы можете
+автоматически в конце метода [[yii\base\Application::run()]]. Однако чтобы ответ был отправлен немедленно, вы можете
 вызвать этот метод явно.
 
 Для отправки ответа метод [[yii\web\Response::send()]] выполняет следующие шаги:

@@ -3,8 +3,8 @@ Cykl produkcyjny Git dla kontrybutorów Yii 2
 
 Zatem chcesz współtworzyć Yii? Świetnie! Aby przyspieszyć proces akceptacji Twoich modyfikacji, pamiętaj o przestrzeganiu poniższych 
 wskazówek. Jeśli pierwszy raz masz do czynienia z repozytorium Git lub GitHubem, zapoznaj się najpierw z 
-[dokumentacją pomocy GitHub](http://help.github.com/), witryną [sprawdź Gita](https://try.github.com) lub też poczytaj o 
-[wewnętrznym modelu danych Git](http://nfarina.com/post/9868516270/git-is-simpler).
+[dokumentacją pomocy GitHub](https://help.github.com/), witryną [sprawdź Gita](https://try.github.com) lub też poczytaj o 
+[wewnętrznym modelu danych Git](https://nfarina.com/post/9868516270/git-is-simpler).
 
 Przygotuj swoje środowisko deweloperskie
 ----------------------------------------
@@ -12,7 +12,7 @@ Przygotuj swoje środowisko deweloperskie
 Poniższe instrukcje pomogą Ci w tworzeniu środowiska deweloperskiego dla Yii, którego możesz użyć podczas pracy nad bazowym kodem 
 frameworka Yii. Wykonać je należy tylko raz, przed pierwszą kontrybucją.
 
-### 1. [Sforkuj (zduplikuj własną wersję)](http://help.github.com/fork-a-repo/) repozytorium Yii w serwisie GitHub i sklonuj swojego forka do środowiska deweloperskiego
+### 1. [Sforkuj (zduplikuj własną wersję)](https://help.github.com/fork-a-repo/) repozytorium Yii w serwisie GitHub i sklonuj swojego forka do środowiska deweloperskiego
 
 ```
 git clone git@github.com:TWOJA-NAZWA-UZYTKOWNIKA-GITHUB/yii2.git
@@ -20,7 +20,7 @@ git clone git@github.com:TWOJA-NAZWA-UZYTKOWNIKA-GITHUB/yii2.git
 
 Jeśli napotkasz na problemy związane z Gitem i GitHubem na systemie operacyjnym Linux lub też otrzymujesz błędy typu 
 "Permission Denied (publickey)" ("Odmowa dostępu (klucz publiczny)"), musisz odpowiednio 
-[skonfigurować instalację Gita do pracy z GitHubem](http://help.github.com/linux-set-up-git/).
+[skonfigurować instalację Gita do pracy z GitHubem](https://help.github.com/linux-set-up-git/).
 
 > Tip: jeśli nie jesteś biegły w używaniu Gita, polecamy doskonałą darmową książkę [Pro Git](https://git-scm.com/book/en/v2) (z polskim tłumaczeniem dla [poprzedniej edycji](https://git-scm.com/book/pl/v1).
 
@@ -29,7 +29,7 @@ Jeśli napotkasz na problemy związane z Gitem i GitHubem na systemie operacyjny
 Przejdź do folderu, do którego sklonowałeś Yii (zwykle "yii2") i uruchom następującą komendę:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Przygotuj środowisko testowe <span id="prepare-the-test-environment"></span>
@@ -158,7 +158,7 @@ W przypadku drobnych zmian, np. literówek i poprawek dokumentacji, nie ma potrz
 
 ### 6. Zatwierdź swoje modyfikacje
 
-Dodaj swoje pliki/zmiany, które chcesz zatwierdzić do [kolejki oczekujących](http://git.github.io/git-reference/basic/#add) za pomocą
+Dodaj swoje pliki/zmiany, które chcesz zatwierdzić do [kolejki oczekujących](https://git.github.io/git-reference/basic/#add) za pomocą
 
 ```
 git add sciezka/do/mojego/pliku.php
@@ -224,7 +224,7 @@ git push origin --delete 999-nazwa-twojej-galezi-w-tym-miejscu
 ### Note:
 
 W celu wczesnego wykrycia ewentualnych problemów z integracją, każde żądanie scalenia głównego kodu Yii na GitHubie jest 
-weryfikowane przez automatyczne testy [Travis CI](http://travis-ci.org). Ponieważ ekipa głównych programistów stara się nie 
+weryfikowane przez automatyczne testy [Travis CI](https://travis-ci.com). Ponieważ ekipa głównych programistów stara się nie 
 nadużywać tej usługi, [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) jest dodawane przy komentarzu 
 scalenia kodu, jeśli żądanie:
 
@@ -238,7 +238,7 @@ Dzięki temu pomijane są automatyczne testy travisa dla zmian, które i tak nie
 
 ```
 git clone git@github.com:TWOJA-NAZWA-UZYTKOWNIKA-GITHUB/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

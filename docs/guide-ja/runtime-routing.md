@@ -156,7 +156,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // アンカー付きの URL を生成する: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// 絶対 URL を生成する: http://www.example.com/index.php?r=post%2Findex
+// 絶対 URL を生成する: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
 // https スキームを使って絶対 URL を生成する: https://www.example.com/index.php?r=post%2Findex
@@ -214,11 +214,11 @@ use yii\helpers\Url;
 // 現在リクエストされている URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// エイリアス化された URL: http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// エイリアス化された URL: https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// 絶対 URL: http://example.com/images/logo.gif
+// 絶対 URL: https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -443,17 +443,17 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 
 URL 規則のパターンには、ウェブ・サーバ名を含むことが出来ます。
 このことが役に立つのは、主として、あなたのアプリケーションがウェブ・サーバ名によって異なる動作をしなければならない場合です。
-例えば、次の規則は、`http://admin.example.com/login` という URL を `admin/user/login` のルートとして解析し、`http://www.example.com/login` を `site/login` として解析するものです。
+例えば、次の規則は、`https://admin.example.com/login` という URL を `admin/user/login` のルートとして解析し、`https://www.example.com/login` を `site/login` として解析するものです。
 
 ```php
 'rules' => [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 サーバ名にパラメータを埋め込んで、そこから動的な情報を抽出することも出来ます。
-例えば、次の規則は `http://en.example.com/posts` という URL を解析して、`post/index` というルートと `language=en` というパラメータを取得するものです。
+例えば、次の規則は `https://en.example.com/posts` という URL を解析して、`post/index` というルートと `language=en` というパラメータを取得するものです。
 
 ```php
 'rules' => [
@@ -465,7 +465,7 @@ URL 規則のパターンには、ウェブ・サーバ名を含むことが出�
 記法は上記と同じです、ただ、`http:` の部分を省略します。例えば、`'//www.example.com/login' => 'site/login'`。
 
 > Note: サーバ名を持つ規則は、そのパターンに、エントリ・スクリプトのサブフォルダを**含まない**ようにすべきです。
-例えば、アプリケーションのエントリ・スクリプトが `http://www.example.com/sandbox/blog/index.php` である場合は、`http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
+例えば、アプリケーションのエントリ・スクリプトが `https://www.example.com/sandbox/blog/index.php` である場合は、`https://www.example.com/sandbox/blog/posts` ではなく、`https://www.example.com/posts` というパターンを使うべきです。
 こうすれば、アプリケーションをどのようなディレクトリに配置しても、URL 規則を変更する必要がなくなります。Yii はアプリケーションのベース URL を自動的に検出します。
 
 
@@ -632,7 +632,7 @@ class CarUrlRule extends BaseObject implements UrlRuleInterface
 
 バージョン 2.0.10 以降、[[yii\web\UrlManager|UrlManager]] で [[yii\web\UrlNormalizer|UrlNormalizer]] を使って、
 同一 URL のバリエーション (例えば、末尾のスラッシュの有無) の問題を処理する出来るようになりました。
-技術的には `http://example.com/path` と `http://example.com/path/` は別の URL ですから、これらの両方に同一のコンテントを提供することは SEO ランキングを低下させる可能性があります。
+技術的には `https://example.com/path` と `https://example.com/path/` は別の URL ですから、これらの両方に同一のコンテントを提供することは SEO ランキングを低下させる可能性があります。
 デフォルトでは、URL ノーマライザは、連続したスラッシュを畳み、サフィックスが末尾のスラッシュを持っているかどうかに従って末尾のスラッシュを追加または削除し、
 正規化された URL に [恒久的な移動](https://en.wikipedia.org/wiki/HTTP_301) を使ってリダイレクトします。
 ノーマライザは、URL マネージャのためにグローバルに構成することも、各規則のために個別に構成することも出来ます。

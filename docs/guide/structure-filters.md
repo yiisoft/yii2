@@ -34,7 +34,7 @@ public function behaviors()
 By default, filters declared in a controller class will be applied to *all* actions in that controller. You can,
 however, explicitly specify which actions the filter should be applied to by configuring the
 [[yii\base\ActionFilter::only|only]] property. In the above example, the `HttpCache` filter only applies to the
-`index` and `view` actions. You can also configure the [[yii\base\ActionFilter::except|except]] property to blacklist
+`index` and `view` actions. You can also configure the [[yii\base\ActionFilter::except|except]] property to prevent
 some actions from being filtered.
 
 Besides controllers, you can also declare filters in a [module](structure-modules.md) or [application](structure-applications.md).
@@ -121,7 +121,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // allow authenticated users
@@ -142,7 +142,7 @@ For more details about access control in general, please refer to the [Authoriza
 ### Authentication Method Filters <span id="auth-method-filters"></span>
 
 Authentication method filters are used to authenticate a user using various methods, such as
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](https://oauth.net/2/).
 These filter classes are all under the `yii\filters\auth` namespace.
 
 The following example shows how you can use [[yii\filters\auth\HttpBasicAuth]] to authenticate a user using
@@ -157,7 +157,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -183,7 +183,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -210,7 +210,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -241,7 +241,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::className(),
+            'class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -269,11 +269,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::className(),
+            'class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::className(),
+                'class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -289,7 +289,7 @@ Please refer to the [Page Caching](caching-page.md) section for more details abo
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket).
+RateLimiter implements a rate limiting algorithm based on the [leaky bucket algorithm](https://en.wikipedia.org/wiki/Leaky_bucket).
 It is primarily used in implementing RESTful APIs. Please refer to the [Rate Limiting](rest-rate-limiting.md) section
 for details about using this filter.
 
@@ -307,7 +307,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-Cross-origin resource sharing [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
+Cross-origin resource sharing [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a mechanism that allows many resources (e.g. fonts, JavaScript, etc.)
 on a Web page to be requested from another domain outside the domain the resource originated from.
 In particular, JavaScript's AJAX calls can use the XMLHttpRequest mechanism. Such "cross-domain" requests would
 otherwise be forbidden by Web browsers, per the same origin security policy.
@@ -339,7 +339,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -350,13 +350,13 @@ Also check the section on [REST Controllers](rest-controllers.md#cors) if you wa
 
 The Cors filtering could be tuned using the [[yii\filters\Cors::$cors|$cors]] property.
 
-* `cors['Origin']`: array used to define allowed origins. Can be `['*']` (everyone) or `['http://www.myserver.net', 'http://www.myotherserver.com']`. Default to `['*']`.
+* `cors['Origin']`: array used to define allowed origins. Can be `['*']` (everyone) or `['https://www.myserver.net', 'https://www.myotherserver.com']`. Default to `['*']`.
 * `cors['Access-Control-Request-Method']`: array of allowed verbs like `['GET', 'OPTIONS', 'HEAD']`.  Default to `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: array of allowed headers. Can be `['*']` all headers or specific ones `['X-Request-With']`. Default to `['*']`.
 * `cors['Access-Control-Allow-Credentials']`: define if current request can be made using credentials. Can be `true`, `false` or `null` (not set). Default to `null`.
 * `cors['Access-Control-Max-Age']`: define lifetime of pre-flight request. Default to `86400`.
 
-For example, allowing CORS for origin : `http://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` :
+For example, allowing CORS for origin : `https://www.myserver.net` with method `GET`, `HEAD` and `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -366,9 +366,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -387,9 +387,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

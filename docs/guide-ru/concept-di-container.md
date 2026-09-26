@@ -2,7 +2,7 @@
 ==============================
 
 Контейнер внедрения зависимостей — это объект, который знает, как создать и настроить экземпляр класса и зависимых от него объектов.
-[Статья Мартина Фаулера](http://martinfowler.com/articles/injection.html) хорошо объясняет, почему контейнер внедрения зависимостей является полезным. Здесь, преимущественно, будет объясняться использование контейнера внедрения зависимостей, предоставляемого в Yii.
+[Статья Мартина Фаулера](https://martinfowler.com/articles/injection.html) хорошо объясняет, почему контейнер внедрения зависимостей является полезным. Здесь, преимущественно, будет объясняться использование контейнера внедрения зависимостей, предоставляемого в Yii.
 
 
 Внедрение зависимостей <span id="dependency-injection"></span>
@@ -110,7 +110,7 @@ $container->get('Foo', [], [
 Допустим, мы работаем над API и у нас есть:
 
 - `app\components\Request`, наследуемый от `yii\web\Request` и реализующий дополнительные возможности.
-- `app\components\Response`, наследуемый от `yii\web\Response` с свойством `format`, по умолчанию инициализируемом как `json`.
+- `app\components\Response`, наследуемый от `yii\web\Response` со свойством `format`, по умолчанию инициализируемом как `json`.
 - `app\storage\FileStorage` и `app\storage\DocumentsReader`, где реализована некая логика для работы с документами в
   неком файловом хранилище:
   
@@ -358,8 +358,11 @@ $container->setSingleton('yii\db\Connection', [
 // "db" ранее зарегистрированный псевдоним
 $db = $container->get('db');
 
-// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// эквивалентно: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
+
+// эквивалентно: $api = new \app\components\Api($host, $apiKey);
+$api = $container->get('app\components\Api', ['host' => $host, 'apiKey' => $apiKey]);
 ```
 
 За кулисами, контейнер внедрения зависимостей делает гораздо больше работы, чем просто создание нового объекта.
@@ -495,7 +498,7 @@ class HotelController extends Controller
 как можно раньше. Ниже приведены рекомендуемые практики:
 
 * Если вы разработчик приложения, то вы можете зарегистрировать зависимости в конфигурации вашего приложения.
-  Как это сделать описано в подразделе [Конфигурация приложения](concept-service-locator.md#application-configurations) 
+  Как это сделать описано в подразделе [Конфигурация приложения](concept-configurations.md#application-configurations) 
   раздела [Конфигурации](concept-configurations.md).
 * Если вы разработчик распространяемого [расширения](structure-extensions.md), то вы можете зарегистрировать зависимости
   в загрузочном классе расширения.
@@ -506,7 +509,7 @@ class HotelController extends Controller
 Как dependency injection, так и [service locator](concept-service-locator.md) являются популярными паттернами проектирования, которые позволяют 
 создавать программное обеспечение в слабосвязанной и более тестируемой манере.
 Мы настоятельно рекомендуем к прочтению
-[статью Мартина Фаулера](http://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
+[статью Мартина Фаулера](https://martinfowler.com/articles/injection.html), для более глубокого понимания dependency injection и service locator. 
 
 Yii реализует свой [service locator](concept-service-locator.md) поверх контейнера внедрения зависимостей.
 Когда service locator пытается создать новый экземпляр объекта, он перенаправляет вызов на контейнер внедрения зависимостей.

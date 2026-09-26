@@ -18,7 +18,7 @@ Para definir un alias puedes llamar a [[Yii::setAlias()]] para una determinada r
 Yii::setAlias('@foo', '/path/to/foo');
 
 // una alias de un URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 ```
 
 > Note: Una ruta de archivo o URL en alias NO debe necesariamente referirse a un archivo o recurso existente.
@@ -44,7 +44,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -58,7 +58,7 @@ además resolver un alias derivado en su correspondiente ruta de archivo o URL. 
 
 ```php
 echo Yii::getAlias('@foo');               // muestra: /path/to/foo
-echo Yii::getAlias('@bar');               // muestra: http://www.example.com
+echo Yii::getAlias('@bar');               // muestra: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // muestra: /path/to/foo/bar/file.php
 ```
 
@@ -113,8 +113,8 @@ utilizadas regularmente. La siguiente es la lista de alias predefinidos por Yii:
 - `@webroot`: el directorio raíz Web de la aplicación Web se está ejecutando actualmente.
 - `@web`: la URL base de la aplicación web se ejecuta actualmente. Tiene el mismo valor que [[yii\web\Request::baseUrl]].
 - `@vendor`: el [[yii\base\Application::vendorPath|directorio vendor de Composer]]. Por defecto `@app/vendor`.
-- `@bower`, el directorio raíz que contiene [paquetes bower](http://bower.io/). Por defecto `@vendor/bower`.
-- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.org/). Por defecto `@vendor/npm`.
+- `@bower`, el directorio raíz que contiene [paquetes bower](https://bower.io/). Por defecto `@vendor/bower`.
+- `@npm`, el directorio raíz que contiene [paquetes npm](https://www.npmjs.com/). Por defecto `@vendor/npm`.
 
 El alias `@yii` se define cuando incluyes el archivo `Yii.php` en tu [script de entrada](structure-entry-scripts.md),
 mientras que el resto de los alias están definidos en el constructor de la aplicación cuando se aplica la

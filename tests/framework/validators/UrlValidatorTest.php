@@ -1,14 +1,20 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
 use yii\validators\UrlValidator;
+use yii\validators\Validator;
+use yii\web\JsExpression;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -16,15 +22,26 @@ use yiiunit\TestCase;
  */
 class UrlValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new UrlValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $val = new UrlValidator();
         $this->assertFalse($val->validate('google.de'));
@@ -55,20 +72,20 @@ class UrlValidatorTest extends TestCase
         $this->assertFalse($val->validate('http://äüö?=!"§$%&/()=}][{³²€.edu'));
     }
 
-    public function testValidateValueWithDefaultScheme()
+    public function testValidateValueWithDefaultScheme(): void
     {
         $val = new UrlValidator(['defaultScheme' => 'https']);
         $this->assertTrue($val->validate('yiiframework.com'));
         $this->assertTrue($val->validate('http://yiiframework.com'));
     }
 
-    public function testValidateValueWithoutScheme()
+    public function testValidateValueWithoutScheme(): void
     {
         $val = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
         $this->assertTrue($val->validate('yiiframework.com'));
     }
 
-    public function testValidateWithCustomScheme()
+    public function testValidateWithCustomScheme(): void
     {
         $val = new UrlValidator([
             'validSchemes' => ['http', 'https', 'ftp', 'ftps'],
@@ -83,7 +100,7 @@ class UrlValidatorTest extends TestCase
         $this->assertFalse($val->validate('//yiiframework.com'));
     }
 
-    public function testValidateWithIdn()
+    public function testValidateWithIdn(): void
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('intl package required');
@@ -98,14 +115,14 @@ class UrlValidatorTest extends TestCase
         $this->assertTrue($val->validate('http://xn--zcack7ayc9a.de'));
     }
 
-    public function testValidateLength()
+    public function testValidateLength(): void
     {
         $url = 'http://' . str_pad('base', 2000, 'url') . '.de';
         $val = new UrlValidator();
         $this->assertFalse($val->validate($url));
     }
 
-    public function testValidateAttributeAndError()
+    public function testValidateAttributeAndError(): void
     {
         $obj = new FakedValidationModel();
         $obj->attr_url = 'http://google.de';
@@ -123,5 +140,67 @@ class UrlValidatorTest extends TestCase
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertTrue($obj->hasErrors('attr_url'));
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttribute(): void
+    {
+        $val = new UrlValidator();
+        $obj = new FakedValidationModel();
+
+        $obj->attr_url = 'http://google.de';
+
+        $this->assertSame(
+            'yii.validation.url(value, messages, {"pattern":/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i,"message":"attr_url is not a valid URL.","enableIDN":false,"skipOnEmpty":1});',
+            $val->clientValidateAttribute($obj, 'attr_url', new ViewStub()),
+            'Client script must pin the whole option set.',
+        );
+
+        $val->enableIDN = true;
+
+        $this->assertSame(
+            'yii.validation.url(value, messages, {"pattern":/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i,"message":"attr_url is not a valid URL.","enableIDN":true,"skipOnEmpty":1});',
+            $val->clientValidateAttribute($obj, 'attr_url', new ViewStub()),
+            'The IDN flag must reach the client options.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptions(): void
+    {
+        $val = new UrlValidator(['defaultScheme' => 'https', 'skipOnEmpty' => true]);
+        $obj = new FakedValidationModel();
+
+        $obj->attr_url = 'http://google.de';
+
+        $expected = [
+            'pattern' => new JsExpression(
+                '/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i'
+            ),
+            'message' => 'attr_url is not a valid URL.',
+            'enableIDN' => false,
+            'skipOnEmpty' => 1,
+            'defaultScheme' => 'https',
+        ];
+
+        $this->assertEquals(
+            $expected,
+            $val->getClientOptions($obj, 'attr_url'),
+            'Client options must pin the expanded schemes and every flag.'
+        );
+
+        $val->pattern = '/regex/';
+
+        $options = $val->getClientOptions($obj, 'attr_url');
+
+        $this->assertEquals(
+            new JsExpression('/regex/'),
+            $options['pattern'],
+            'A pattern without the schemes token must be passed through.',
+        );
     }
 }

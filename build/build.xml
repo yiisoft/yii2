@@ -4,9 +4,9 @@
  * Phing build file for Yii 2.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 -->
 <project name="yii" basedir="." default="help">
@@ -241,7 +241,7 @@ Please update yiisite/common/data/versions.php file with the following code:
                 package="${phing.project.name}"
                 summary="Yii PHP Framework"
                 pkgdescription="Yii PHP Framework: Best for Web 2.0 Development"
-                notes="http://www.yiiframework.com/files/CHANGELOG-${yii.release}.txt"
+                notes="https://www.yiiframework.com/files/CHANGELOG-${yii.release}.txt"
                 license="BSD"
                 />
     <exec command="pear package" dir="${build.pear.src.dir}" passthru="true" />

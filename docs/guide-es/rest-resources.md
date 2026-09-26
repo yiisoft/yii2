@@ -116,7 +116,7 @@ la petición `http://localhost/users?fields=id,email&expand=profile` puede devol
 
 ## Enlaces (Links) <span id="links"></span>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), es una abreviación de Hipermedia es el Motor del Estado de la Aplicación (Hypermedia as the Engine of Application State), promueve que las APIs RESTfull devuelvan información que permita a los clientes descubrir las acciones que soportan los recursos devueltos. El sentido de HATEOAS es devolver un conjunto de hiperenlaces con relación a la información, cuando los datos de los recursos son servidos por las APIs.
+[HATEOAS](https://es.wikipedia.org/wiki/HATEOAS), es una abreviación de Hipermedia es el Motor del Estado de la Aplicación (Hypermedia as the Engine of Application State), promueve que las APIs RESTfull devuelvan información que permita a los clientes descubrir las acciones que soportan los recursos devueltos. El sentido de HATEOAS es devolver un conjunto de hiperenlaces con relación a la información, cuando los datos de los recursos son servidos por las APIs.
 
 Las clases con recursos pueden soportar HATEOAS implementando el interfaz [[yii\web\Linkable]] . El interfaz contiene sólo un método [[yii\web\Linkable::getLinks()|getLinks()]] el cual debe de de devolver una lista de  [[yii\web\Link|links]].
 Típicamente, debes devolver al menos un enlace `self` representando la URL al mismo recurso objeto. Por ejemplo,

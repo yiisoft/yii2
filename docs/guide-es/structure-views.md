@@ -1,7 +1,7 @@
 Vistas
 ======
 
-Las Vistas (views) son una parte de la arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
+Las Vistas (views) son una parte de la arquitectura [MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
 Estas son el código responsable de presentar los datos al usuario final. En una aplicación Web, las vistas son usualmente creadas
 en términos de *templates* que son archivos PHP que contienen principalmente HTML y PHP.
 Estas son manejadas por el [componente de la aplicación](structure-application-components.md) [[yii\web\View|view]], el cual provee los métodos comúnmente utilizados
@@ -20,9 +20,11 @@ título de la página y el formulario mismo, mientras que el código HTML organi
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -52,7 +54,7 @@ o algún otro objeto que dispara la [renderización de la vista](#rendering-view
 
 Al crear vistas que generan páginas HTML, es importante que codifiques (encode) y/o filtres los datos
 provenientes de los usuarios antes de mostrarlos. De otro modo, tu aplicación puede estar expuesta
-a ataques tipo [cross-site scripting](http://es.wikipedia.org/wiki/Cross-site_scripting).
+a ataques tipo [cross-site scripting](https://es.wikipedia.org/wiki/Cross-site_scripting).
 
 Para mostrar un texto plano, codifícalos previamente utilizando [[yii\helpers\Html::encode()]]. Por ejemplo, el siguiente código aplica
 una codificación del nombre de usuario antes de mostrarlo:
@@ -324,8 +326,10 @@ bastante el código del layout. En la práctica, probablemente le agregues más 
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -545,7 +549,7 @@ Los componentes de vista proveen las siguientes características útiles, cada u
 * [manejo de scripts del cliente](output-client-scripts.md): soporte para registro y renderización de CSS y JavaScript.
 * [manejo de asset bundle](structure-assets.md): soporte de registro y renderización de [asset bundles](structure-assets.md).
 * [motores de template alternativos](tutorial-template-engines.md): te permite utilizar otros motores de templates, como
-  [Twig](http://twig.sensiolabs.org/) o [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/) o [Smarty](https://www.smarty.net/).
 
 Puedes también utilizar frecuentemente el siguiente menor pero útil grupo de características al desarrollar páginas Web.
 
@@ -616,14 +620,14 @@ $this->registerLinkTag([
     'title' => 'Noticias en Vivo de Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 El resultado del código es el siguiente:
 
 ```html
-<link title="Noticias en Vivo de Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Noticias en Vivo de Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Al igual que con [[yii\web\View::registerMetaTag()|registerMetaTags()]], puedes especificar una clave al llamar

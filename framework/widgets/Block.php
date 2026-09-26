@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -16,7 +17,7 @@ use yii\base\Widget;
  * [[\yii\base\View]] component contains two methods [[\yii\base\View::beginBlock()]] and [[\yii\base\View::endBlock()]].
  * The general idea is that you're defining block default in a view or layout:
  *
- * ```php
+ * ```
  * <?php $this->beginBlock('messages', true) ?>
  * Nothing.
  * <?php $this->endBlock() ?>
@@ -24,7 +25,7 @@ use yii\base\Widget;
  *
  * And then overriding default in sub-views:
  *
- * ```php
+ * ```
  * <?php $this->beginBlock('username') ?>
  * Umm... hello?
  * <?php $this->endBlock() ?>

@@ -68,7 +68,7 @@ Regras e Observações
   *itálico*, isso ajudará na revisão.
 - Para reduzir erros de digitação você pode utilizar um editor de texto como o
   MS Word para escrever pequenos blocos textos e em seguida copiar estes blocos
-  para um editor visual de Markdown como o http://dillinger.io/.
+  para um editor visual de Markdown como o https://dillinger.io/.
 
 ### Convenções Para Tradução
 

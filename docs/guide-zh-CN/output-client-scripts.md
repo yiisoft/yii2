@@ -35,9 +35,9 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] 用在 HEAD 部分。
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] 用在 `<body>` 标签的右边。
 - [[yii\web\View::POS_END|View::POS_END]] 用在 `</body>` 标签的左边。
-- [[yii\web\View::POS_READY|View::POS_READY]] 为了在 [`ready` 事件](http://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
+- [[yii\web\View::POS_READY|View::POS_READY]] 为了在 [`ready` 事件](https://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
   这里将自动注册 [[yii\web\JqueryAsset|jQuery]] 并将代码包装到适当的 jQuery 代码中。这是默认位置。
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] 为了在 [`load` 事件](http://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] 为了在 [`load` 事件](https://learn.jquery.com/using-jquery-core/document-ready/) 中执行代码。
   与上面相同，这也将自动注册 [[yii\web\JqueryAsset|jQuery]]。
 
 最后一个参数是一个唯一的脚本 ID，主要是用于标识一段代码块，在添加一段新的代码块时，如果当前页面已经存在同样 ID 代码块时，那么将会被新的替换。
@@ -56,7 +56,7 @@ $this->registerJs(
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -95,7 +95,7 @@ body { background: #f00; }
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```
@@ -189,7 +189,7 @@ JS
 ```
 
 上面的示例代码使用 PHP
-[Heredoc 语法](https://secure.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) 以获得更好的可读性。
+[Heredoc 语法](https://www.php.net/manual/zh/language.types.string.php#language.types.string.syntax.heredoc) 以获得更好的可读性。
 这也可以在大多数 IDE 中实现更好的语法突出显示，因此它是编写内联 JavaScript 的首选方式，对于长于单行的代码尤其有用。变量 `$message` 是在 PHP
 中创建的，感谢 [[yii\helpers\Json::htmlEncode|Json::htmlEncode]]
 它包含有效 JS 语法中的字符串，可以将其插入到 JavaScript 代码中以放置 函数中的动态字符串调用 `alert()`。

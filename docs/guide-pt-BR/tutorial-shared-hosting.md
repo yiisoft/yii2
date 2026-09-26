@@ -48,7 +48,7 @@ Se o seu servidor web é Nginx, você não precisa de nenhuma configuração ext
 
 ### Verifique os requisitos
 
-Para executar Yii, o seu servidor web deve atender alguns requisitos. O requisito mínimo é PHP 5.4. Para verificar os requisitos copie o arquivo `requirements.php` da raíz da aplicação para o diretório raíz do servidor web e execute-o através do navegador usando o endereço `http://example.com/requirements.php`. Não se esqueça de apagar o arquivo depois.
+Para executar Yii, o seu servidor web deve atender alguns requisitos. O requisito mínimo é PHP 5.4. Para verificar os requisitos copie o arquivo `requirements.php` da raíz da aplicação para o diretório raíz do servidor web e execute-o através do navegador usando o endereço `https://example.com/requirements.php`. Não se esqueça de apagar o arquivo depois.
 
 Implantação do Template Avançado
 ---------------------------------

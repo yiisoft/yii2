@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 配置数据库连接 <span id="configuring-db-connection"></span>
 ---------------------------
 
-开始之前，请确保你已经安装了 PHP [PDO](https://secure.php.net/manual/en/book.pdo.php) 
+开始之前，请确保你已经安装了 PHP [PDO](https://www.php.net/manual/zh/book.pdo.php) 
 扩展和你所使用的数据库的 PDO 驱动（例如 MySQL 的 `pdo_mysql`）。
 对于使用关系型数据库来讲，这是基本要求。
 
@@ -228,7 +228,7 @@ use yii\widgets\LinkPager;
 浏览器访问下面的 URL 看看能否工作：
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![国家列表](images/start-country-list.png)
@@ -238,7 +238,7 @@ http://hostname/index.php?r=country/index
 也就是第二页记录。如果观察仔细点你还会看到浏览器的 URL 变成了：
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 在这个场景里，[[yii\data\Pagination|Pagination]] 提供了为数据结果集分页的所有功能：

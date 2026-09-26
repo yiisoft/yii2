@@ -392,9 +392,11 @@ La plupart du temps, utiliser les filtres de l'entête de la vue en grille suffi
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\PostSearch */
-/* @var $form yii\widgets\ActiveForm */
+/**
+ * @var \yii\web\View $this
+ * @var \app\models\PostSearch $model
+ * @var \yii\widgets\ActiveForm $form
+ */
 ?>
 
 <div class="post-search">
@@ -664,4 +666,4 @@ Qui génère un composant graphique [[yii\widgets\Pjax|Pjax]] enveloppant les co
 Lectures complémentaires
 ------------------------
 
-- [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) d'Arno Slatius.
+- [Rendering Data in Yii 2 with GridView and ListView](https://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) d'Arno Slatius.

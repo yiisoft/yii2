@@ -6,11 +6,11 @@ pero todavía hay algunas cosas que debería aprender antes de empezar con Yii.
 ## PHP
 
 Yii es un _framework_ (base estructurada de desarrollo) en PHP, así que asegúrese de
-[leer y comprender la referencia del lenguaje](https://secure.php.net/manual/es/langref.php).
+[leer y comprender la referencia del lenguaje](https://www.php.net/manual/es/langref.php).
 Al desarrollar con Yii deberá escribir código de manera orientada a objetos, así que
 asegúrese de estar familiarizado con
-[clases y objetos](https://secure.php.net/manual/es/language.oop5.basic.php) así como con
-[espacios de nombres](https://secure.php.net/manual/es/language.namespaces.php).
+[clases y objetos](https://www.php.net/manual/es/language.oop5.basic.php) así como con
+[espacios de nombres](https://www.php.net/manual/es/language.namespaces.php).
 
 ## Programación orientada a objetos
 

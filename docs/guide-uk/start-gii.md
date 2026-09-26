@@ -46,7 +46,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 Тепер ви можете отримати доступ до Gii за наступною URL-адресою:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note: Якщо ви звертаєтесь до Gii від не локальної машини, доступ буде заборонений за замовчуванням із міркувань
@@ -112,7 +112,7 @@ CRUD - це акронім від англійських слів Create, Read, 
 Щоб побачити як це працює, відкрийте в браузері наступний URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 Ви побачите таблицю даних, що показує країни з таблиці бази даних. Ви можете відсортувати дані,

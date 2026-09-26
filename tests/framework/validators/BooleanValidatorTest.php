@@ -1,15 +1,19 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
-use yii\web\View;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -17,15 +21,26 @@ use yiiunit\TestCase;
  */
 class BooleanValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new BooleanValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $val = new BooleanValidator();
         $this->assertTrue($val->validate(true));
@@ -48,7 +63,7 @@ class BooleanValidatorTest extends TestCase
         $this->assertTrue($val->validate(false));
     }
 
-    public function testValidateAttributeAndError()
+    public function testValidateAttributeAndError(): void
     {
         $obj = new FakedValidationModel();
         $obj->attrA = true;
@@ -67,7 +82,7 @@ class BooleanValidatorTest extends TestCase
         $this->assertTrue($obj->hasErrors('attrD'));
     }
 
-    public function testErrorMessage()
+    public function testErrorMessage(): void
     {
         $validator = new BooleanValidator([
             'trueValue' => true,
@@ -85,15 +100,72 @@ class BooleanValidatorTest extends TestCase
         $obj->attrD = [];
 
         $this->assertEquals(
-            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \"true\" or \"false\".","skipOnEmpty":1,"strict":1});',
+            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
             $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );
     }
-}
 
-class ViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
+    public function testErrorMessageWithCustomValues(): void
     {
+        $validator = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+        ]);
+
+        $error = null;
+
+        $result = $validator->validate('someIncorrectValue', $error);
+
+        $this->assertFalse(
+            $result,
+            'A value outside the custom pair must be rejected.',
+        );
+        $this->assertSame(
+            'the input value must be either "YES" or "NO".',
+            $error,
+            'Message must interpolate the custom values.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptionsWithCustomValues(): void
+    {
+        $validator = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+            'skipOnEmpty' => true,
+        ]);
+        $model = new FakedValidationModel();
+
+        $this->assertSame(
+            [
+                'trueValue' => 'YES',
+                'falseValue' => 'NO',
+                'message' => 'attrB must be either "YES" or "NO".',
+                'skipOnEmpty' => 1,
+                'strict' => 1,
+            ],
+            $validator->getClientOptions($model, 'attrB'),
+            'Options must carry the custom values and the interpolated message.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttributeWithDefaults(): void
+    {
+        $validator = new BooleanValidator();
+        $model = new FakedValidationModel();
+
+        $this->assertSame(
+            'yii.validation.boolean(value, messages, {"trueValue":"1","falseValue":"0","message":"attrB must be either \u00221\u0022 or \u00220\u0022.","skipOnEmpty":1});',
+            $validator->clientValidateAttribute($model, 'attrB', new ViewStub()),
+            'Default configuration must emit string values and omit `strict`.',
+        );
     }
 }

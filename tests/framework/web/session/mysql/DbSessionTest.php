@@ -1,11 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session\mysql;
+
+use yiiunit\framework\web\session\AbstractDbSessionTest;
 
 /**
  * Class DbSessionTest.
@@ -15,7 +18,7 @@ namespace yiiunit\framework\web\session\mysql;
  * @group db
  * @group mysql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
+class DbSessionTest extends AbstractDbSessionTest
 {
     protected function getDriverNames()
     {

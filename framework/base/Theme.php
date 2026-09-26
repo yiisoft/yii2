@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -33,7 +34,7 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ```php
+ * ```
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
@@ -48,7 +49,7 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ```php
+ * ```
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
@@ -65,8 +66,8 @@ use yii\helpers\FileHelper;
  *
  * @property string $basePath The root path of this theme. All resources of this theme are located under this
  * directory.
- * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL.
+ * @property string|null $baseUrl The base URL (without ending slash) for this theme. All resources of this
+ * theme are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -74,18 +75,19 @@ use yii\helpers\FileHelper;
 class Theme extends Component
 {
     /**
-     * @var array the mapping between view directories and their corresponding themed versions.
+     * @var array|null the mapping between view directories and their corresponding themed versions.
      * This property is used by [[applyTo()]] when a view is trying to apply the theme.
      * [Path aliases](guide:concept-aliases) can be used when specifying directories.
      * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
     public $pathMap;
 
+    /** @var string|null */
     private $_baseUrl;
 
 
     /**
-     * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
+     * @return string|null the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function getBaseUrl()
@@ -94,14 +96,15 @@ class Theme extends Component
     }
 
     /**
-     * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
-     * to be under this base URL.
+     * @param string|null $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this
+     * theme are considered to be under this base URL.
      */
     public function setBaseUrl($url)
     {
         $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
 
+    /** @var string */
     private $_basePath;
 
     /**

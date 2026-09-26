@@ -31,7 +31,7 @@ $config = require __DIR__ . '/../config/web.php';
 
 Like normal [configurations](concept-configurations.md), application configurations specify how
 to initialize properties of application objects. Because application configurations are often
-very complex, they usually are kept in [configuration files](concept-configurations.md#configuration-files),
+very complex, they are usually kept in [configuration files](concept-configurations.md#configuration-files),
 like the `web.php` file in the above example.
 
 
@@ -275,7 +275,7 @@ including message translation, date formatting, number formatting, etc. For exam
 will use this property value by default to determine in which language the calendar should be displayed and how
 the date should be formatted.
 
-It is recommended that you specify a language in terms of an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+It is recommended that you specify a language in terms of an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag).
 For example, `en` stands for English, while `en-US` stands for English (United States).
 
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
@@ -347,7 +347,7 @@ This property specifies the language that the application code is written in. Th
 meaning English (United States). You should configure this property if the text content in your code is not in English.
 
 Like the [language](#language) property, you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
+an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag). For example, `en` stands for English,
 while `en-US` stands for English (United States).
 
 More details about this property can be found in the [Internationalization](tutorial-i18n.md) section.
@@ -357,7 +357,7 @@ More details about this property can be found in the [Internationalization](tuto
 
 This property is provided as an alternative way of setting the default time zone of the PHP runtime.
 By configuring this property, you are essentially calling the PHP function
-[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). For example:
+[date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php). For example:
 
 ```php
 [

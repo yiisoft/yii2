@@ -5,7 +5,7 @@ When handling a RESTful API request, an application usually takes the following 
 with response formatting:
 
 1. Determine various factors that may affect the response format, such as media type, language, version, etc.
-   This process is also known as [content negotiation](http://en.wikipedia.org/wiki/Content_negotiation).
+   This process is also known as [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation).
 2. Convert resource objects into arrays, as described in the [Resources](rest-resources.md) section.
    This is done by [[yii\rest\Serializer]].
 3. Convert arrays into a string in the format as determined by the content negotiation step. This is
@@ -165,7 +165,7 @@ better readable responses, or [[yii\web\JsonResponseFormatter::$encodeOptions|$e
 of the JSON encoding.
 
 The formatter can be configured in the [[yii\web\Response::formatters|formatters]] property of the `response` application
-component in the application [configuration](concept-configuration.md) like the following:
+component in the application [configuration](concept-configurations.md) like the following:
 
 ```php
 'response' => [

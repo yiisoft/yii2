@@ -17,7 +17,7 @@ Yii 2 は [`Codeception`](https://github.com/Codeception/Codeception) テスト�
 Codeception をインストールすることが出来ます。
 
 ```
-composer require codeception/codeception
-composer require codeception/specify
-composer require codeception/verify
+composer require --dev codeception/codeception
+composer require --dev codeception/specify
+composer require --dev codeception/verify
 ```

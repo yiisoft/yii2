@@ -76,7 +76,8 @@ describe('yii.validation', function () {
     }
 
     jsdom({
-        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')
+        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {
@@ -1307,7 +1308,7 @@ describe('yii.validation', function () {
 
     describe('captcha validator', function () {
         // Converted using yii\captcha\CaptchaAction generateValidationHash() method
-        var hashes = {'Code': 379, 'code': 411};
+        var hashes = {'Code': 1497, 'code': 1529};
         var caseInSensitiveData = {
             'valid code in lowercase': ['code', true],
             'valid code in uppercase': ['CODE', true],

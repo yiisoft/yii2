@@ -1,0 +1,39 @@
+services:
+  php:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile.mssql
+    ports:
+      - 80
+    volumes:
+      - ../tests/data/config-docker.php:/project/tests/data/config.php
+    environment:
+      IS_LOCAL_TESTS: 1
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: YourStrong!Passw0rd
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools18/bin/sqlcmd",
+          "-C",
+          "-S",
+          "localhost",
+          "-U",
+          "SA",
+          "-P",
+          "YourStrong!Passw0rd",
+          "-Q",
+          "'SELECT 1'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5

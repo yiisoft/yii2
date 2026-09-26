@@ -7,7 +7,7 @@ O Yii fornece um conjunto de ferramentas para simplificar a tarefa de implementa
 * Negociação de formato do Response (suporte JSON e XML por padrão);
 * Serialização de objeto configurável com suporte a campos de saída selecionáveis;
 * Formatação adequada para a coleção e dados e validação de erros;
-* Suporte a [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
+* Suporte a [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS);
 * Roteamento eficiente com verificação dos verbs (métodos) HTTP;
 * Construído com suporte aos métodos `OPTIONS` e `HEAD`;
 * Autenticação e autorização;

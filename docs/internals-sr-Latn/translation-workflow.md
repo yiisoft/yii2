@@ -12,7 +12,7 @@ Da bi započeli rad sa prevodom poruka potrebno je da:
 
 1. Otvorite `framework/messages/config.php` i proverite da li je vaš jezik naveden u `languages`. Ako nije,
    dodajte tu vaš jezik (ne zaboravite da zadržite alfabetički rapored). Format koda jezika treba da prati 
-   [IETF jezičku tag specifikaciju](http://en.wikipedia.org/wiki/IETF_language_tag), na primer, `ru`, `zh-CN`.
+   [IETF jezičku tag specifikaciju](https://en.wikipedia.org/wiki/IETF_language_tag), na primer, `ru`, `zh-CN`.
 2. Uđite u `framework` direktorijum i pokrenite `./yii message/extract @yii/messages/config.php --languages=<your_language>`.
 3. Prevedite poruke unutar `framework/messages/your_language/yii.php` fajla. Pobrinite se da se fajl sačuva sa UTF-8 enkodingom.
 4. [Napravite pull zahtev](https://github.com/yiisoft/yii2/blob/master/docs/internals-sr-Latn/git-workflow.md).

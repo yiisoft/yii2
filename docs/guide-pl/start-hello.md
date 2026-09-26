@@ -76,7 +76,7 @@ Widok `say` powinien być zapisany w pliku `views/site/say.php`. Kiedy wywołana
 wg schematu `views/ControllerID/ViewName.php`.
 
 Zauważ, że w powyższym kodzie parametr `message` jest przetworzony za pomocą metody [[yii\helpers\Html::encode()|encode()]] przed wyświetleniem go. Jest to konieczne w przypadku 
-parametrów pochodzących od użytkownika, wrażliwych na ataki [XSS](http://en.wikipedia.org/wiki/Cross-site_scripting) przez podanie złośliwego kodu JavaScript.
+parametrów pochodzących od użytkownika, wrażliwych na ataki [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) przez podanie złośliwego kodu JavaScript.
 
 Naturalnie możesz umieścić więcej zawartości w widoku `say`. Zawartość może zawierać tagi HTML, czysty tekst, a nawet kod PHP.
 Tak naprawdę, widok `say` jest tylko skryptem PHP, który jest wywoływany przez metodę [[yii\web\Controller::render()|render()]].
@@ -88,7 +88,7 @@ Próba <span id="trying-it-out"></span>
 Po utworzeniu akcji oraz widoku możesz uzyskać dostęp do nowej strony przez przejście pod podany adres URL:
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Witaj świecie](images/start-hello-world.png)

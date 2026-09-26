@@ -1,14 +1,46 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
 
+/**
+ * @property mixed $attr
+ * @property mixed $attr_url
+ * @property mixed $attr_string
+ * @property mixed $attr_reg1
+ * @property mixed $attr_number
+ * @property mixed $attr_ip
+ * @property mixed $attr_array
+ * @property mixed $attr_array_skipped
+ * @property mixed $attr_files
+ * @property mixed $attr_one
+ * @property mixed $attr_two
+ * @property mixed $attr_empty1
+ * @property mixed $attr_empty2
+ * @property mixed $attr_email
+ * @property mixed $attr_date
+ * @property mixed $attr_timestamp
+ * @property mixed $attr_test
+ * @property mixed $attr_test_val
+ * @property mixed $attr_test_repeat
+ * @property mixed $attrA
+ * @property mixed $attrB
+ * @property mixed $attrC
+ * @property mixed $attrD
+ * @property mixed $attr_image
+ * @property mixed $attr_images
+ * @property mixed $attr_range
+ * @property mixed $attr_compare
+ */
 class FakedValidationModel extends Model
 {
     public $val_attr_a;
@@ -16,8 +48,8 @@ class FakedValidationModel extends Model
     public $val_attr_c;
     public $val_attr_d;
     public $safe_attr;
-    private $attr = [];
-    private $inlineValArgs;
+    private array $attr = [];
+    private ?array $inlineValArgs = null;
 
     /**
      * @param  array $attributes
@@ -44,14 +76,14 @@ class FakedValidationModel extends Model
         ];
     }
 
-    public function inlineVal($attribute, $params = [], $validator)
+    public function inlineVal($attribute, $params, $validator, $current)
     {
         $this->inlineValArgs = \func_get_args();
 
         return true;
     }
 
-    public function clientInlineVal($attribute, $params = [], $validator)
+    public function clientInlineVal($attribute, $params, $validator, $current, $view = null)
     {
         return \func_get_args();
     }
@@ -59,7 +91,7 @@ class FakedValidationModel extends Model
     public function __get($name)
     {
         if (strncasecmp($name, 'attr', 4) === 0) {
-            return isset($this->attr[$name]) ? $this->attr[$name] : null;
+            return $this->attr[$name] ?? null;
         }
 
         return parent::__get($name);
@@ -87,5 +119,10 @@ class FakedValidationModel extends Model
     public function getInlineValArgs()
     {
         return $this->inlineValArgs;
+    }
+
+    public function attributes()
+    {
+        return array_keys($this->attr);
     }
 }

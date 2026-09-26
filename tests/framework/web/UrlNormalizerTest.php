@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -20,13 +21,13 @@ use yiiunit\TestCase;
  */
 class UrlNormalizerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    public function testNormalizePathInfo()
+    public function testNormalizePathInfo(): void
     {
         $normalizer = new UrlNormalizer();
         $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/a/'));
@@ -53,7 +54,7 @@ class UrlNormalizerTest extends TestCase
         $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', ''));
     }
 
-    public function testNormalizeRoute()
+    public function testNormalizeRoute(): void
     {
         $normalizer = new UrlNormalizer();
         $route = ['site/index', ['id' => 1, 'name' => 'test']];
@@ -121,7 +122,7 @@ class UrlNormalizerTest extends TestCase
      *
      * Trailing slash is insignificant if normalizer is enabled.
      */
-    public function testUrlManager()
+    public function testUrlManager(): void
     {
         $config = [
             'enablePrettyUrl' => true,

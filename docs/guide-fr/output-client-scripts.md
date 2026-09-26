@@ -28,7 +28,7 @@ Le dernier argument est un identifiant unique du script utilisé pour identifier
 Un script externe peut être ajouté comme expliqué ci-dessous : 
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ```
 
 Les arguments pour  [[yii\web\View::registerJsFile()|registerJsFile()]] sont semblables à ceux utilisés pour [[yii\web\View::registerCssFile()|registerCssFile()]]. Dans l'exemple précédent, nous enregistrons le fichier `main.js` avec une dépendance sur `JqueryAsset`. Cela siginifie que le fichier `main.js` sera ajouté APRÈS `jquery.js`. Sans la spécification de cette dépendance, l'ordre relatif entre `main.js` et `jquery.js` resterait indéfini.
@@ -64,8 +64,8 @@ body { background: #f00; }
 Si vous désirez spécifier des propriétés additionnelles du style balise, passez un tableau des paires nom-valeur en tant que troisième argument. Si vous avez besoin de vous assurer qu'il y a seulement une balise style unique, utilisez un quatrième argument comme cela a été mentionné dans la description des balises méta. 
 
 ```php
-$this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
-    'depends' => [BootstrapAsset::className()],
+$this->registerCssFile("https://example.com/css/themes/black-and-white.css", [
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

@@ -1,15 +1,16 @@
-version: '2'
 services:
-
   php:
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: ${DOCKER_MYSQL_IMAGE}
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=yiitest
-      - MYSQL_USER=travis
-      - MYSQL_PASSWORD=travis
-
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: yiitest
+    healthcheck:
+      test: ["CMD", "mysql", "-uroot", "-proot", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

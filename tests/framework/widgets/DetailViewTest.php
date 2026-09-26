@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
 use yii\base\Model;
@@ -15,24 +17,21 @@ use yii\widgets\DetailView;
 /**
  * @group widgets
  */
-class DetailViewTest extends \yiiunit\TestCase
+class DetailViewTest extends TestCase
 {
-    /** @var DetailView */
-    public $detailView;
-
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockWebApplication();
     }
 
-    public function testAttributeValue()
+    public function testAttributeValue(): void
     {
         $model = new ModelMock();
         $model->id = 'id';
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => $model,
             'template' => '{label}:{value}',
             'attributes' => [
@@ -58,24 +57,24 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        $this->assertEquals('Id:id', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
-        $this->assertEquals('Id:1', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
-        $this->assertEquals('Id:1', $this->detailView->renderAttribute($this->detailView->attributes[2], 2));
-        $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[3], 3));
-        $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[4], 4));
+        $this->assertEquals('Id:id', $detailView->renderAttribute($detailView->attributes[0], 0));
+        $this->assertEquals('Id:1', $detailView->renderAttribute($detailView->attributes[1], 1));
+        $this->assertEquals('Id:1', $detailView->renderAttribute($detailView->attributes[2], 2));
+        $this->assertEquals('Id:Displayed id', $detailView->renderAttribute($detailView->attributes[3], 3));
+        $this->assertEquals('Id:Displayed id', $detailView->renderAttribute($detailView->attributes[4], 4));
         $this->assertEquals(2, $model->getDisplayedIdCallCount());
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/13243
      */
-    public function testUnicodeAttributeNames()
+    public function testUnicodeAttributeNames(): void
     {
         $model = new UnicodeAttributesModelMock();
         $model->ИдентификаторТовара = 'A00001';
         $model->το_αναγνωριστικό_του = 'A00002';
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => $model,
             'template' => '{label}:{value}',
             'attributes' => [
@@ -86,20 +85,20 @@ class DetailViewTest extends \yiiunit\TestCase
 
         $this->assertEquals(
             'Идентификатор Товара:A00001',
-            $this->detailView->renderAttribute($this->detailView->attributes[0], 0)
+            $detailView->renderAttribute($detailView->attributes[0], 0)
         );
         $this->assertEquals(
             'Το Αναγνωριστικό Του:A00002',
-            $this->detailView->renderAttribute($this->detailView->attributes[1], 1)
+            $detailView->renderAttribute($detailView->attributes[1], 1)
         );
     }
 
-    public function testAttributeVisible()
+    public function testAttributeVisible(): void
     {
         $model = new ModelMock();
         $model->id = 'id';
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => $model,
             'template' => '{label}:{value}',
             'attributes' => [
@@ -167,18 +166,18 @@ class DetailViewTest extends \yiiunit\TestCase
                 'value' => 'Displayed id',
                 'visible' => true,
             ],
-        ], $this->detailView->attributes);
+        ], $detailView->attributes);
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
 
-    public function testRelationAttribute()
+    public function testRelationAttribute(): void
     {
         $model = new ModelMock();
         $model->id = 'model';
         $model->related = new ModelMock();
         $model->related->id = 'related';
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => $model,
             'template' => '{label}:{value}',
             'attributes' => [
@@ -187,13 +186,13 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        $this->assertEquals('Id:model', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
-        $this->assertEquals('Related Id:related', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
+        $this->assertEquals('Id:model', $detailView->renderAttribute($detailView->attributes[0], 0));
+        $this->assertEquals('Related Id:related', $detailView->renderAttribute($detailView->attributes[1], 1));
 
         // test null relation
         $model->related = null;
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => $model,
             'template' => '{label}:{value}',
             'attributes' => [
@@ -202,11 +201,11 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        $this->assertEquals('Id:model', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
-        $this->assertEquals('Related Id:<span class="not-set">(not set)</span>', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
+        $this->assertEquals('Id:model', $detailView->renderAttribute($detailView->attributes[0], 0));
+        $this->assertEquals('Related Id:<span class="not-set">(not set)</span>', $detailView->renderAttribute($detailView->attributes[1], 1));
     }
 
-    public function testArrayableModel()
+    public function testArrayableModel(): void
     {
         $expectedValue = [
             [
@@ -227,14 +226,14 @@ class DetailViewTest extends \yiiunit\TestCase
         $model->id = 1;
         $model->text = 'I`m arrayable';
 
-        $this->detailView = new DetailView([
+        $detailView = new DetailView([
             'model' => $model,
         ]);
 
-        $this->assertEquals($expectedValue, $this->detailView->attributes);
+        $this->assertEquals($expectedValue, $detailView->attributes);
     }
 
-    public function testObjectModel()
+    public function testObjectModel(): void
     {
         $expectedValue = [
             [
@@ -255,14 +254,14 @@ class DetailViewTest extends \yiiunit\TestCase
         $model->id = 1;
         $model->text = 'I`m an object';
 
-        $this->detailView = new DetailView([
+        $detailView = new DetailView([
             'model' => $model,
         ]);
 
-        $this->assertEquals($expectedValue, $this->detailView->attributes);
+        $this->assertEquals($expectedValue, $detailView->attributes);
     }
 
-    public function testArrayModel()
+    public function testArrayModel(): void
     {
         $expectedValue = [
             [
@@ -284,18 +283,18 @@ class DetailViewTest extends \yiiunit\TestCase
             'text' => 'I`m an array',
         ];
 
-        $this->detailView = new DetailView([
+        $detailView = new DetailView([
             'model' => $model,
         ]);
 
-        $this->assertEquals($expectedValue, $this->detailView->attributes);
+        $this->assertEquals($expectedValue, $detailView->attributes);
     }
 
-    public function testOptionsTags()
+    public function testOptionsTags(): void
     {
         $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
 
-        $this->detailView = new PublicDetailView([
+        $detailView = new PublicDetailView([
             'model' => [
                 'text' => 'I`m an array',
             ],
@@ -309,23 +308,23 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        foreach ($this->detailView->attributes as $index => $attribute) {
-            $a = $this->detailView->renderAttribute($attribute, $index);
-            $this->assertEquals($expectedValue, $a);
+        foreach ($detailView->attributes as $index => $attribute) {
+            $renderingResult = $detailView->renderAttribute($attribute, $index);
+            $this->assertEquals($expectedValue, $renderingResult);
         }
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         $model = new ModelMock();
         $model->id = 1;
         $model->text = 'I`m an object';
 
-        $this->detailView = new DetailView([
+        $detailView = new DetailView([
             'model' => $model,
             'on init' => function () use (&$initTriggered) {
                 $initTriggered = true;
@@ -350,6 +349,10 @@ class ArrayableMock implements Arrayable
 
 /**
  * Helper Class.
+ *
+ * @property mixed $related
+ * @property-read mixed $displayedId
+ * @property-read mixed $displayedIdCallCount
  */
 class ModelMock extends Model
 {
@@ -364,7 +367,7 @@ class ModelMock extends Model
         return $this->_related;
     }
 
-    public function setRelated($related)
+    public function setRelated($related): void
     {
         $this->_related = $related;
     }

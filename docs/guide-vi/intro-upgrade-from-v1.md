@@ -28,15 +28,15 @@ Yii 2.0 yêu cầu PHP 5.4 trở lên, đó là một cải tiến rất lớn s
 Như được liệt kê dưới, có nhiều sự khác biệt về cấp độ ngôn ngữ mà bạn nên chú ý. 
 Dưới đây là tóm tắt về những thay đổi lớn liên quan đến PHP:
 
-- [Namespaces](http://php.net/manual/en/language.namespaces.php).
-- [Hàm ẩn danh (Anonymous functions)](http://php.net/manual/en/functions.anonymous.php).
+- [Namespaces](https://php.net/manual/en/language.namespaces.php).
+- [Hàm ẩn danh (Anonymous functions)](https://php.net/manual/en/functions.anonymous.php).
 - Cú pháp khai báo mảng ngắn `[...elements...]` được dùng thay cho cú pháp kiểu `array(...elements...)`.
 - Thẻ echo ngắn `<?=` được dùng trong các tập tin của view. Điều này là an toàn để sử dụng bắt đầu từ PHP 5.4.
-- [SPL classes và interfaces](http://php.net/manual/en/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Ngày và Thời gian](http://php.net/manual/en/book.datetime.php).
-- [Traits](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 sử dụng phần mở rộng PHP intl để hỗ trợ các tính năng quốc tế hóa.
+- [SPL classes và interfaces](https://php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Ngày và Thời gian](https://php.net/manual/en/book.datetime.php).
+- [Traits](https://php.net/manual/en/language.oop5.traits.php).
+- [intl](https://php.net/manual/en/book.intl.php). Yii 2.0 sử dụng phần mở rộng PHP intl để hỗ trợ các tính năng quốc tế hóa.
 
 
 Không gian tên (Namespace)
@@ -285,7 +285,7 @@ Vui lòng tham khảo mục [Console Commands](tutorial-console.md) để biết
 I18N
 ----
 
-Yii 2.0 loại bỏ các phần định dạng ngày và phần định dạng số tích hợp có lợi cho [PECL intl PHP module](http://pecl.php.net/package/intl).
+Yii 2.0 loại bỏ các phần định dạng ngày và phần định dạng số tích hợp có lợi cho [PECL intl PHP module](https://pecl.php.net/package/intl).
 
 Dịch văn bản bây giờ được thực hiện qua thành phần ứng dụng `i18n`.
 Thành phần này quản lý một tập hợp các nguồn văn bản, cho phép bạn sử dụng các nguồn văn bản khác nhau dựa trên các loại văn bản.

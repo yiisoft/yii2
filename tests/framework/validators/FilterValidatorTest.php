@@ -1,14 +1,19 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
 use yii\validators\FilterValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -16,35 +21,38 @@ use yiiunit\TestCase;
  */
 class FilterValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
     }
 
-    public function testAssureExceptionOnInit()
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new FilterValidator(array_merge(['filter' => 'trim'], $config));
+    }
+
+    public function testAssureExceptionOnInit(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
         new FilterValidator();
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $m = FakedValidationModel::createWithAttributes([
-                'attr_one' => '  to be trimmed  ',
-                'attr_two' => 'set this to null',
-                'attr_empty1' => '',
-                'attr_empty2' => null,
-                'attr_array' => ['Maria', 'Anna', 'Elizabeth'],
-                'attr_array_skipped' => ['John', 'Bill'],
+            'attr_one' => '  to be trimmed  ',
+            'attr_two' => 'set this to null',
+            'attr_empty1' => '',
+            'attr_empty2' => null,
+            'attr_array' => ['Maria', 'Anna', 'Elizabeth'],
+            'attr_array_skipped' => ['John', 'Bill'],
         ]);
         $val = new FilterValidator(['filter' => 'trim']);
         $val->validateAttribute($m, 'attr_one');
         $this->assertSame('to be trimmed', $m->attr_one);
-        $val->filter = function ($value) {
-            return null;
-        };
+        $val->filter = fn ($value) => null;
         $val->validateAttribute($m, 'attr_two');
         $this->assertNull($m->attr_two);
         $val->filter = [$this, 'notToBeNull'];
@@ -53,9 +61,7 @@ class FilterValidatorTest extends TestCase
         $val->skipOnEmpty = true;
         $val->validateAttribute($m, 'attr_empty2');
         $this->assertNotNull($m->attr_empty2);
-        $val->filter = function ($value) {
-            return implode(',', $value);
-        };
+        $val->filter = fn ($value) => implode(',', $value);
         $val->skipOnArray = false;
         $val->validateAttribute($m, 'attr_array');
         $this->assertSame('Maria,Anna,Elizabeth', $m->attr_array);
@@ -67,5 +73,36 @@ class FilterValidatorTest extends TestCase
     public function notToBeNull($value)
     {
         return 'not null';
+    }
+
+    public function testClientValidateAttributeWithTrimFilter(): void
+    {
+        $val = new FilterValidator(['filter' => 'trim']);
+        $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
+        $js = $val->clientValidateAttribute($m, 'attr_one', new ViewStub());
+        $this->assertStringContainsString('yii.validation.trim', $js);
+    }
+
+    public function testClientValidateAttributeWithNonTrimFilter(): void
+    {
+        $val = new FilterValidator(['filter' => 'strtolower']);
+        $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
+        $this->assertNull($val->clientValidateAttribute($m, 'attr_one', new ViewStub()));
+    }
+
+    public function testGetClientOptionsDefault(): void
+    {
+        $val = new FilterValidator(['filter' => 'trim']);
+        $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
+        $options = $val->getClientOptions($m, 'attr_one');
+        $this->assertArrayNotHasKey('skipOnEmpty', $options);
+    }
+
+    public function testGetClientOptionsWithSkipOnEmpty(): void
+    {
+        $val = new FilterValidator(['filter' => 'trim', 'skipOnEmpty' => true]);
+        $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
+        $options = $val->getClientOptions($m, 'attr_one');
+        $this->assertSame(1, $options['skipOnEmpty']);
     }
 }

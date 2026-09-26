@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\behaviors;
@@ -11,6 +12,7 @@ use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 
 /**
  * AttributesBehavior automatically assigns values specified to one or multiple attributes of an ActiveRecord
@@ -21,14 +23,14 @@ use yii\db\ActiveRecord;
  * value of enclosed arrays with a PHP callable whose return value will be used to assign to the current attribute.
  * For example,
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributesBehavior;
  *
  * public function behaviors()
  * {
  *     return [
  *         [
- *             'class' => AttributesBehavior::className(),
+ *             'class' => AttributesBehavior::class,
  *             'attributes' => [
  *                 'attribute1' => [
  *                     ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
@@ -60,6 +62,9 @@ use yii\db\ActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Bogdan Stepanenko <bscheshirwork@gmail.com>
  * @since 2.0.13
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends Behavior<T>
  */
 class AttributesBehavior extends Behavior
 {
@@ -73,7 +78,7 @@ class AttributesBehavior extends Behavior
      * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
      * function will be assigned to the attributes.
      *
-     * ```php
+     * ```
      * [
      *   'attribute1' => [
      *       ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
@@ -103,7 +108,7 @@ class AttributesBehavior extends Behavior
      * The rest of the attributes are processed at the end.
      * If the [[attributes]] for this attribute do not specify this event, it is ignored
      *
-     * ```php
+     * ```
      * [
      *     ActiveRecord::EVENT_BEFORE_VALIDATE => ['attribute1', 'attribute2'],
      *     ActiveRecord::EVENT_AFTER_VALIDATE => ['attribute2', 'attribute1'],
@@ -140,7 +145,8 @@ class AttributesBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
-        if ($this->skipUpdateOnClean
+        if (
+            $this->skipUpdateOnClean
             && $event->name === ActiveRecord::EVENT_BEFORE_UPDATE
             && empty($this->owner->dirtyAttributes)
         ) {
@@ -152,7 +158,8 @@ class AttributesBehavior extends Behavior
         if (!empty($this->order[$event->name])) {
             $attributes = array_merge(
                 array_intersect((array) $this->order[$event->name], $attributes),
-                array_diff($attributes, (array) $this->order[$event->name]));
+                array_diff($attributes, (array) $this->order[$event->name])
+            );
         }
         foreach ($attributes as $attribute) {
             if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {

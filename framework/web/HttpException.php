@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -18,7 +19,7 @@ use yii\base\UserException;
  *
  * Throwing an HttpException like in the following example will result in the 404 page to be displayed.
  *
- * ```php
+ * ```
  * if ($item === null) { // item does not exist
  *     throw new \yii\web\HttpException(404, 'The requested Item could not be found.');
  * }
@@ -38,14 +39,14 @@ class HttpException extends UserException
     /**
      * Constructor.
      * @param int $status HTTP status code, such as 404, 500, etc.
-     * @param string $message error message
+     * @param string|null $message error message
      * @param int $code error code
-     * @param \Exception $previous The previous exception used for the exception chaining.
+     * @param \Throwable|null $previous The previous exception used for the exception chaining.
      */
-    public function __construct($status, $message = null, $code = 0, \Exception $previous = null)
+    public function __construct($status, $message = null, $code = 0, $previous = null)
     {
         $this->statusCode = $status;
-        parent::__construct($message, $code, $previous);
+        parent::__construct((string)$message, $code, $previous);
     }
 
     /**

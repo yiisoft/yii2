@@ -33,7 +33,7 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 进一步阅读该主题：
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,9 +46,9 @@ Yii 提供了大量的工具来在不同的上下文执行转义。
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/Command_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 避免 SQL 注入
@@ -117,7 +117,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 防止 XSS 攻击
@@ -151,7 +151,7 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 防止 CSRF 攻击
@@ -161,14 +161,14 @@ CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序
 而事实并非如此。
 
 例如，网站 `an.example.com` 有一个 `/logout` 网址，当使用简单的 GET 请求访问时, 记录用户退出。
-只要用户的请求一切正常，但是有一天坏人们故意在用户经常访问的论坛上放上 `<img src="http://an.example.com/logout">`。
+只要用户的请求一切正常，但是有一天坏人们故意在用户经常访问的论坛上放上 `<img src="https://an.example.com/logout">`。
 浏览器在请求图像或请求页面之间没有任何区别，
 所以当用户打开一个带有这样一个被操作过的 `<img>` 标签的页面时，
 浏览器将 GET 请求发送到该 URL，用户将从 `an.example.com` 注销。
 
 这是 CSRF 攻击如何运作的基本思路。可以说用户退出并不是一件严重的事情，
 然而这仅仅是一个例子，使用这种方法可以做更多的事情，例如触发付款或者是改变数据。
-想象一下如果某个网站有一个这样的 `http://an.example.com/purse/transfer?to=anotherUser&amount=2000` 网址。 
+想象一下如果某个网站有一个这样的 `https://an.example.com/purse/transfer?to=anotherUser&amount=2000` 网址。 
 使用 GET 请求访问它会导致从授权用户账户转账 $2000 给 `anotherUser`。
 我们知道，浏览器将始终发送 GET 请求来加载图像，
 所以我们可以修改代码以仅接受该 URL 上的 POST 请求。
@@ -179,7 +179,7 @@ CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序
 为了避免 CSRF 攻击，你总是需要：
 
 1. 遵循 HTTP 准则，比如 GET 不应该改变应用的状态。
-   有关详细信息，请参阅 [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)。
+   有关详细信息，请参阅 [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions)。
 2. 保证 Yii CSRF 保护开启。
 
 有的时候你需要对每个控制器和/或方法使用禁用 CSRF。可以通过设置其属性来实现：
@@ -255,7 +255,7 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/CSRF>
+- <https://owasp.org/www-community/attacks/csrf>
 
 
 防止文件暴露
@@ -283,8 +283,8 @@ class ContactAction extends Action
 
 进一步阅读该话题：
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 使用 TLS 上的安全连接
@@ -321,7 +321,7 @@ Yii 提供依赖 cookie 和/或 PHP 会话的功能。如果您的连接受到�
 
 有关于服务器配置的更多信息，请参阅您的 web 服务器的文档：
 
-- Apache 2：<http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2：<https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx：<https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 如果您无权访问服务器配置，您可以在应用程序级别设置 [[yii\filters\HostControl]] 过滤器，

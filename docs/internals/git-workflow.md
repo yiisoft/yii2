@@ -3,8 +3,8 @@ Git workflow for Yii 2 contributors
 
 So you want to contribute to Yii? Great! But to increase the chances of your changes being accepted quickly, please
 follow the following steps. If you are new to Git
-and GitHub, you might want to first check out [GitHub help](http://help.github.com/), [try Git](https://try.github.com)
-or learn something about [Git internal data model](http://nfarina.com/post/9868516270/git-is-simpler).
+and GitHub, you might want to first check out [GitHub help](https://help.github.com/), [try Git](https://try.github.com)
+or learn something about [Git internal data model](https://nfarina.com/post/9868516270/git-is-simpler).
 
 Prepare your development environment
 ------------------------------------
@@ -12,14 +12,14 @@ Prepare your development environment
 The following steps will create a development environment for Yii, which you can use to work
 on the core code of Yii framework. These steps only need to be done the first time you contribute.
 
-### 1. [Fork](http://help.github.com/fork-a-repo/) the Yii repository on GitHub and clone your fork to your development environment
+### 1. [Fork](https://help.github.com/fork-a-repo/) the Yii repository on GitHub and clone your fork to your development environment
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 ```
 
 If you have trouble setting up Git with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
-then you must [setup your Git installation to work with GitHub](http://help.github.com/linux-set-up-git/)
+then you must [setup your Git installation to work with GitHub](https://help.github.com/linux-set-up-git/)
 
 > Tip: if you're not fluent with Git, we recommend reading excellent free [Pro Git book](https://git-scm.com/book/en/v2).
 
@@ -28,7 +28,7 @@ then you must [setup your Git installation to work with GitHub](http://help.gith
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
@@ -73,6 +73,34 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 
 You can execute JavaScript unit tests by running `npm test` in the repo root directory.
 
+### Static analysis
+
+We use [PHPStan](https://phpstan.org) for static analysis. It can be launched using the following commands:
+`php vendor/bin/phpstan` or `vendor\bin\phpstan.bat` in case of execution from the Windows OS.
+
+By default, PHPStan will use the configuration from `phpstan.dist.neon`. You can create
+a `phpstan.neon` file with your own configuration, and PHPStan will use it.
+
+#### Note
+
+In PHPDoc annotations, we use PHPStan types. If you need to specify a different type for Psalm
+(which is usually the case with generics), then use Psalm annotations in conjunction with PHPStan
+annotations.
+
+An example of what it should look like:
+
+```php
+/**
+ * @return Action<covariant static>|null
+ * @phpstan-return Action<covariant static>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
+
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
@@ -111,7 +139,7 @@ review your suggestion, and provide appropriate feedback along the way.
 ### 2. Pull the latest code from the main Yii branch
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.
@@ -154,7 +182,7 @@ For very small fixes, e.g. typos and documentation changes, there is no need to 
 
 ### 6. Commit your changes
 
-add the files/changes you want to commit to the [staging area](http://git.github.io/git-reference/basic/#add) with
+add the files/changes you want to commit to the [staging area](https://git.github.io/git-reference/basic/#add) with
 
 ```
 git add path/to/my/file.php
@@ -218,7 +246,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### Note:
 
 To detect regressions early every merge to the Yii codebase on GitHub will be picked up by
-[Travis CI](http://travis-ci.org) for an automated testrun. As core team doesn't wish to overtax this service,
+[Travis CI](https://travis-ci.com) for an automated testrun. As core team doesn't wish to overtax this service,
 [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) will be included to the merge description if
 the pull request:
 
@@ -232,7 +260,7 @@ Doing so will save travis from commencing testruns on changes that are not cover
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

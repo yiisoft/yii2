@@ -42,7 +42,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 鉴于这行代码的定义，应用处于开发模式下，按照上面的配置会打开 Gii 模块。你可以直接通过 URL 访问 Gii：
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Info: 如果你通过本机以外的机器访问 Gii，请求会被出于安全原因拒绝。
@@ -107,7 +107,7 @@ CRUD 代表增，查，改，删操作，这是绝大多数 Web 站点常用的�
 用浏览器访问下面的 URL 查看生成代码的运行：
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 可以看到一个栅格显示着从数据表中读取的国家数据。支持在列头对数据进行排序，

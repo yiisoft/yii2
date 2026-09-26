@@ -2,7 +2,7 @@ Usar motores de plantillas
 ==========================
 
 Por defecto, Yii utiliza PHP como su lenguaje de plantilla, pero puedes configurar Yii para que soporte otros motores de renderizado, tal como
-[Twig](http://twig.sensiolabs.org/) o [Smarty](http://www.smarty.net/), disponibles como extensiones.
+[Twig](https://twig.symfony.com/) o [Smarty](https://www.smarty.net/), disponibles como extensiones.
 
 El componente `view` es el responsable de renderizar las vistas. Puedes agregar un motor de plantillas personalizado reconfigurando
 el comportamiento (behavior) de este componente:

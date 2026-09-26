@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -22,7 +23,7 @@ class ActiveDataFilter extends DataFilter
      * These methods are used by [[buildCondition()]] to build the actual filtering conditions.
      * Particular condition builder can be specified using a PHP callback. For example:
      *
-     * ```php
+     * ```
      * [
      *     'XOR' => function (string $operator, mixed $condition) {
      *         //return array;
@@ -54,9 +55,9 @@ class ActiveDataFilter extends DataFilter
      *
      * Usually the map can be left empty as filter operator names are consistent with the ones
      * used in [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
-     * For example, when using PosgreSQL you may want to setup the following map:
+     * For example, when using PostgreSQL you may want to setup the following map:
      *
-     * ```php
+     * ```
      * [
      *     'LIKE' => 'ILIKE'
      * ]
@@ -101,7 +102,7 @@ class ActiveDataFilter extends DataFilter
 
         if (!empty($parts)) {
             if (count($parts) > 1) {
-                $parts = array_merge(['AND'], $parts);
+                array_unshift($parts, 'AND');
             } else {
                 $parts = array_shift($parts);
             }

@@ -8,9 +8,9 @@ Normalmente los tests unitarios son desarrollados por la persona que escribe las
 
 Los tests unitarios en Yii están construidos en base a PHPUnit y, opcionalmente, Codeception, por lo que se recomienda consultar su respectiva documentación:
 
-- [Codeception para el _framework_ Yii](http://codeception.com/for/yii)
-- [Tests unitarios con Codeception](http://codeception.com/docs/05-UnitTests)
-- [Documentación de PHPUnit, empezando por el capítulo 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
+- [Codeception para el _framework_ Yii](https://codeception.com/for/yii)
+- [Tests unitarios con Codeception](https://codeception.com/docs/05-UnitTests)
+- [Documentación de PHPUnit, empezando por el capítulo 2](https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
 
 ## Ejecución de tests en las plantillas básica y avanzada
 

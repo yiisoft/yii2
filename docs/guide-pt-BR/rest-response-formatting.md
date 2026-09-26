@@ -3,7 +3,7 @@ Formatando Respostas
 
 Ao manipular uma requisição da API RESTful, a aplicação normalmente realiza as seguintes etapas que estão relacionadas com a formatação da resposta:
 
-1. Determinar diversos fatores que podem afetar o formato da resposta, tais como tipo de mídia, idioma, versão, etc. Este processo também é conhecido como [negociação de conteúdo (*content negotiation*)](http://en.wikipedia.org/wiki/Content_negotiation).
+1. Determinar diversos fatores que podem afetar o formato da resposta, tais como tipo de mídia, idioma, versão, etc. Este processo também é conhecido como [negociação de conteúdo (*content negotiation*)](https://en.wikipedia.org/wiki/Content_negotiation).
 2. Converter objetos de recursos em arrays, como descrito na seção [Recursos](rest-resources.md). Isto é feito por [[yii\rest\Serializer]].
 3. Converte arrays em uma string no formato como determinado pela etapa de negociação de conteúdo. Isto é feito pelos [[yii\web\ResponseFormatterInterface|formatadores de respostas]] registrados na propriedade [[yii\web\Response::formatters|formatters]] do [componente de aplicação](structure-application-components.md) `response`.
 
