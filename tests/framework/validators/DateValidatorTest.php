@@ -47,7 +47,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidateValue(string $timezone): void
     {
@@ -86,7 +86,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidateValue(string $timezone): void
     {
@@ -128,7 +128,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidateAttributePHPFormat(string $timezone): void
     {
@@ -136,7 +136,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidateAttributePHPFormat(string $timezone): void
     {
@@ -172,7 +172,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidateAttributeICUFormat(string $timezone): void
     {
@@ -180,7 +180,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidateAttributeICUFormat(string $timezone): void
     {
@@ -233,35 +233,8 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTimezones(): array
-    {
-        return [
-            ['UTC'],
-            ['Europe/Berlin'],
-            ['America/Jamaica'],
-        ];
-    }
-
-    public static function timestampFormatProvider()
-    {
-        $return = [];
-        foreach (self::provideTimezones() as $appTz) {
-            foreach (self::provideTimezones() as $tz) {
-                $return[] = ['yyyy-MM-dd', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
-                // regardless of timezone, a simple date input should always result in 00:00:00 time
-                $return[] = ['yyyy-MM-dd HH:mm:ss', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
-                $return[] = ['php:Y-m-d', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
-                $return[] = ['php:Y-m-d H:i:s', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
-                $return[] = ['php:U', '2013-09-13', '1379030400', $tz[0], $appTz[0]];
-                $return[] = [null, '2013-09-13', 1_379_030_400, $tz[0], $appTz[0]];
-            }
-        }
-
-        return $return;
-    }
-
     /**
-     * @dataProvider timestampFormatProvider
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timestampFormats
      * @param string|null $format
      * @param string $date
      * @param string|int $expectedDate
@@ -274,7 +247,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider timestampFormatProvider
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timestampFormats
      * @param string|null $format
      * @param string $date
      * @param string|int $expectedDate
@@ -296,7 +269,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidationWithTime(string $timezone): void
     {
@@ -351,7 +324,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidationWithTime(string $timezone): void
     {
@@ -456,7 +429,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidationWithTimeAndOutputTimeZone(string $timezone): void
     {
@@ -464,7 +437,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidationWithTimeAndOutputTimeZone(string $timezone): void
     {
@@ -526,7 +499,7 @@ class DateValidatorTest extends TestCase
      * The following cases (when no time is specified for 'format') usually raise questions.
      * See the discussion here: https://github.com/yiisoft/yii2/issues/14795
      *
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testValidationWithoutTime(string $timezone): void
     {
@@ -873,7 +846,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
     public function testIntlValidationWithoutTime(string $timezone): void
     {
@@ -1045,7 +1018,7 @@ class DateValidatorTest extends TestCase
     /**
      * Test dates that don't pass strict intl validation
      *
-     * @dataProvider provideTestStrictDateFormatIntlFail
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatIntlFail
      * @param $format
      * @param $date
      * @param $strictDateFormat
@@ -1065,24 +1038,10 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatIntlFail(): array
-    {
-        return [
-            ['yyyy-MM-dd', '13-Mar-19', true],
-            ['yyyy-MM-dd', '13-March-19', true],
-            ['yyyy-MM-dd', '13-03-19', true],
-            ['yyyy-MM-dd', '13-3-19', true],
-            ['yyyy-MM-dd', '13-003-19', true],
-            ['yyyy-MM-dd', '0013-Mar-19', true],
-            ['yyyy-MM-dd', '13-Mar-00019', true],
-            ['yyyy-MM-dd', '0000-03-19', true],
-        ];
-    }
-
     /**
      * Test dates that pass strict intl validation
      *
-     * @dataProvider provideTestStrictDateFormatIntlPass
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatIntlPass
      * @param $format
      * @param $date
      * @param $strictDateFormat
@@ -1102,19 +1061,10 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatIntlPass(): array
-    {
-        return [
-            ['yyyy-MM-dd', '0013-03-19', true],
-            ['yyyy-MM-dd', '2013-03-19', true],
-            ['yyyy-MM-dd', '0001-03-19', true],
-        ];
-    }
-
     /**
      * Test dates that don't pass strict php validation
      *
-     * @dataProvider provideTestStrictDateFormatPhpFail
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatPhpFail
      * @param $format
      * @param $date
      * @param $strictDateFormat
@@ -1134,23 +1084,10 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatPhpFail(): array
-    {
-        return [
-            ['php:Y-m-d', '13-Mar-19', true],
-            ['php:Y-m-d', '13-March-19', true],
-            ['php:Y-m-d', '13-03-19', true],
-            ['php:Y-m-d', '13-3-19', true],
-            ['php:Y-m-d', '13-003-19', true],
-            ['php:Y-m-d', '0013-Mar-19', true],
-            ['php:Y-m-d', '13-Mar-00019', true],
-        ];
-    }
-
     /**
      * Test dates that pass strict php validation
      *
-     * @dataProvider provideTestStrictDateFormatPhpPass
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatPhpPass
      * @param $format
      * @param $date
      * @param $strictDateFormat
@@ -1168,15 +1105,6 @@ class DateValidatorTest extends TestCase
         $model->attr_date = $date;
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
-    }
-
-    public static function provideTestStrictDateFormatPhpPass(): array
-    {
-        return [
-            ['php:Y-m-d', '0013-03-19', true],
-            ['php:Y-m-d', '2013-03-19', true],
-            ['php:Y-m-d', '0001-03-19', true],
-        ];
     }
 
     /**

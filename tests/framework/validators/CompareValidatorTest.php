@@ -748,4 +748,29 @@ final class CompareValidatorTest extends TestCase
             'Different numeric value must fail.'
         );
     }
+
+    public function testValidateAttributeResolvesPlaceholdersFromCompareAttribute(): void
+    {
+        $validator = new CompareValidator(
+            [
+                'compareAttribute' => 'attr2',
+                'message' => '{compareAttribute}|{compareValue}|{compareValueOrAttribute}',
+            ],
+        );
+
+        $model = FakedValidationModel::createWithAttributes(
+            [
+                'attr1' => 1,
+                'attr2' => 2,
+            ],
+        );
+
+        $validator->validateAttribute($model, 'attr1');
+
+        self::assertSame(
+            ['attr2|2|attr2'],
+            $model->getErrors('attr1'),
+            'Only `{compareValue}` must resolve to the compared value; the others to its label.',
+        );
+    }
 }
