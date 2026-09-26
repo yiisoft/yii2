@@ -38,6 +38,9 @@ Yii Framework 2 Change Log
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
+- Bug #21068: Add `create_sid()` and `validateId()` to `yii\web\SessionHandler` for PHP `8.6`, so custom storage sessions validate IDs natively in strict mode through the new `yii\web\Session::sessionIdExists()`; deprecate `yii\web\Session::$_forceRegenerateId` (terabytesoftw)
+- Bug #21098: Fix `yii\caching\Cache::multiGet()` passing `false` for missing keys to the unserializer, which fails with "Error at offset 0 of 0 bytes" on PHP `8.6` (terabytesoftw)
+
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
 
 2.0.55 May 09, 2026
