@@ -95,6 +95,49 @@ class AssetBundleTest extends TestCase
         $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
+    public function testSourcesPublishChangedFiles(): void
+    {
+        $sourcePath = Yii::getAlias('@testSourcePath');
+        $cssFile = $sourcePath . DIRECTORY_SEPARATOR . 'cssChangable/stub.css';
+        $jsFile = $sourcePath . DIRECTORY_SEPARATOR . 'jsChangable/jquery.js';
+
+        $this->writeToFile($cssFile, "/* Hello */\n");
+        $this->writeToFile($jsFile, "/* Hello */\n");
+
+        try {
+            $view = $this->getView();
+            $am = $view->assetManager;
+            $bundle = TestSourceChangesAsset::register($view);
+
+            $this->assertTrue(is_dir($bundle->basePath));
+            $this->sourcesPublishVerifyFiles('css', $bundle);
+            $this->sourcesPublishVerifyFiles('js', $bundle);
+
+            $this->writeToFile($cssFile, "/* world */\n");
+            $this->writeToFile($jsFile, "/* world */\n");
+
+            $bundle->publish($am);
+
+            $this->sourcesPublishVerifyFiles('css', $bundle);
+            $this->sourcesPublishVerifyFiles('js', $bundle);
+        } finally {
+            FileHelper::unlink($cssFile);
+            FileHelper::unlink($jsFile);
+        }
+    }
+
+    private function writeToFile($file, $text): void
+    {
+        $handle = fopen($file, "w");
+        if ($handle === false) {
+            throw new \Exception('Cannot open file');
+        }
+        if (fwrite($handle, $text) === false) {
+            throw new \Exception('Cannot write to file');
+        }
+        fclose($handle);
+    }
+
     public function testSourcesPublishedBySymlink(): void
     {
         $view = $this->getView(['linkAssets' => true]);
@@ -645,6 +688,17 @@ class TestSourceAsset extends AssetBundle
     ];
     public $css = [
         'css/stub.css',
+    ];
+}
+
+class TestSourceChangesAsset extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        'jsChangable/jquery.js',
+    ];
+    public $css = [
+        'cssChangable/stub.css',
     ];
 }
 
