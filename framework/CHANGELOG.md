@@ -37,6 +37,8 @@ Yii Framework 2 Change Log
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
+- Bug #20766: Fix `@param` annotation for `$offset` in `yii\db\ArrayExpression::offsetSet()` (WarLikeLaux)
+- Bug #20766: Fix `yii\db\ArrayExpression::offsetSet()` to append when `$offset` is `null` (WarLikeLaux, terabytesoftw)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
 
