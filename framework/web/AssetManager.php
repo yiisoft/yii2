@@ -180,9 +180,10 @@ class AssetManager extends Component
      * a new hash and URL on the next request, so [[converter|converted assets]] are generated again and
      * browser caches are bypassed. Unlike [[forceCopy]], unchanged directories are not copied again.
      *
-     * Hashing reads every file under the source directory on each request, which can be expensive for large
-     * directories, and previously published directories are not removed, so this should normally be enabled
-     * only during development.
+     * Hashing reads every file under the source directory on each request, including files that are excluded
+     * from publishing by the options passed to [[publish()]], which can be expensive for large directories.
+     * Previously published directories are not removed. Therefore, this should normally be enabled only
+     * during development.
      * This option has no effect on single files, when [[linkAssets]] is enabled or when [[hashCallback]] is set.
      * @see hashDirectoryContents()
      * @since 2.0.56
@@ -691,35 +692,32 @@ class AssetManager extends Component
      * Generates a hash from the relative paths and contents of all files under the given directory.
      *
      * The hash only changes when a file under the directory is added, removed, renamed or modified,
-     * regardless of file modification times. This method is used by [[hash()]] when [[hashSourceContents]]
-     * is enabled.
+     * regardless of file modification times. All files under the directory are included, regardless of
+     * the options passed to [[publish()]], so that the hash does not depend on them and stays consistent
+     * with [[getPublishedPath()]] and [[getPublishedUrl()]]. Unreadable files and directories are skipped;
+     * publishing them will fail later only if they are actually copied.
+     * This method is used by [[hash()]] when [[hashSourceContents]] is enabled.
      * @param string $dir the directory to be hashed.
      * @return string hashed string.
-     * @throws InvalidArgumentException if a file under the directory cannot be read.
      * @since 2.0.56
      */
     protected function hashDirectoryContents($dir)
     {
         $dir = rtrim($dir, '/\\');
 
-        $files = FileHelper::findFiles($dir);
+        // unreadable files must not abort publishing, as they may be excluded from copying
+        $files = FileHelper::findFiles($dir, ['filter' => 'is_readable']);
 
         // the order returned by the file system is not guaranteed to be stable
         sort($files, SORT_STRING);
 
-        $context = hash_init('sha256');
-
-        hash_update($context, $dir . "\0" . Yii::getVersion() . "\0");
+        $manifest = [$dir, Yii::getVersion()];
 
         foreach ($files as $file) {
-            hash_update($context, substr($file, strlen($dir) + 1) . "\0" . filesize($file) . "\0");
-
-            if (!@hash_update_file($context, $file)) {
-                throw new InvalidArgumentException("The asset source file is not readable: {$file}");
-            }
+            $manifest[] = substr($file, strlen($dir) + 1) . "\0" . hash_file('sha256', $file);
         }
 
-        return substr(hash_final($context), 0, 32);
+        return substr(hash('sha256', implode("\0", $manifest)), 0, 32);
     }
 
     /**
