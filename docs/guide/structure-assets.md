@@ -514,6 +514,22 @@ By default, assets are published to the directory `@webroot/assets` which corres
 You may customize this location by configuring the [[yii\web\AssetManager::basePath|basePath]] and
 [[yii\web\AssetManager::baseUrl|baseUrl]] properties.
 
+By default, an existing published directory is not copied again when its source files change. During development,
+you can enable [[yii\web\AssetManager::hashSourceContents|hashSourceContents]] to include source file contents in
+the directory hash:
+
+```php
+'assetManager' => [
+    'hashSourceContents' => YII_ENV_DEV,
+],
+```
+
+Changes to any file under an asset bundle's source directory will then produce a new published directory and URL
+on the next request. This also causes converted assets, such as SCSS files, to be generated again. The option scans
+and hashes all source files on every request, and old published directories are not removed automatically. Keep it
+disabled in production unless that cost and storage growth are acceptable. A custom
+[[yii\web\AssetManager::hashCallback|hashCallback]] takes precedence over this option.
+
 Instead of publishing assets by file copying, you may consider using symbolic links, if your OS and Web server allow.
 This feature can be enabled by setting [[yii\web\AssetManager::linkAssets|linkAssets]] to be `true`.
 
@@ -642,6 +658,12 @@ In the above, we specify the supported extended syntax via the [[yii\web\AssetCo
 The array keys are the file extension names (without leading dot), and the array values are the resulting
 asset file extension names and the commands for performing the asset conversion. The tokens `{from}` and `{to}`
 in the commands will be replaced with the source asset file paths and the target asset file paths.
+
+> Note: Converted assets are generated again only when the directory is published again. Since a published
+  directory is not copied again by default when files inside it change, editing a source file (or a file it imports,
+  such as an SCSS partial) will not regenerate the converted CSS/JavaScript. During development, you may enable
+  [[yii\web\AssetManager::hashSourceContents|hashSourceContents]] as described in the [Asset Publishing](#asset-publishing)
+  section.
 
 > Info: There are other ways of working with assets in extended syntax, besides the one described above.
   For example, you can use build tools such as [grunt](https://gruntjs.com/) to monitor and automatically
