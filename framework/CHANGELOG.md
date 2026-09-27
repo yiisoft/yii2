@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
+- Bug #20456: Fix `yii\helpers\BaseHtml::escapeJsRegularExpression()` truncating patterns with paired delimiters (KalimeroMK)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
 - Bug #20875: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
