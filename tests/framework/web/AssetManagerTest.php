@@ -447,6 +447,52 @@ class AssetManagerTest extends TestCase
         }
     }
 
+    /**
+     * @requires OSFAMILY Linux
+     */
+    public function testPublishDirectoryHashesSourceContentsBehindSymlinkedDirectory(): void
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-source-', true);
+        $sharedPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-shared-', true);
+
+        FileHelper::createDirectory($sourcePath);
+        FileHelper::createDirectory($sharedPath);
+
+        $sharedFile = "{$sharedPath}/example.css";
+
+        file_put_contents($sharedFile, 'first');
+
+        try {
+            symlink($sharedPath, "{$sourcePath}/shared");
+
+            $first = $this->createManager(['hashSourceContents' => true])->publish($sourcePath);
+
+            $this->assertSame(
+                'first',
+                file_get_contents("{$first[0]}/shared/example.css"),
+                'The published CSS file does not match the source CSS file behind the symlink.',
+            );
+
+            file_put_contents($sharedFile, 'other');
+
+            $second = $this->createManager(['hashSourceContents' => true])->publish($sourcePath);
+
+            $this->assertNotSame(
+                $first[0],
+                $second[0],
+                'The published directories should not be the same when source contents behind the symlink have changed.',
+            );
+            $this->assertSame(
+                'other',
+                file_get_contents("{$second[0]}/shared/example.css"),
+                'The published CSS file does not match the source CSS file behind the symlink.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+            FileHelper::removeDirectory($sharedPath);
+        }
+    }
+
     public function testPublishReturnsCachedResult(): void
     {
         $am = $this->createManager();

@@ -694,8 +694,7 @@ class AssetManager extends Component
      * The hash only changes when a file under the directory is added, removed, renamed or modified,
      * regardless of file modification times. All files under the directory are included, regardless of
      * the options passed to [[publish()]], so that the hash does not depend on them and stays consistent
-     * with [[getPublishedPath()]] and [[getPublishedUrl()]]. Unreadable files and directories are skipped;
-     * publishing them will fail later only if they are actually copied.
+     * with [[getPublishedPath()]] and [[getPublishedUrl()]].
      * This method is used by [[hash()]] when [[hashSourceContents]] is enabled.
      * @param string $dir the directory to be hashed.
      * @return string hashed string.
@@ -705,8 +704,7 @@ class AssetManager extends Component
     {
         $dir = rtrim($dir, '/\\');
 
-        // unreadable files must not abort publishing, as they may be excluded from copying
-        $files = FileHelper::findFiles($dir, ['filter' => 'is_readable']);
+        $files = FileHelper::findFiles($dir);
 
         // the order returned by the file system is not guaranteed to be stable
         sort($files, SORT_STRING);
