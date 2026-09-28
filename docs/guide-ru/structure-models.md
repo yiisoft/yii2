@@ -1,7 +1,7 @@
 Модели
 ======
 
-Модели являются частью архитектуры [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Модель-Вид-Контроллер). Они представляют собой объекты бизнес данных, правил и логики.
+Модели являются частью архитектуры [MVC](https://ru.wikipedia.org/wiki/Model-View-Controller) (Модель-Вид-Контроллер). Они представляют собой объекты бизнес данных, правил и логики.
 
 Вы можете создавать классы моделей путём расширения класса [[yii\base\Model]] или его дочерних классов. Базовый класс [[yii\base\Model]] поддерживает много полезных функций:
 
@@ -29,7 +29,7 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](https://secure.php.net/manual/ru/class.arrayaccess.php) и [Traversable](https://secure.php.net/manual/ru/class.traversable.php)
+Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](https://www.php.net/manual/ru/class.arrayaccess.php) и [Traversable](https://www.php.net/manual/ru/class.traversable.php)
 в [[yii\base\Model]]:
 
 ```php

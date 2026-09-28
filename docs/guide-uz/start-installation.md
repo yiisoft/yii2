@@ -55,7 +55,7 @@ Arxivdan o'rnatish  <span id="installing-from-archive-file"></span>
 
 Yining arxivdan o'rnatilishi uch bosqichdan iborat:
 
-1. Yiiframework.com dan [arxivni](http://www.yiiframework.com/download/) yuklab oling.
+1. Yiiframework.com dan [arxivni](https://www.yiiframework.com/download/) yuklab oling.
 2. Yuklangan arxivni Internetdan kirib boladigan katalogiga tashlab, arxivni oching. 
 3. `config/web.php` `cookieValidationKey` (Composer orqali o'rnatilganda, bu avtomatik tarzda amalga oshiriladi) uchun maxsus kalitni qo'shing:
 
@@ -97,7 +97,7 @@ cd basic
 php requirements.php
 ```
 
-Freymvork to'g'ri ishlashi uchun PHPni minimal talablarga javob beradigan tarzda sozlashingiz kerak. Asosiy talablardan biri bu PHP versiyasi 5.4 va undan yuqori bolishi kerak. Agar veb-ilovangiz ma'lumotlar bazasi bilan ishlayotgan bo'lsa , [PHP PDO kengaytmasini](https://secure.php.net/manual/ru/pdo.installation.php) va tegishli drayverni (masalan, MySQL uchun pdo_mysql ) o'rnatishingiz kerak.
+Freymvork to'g'ri ishlashi uchun PHPni minimal talablarga javob beradigan tarzda sozlashingiz kerak. Asosiy talablardan biri bu PHP versiyasi 5.4 va undan yuqori bolishi kerak. Agar veb-ilovangiz ma'lumotlar bazasi bilan ishlayotgan bo'lsa , [PHP PDO kengaytmasini](https://www.php.net/manual/ru/pdo.installation.php) va tegishli drayverni (masalan, MySQL uchun pdo_mysql ) o'rnatishingiz kerak.
 
 
 Web-server sozlamasi<span id="configuring-web-servers"></span>
@@ -105,9 +105,9 @@ Web-server sozlamasi<span id="configuring-web-servers"></span>
 
 > Info: Agar siz faqatgina freymvork bilan tanishishni boshlagan bo'lsangiz va uni ish  serveriga joylashtirmagan bo'lsangiz, ushbu bo'limni o'tkazib yuborishingiz mumkin. 
 
-Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](http://httpd.apache.org/) va [Nginx](http://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](http://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
+Yuqoridagi ko'rsatmalarga muvofiq o'rnatilgan ilovalar Windows va Linux ostida PHP 5.4 va undan yuqori taxrirlarda o'rnatilgan [Apache](https://httpd.apache.org/) va [Nginx](https://nginx.org/) bilan ishlaydi.Yii 2.0 [HHVM](https://hhvm.com/) bilan ham mos keladi. Etiborli bo'ling, ba'zi hollarda, HHVM bilan ishlashda odatdagi PHPdan farq qiladi.
 
-Ish serverida siz `http://www.example.com/basic/web/index.php` dan `http://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
+Ish serverida siz `https://www.example.com/basic/web/index.php` dan `https://www.example.com/index.php` manziliga dastur URL manzilini o'zgartirishni xohlasangiz. 
 Buni amalga oshirish uchun veb-server parametrlarida ildiz katalogini `basic/web` ga o'zgartiring. Bundan tashqari, ["URL sozlamalari"](runtime-routing.md) qismidagi malumotga ko'ra, `index.php` yashirishi mumkin. Keyinchalik Apache va Nginx ni qanday sozlashni ko'rsatamiz.
 
 > Info: Veb-serverning `basic/web` ildiz katalogini o'rnatib, siz ruxsat berilmagan kirish kodidan va `basic/web` sahifadagi ma'lumotlardan himoya qilasiz. Bu ilovani yanada xavfsiz holga keltiradi. 
@@ -139,7 +139,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Tavsiya etilgan Nginx sozlamalari <span id="recommended-nginx-configuration"></span>
 
-PHP Nginx uchun [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
+PHP Nginx uchun [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](https://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
 
 ```
 server {

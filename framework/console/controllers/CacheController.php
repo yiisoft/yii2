@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -10,6 +11,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\caching\ApcCache;
 use yii\caching\CacheInterface;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -38,11 +40,14 @@ use yii\helpers\Console;
  * Flushing web cache could be either done by:
  *
  * - Putting a php file under web root and calling it via HTTP
- * - Using [Cachetool](http://gordalina.github.io/cachetool/)
+ * - Using [Cachetool](https://gordalina.github.io/cachetool/)
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 class CacheController extends Controller
 {
@@ -169,6 +174,8 @@ class CacheController extends Controller
         } catch (\Exception $e) {
             $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
         }
+
+        return ExitCode::OK;
     }
 
     /**

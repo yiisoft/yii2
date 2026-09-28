@@ -5,11 +5,11 @@ A good API is *versioned*: changes and new features are implemented in new versi
 code, APIs are meant to be used by clients beyond your control. For this reason, backward
 compatibility (BC) of the APIs should be maintained whenever possible. If a change that may break BC is necessary, you should introduce it in new version of the API, and bump up the version number. Existing clients can continue to use the old, working version of the API; and new or upgraded clients can get the new functionality in the new API version. 
 
-> Tip: Refer to [Semantic Versioning](http://semver.org/)
+> Tip: Refer to [Semantic Versioning](https://semver.org/)
 for more information on designing API version numbers.
 
 One common way to implement API versioning is to embed the version number in the API URLs.
-For example, `http://example.com/v1/users` stands for the `/users` endpoint of API version 1. 
+For example, `https://example.com/v1/users` stands for the `/users` endpoint of API version 1. 
 
 Another method of API versioning,
 which has gained momentum recently, is to put the version number in the HTTP request headers. This is typically done through the `Accept` header:
@@ -90,8 +90,8 @@ return [
 ];
 ```
 
-As a result of the above code, `http://example.com/v1/users` will return the list of users in version 1, while
-`http://example.com/v2/users` will return version 2 users.
+As a result of the above code, `https://example.com/v1/users` will return the list of users in version 1, while
+`https://example.com/v2/users` will return version 2 users.
 
 Thanks to modules, the code for different major versions can be well isolated. But modules make it still possible
 to reuse code across the modules via common base classes and other shared resources.

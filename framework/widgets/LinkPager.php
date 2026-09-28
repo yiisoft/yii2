@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\data\Pagination;
@@ -84,7 +84,7 @@ class LinkPager extends Widget
      * @var array the options for the disabled tag to be generated inside the disabled list element.
      * In order to customize the html tag, please use the tag key.
      *
-     * ```php
+     * ```
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
      * @since 2.0.11
@@ -119,7 +119,7 @@ class LinkPager extends Widget
     /**
      * @var bool whether to register link tags in the HTML header for prev, next, first and last page.
      * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
-     * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
+     * @see https://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      * @see registerLinkTags()
      */
     public $registerLinkTags = false;
@@ -161,7 +161,7 @@ class LinkPager extends Widget
     /**
      * Registers relational link tags in the html header for prev, next, first and last page.
      * These links are generated using [[\yii\data\Pagination::getLinks()]].
-     * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
+     * @see https://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      */
     protected function registerLinkTags()
     {
@@ -264,7 +264,9 @@ class LinkPager extends Widget
         $currentPage = $this->pagination->getPage();
         $pageCount = $this->pagination->getPageCount();
 
-        $beginPage = max(0, $currentPage - (int) ($this->maxButtonCount / 2));
+        $beginPageOffset = $this->maxButtonCount > 2 ? (int) ($this->maxButtonCount / 2) : 0;
+        $beginPage = max(0, $currentPage - $beginPageOffset);
+
         if (($endPage = $beginPage + $this->maxButtonCount - 1) >= $pageCount) {
             $endPage = $pageCount - 1;
             $beginPage = max(0, $endPage - $this->maxButtonCount + 1);

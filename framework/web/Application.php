@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -16,13 +17,14 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
- * @property-read ErrorHandler $errorHandler The error handler application component. This property is
- * read-only.
+ * @template TUserIdentity of IdentityInterface = IdentityInterface
+ *
+ * @property-read ErrorHandler $errorHandler The error handler application component.
  * @property string $homeUrl The homepage URL.
- * @property-read Request $request The request component. This property is read-only.
- * @property-read Response $response The response component. This property is read-only.
- * @property-read Session $session The session component. This property is read-only.
- * @property-read User $user The user component. This property is read-only.
+ * @property-read Request $request The request component.
+ * @property-read Response $response The response component.
+ * @property-read Session $session The session component.
+ * @property-read User<TUserIdentity> $user The user component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,14 +36,14 @@ class Application extends \yii\base\Application
      */
     public $defaultRoute = 'site';
     /**
-     * @var array the configuration specifying a controller action which should handle
+     * @var array|null the configuration specifying a controller action which should handle
      * all user requests. This is mainly used when the application is in maintenance mode
      * and needs to handle all incoming requests via a single action.
      * The configuration is an array whose first element specifies the route of the action.
      * The rest of the array elements (key-value pairs) specify the parameters to be bound
      * to the action. For example,
      *
-     * ```php
+     * ```
      * [
      *     'offline/notice',
      *     'param1' => 'value1',
@@ -53,7 +55,7 @@ class Application extends \yii\base\Application
      */
     public $catchAll;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
 
@@ -181,7 +183,7 @@ class Application extends \yii\base\Application
 
     /**
      * Returns the user component.
-     * @return User the user component.
+     * @return User<TUserIdentity> the user component.
      */
     public function getUser()
     {

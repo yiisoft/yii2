@@ -14,7 +14,7 @@
 在该目录中有子目录如 `controllers`，`models`，`views` 分别为对应控制器，模型，视图和其他代码，和应用非常类似。
 如下例子显示一个模型的目录结构：
 
-```js
+```
 forum/
     Module.php                   模块类文件
     controllers/                 包含控制器类文件

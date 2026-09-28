@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -24,7 +25,7 @@ use yii\di\Instance;
  *
  * The following example shows how you can configure the application to use DbCache:
  *
- * ```php
+ * ```
  * 'cache' => [
  *     'class' => 'yii\caching\DbCache',
  *     // 'db' => 'mydb',
@@ -50,7 +51,7 @@ class DbCache extends Cache
      * @var string name of the DB table to store cache content.
      * The table should be pre-created as follows:
      *
-     * ```php
+     * ```
      * CREATE TABLE cache (
      *     id char(128) NOT NULL PRIMARY KEY,
      *     expire int(11),
@@ -59,7 +60,7 @@ class DbCache extends Cache
      * ```
      *
      * For MSSQL:
-     * ```php
+     * ```
      * CREATE TABLE cache (
      *     id VARCHAR(128) NOT NULL PRIMARY KEY,
      *     expire INT(11),
@@ -276,7 +277,8 @@ class DbCache extends Cache
      */
     public function gc($force = false)
     {
-        if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+
+        if ($force || random_int(0, 1000000) < $this->gcProbability) {
             $this->db->createCommand()
                 ->delete($this->cacheTable, '[[expire]] > 0 AND [[expire]] < ' . time())
                 ->execute();
@@ -316,7 +318,7 @@ class DbCache extends Cache
      */
     protected function getDataFieldName()
     {
-        return $this->isVarbinaryDataField() ? 'convert(nvarchar(max),[data]) data' : 'data';
+        return $this->isVarbinaryDataField() ? 'CONVERT(VARCHAR(MAX), [[data]]) data' : 'data';
     }
 
     /**

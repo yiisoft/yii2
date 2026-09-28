@@ -55,7 +55,7 @@ Configurando uma Conexão de BD <span id="configuring-db-connection"></span>
 ------------------------------
 
 Antes de prosseguir, certifique-se de que você possui instalados tanto a
-extensão [PDO](https://secure.php.net/manual/en/book.pdo.php) do PHP quanto o driver
+extensão [PDO](https://www.php.net/manual/pt_BR/book.pdo.php) do PHP quanto o driver
 PDO para o gerenciador de banco de dados que você está usando (por exemplo, `pdo_mysql` para o MySQL).
 Este é um requisito básico se a sua aplicação usa um banco de dados relacional.
 
@@ -241,7 +241,7 @@ Conferindo <span id="trying-it-out"></span>
 Para ver se todo os códigos acima funcionam, use o seu navegador para acessar a seguinte URL:
 
 ```
-http://hostname/index.php?r=pais/index
+https://hostname/index.php?r=pais/index
 ```
 
 ![Lista de Países](images/start-country-list.png)
@@ -253,7 +253,7 @@ página de registros. Observe mais cuidadosamente e você perceberá que a URL n
 browser mudou para
 
 ```
-http://hostname/index.php?r=pais/index&page=2
+https://hostname/index.php?r=pais/index&page=2
 ```
 
 Por trás das cortinas, [[yii\data\Pagination|Pagination]] está fornecendo toda

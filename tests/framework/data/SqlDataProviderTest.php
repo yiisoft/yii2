@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
@@ -17,7 +18,7 @@ class SqlDataProviderTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlite';
 
-    public function testGetModels()
+    public function testGetModels(): void
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer`',
@@ -26,7 +27,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $this->assertCount(3, $dataProvider->getModels());
     }
 
-    public function testTotalCount()
+    public function testTotalCount(): void
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer`',
@@ -35,7 +36,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
 
-    public function testTotalCountWithParams()
+    public function testTotalCountWithParams(): void
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer` where id > :minimum',
@@ -47,7 +48,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
 
-    public function providerForOrderByColumn()
+    public static function providerForOrderByColumn(): array
     {
         return [
             'no marks' => ['name'],
@@ -65,7 +66,7 @@ class SqlDataProviderTest extends DatabaseTestCase
      * @dataProvider providerForOrderByColumn
      * @see https://github.com/yiisoft/yii2/issues/18552
      */
-    public function testRemovingOrderBy($column)
+    public function testRemovingOrderBy($column): void
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer` order by ' . $column . ' desc',

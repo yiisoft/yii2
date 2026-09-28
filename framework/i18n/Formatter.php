@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -35,7 +36,7 @@ use yii\helpers\Url;
  * You can access that instance via `Yii::$app->formatter`.
  *
  * The Formatter class is designed to format values according to a [[locale]]. For this feature to work
- * the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) has to be installed.
+ * the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) has to be installed.
  * Most of the methods however work also if the PHP intl extension is not installed by providing
  * a fallback implementation. Without intl month and day names are in English only.
  * Note that even if the intl extension is installed, formatting date and time values for years >=2038 or <=1901
@@ -44,7 +45,7 @@ use yii\helpers\Url;
  *
  * > Note: The Formatter class is meant to be used for formatting values for display to users in different
  * > languages and time zones. If you need to format a date or time in machine readable format, use the
- * > PHP [date()](https://secure.php.net/manual/en/function.date.php) function instead.
+ * > PHP [date()](https://www.php.net/manual/en/function.date.php) function instead.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
@@ -56,30 +57,29 @@ class Formatter extends Component
     /**
      * @since 2.0.13
      */
-    const UNIT_SYSTEM_METRIC = 'metric';
+    public const UNIT_SYSTEM_METRIC = 'metric';
     /**
      * @since 2.0.13
      */
-    const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    public const UNIT_SYSTEM_IMPERIAL = 'imperial';
     /**
      * @since 2.0.13
      */
-    const FORMAT_WIDTH_LONG = 'long';
+    public const FORMAT_WIDTH_LONG = 'long';
     /**
      * @since 2.0.13
      */
-    const FORMAT_WIDTH_SHORT = 'short';
+    public const FORMAT_WIDTH_SHORT = 'short';
     /**
      * @since 2.0.13
      */
-    const UNIT_LENGTH = 'length';
+    public const UNIT_LENGTH = 'length';
     /**
      * @since 2.0.13
      */
-    const UNIT_WEIGHT = 'mass';
-
+    public const UNIT_WEIGHT = 'mass';
     /**
-     * @var string the text to be displayed when formatting a `null` value.
+     * @var string|null the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
      * will be translated according to [[locale]].
      */
@@ -92,25 +92,25 @@ class Formatter extends Component
      */
     public $booleanFormat;
     /**
-     * @var string the locale ID that is used to localize the date and number formatting.
+     * @var string|null the locale ID that is used to localize the date and number formatting.
      * For number and date formatting this is only effective when the
-     * [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is installed.
+     * [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      * If not set, [[\yii\base\Application::language]] will be used.
      */
     public $locale;
     /**
-     * @var string the language code (e.g. `en-US`, `en`) that is used to translate internal messages.
+     * @var string|null the language code (e.g. `en-US`, `en`) that is used to translate internal messages.
      * If not set, [[locale]] will be used (without the `@calendar` param, if included).
      *
      * @since 2.0.28
      */
     public $language;
     /**
-     * @var string the time zone to use for formatting time and date values.
+     * @var string|null the time zone to use for formatting time and date values.
      *
-     * This can be any value that may be passed to [date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)
+     * This can be any value that may be passed to [date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available time zones.
+     * Refer to the [php manual](https://www.php.net/manual/en/timezones.php) for available time zones.
      * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
      *
      * Note that the default time zone for input data is assumed to be UTC by default if no time zone is included in the input date value.
@@ -121,7 +121,7 @@ class Formatter extends Component
      * @var string the time zone that is assumed for input values if they do not include a time zone explicitly.
      *
      * The value must be a valid time zone identifier, e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Please refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available time zones.
+     * Please refer to the [php manual](https://www.php.net/manual/en/timezones.php) for available time zones.
      *
      * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
      *
@@ -135,13 +135,13 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDate()|date]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'MM/dd/yyyy' // date in ICU format
      * 'php:m/d/Y' // the same date in PHP format
      * ```
@@ -151,13 +151,13 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asTime()|time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'HH:mm:ss' // time in ICU format
      * 'php:H:i:s' // the same time in PHP format
      * ```
@@ -167,14 +167,14 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDatetime()|date and time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php) function.
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'MM/dd/yyyy HH:mm:ss' // date and time in ICU format
      * 'php:m/d/Y H:i:s' // the same date and time in PHP format
      * ```
@@ -182,7 +182,7 @@ class Formatter extends Component
     public $datetimeFormat = 'medium';
     /**
      * @var \IntlCalendar|int|null the calendar to be used for date formatting. The value of this property will be directly
-     * passed to the [constructor of the `IntlDateFormatter` class](https://secure.php.net/manual/en/intldateformatter.create.php).
+     * passed to the [constructor of the `IntlDateFormatter` class](https://www.php.net/manual/en/intldateformatter.create.php).
      *
      * Defaults to `null`, which means the Gregorian calendar will be used. You may also explicitly pass the constant
      * `\IntlDateFormatter::GREGORIAN` for Gregorian calendar.
@@ -191,57 +191,57 @@ class Formatter extends Component
      * set this property to `\IntlDateFormatter::TRADITIONAL`.
      * The calendar must then be specified in the [[locale]], for example for the persian calendar the configuration for the formatter would be:
      *
-     * ```php
+     * ```
      * 'formatter' => [
      *     'locale' => 'fa_IR@calendar=persian',
      *     'calendar' => \IntlDateFormatter::TRADITIONAL,
      * ],
      * ```
      *
-     * Available calendar names can be found in the [ICU manual](http://userguide.icu-project.org/datetime/calendar).
+     * Available calendar names can be found in the [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/calendar/).
      *
      * Since PHP 5.5 you may also use an instance of the [[\IntlCalendar]] class.
-     * Check the [PHP manual](https://secure.php.net/manual/en/intldateformatter.create.php) for more details.
+     * Check the [PHP manual](https://www.php.net/manual/en/intldateformatter.create.php) for more details.
      *
-     * If the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     * If the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
      *
-     * @see https://secure.php.net/manual/en/intldateformatter.create.php
-     * @see https://secure.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants.calendartypes
-     * @see https://secure.php.net/manual/en/class.intlcalendar.php
+     * @see https://www.php.net/manual/en/intldateformatter.create.php
+     * @see https://www.php.net/manual/en/class.intldateformatter.php#intl.intldateformatter-constants.calendartypes
+     * @see https://www.php.net/manual/en/class.intlcalendar.php
      * @since 2.0.7
      */
     public $calendar;
     /**
      * @var string|null the character displayed as the decimal point when formatting a number.
      * If not set, the decimal separator corresponding to [[locale]] will be used.
-     * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, the default value is '.'.
+     * If [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available, the default value is '.'.
      */
     public $decimalSeparator;
     /**
-     * @var string the character displayed as the decimal point when formatting a currency.
+     * @var string|null the character displayed as the decimal point when formatting a currency.
      * If not set, the currency decimal separator corresponding to [[locale]] will be used.
-     * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
+     * If [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available, setting this property will have no effect.
      * @since 2.0.35
      */
     public $currencyDecimalSeparator;
     /**
      * @var string|null the character displayed as the thousands separator (also called grouping separator) character when formatting a number.
      * If not set, the thousand separator corresponding to [[locale]] will be used.
-     * If [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, the default value is ','.
+     * If [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available, the default value is ','.
      */
     public $thousandSeparator;
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setAttribute()](https://secure.php.net/manual/en/numberformatter.setattribute.php) method of all
+     * intl [NumberFormatter::setAttribute()](https://www.php.net/manual/en/numberformatter.setattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is installed.
+     * This property takes only effect if the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      *
-     * Please refer to the [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
+     * Please refer to the [PHP manual](https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatattribute)
      * for the possible options.
      *
      * For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::MIN_FRACTION_DIGITS => 0,
      *     NumberFormatter::MAX_FRACTION_DIGITS => 2,
@@ -251,16 +251,16 @@ class Formatter extends Component
     public $numberFormatterOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setTextAttribute()](https://secure.php.net/manual/en/numberformatter.settextattribute.php) method of all
+     * intl [NumberFormatter::setTextAttribute()](https://www.php.net/manual/en/numberformatter.settextattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is installed.
+     * This property takes only effect if the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      *
-     * Please refer to the [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformattextattribute)
+     * Please refer to the [PHP manual](https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformattextattribute)
      * for the possible options.
      *
      * For example to change the minus sign for negative numbers you can configure this property like the following:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
      * ]
@@ -269,16 +269,16 @@ class Formatter extends Component
     public $numberFormatterTextOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [NumberFormatter::setSymbol()](https://secure.php.net/manual/en/numberformatter.setsymbol.php) method of all
+     * intl [NumberFormatter::setSymbol()](https://www.php.net/manual/en/numberformatter.setsymbol.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
-     * This property takes only effect if the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is installed.
+     * This property takes only effect if the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is installed.
      *
-     * Please refer to the [PHP manual](https://secure.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
+     * Please refer to the [PHP manual](https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
      * for the possible options.
      *
-     * For example to choose a custom currency symbol, e.g. [U+20BD](http://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
+     * For example to choose a custom currency symbol, e.g. [U+20BD](https://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::CURRENCY_SYMBOL => '₽',
      * ]
@@ -317,7 +317,7 @@ class Formatter extends Component
      *
      * For example, you can add smaller measure unit:
      *
-     * ```php
+     * ```
      * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
      *     'nanometer' => 0.000001
      * ]
@@ -377,7 +377,7 @@ class Formatter extends Component
     ];
 
     /**
-     * @var bool whether the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is loaded.
+     * @var bool whether the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is loaded.
      */
     private $_intlLoaded = false;
     /**
@@ -460,7 +460,7 @@ class Formatter extends Component
         }
         $method = 'as' . $format;
         if ($this->hasMethod($method)) {
-            return call_user_func_array([$this, $method], $params);
+            return call_user_func_array([$this, $method], array_values($params));
         }
 
         throw new InvalidArgumentException("Unknown format type: $format");
@@ -622,13 +622,13 @@ class Formatter extends Component
 
     /**
      * Formats the value as a date.
-     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object. You may set the time zone
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object. You may set the time zone
      *   for the DateTime object to specify the source time zone.
      *
      * The formatter will convert date values according to [[timeZone]] before formatting it.
@@ -639,10 +639,10 @@ class Formatter extends Component
      * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
@@ -660,13 +660,13 @@ class Formatter extends Component
 
     /**
      * Formats the value as a time.
-     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object. You may set the time zone
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object. You may set the time zone
      *   for the DateTime object to specify the source time zone.
      *
      * The formatter will convert date values according to [[timeZone]] before formatting it.
@@ -676,10 +676,10 @@ class Formatter extends Component
      * If null, [[timeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
@@ -697,13 +697,13 @@ class Formatter extends Component
 
     /**
      * Formats the value as a datetime.
-     * @param int|string|DateTime|DateTimeInterface $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object. You may set the time zone
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object. You may set the time zone
      *   for the DateTime object to specify the source time zone.
      *
      * The formatter will convert date values according to [[timeZone]] before formatting it.
@@ -713,10 +713,10 @@ class Formatter extends Component
      * If null, [[datetimeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://secure.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
@@ -747,9 +747,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object
      *
      * @param string $format the format used to convert the value into a date string.
      * @param string $type 'date', 'time', or 'datetime'.
@@ -846,9 +846,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object
      *
      * @param bool $checkDateTimeInfo whether to also check if the date/time value has some time and date information attached.
      * Defaults to `false`. If `true`, the method will then return an array with the first element being the normalized
@@ -879,19 +879,23 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d|',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d|',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d H:i:s',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
@@ -920,9 +924,9 @@ class Formatter extends Component
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object
      *
      * @return string the formatted result.
      */
@@ -944,13 +948,13 @@ class Formatter extends Component
      * 2. Using a timestamp that is relative to the `$referenceTime`.
      * 3. Using a `DateInterval` object.
      *
-     * @param int|string|DateTime|DateTimeInterface|DateInterval $value the value to be formatted. The following
+     * @param int|string|DateTime|DateTimeInterface|DateInterval|null $value the value to be formatted. The following
      * types of value are supported:
      *
      * - an integer representing a UNIX timestamp
-     * - a string that can be [parsed to create a DateTime object](https://secure.php.net/manual/en/datetime.formats.php).
+     * - a string that can be [parsed to create a DateTime object](https://www.php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](https://secure.php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](https://www.php.net/manual/en/class.datetime.php) object
      * - a PHP DateInterval object (a positive time interval will refer to the past, a negative one to the future)
      *
      * @param int|string|DateTime|DateTimeInterface|null $referenceTime if specified the value is used as a reference time instead of `now`
@@ -1030,7 +1034,7 @@ class Formatter extends Component
      * Represents the value as duration in human readable format.
      *
      * @param DateInterval|string|int|null $value the value to be formatted. Acceptable formats:
-     *  - [DateInterval object](https://secure.php.net/manual/ru/class.dateinterval.php)
+     *  - [DateInterval object](https://www.php.net/manual/ru/class.dateinterval.php)
      *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
      *  - ISO8601 duration format. For example, all of these values represent `1 day, 2 hours, 30 minutes` duration:
      *    `2015-01-01T13:00:00Z/2015-01-02T13:30:00Z` - between two datetime values
@@ -1056,7 +1060,7 @@ class Formatter extends Component
         } elseif (is_numeric($value)) {
             $isNegative = $value < 0;
             $zeroDateTime = (new DateTime())->setTimestamp(0);
-            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $valueDateTime = (new DateTime())->setTimestamp(abs((int) $value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strncmp($value, 'P-', 2) === 0) {
             $interval = new DateInterval('P' . substr($value, 2));
@@ -1101,7 +1105,7 @@ class Formatter extends Component
      * Formats the value as an integer number by removing any decimal digits without rounding.
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
+     * without [PHP intl extension](https://www.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
@@ -1142,7 +1146,7 @@ class Formatter extends Component
      * value is rounded automatically to the defined decimal digits.
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
+     * without [PHP intl extension](https://www.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
@@ -1192,7 +1196,7 @@ class Formatter extends Component
      * Formats the value as a percent number with "%" sign.
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) support. For very big numbers it's
+     * without [PHP intl extension](https://www.php.net/manual/en/book.intl.php) support. For very big numbers it's
      * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
@@ -1245,7 +1249,7 @@ class Formatter extends Component
      * If not given, the number of digits depends in the input value and is determined based on
      * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
      * using [[$numberFormatterOptions]].
-     * If the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available, the default value
+     * If the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available, the default value
      * depends on your PHP configuration.
      * If you want consistent behavior between environments where intl is available and not, you should explicitly
      * specify a value here.
@@ -1259,10 +1263,12 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
+
             if (($result = $f->format($value)) === false) {
                 throw new InvalidArgumentException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
@@ -1274,13 +1280,18 @@ class Formatter extends Component
             return sprintf("%.{$decimals}E", $value);
         }
 
-        return sprintf('%.E', $value);
+        // PHP 8.5+ changed sprintf('%.E') behavior: empty precision now defaults to '0' instead of '6'
+        // Specify explicit precision to maintain backward compatibility
+        // @link https://github.com/php/php-src/commit/5ed8b2be5533fbd4db95d9724d268eb9c9741f14
+        $format = PHP_VERSION_ID >= 80500 ? '%.6E' : '%.E';
+
+        return sprintf($format, $value);
     }
 
     /**
      * Formats the value as a currency number.
      *
-     * This function does not require the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed
+     * This function does not require the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed
      * to work, but it is highly recommended to install it to get good formatting results.
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
@@ -1311,7 +1322,7 @@ class Formatter extends Component
         if ($this->_intlLoaded) {
             $currency = $currency ?: $this->currencyCode;
             // currency code must be set before fraction digits
-            // https://secure.php.net/manual/en/numberformatter.formatcurrency.php#114376
+            // https://www.php.net/manual/en/numberformatter.formatcurrency.php#114376
             if ($currency && !isset($textOptions[NumberFormatter::CURRENCY_CODE])) {
                 $textOptions[NumberFormatter::CURRENCY_CODE] = $currency;
             }
@@ -1341,14 +1352,14 @@ class Formatter extends Component
     /**
      * Formats the value as a number spellout.
      *
-     * This function requires the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed.
+     * This function requires the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed.
      *
      * This formatter does not work well with very big numbers.
      *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available.
+     * @throws InvalidConfigException when the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available.
      */
     public function asSpellout($value)
     {
@@ -1371,14 +1382,14 @@ class Formatter extends Component
     /**
      * Formats the value as a ordinal value of a number.
      *
-     * This function requires the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed.
+     * This function requires the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed.
      *
      * This formatter does not work well with very big numbers.
      *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
-     * @throws InvalidConfigException when the [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) is not available.
+     * @throws InvalidConfigException when the [PHP intl extension](https://www.php.net/manual/en/book.intl.php) is not available.
      */
     public function asOrdinal($value)
     {
@@ -1403,7 +1414,7 @@ class Formatter extends Component
      *
      * This is the short form of [[asSize]].
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](https://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
      * @param string|int|float|null $value value in bytes to be formatted.
@@ -1459,7 +1470,7 @@ class Formatter extends Component
     /**
      * Formats the value in bytes as a size in human readable form, for example `12 kilobytes`.
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](https://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
      * @param string|int|float|null $value value in bytes to be formatted.
@@ -1636,15 +1647,15 @@ class Formatter extends Component
     /**
      * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
      * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param string $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param string|null $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $position internal position of size unit
      * @return string
      * @throws InvalidConfigException when INTL is not installed or does not contain required information
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
     {
-        if (isset($this->_unitMessages[$unitType][$system][$position])) {
-            return $this->_unitMessages[$unitType][$system][$position];
+        if (isset($this->_unitMessages[$unitType][$unitFormat][$system][$position])) {
+            return $this->_unitMessages[$unitType][$unitFormat][$system][$position];
         }
         if (!$this->_intlLoaded) {
             throw new InvalidConfigException('Format of ' . $unitType . ' is only supported when PHP intl extension is installed.');
@@ -1670,13 +1681,13 @@ class Formatter extends Component
 
         $message = [];
         foreach ($unitBundle as $key => $value) {
-            if ($key === 'dnam') {
+            if ($key === 'dnam' || $key === 'case') {
                 continue;
             }
             $message[] = "$key{{$value}}";
         }
 
-        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
+        return $this->_unitMessages[$unitType][$unitFormat][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
     }
 
     /**
@@ -1732,13 +1743,13 @@ class Formatter extends Component
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
         if ($this->_intlLoaded && !isset($options[NumberFormatter::GROUPING_USED])) {
-            $options[NumberFormatter::GROUPING_USED] = false;
+            $options[NumberFormatter::GROUPING_USED] = 0;
         }
         // format the size value
         $params = [
             // this is the unformatted number used for the plural rule
             // abs() to make sure the plural rules work correctly on negative numbers, intl does not cover this
-            // http://english.stackexchange.com/questions/9735/is-1-singular-or-plural
+            // https://english.stackexchange.com/questions/9735/is-1-followed-by-a-singular-or-plural-noun
             'n' => abs($value),
             // this is the formatted number used for display
             'nFormatted' => $this->asDecimal($value, $decimals, $options, $textOptions),
@@ -1751,9 +1762,9 @@ class Formatter extends Component
     /**
      * Normalizes a numeric input value.
      *
-     * - everything [empty](https://secure.php.net/manual/en/function.empty.php) will result in `0`
-     * - a [numeric](https://secure.php.net/manual/en/function.is-numeric.php) string will be casted to float
-     * - everything else will be returned if it is [numeric](https://secure.php.net/manual/en/function.is-numeric.php),
+     * - everything [empty](https://www.php.net/manual/en/function.empty.php) will result in `0`
+     * - a [numeric](https://www.php.net/manual/en/function.is-numeric.php) string will be casted to float
+     * - everything else will be returned if it is [numeric](https://www.php.net/manual/en/function.is-numeric.php),
      *   otherwise an exception is thrown.
      *
      * @param mixed $value the input value
@@ -1793,19 +1804,19 @@ class Formatter extends Component
         $formatter = new NumberFormatter($this->locale, $style);
 
         // set text attributes
-        foreach ($this->numberFormatterTextOptions as $name => $attribute) {
-            $formatter->setTextAttribute($name, $attribute);
+        foreach ($this->numberFormatterTextOptions as $attribute => $value) {
+            $this->setFormatterTextAttribute($formatter, $attribute, $value, 'numberFormatterTextOptions', 'numberFormatterOptions');
         }
-        foreach ($textOptions as $name => $attribute) {
-            $formatter->setTextAttribute($name, $attribute);
+        foreach ($textOptions as $attribute => $value) {
+            $this->setFormatterTextAttribute($formatter, $attribute, $value, '$textOptions', '$options');
         }
 
         // set attributes
-        foreach ($this->numberFormatterOptions as $name => $value) {
-            $formatter->setAttribute($name, $value);
+        foreach ($this->numberFormatterOptions as $attribute => $value) {
+            $this->setFormatterIntAttribute($formatter, $attribute, $value, 'numberFormatterOptions', 'numberFormatterTextOptions');
         }
-        foreach ($options as $name => $value) {
-            $formatter->setAttribute($name, $value);
+        foreach ($options as $attribute => $value) {
+            $this->setFormatterIntAttribute($formatter, $attribute, $value, '$options', '$textOptions');
         }
         if ($decimals !== null) {
             $formatter->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
@@ -1823,11 +1834,89 @@ class Formatter extends Component
             $formatter->setSymbol(NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
             $formatter->setSymbol(NumberFormatter::MONETARY_GROUPING_SEPARATOR_SYMBOL, $this->thousandSeparator);
         }
-        foreach ($this->numberFormatterSymbols as $name => $symbol) {
-            $formatter->setSymbol($name, $symbol);
+        foreach ($this->numberFormatterSymbols as $symbol => $value) {
+            $this->setFormatterSymbol($formatter, $symbol, $value, 'numberFormatterSymbols');
         }
 
         return $formatter;
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param string $source
+     * @param string $alternative
+     */
+    private function setFormatterTextAttribute($formatter, $attribute, $value, $source, $alternative)
+    {
+        if (!is_int($attribute)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setTextAttribute(). \""
+                . gettype($attribute) . '" provided instead.'
+            );
+        }
+        if (!is_string($value)) {
+            if (is_int($value)) {
+                throw new InvalidArgumentException(
+                    "The $source array values must be strings. Did you mean to use $alternative?"
+                );
+            }
+            throw new InvalidArgumentException(
+                "The $source array values must be strings. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setTextAttribute($attribute, $value);
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $symbol
+     * @param mixed $value
+     * @param string $source
+     */
+    private function setFormatterSymbol($formatter, $symbol, $value, $source)
+    {
+        if (!is_int($symbol)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setSymbol(). \""
+                . gettype($symbol) . '" provided instead.'
+            );
+        }
+        if (!is_string($value)) {
+            throw new InvalidArgumentException(
+                "The $source array values must be strings. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setSymbol($symbol, $value);
+    }
+
+    /**
+     * @param NumberFormatter $formatter
+     * @param mixed $attribute
+     * @param mixed $value
+     * @param string $source
+     * @param string $alternative
+     */
+    private function setFormatterIntAttribute($formatter, $attribute, $value, $source, $alternative)
+    {
+        if (!is_int($attribute)) {
+            throw new InvalidArgumentException(
+                "The $source array keys must be integers recognizable by NumberFormatter::setAttribute(). \""
+                . gettype($attribute) . '" provided instead.'
+            );
+        }
+        if (!is_int($value)) {
+            if (is_string($value)) {
+                throw new InvalidArgumentException(
+                    "The $source array values must be integers. Did you mean to use $alternative?"
+                );
+            }
+            throw new InvalidArgumentException(
+                "The $source array values must be integers. \"" . gettype($value) . '" provided instead.'
+            );
+        }
+        $formatter->setAttribute($attribute, $value);
     }
 
     /**

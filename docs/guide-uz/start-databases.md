@@ -45,7 +45,7 @@ Hozirda sizda `yii2basic` degan ma'lumotlar ombori bo'lishi kerak va unda 3 ta u
 Ma'lumotlar omborida bilan aloqani sozlaymiz<span id="configuring-db-connection"></span>
 -------------------------------------------------------------------------
 
-Ishni boshlashdan oldin sizda [PDO](https://secure.php.net/manual/ru/book.pdo.php) kengaytmasi o'rnatilganiga amin bo'ling va PDO-boshqaruvchisi ma'lumotlar ombori bilan boshqara olishingiz uchun(misol uchun, `pdo_mysql` MYSql uchun). Bu siz aloqali ma'lumtolar ombori bilan ishlashingiz uchun assosiy talablardir.
+Ishni boshlashdan oldin sizda [PDO](https://www.php.net/manual/ru/book.pdo.php) kengaytmasi o'rnatilganiga amin bo'ling va PDO-boshqaruvchisi ma'lumotlar ombori bilan boshqara olishingiz uchun(misol uchun, `pdo_mysql` MYSql uchun). Bu siz aloqali ma'lumtolar ombori bilan ishlashingiz uchun assosiy talablardir.
 Endi esa, hammasini o'rnatib bo'lganingizdan so'ng, `config/db.php` oching va sozlamalarni o`zingizni ma'lumotlar omboringiz sozlamalariga o'zgartiring. Boshlanish sozlamalar quydagichadir:
 
 ```php
@@ -199,7 +199,7 @@ Keling sinab ko'raylik <span id="trying-it-out"></span>
 Yuqoridagi yozgan kodni ishlashini ko'rish uchun iltimos ushbu yo'l (url) bo'yicha o'ting:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Список Стран](images/start-country-list.png)
@@ -208,7 +208,7 @@ Boshida siz ma'lumotlar omboridan beshta ma'lumotni chiqarib berganini ko'rishin
 Etibor bilan qarasangiz, URLda ham quydagi "2" sahifa chiqti.
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 [[yii\data\Pagination|Pagination]] Ma'lumotlarni sahifalarga bo'lib qisman chiqarish umumiy ishlash tartibi esa quydagicha:

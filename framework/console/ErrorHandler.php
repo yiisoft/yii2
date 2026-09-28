@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console;
@@ -25,7 +26,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
      * Renders an exception using ansi format for console output.
-     * @param \Exception $exception the exception to be rendered.
+     * @param \Throwable $exception the exception to be rendered.
      */
     protected function renderException($exception)
     {
@@ -90,8 +91,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         $stream = (PHP_SAPI === 'cli') ? \STDERR : \STDOUT;
         // try controller first to allow check for --color switch
-        if (Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
-            || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
+        if (
+            Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
+            || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)
+        ) {
             $message = Console::ansiFormat($message, $format);
         }
 

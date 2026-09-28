@@ -1,11 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session\pgsql;
+
+use yiiunit\framework\web\session\AbstractDbSessionTest;
 
 /**
  * Class DbSessionTest.
@@ -15,9 +18,9 @@ namespace yiiunit\framework\web\session\pgsql;
  * @group db
  * @group pgsql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
+class DbSessionTest extends AbstractDbSessionTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob columns in the way they are used here.');

@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
-use Yii;
 use yii\base\BaseObject;
 use yii\helpers\StringHelper;
 
@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
  *
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
- * @property array $categoryMap mapping of abstract column types (keys) to type categories (values). (since version 2.0.8)
+ * @property array $categoryMap Mapping of abstract column types (keys) to type categories (values).
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
@@ -26,12 +26,11 @@ class ColumnSchemaBuilder extends BaseObject
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
-    const CATEGORY_PK = 'pk';
-    const CATEGORY_STRING = 'string';
-    const CATEGORY_NUMERIC = 'numeric';
-    const CATEGORY_TIME = 'time';
-    const CATEGORY_OTHER = 'other';
-
+    public const CATEGORY_PK = 'pk';
+    public const CATEGORY_STRING = 'string';
+    public const CATEGORY_NUMERIC = 'numeric';
+    public const CATEGORY_TIME = 'time';
+    public const CATEGORY_OTHER = 'other';
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
@@ -80,7 +79,6 @@ class ColumnSchemaBuilder extends BaseObject
      */
     protected $isFirst;
 
-
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.43
@@ -108,8 +106,6 @@ class ColumnSchemaBuilder extends BaseObject
         Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
         Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
     ];
-
-
     /**
      * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
      * safely when building the final column schema string.
@@ -126,8 +122,8 @@ class ColumnSchemaBuilder extends BaseObject
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param int|string|array $length length or precision of the column. See [[$length]].
-     * @param \yii\db\Connection $db the current database connection. See [[$db]].
+     * @param int|string|array|null $length length or precision of the column. See [[$length]].
+     * @param \yii\db\Connection|null $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($type, $length = null, $db = null, $config = [])

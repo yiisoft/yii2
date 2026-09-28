@@ -18,7 +18,7 @@ avtomatik tarzda kod yaratishni o'rgandingiz, bu esa HTML-shaklni to'ldirishdek 
 	  Shuni aytish keraki ularning sifati qo'lanmadagi yozilgan ma'lumotdaqa yaxshi yoritilib berilgani ham bor
 	  Ularni shunisi yaxshiki ular mavzuni to'liq va amaliy yoritib berib sizga tayyor yechim berishi ham mumkin
     - Kitoblar
-* [Kengaytmalar](http://www.yiiframework.com/extensions/):
+* [Kengaytmalar](https://www.yiiframework.com/extensions/):
   Yiining foydalanuvchilar tomonidan yaratilgan minglab kengaytmalar ombori bor 
   ular ilovangizga ulashingiz va ishlanmani juda ham tez oborishingizga yordam beradi
 * Jamoa

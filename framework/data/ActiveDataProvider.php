@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -21,7 +22,7 @@ use yii\di\Instance;
  *
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
- * ```php
+ * ```
  * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
  *     'pagination' => [
@@ -35,7 +36,7 @@ use yii\di\Instance;
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
- * ```php
+ * ```
  * $query = new Query();
  * $provider = new ActiveDataProvider([
  *     'query' => $query->from('post'),
@@ -132,7 +133,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /* @var $class \yii\db\ActiveRecordInterface */
+            /** @var \yii\db\ActiveRecordInterface $class */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -175,7 +176,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::setSort($value);
         if ($this->query instanceof ActiveQueryInterface && ($sort = $this->getSort()) !== false) {
-            /* @var $modelClass Model */
+            /** @var Model $modelClass */
             $modelClass = $this->query->modelClass;
             $model = $modelClass::instance();
             if (empty($sort->attributes)) {
@@ -183,15 +184,11 @@ class ActiveDataProvider extends BaseDataProvider
                     $sort->attributes[$attribute] = [
                         'asc' => [$attribute => SORT_ASC],
                         'desc' => [$attribute => SORT_DESC],
-                        'label' => $model->getAttributeLabel($attribute),
                     ];
                 }
-            } else {
-                foreach ($sort->attributes as $attribute => $config) {
-                    if (!isset($config['label'])) {
-                        $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
-                    }
-                }
+            }
+            if ($sort->modelClass === null) {
+                $sort->modelClass = $modelClass;
             }
         }
     }

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -13,25 +14,25 @@ use yii\base\BaseObject;
  * SqlToken represents SQL tokens produced by [[SqlTokenizer]] or its child classes.
  *
  * @property SqlToken[] $children Child tokens.
- * @property-read bool $hasChildren Whether the token has children. This property is read-only.
- * @property-read bool $isCollection Whether the token represents a collection of tokens. This property is
- * read-only.
- * @property-read string $sql SQL code. This property is read-only.
+ * @property-read bool $hasChildren Whether the token has children.
+ * @property-read bool $isCollection Whether the token represents a collection of tokens.
+ * @property-read string $sql SQL code.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
+ *
+ * @implements \ArrayAccess<int, SqlToken>
  */
 class SqlToken extends BaseObject implements \ArrayAccess
 {
-    const TYPE_CODE = 0;
-    const TYPE_STATEMENT = 1;
-    const TYPE_TOKEN = 2;
-    const TYPE_PARENTHESIS = 3;
-    const TYPE_KEYWORD = 4;
-    const TYPE_OPERATOR = 5;
-    const TYPE_IDENTIFIER = 6;
-    const TYPE_STRING_LITERAL = 7;
-
+    public const TYPE_CODE = 0;
+    public const TYPE_STATEMENT = 1;
+    public const TYPE_TOKEN = 2;
+    public const TYPE_PARENTHESIS = 3;
+    public const TYPE_KEYWORD = 4;
+    public const TYPE_OPERATOR = 5;
+    public const TYPE_IDENTIFIER = 6;
+    public const TYPE_STRING_LITERAL = 7;
     /**
      * @var int token type. It has to be one of the following constants:
      *
@@ -84,6 +85,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      * @param int $offset child token offset.
      * @return bool whether the token exists.
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->_children[$this->calculateOffset($offset)]);
@@ -96,6 +98,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      * @param int $offset child token offset.
      * @return SqlToken|null the child token at the specified offset, `null` if there's no token.
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         $offset = $this->calculateOffset($offset);
@@ -109,6 +112,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      * @param int|null $offset child token offset.
      * @param SqlToken $token token to be added.
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $token)
     {
         $token->parent = $this;
@@ -126,6 +130,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      * It is implicitly called when you use something like `unset($token[$offset])`.
      * @param int $offset child token offset.
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         $offset = $this->calculateOffset($offset);
@@ -199,7 +204,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      *
      * Usage Example:
      *
-     * ```php
+     * ```
      * $patternToken = (new \yii\db\sqlite\SqlTokenizer('SELECT any FROM any'))->tokenize();
      * if ($sqlToken->matches($patternToken, 0, $firstMatchIndex, $lastMatchIndex)) {
      *     // ...

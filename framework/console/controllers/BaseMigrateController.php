@@ -1,16 +1,19 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\Action;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -24,20 +27,22 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 abstract class BaseMigrateController extends Controller
 {
     /**
      * The name of the dummy migration that marks the beginning of the whole migration history.
      */
-    const BASE_MIGRATION = 'm000000_000000_base';
-
+    public const BASE_MIGRATION = 'm000000_000000_base';
     /**
      * @var string the default command action.
      */
     public $defaultAction = 'up';
     /**
-     * @var string|array the directory containing the migration classes. This can be either
+     * @var string|array|null the directory containing the migration classes. This can be either
      * a [path alias](guide:concept-aliases) or a directory path.
      *
      * Migration classes located at this path should be declared without a namespace.
@@ -54,7 +59,7 @@ abstract class BaseMigrateController extends Controller
      * as the migration name contains the origin of the migration in the history, which is not the case when
      * using multiple migration paths.
      *
-     * @see $migrationNamespaces
+     * @see migrationNamespaces
      */
     public $migrationPath = ['@app/migrations'];
     /**
@@ -67,7 +72,7 @@ abstract class BaseMigrateController extends Controller
      *
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'app\migrations',
      *     'some\extension\migrations',
@@ -75,7 +80,7 @@ abstract class BaseMigrateController extends Controller
      * ```
      *
      * @since 2.0.10
-     * @see $migrationPath
+     * @see migrationPath
      */
     public $migrationNamespaces = [];
     /**
@@ -85,14 +90,14 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
     /**
-     * @var int the permission to be set for newly generated migration files.
+     * @var int|null the permission to be set for newly generated migration files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      * @since 2.0.43
      */
     public $newFileMode;
     /**
-     * @var string|int the user and/or group ownership to be set for newly generated migration files.
+     * @var string|int|null the user and/or group ownership to be set for newly generated migration files.
      * If not set, the ownership will be determined by the current environment.
      * @since 2.0.43
      * @see FileHelper::changeOwnership()
@@ -122,9 +127,12 @@ abstract class BaseMigrateController extends Controller
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
+     * @param Action<static> $action the action to be executed.
      * @throws InvalidConfigException if directory specified in migrationPath doesn't exist and action isn't "create".
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
     {
@@ -632,7 +640,7 @@ abstract class BaseMigrateController extends Controller
      * For example:
      *
      * ```
-     * yii migrate/create 'app\\migrations\\createUserTable'
+     * yii migrate/create app\\migrations\\createUserTable
      * ```
      *
      * In case [[migrationPath]] is not set and no namespace is provided, the first entry of [[migrationNamespaces]] will be used.
@@ -677,7 +685,7 @@ abstract class BaseMigrateController extends Controller
 
             FileHelper::changeOwnership($file, $this->newFileOwnership, $this->newFileMode);
 
-            $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
+            $this->stdout("New migration created successfully: $file\n", Console::FG_GREEN);
         }
 
         return ExitCode::OK;
@@ -992,7 +1000,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param int $limit the maximum number of records in the history to be returned. `null` for "no limit".
+     * @param int|null $limit the maximum number of records in the history to be returned. `null` for "no limit".
      * @return array the migration history
      */
     abstract protected function getMigrationHistory($limit);

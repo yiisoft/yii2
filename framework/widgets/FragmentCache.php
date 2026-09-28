@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -19,7 +20,7 @@ use yii\di\Instance;
  * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
  *
  * @property-read string|false $cachedContent The cached content. False is returned if valid content is not
- * found in the cache. This property is read-only.
+ * found in the cache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -45,7 +46,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
@@ -62,7 +63,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ```php
+     * ```
      * [
      *     Yii::$app->language,
      * ]

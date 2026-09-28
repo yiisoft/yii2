@@ -1,12 +1,15 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
 
+use stdclass;
+use yii\base\DynamicModel;
 use yii\validators\DefaultValueValidator;
 use yiiunit\TestCase;
 
@@ -15,7 +18,7 @@ use yiiunit\TestCase;
  */
 class DefaultValueValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,11 +26,11 @@ class DefaultValueValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $val = new DefaultValueValidator();
         $val->value = 'test_value';
-        $obj = new \stdclass();
+        $obj = new stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
         $obj->attrC = '';
@@ -43,5 +46,83 @@ class DefaultValueValidatorTest extends TestCase
         $this->assertEquals($objB->attrA, $obj->attrA);
         $val->validateAttribute($obj, 'attrA');
         $this->assertEquals($objB->attrA, $obj->attrA);
+    }
+
+    public function testValidateAttributeWithClosure(): void
+    {
+        $val = new DefaultValueValidator();
+        $val->value = function ($model, $attribute) {
+            return $attribute . '_default';
+        };
+        $obj = new stdclass();
+        $obj->attrA = null;
+        $obj->attrB = 'existing';
+        $val->validateAttribute($obj, 'attrA');
+        $this->assertSame('attrA_default', $obj->attrA);
+        $val->validateAttribute($obj, 'attrB');
+        $this->assertSame('existing', $obj->attrB);
+    }
+
+    public function testValidateAssignsDefaultOnlyToEmptyValues(): void
+    {
+        $model = new DynamicModel([
+            'null' => null,
+            'emptyString' => '',
+            'emptyArray' => [],
+            'zero' => 0,
+            'zeroString' => '0',
+            'false' => false,
+        ]);
+
+        $model->addRule(
+            ['null', 'emptyString', 'emptyArray', 'zero', 'zeroString', 'false'],
+            'default',
+            ['value' => 'fallback'],
+        );
+
+        $this->assertTrue(
+            $model->validate(),
+            'Default rule must never add errors.',
+        );
+        $this->assertSame(
+            [
+                'null' => 'fallback',
+                'emptyString' => 'fallback',
+                'emptyArray' => 'fallback',
+                'zero' => 0,
+                'zeroString' => '0',
+                'false' => false,
+            ],
+            $model->getAttributes(),
+            'Only empty values must be replaced; falsy non-empty values must be preserved.',
+        );
+    }
+
+    public function testValidateAttributePassesModelToClosure(): void
+    {
+        $model = new DynamicModel(['attr' => null]);
+
+        $received = [];
+
+        $val = new DefaultValueValidator([
+            'value' => function ($model, $attribute) use (&$received) {
+                $received = [$model, $attribute];
+
+                return 'computed';
+            },
+        ]);
+
+        $val->validateAttribute($model, 'attr');
+
+        $this->assertSame(
+            [$model, 'attr'],
+            $received,
+            'Closure must receive the model and attribute name.',
+        );
+        $this->assertSame(
+            'computed',
+            $model['attr'],
+            'Closure result must be assigned.',
+        );
     }
 }

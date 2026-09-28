@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mysql;
@@ -21,7 +22,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     /**
      * Tests MySQL specific syntax for index hints.
      */
-    public function testQueryIndexHint()
+    public function testQueryIndexHint(): void
     {
         $db = $this->getConnection();
 
@@ -32,7 +33,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
         $this->assertArrayHasKey('email', $row);
     }
 
-    public function testLimitOffsetWithExpression()
+    public function testLimitOffsetWithExpression(): void
     {
         $query = (new Query())->from('customer')->select('id')->orderBy('id');
         // In MySQL limit and offset arguments must both be nonnegative integer constant
@@ -45,7 +46,6 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
         $this->assertCount(2, $result);
 
         $this->assertNotContains(1, $result);
-        $this->assertContains(2, $result);
-        $this->assertContains(3, $result);
+        $this->assertEquals([2, 3], $result);
     }
 }

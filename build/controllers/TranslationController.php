@@ -1,14 +1,15 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
 
 use DirectoryIterator;
-use Yii;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Html;
 
@@ -18,6 +19,8 @@ use yii\helpers\Html;
  * build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
+ *
+ * @extends Controller<Application>
  */
 class TranslationController extends Controller
 {
@@ -29,7 +32,6 @@ class TranslationController extends Controller
      * @param string $sourcePath the directory where the original documentation files are
      * @param string $translationPath the directory where the translated documentation files are
      * @param string $title custom title to use for report
-     * @return string
      */
     public function actionReport($sourcePath, $translationPath, $title = 'Translation report')
     {
@@ -40,7 +42,7 @@ class TranslationController extends Controller
 
         $dir = new DirectoryIterator($sourcePath);
         foreach ($dir as $fileinfo) {
-            /* @var $fileinfo DirectoryIterator */
+            /** @var DirectoryIterator $fileinfo */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
                 $sourceFilePath = $sourcePath . '/' . $fileinfo->getFilename();
@@ -63,7 +65,7 @@ class TranslationController extends Controller
         // checking if there are obsolete translation files
         $dir = new DirectoryIterator($translationPath);
         foreach ($dir as $fileinfo) {
-            /* @var $fileinfo \DirectoryIterator */
+            /** @var DirectoryIterator $fileinfo */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
 
@@ -112,8 +114,13 @@ class TranslationController extends Controller
      */
     protected function getDiff($translatedFilePath, $sourceFilePath)
     {
-        $lastTranslationHash = shell_exec('git log -1 --format=format:"%H" -- ' . $translatedFilePath);
-        return shell_exec('git diff ' . $lastTranslationHash . '..HEAD -- ' . $sourceFilePath);
+        $lastTranslationHash = trim((string) shell_exec(
+            'git log -1 --format=format:%H -- ' . escapeshellarg($translatedFilePath)
+        ));
+
+        return shell_exec(
+            'git diff ' . escapeshellarg($lastTranslationHash . '..HEAD') . ' -- ' . escapeshellarg($sourceFilePath)
+        );
     }
 
     /**

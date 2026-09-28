@@ -28,16 +28,16 @@ Yii 2.0 широко использует [Composer](https://getcomposer.org/), 
 версией 5.2, которая использовалась Yii 1.1. Таким образом, существует много различий в языке, которые вы должны принимать
 во внимание:
 
-- [Пространства имён](https://secure.php.net/manual/ru/language.namespaces.php);
-- [Анонимные функции](https://secure.php.net/manual/ru/functions.anonymous.php);
+- [Пространства имён](https://www.php.net/manual/ru/language.namespaces.php);
+- [Анонимные функции](https://www.php.net/manual/ru/functions.anonymous.php);
 - Использование короткого синтаксиса для массивов: `[...элементы...]` вместо `array(...элементы...)`;
 - Использование короткого echo `<?=` для вывода в файлах представлений. С версии PHP 5.4 данную возможность можно
   использовать не опасаясь;
-- [Классы и интерфейсы SPL](https://secure.php.net/manual/ru/book.spl.php);
-- [Позднее статическое связывание (LSB)](https://secure.php.net/manual/ru/language.oop5.late-static-bindings.php);
-- [Классы для дат и времени](https://secure.php.net/manual/ru/book.datetime.php);
-- [Трейты](https://secure.php.net/manual/ru/language.oop5.traits.php);
-- [Интернационализация (intl)](https://secure.php.net/manual/ru/book.intl.php); Yii 2.0 использует расширение PHP `intl`
+- [Классы и интерфейсы SPL](https://www.php.net/manual/ru/book.spl.php);
+- [Позднее статическое связывание (LSB)](https://www.php.net/manual/ru/language.oop5.late-static-bindings.php);
+- [Классы для дат и времени](https://www.php.net/manual/ru/book.datetime.php);
+- [Трейты](https://www.php.net/manual/ru/language.oop5.traits.php);
+- [Интернационализация (intl)](https://www.php.net/manual/ru/book.intl.php); Yii 2.0 использует расширение PHP `intl`
   для различного функционала интернационализации.
 
 

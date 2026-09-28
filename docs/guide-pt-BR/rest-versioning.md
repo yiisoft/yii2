@@ -3,9 +3,9 @@ Versionamento
 
 Uma boa API é *versionada*: Mudanças e novos recursos são implementados em novas versões da API em vez de alterar continuamente apenas uma versão. Diferente de aplicações Web, com a qual você tem total controle do código de ambos os lados cliente e servidor, APIs são destinadas a ser utilizadas por clientes além de seu controle. Por esta razão, a compatibilidade (BC) entre as APIs deve ser mantida sempre que possível. Se uma mudança que pode quebrar esta compatibilidade é necessária, você deve introduzi-la em uma nova versão de API e subir o número da versão. Os clientes existentes podem continuar a usar a versão antiga da API; e os clientes novos ou atualizados podem obter a nova funcionalidade na nova versão da API.
 
-> Dica: Consulte o artigo [Semantic Versioning](http://semver.org/) para obter mais informações sobre como projetar números de versão da API.
+> Dica: Consulte o artigo [Semantic Versioning](https://semver.org/) para obter mais informações sobre como projetar números de versão da API.
 
-Uma maneira comum de implementar versionamento de API é incorporar o número da versão nas URLs da API. Por exemplo, `http://example.com/v1/users` representa o terminal `/users` da API versão 1.
+Uma maneira comum de implementar versionamento de API é incorporar o número da versão nas URLs da API. Por exemplo, `https://example.com/v1/users` representa o terminal `/users` da API versão 1.
 
 Outro método de versionamento de API, que tem sido muito utilizado recentemente, é colocar o número da versão nos cabeçalhos das requisições HTTP. Isto é tipicamente feito através do cabeçalho `Accept`:
 
@@ -80,7 +80,7 @@ return [
 ];
 ```
 
-Como resultado do código acima, `http://example.com/v1/users` retornará a lista de usuários na versão 1, enquanto `http://example.com/v2/users` retornará a lista de usuários na versão 2.
+Como resultado do código acima, `https://example.com/v1/users` retornará a lista de usuários na versão 1, enquanto `https://example.com/v2/users` retornará a lista de usuários na versão 2.
 
 Graças aos módulos, o código para diferentes versões principais pode ser bem isolado. Entretanto esta abordagem torna possível a reutilização de código entre os módulos através de classes bases comuns e outros recursos partilhados.
  

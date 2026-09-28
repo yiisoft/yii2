@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -10,11 +11,13 @@ namespace yii\console\controllers;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\test\Fixture;
 use yii\test\FixtureTrait;
 
 /**
@@ -41,6 +44,9 @@ use yii\test\FixtureTrait;
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 class FixtureController extends Controller
 {
@@ -157,7 +163,7 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($fixturesObjects);
         $this->loadFixtures($fixturesObjects);
-        $this->notifyLoaded($fixtures);
+        $this->notifyLoaded($fixturesObjects);
 
         return ExitCode::OK;
     }
@@ -231,11 +237,12 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+
+        return ExitCode::OK;
     }
 
     /**
      * Show help message.
-     * @param array $fixturesInput
      */
     private function printHelpMessage()
     {
@@ -247,13 +254,20 @@ class FixtureController extends Controller
 
     /**
      * Notifies user that fixtures were successfully loaded.
-     * @param array $fixtures
+     * @param Fixture[] $fixtures array of loaded fixtures
      */
     private function notifyLoaded($fixtures)
     {
         $this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
         $this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
-        $this->outputList($fixtures);
+
+        $fixtureClassNames = [];
+
+        foreach ($fixtures as $fixture) {
+            $fixtureClassNames[] = $fixture::className();
+        }
+
+        $this->outputList($fixtureClassNames);
     }
 
     /**
@@ -474,6 +488,8 @@ class FixtureController extends Controller
                 $config[] = $fullClassName;
             } elseif (class_exists($fullClassName . 'Fixture')) {
                 $config[] = $fullClassName . 'Fixture';
+            } else {
+                throw new Exception('Neither fixture "' . $fullClassName . '" nor "' . $fullClassName . 'Fixture" was found.');
             }
         }
 
@@ -486,7 +502,7 @@ class FixtureController extends Controller
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returns array:
      *
-     * ```php
+     * ```
      * [
      *     'apply' => [
      *         'User',

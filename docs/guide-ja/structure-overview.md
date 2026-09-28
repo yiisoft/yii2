@@ -1,7 +1,7 @@
 概要
 ====
 
-Yii のアプリケーションは [モデル・ビュー・コントローラ (MVC)](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャ・パターンに従って編成されています。
+Yii のアプリケーションは [モデル・ビュー・コントローラ (MVC)](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャ・パターンに従って編成されています。
 [モデル](structure-models.md) は、データ、ビジネス・ロジック、規則を表現します。
 [ビュー](structure-views.md) は、モデルの出力表現です。
 そして [コントローラ](structure-controllers.md) は入力を受け取って、それを [モデル](structure-models.md) と [ビュー](structure-views.md) のためのコマンドに変換します。

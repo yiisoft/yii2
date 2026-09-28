@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\test;
@@ -26,7 +27,7 @@ use yii\db\TableSchema;
  * For more details and usage information on ActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
  * @property-read TableSchema $tableSchema The schema information of the database table associated with this
- * fixture. This property is read-only.
+ * fixture.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,13 +35,13 @@ use yii\db\TableSchema;
 class ActiveFixture extends BaseActiveFixture
 {
     /**
-     * @var string the name of the database table that this fixture is about. If this property is not set,
+     * @var string|null the name of the database table that this fixture is about. If this property is not set,
      * the table name will be determined via [[modelClass]].
      * @see modelClass
      */
     public $tableName;
     /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
+     * @var string|bool|null the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
      * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
@@ -85,6 +86,9 @@ class ActiveFixture extends BaseActiveFixture
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
         }
+        if ($table->sequenceName !== null) {
+            $this->db->createCommand()->executeResetSequence($table->fullName);
+        }
     }
 
     /**
@@ -100,7 +104,6 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-
             if ($this->dataDirectory !== null) {
                 $dataFile = $this->getTableSchema()->fullName . '.php';
             } else {
@@ -148,7 +151,7 @@ class ActiveFixture extends BaseActiveFixture
         $db = $this->db;
         $tableName = $this->tableName;
         if ($tableName === null) {
-            /* @var $modelClass \yii\db\ActiveRecord */
+            /** @var \yii\db\ActiveRecord $modelClass */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         }

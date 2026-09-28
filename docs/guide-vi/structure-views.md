@@ -1,7 +1,7 @@
 Views (Giao diện)
 =====
 
-Views là phần trong mô hình [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Views là phần trong mô hình [MVC](https://vi.wikipedia.org/wiki/MVC).
 Thành phần này chịu trách nhiệm chính trong việc hiển thị dữ liệu tới người dùng. Tại ứng dụng Web, views thường được tạo
 cùng với các *bản mẫu giao diện (view template)* là những file kịch bản của PHP có chứa các mã HTML và mã PHP.
 Các file giao diện được quản lý bởi [[yii\web\View|view]] [là thành phần ứng dụng](structure-application-components.md) thành phần này có chứa các phương thức chung
@@ -19,9 +19,11 @@ và các nội dung form, còn các mã HTML tổ chức thành các trang nội
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -50,7 +52,7 @@ hoặc các đối tượng khác được cho vào từ việc [xuất bản vi
 
 Khi tạo views được sinh bởi các trang HTML, điều quan trọng là bạn mã hóa và/hoặc lọc dữ liệu đến từ người dùng
 cuối trước khi hiển thị lên. Nếu không thì, ứng dụng của bạn có thể bị tấn công bởi
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting).
+[cross-site scripting](https://vi.wikipedia.org/wiki/Cross-site_scripting).
 
 Để hiển thị các nội dung thuần, hãy encode trước bằng việc gọi phương thức [[yii\helpers\Html::encode()]]. Ví dụ, đoạn mã sau sẽ
 encodes thông tin user name trước khi được hiển thị:
@@ -321,8 +323,10 @@ vào layout. Tuy nhiên trong thực tế, bạn có thể thêm nhiều nội d
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -542,7 +546,7 @@ Các thành phần View cung cấp các tính năng hữu ích được liệt k
 * [client script handling](output-client-scripts.md): hỗ trợ đăng ký vào xuất bản các nội dung về CSS và JavaScript.
 * [asset bundle handling](structure-assets.md): hỗ trợ việc đăng ký và xuất bản các [asset bundles](structure-assets.md).
 * [alternative template engines](tutorial-template-engines.md): cho phép bạn sử dụng các bộ giao diện, chẳng hạn như
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 Bạn cũng có thể thường xuyên sử dụng các tính năng nhỏ nhưng hữu ích sau đây khi bạn đang phát triển các trang Web.
 
@@ -613,14 +617,14 @@ $this->registerLinkTag([
     'title' => 'Live News for Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Đoạn mã trên sẽ ra kết quả như sau
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Giống như phương thức [[yii\web\View::registerMetaTag()|registerMetaTag()]], bạn có thể chỉ định từ khóa khi gọi phương thức

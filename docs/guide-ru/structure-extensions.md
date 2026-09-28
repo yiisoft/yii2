@@ -77,7 +77,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 2. установить автозагрузчики классов, предоставляемые расширениями, если таковые имеются.
 3. загрузить и установить все зависимые расширения в соответствии с инструкциями.
 
-Если расширение не имеет автозагрузчика классов, но следует [стандарту PSR-4](http://www.php-fig.org/psr/psr-4/), то вы
+Если расширение не имеет автозагрузчика классов, но следует [стандарту PSR-4](https://www.php-fig.org/psr/psr-4/), то вы
 можете использовать автозагрузчик классов, предоставленный Yii для загрузки классов расширений. Всё, что вам нужно
 сделать, это объявить [псевдоним](concept-aliases.md#defining-aliases) для корневого каталога расширения. Например,
 если вы установили расширение в директорию `vendor/mycompany/myext` и классы расширения находятся в пространстве имён
@@ -131,7 +131,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
         "forum": "https://forum.yiiframework.com/",
-        "wiki": "http://www.yiiframework.com/wiki/",
+        "wiki": "https://www.yiiframework.com/wiki/",
         "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
@@ -223,7 +223,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 #### Пространства имён <span id="namespaces"></span>
 
 Во избежание конфликтов имён, а также для того, чтобы ваши классы были автозагружаемыми, вы должны следовать
-[стандарту PSR-4](http://www.php-fig.org/psr/psr-4/) или [стандарту PSR-0](http://www.php-fig.org/psr/psr-0/) в
+[стандарту PSR-4](https://www.php-fig.org/psr/psr-4/) или [стандарту PSR-0](https://www.php-fig.org/psr/psr-0/) в
 использовании пространств имён и названии классов вашего расширения.
 
 Пространства имён в ваших классах должны начинаться с `имяРазработчика\названиеРасширения`, где `названиеРасширения`
@@ -338,7 +338,7 @@ class MyBootstrapClass implements BootstrapInterface
 #### Версионирование <span id="versioning"></span>
 
 Вы можете давать каждому выпуску вашего расширения номер версии (например, `1.0.1`). Мы рекомендуем вам придерживаться
-практик [семантического версионирования](http://semver.org) при определении, какой номер версии должен использоваться.
+практик [семантического версионирования](https://semver.org) при определении, какой номер версии должен использоваться.
 
 #### Публикация <span id="releasing"></span>
 
@@ -353,7 +353,7 @@ class MyBootstrapClass implements BootstrapInterface
 которые помогут людям изучить и использовать ваше расширение:
 
 * Файл readme в корневой директории пакета: он описывает, что ваше расширение делает, а также как его установить и
-  использовать. Мы рекомендуем вам написать его в формате [Markdown](http://daringfireball.net/projects/markdown/) и
+  использовать. Мы рекомендуем вам написать его в формате [Markdown](https://daringfireball.net/projects/markdown/) и
   дать ему название `readme.md`.
 * Файл changelog в корневой директории пакета: он описывает, какие изменения произошли в каждом выпуске. Этот файл
   может быть написан в формате Markdown и назван `changelog.md`.
@@ -369,7 +369,7 @@ class MyBootstrapClass implements BootstrapInterface
   предоставляет инструмент для генерации документации API на основе ваших комментариев.
 
 > Info: Пока это не обязательно, но мы всё-таки рекомендуем вам придерживаться определённого стиля кодирования.
-  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  Вы можете обратиться к [стилю кодирования фреймворка](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Базовые расширения <span id="core-extensions"></span>
@@ -385,15 +385,13 @@ Yii предоставляет следующие базовые расшире�
   предоставляет набор наиболее часто используемых клиентов авторизации, таких, как Facebook OAuth2 клиент и GitHub
   OAuth2 клиент.
 - [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
-  предоставляет набор виджетов, которые являются компонентами и плагинами [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (deprecated):
-  предоставляет поддержку тестирования, основанного на [Codeception](http://codeception.com/).
+  предоставляет набор виджетов, которые являются компонентами и плагинами [Bootstrap](https://getbootstrap.com/).
 - [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   предоставляет поддержку отладки в приложениях Yii. Когда это расширение используется, отладочная панель появится в
   нижней части каждой страницы. Это расширение также предоставляет набор отдельных страниц для отображения более
   подробной отладочной информации.
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
-  предоставляет поддержку использования [Elasticsearch](http://www.elasticsearch.org/). Оно включает в себя поддержку
+  предоставляет поддержку использования [Elasticsearch](https://www.elastic.co/). Оно включает в себя поддержку
   основных поисковых запросов, а также реализует шаблон проектирования [Active Record](db-active-record.md), который
   позволяет хранить записи Active Record в Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
@@ -405,21 +403,21 @@ Yii предоставляет следующие базовые расшире�
   предоставляет HTTP клиент.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   предоставляет часто используемые функции для работы с изображениями, основанные на библиотеке
-  [Imagine](http://imagine.readthedocs.org/).
+  [Imagine](https://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
-  предоставляет набор виджетов, основанный на взаимодействиях и виджетах [JQuery UI](http://jqueryui.com/).
+  предоставляет набор виджетов, основанный на взаимодействиях и виджетах [JQuery UI](https://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  предоставляет поддержку использования [MongoDB](http://www.mongodb.org/). Оно включает такие возможности, как
+  предоставляет поддержку использования [MongoDB](https://www.mongodb.com/). Оно включает такие возможности, как
   базовые запросы, Active Record, миграции, кэширование, генерация кода и т.д.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
-  предоставляет поддержку использования [redis](http://redis.io/). Оно включает такие возможности, как базовые запросы,
+  предоставляет поддержку использования [redis](https://redis.io/). Оно включает такие возможности, как базовые запросы,
   Active Record, кэширование и т.д.
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
-  предоставляет шаблонизатор, основанный на [Smarty](http://www.smarty.net/).
+  предоставляет шаблонизатор, основанный на [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  предоставляет поддержку использования [Sphinx](http://sphinxsearch.com). Оно включает такие возможности, как базовые
+  предоставляет поддержку использования [Sphinx](https://sphinxsearch.com). Оно включает такие возможности, как базовые
   запросы, Active Record, генерация кода и т.д.
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  предоставляет возможности отправки email, основанные на [swiftmailer](http://swiftmailer.org/).
+  предоставляет возможности отправки email, основанные на [swiftmailer](https://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  предоставляет шаблонизатор, основанный на [Twig](http://twig.sensiolabs.org/).
+  предоставляет шаблонизатор, основанный на [Twig](https://twig.symfony.com/).

@@ -1,27 +1,32 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
+use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\web\Request;
 use yii\web\Response;
 
 /**
- * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ * Cors filter implements [Cross Origin Resource Sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  *
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
  * but allow the developer to grant access to third party code (ajax calls from external domain).
  *
  * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -35,7 +40,7 @@ use yii\web\Response;
  * The CORS filter can be specialized to restrict parameters, like this,
  * [MDN CORS Information](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -66,15 +71,18 @@ use yii\web\Response;
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class Cors extends ActionFilter
 {
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
     /**
@@ -119,12 +127,14 @@ class Cors extends ActionFilter
 
     /**
      * Override settings for specific action.
-     * @param \yii\base\Action $action the action settings to override
+     * @param Action $action the action settings to override
      */
     public function overrideDefaultSettings($action)
     {
-        if (isset($this->actions[$action->id])) {
-            $actionParams = $this->actions[$action->id];
+        $actionId = $this->getActionId($action);
+
+        if (isset($this->actions[$actionId])) {
+            $actionParams = $this->actions[$actionId];
             $actionParamsKeys = array_keys($actionParams);
             foreach ($this->cors as $headerField => $headerValue) {
                 if (in_array($headerField, $actionParamsKeys)) {

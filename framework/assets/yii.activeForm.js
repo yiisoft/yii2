@@ -3,9 +3,9 @@
  *
  * This is the JavaScript widget used by the yii\widgets\ActiveForm widget.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -218,6 +218,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
+                    validate_only: false, // validate without auto submitting
                     options: getFormOptions($form)
                 });
 
@@ -333,7 +334,7 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                var disabled = $input.toArray().reduce(function(result, next) {
+                var disabled = $input.toArray().reduce(function (result, next) {
                     return result && $(next).is(':disabled');
                 }, true);
                 if (disabled) {
@@ -398,9 +399,11 @@
                         data: $form.serialize() + extData,
                         dataType: data.settings.ajaxDataType,
                         complete: function (jqXHR, textStatus) {
+                            currentAjaxRequest = null;
                             $form.trigger(events.ajaxComplete, [jqXHR, textStatus]);
                         },
                         beforeSend: function (jqXHR, settings) {
+                            currentAjaxRequest = jqXHR;
                             $form.trigger(events.ajaxBeforeSend, [jqXHR, settings]);
                         },
                         success: function (msgs) {
@@ -550,6 +553,14 @@
         findInput($form, attribute).off('.yiiActiveForm');
     };
 
+    /**
+     * Validates the form attributes that are pending validation.
+     * @param $form the form jQuery object
+     * @param attribute the attribute that triggered the validation
+     * @param forceValidate whether to validate even if no value has changed
+     * @param validationDelay number of milliseconds to delay the validation by. Only passed while the user is typing,
+     * every other case is scheduled asynchronously with a zero-millisecond delay.
+     */
     var validateAttribute = function ($form, attribute, forceValidate, validationDelay) {
         var data = $form.data('yiiActiveForm');
 
@@ -566,6 +577,9 @@
             return;
         }
 
+        if (currentAjaxRequest !== null) {
+            currentAjaxRequest.abort();
+        }
         if (data.settings.timer !== undefined) {
             clearTimeout(data.settings.timer);
         }
@@ -586,7 +600,7 @@
                 }
             });
             methods.validate.call($form);
-        }, validationDelay ? validationDelay : 200);
+        }, validationDelay || 0);
     };
 
     /**
@@ -731,8 +745,7 @@
 
         var errorAttributes = [], $input;
         $.each(data.attributes, function () {
-            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form,
-                this, messages));
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
             $input = findInput($form, this);
 
             if (!$input.is(':disabled') && !this.cancelled && hasError) {
@@ -758,12 +771,14 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                if (data.submitObject) {
-                    applyButtonOptions($form, data.submitObject);
-                }
-                $form.submit();
-                if (data.submitObject) {
-                    restoreButtonOptions($form);
+                if (!data.validate_only) {
+                    if (data.submitObject) {
+                        applyButtonOptions($form, data.submitObject);
+                    }
+                    $form.submit();
+                    if (data.submitObject) {
+                        restoreButtonOptions($form);
+                    }
                 }
             }
         } else {
@@ -930,4 +945,7 @@
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
     }
+
+    var currentAjaxRequest = null;
+
 })(window.jQuery);

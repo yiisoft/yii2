@@ -10,15 +10,15 @@
 
 アクセス・トークンを送信するには、いくつかの異なる方法があります。
 
-* [HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC): アクセス・トークンはユーザ名として送信されます。
+* [HTTP Basic 認証](https://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC): アクセス・トークンはユーザ名として送信されます。
   この方法は、アクセス・トークンを API コンシューマ側で安全に保存することが出来る場合、
-  例えば API コンシューマがサーバ上で走るプログラムである場合などにのみ使用されるべきです。
+  例えば API コンシューマがサーバ上で走るプログラムである場合などのみに使用されるべきです。
 * クエリ・パラメータ: アクセス・トークンは API の URL、例えば、`https://example.com/users?access-token=xxxxxxxx`
   でクエリ・パラメータとして送信されます。
   ほとんどのウェブ・サーバはクエリ・パラメータをサーバのログに記録するため、この手法は、
   アクセス・トークンを HTTP ヘッダを使って送信することができない `JSONP` リクエストに応答するために主として使用されるべきです。
-* [OAuth 2](http://oauth.net/2/): OAuth2 プロトコルに従って、
-  アクセス・トークンはコンシューマによって権限付与サーバから取得され、[HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 経由で
+* [OAuth 2](https://oauth.net/2/): OAuth2 プロトコルに従って、
+  アクセス・トークンはコンシューマによって権限付与サーバから取得され、[HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750) 経由で
   API サーバに送信されます。
 
 Yii は上記の全ての認証方法をサポートしています。新しい認証方法を作成することも簡単に出来ます。

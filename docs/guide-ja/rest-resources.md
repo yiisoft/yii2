@@ -140,7 +140,7 @@ public function extraFields()
 
 ## リンク <span id="links"></span>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
+[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
 HATEOAS は、RESTful API は自分が返すリソースについて、どのようなアクションがサポートされているかをクライアントが発見できるような情報を返すべきである、という概念です。
 HATEOAS のキーポイントは、リソース・データが API によって提供されるときには、
 関連する情報を一群のハイパーリンクによって返すべきである、ということです。
@@ -251,11 +251,3 @@ class PostController extends Controller
 REST API におけるコレクションはデータ・プロバイダであるため、データ・プロバイダの全ての機能、すなわち、ページネーションやソーティングを共有しています。
 
 その一例を [クイック・スタート](rest-quick-start.md#trying-it-out) のセクションで見ることが出来ます。
-
-### コレクションをフィルタリングする <span id="filtering-collections"></span>
-
-バージョン 2.0.13 以降、Yii はコレクションをフィルタリングする便利な機能を提供しています。
-その一例を [クイック・スタート](rest-quick-start.md#trying-it-out) のガイドに見ることが出来ます。
-エンド・ボイントをあなた自身が実装しようとしている場合、フィルタリングは
-データ・プロバイダのガイドの [データ・フィルタを使ってデータ・プロバイダをフィルタリングする](output-data-providers.md#filtering-data-providers-using-data-filters
- のセクションで述べられている方法で行うことが出来ます。

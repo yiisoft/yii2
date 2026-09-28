@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -13,7 +14,7 @@ namespace yii\web;
  * This interface can typically be implemented by a user model class. For example, the following
  * code shows how to implement this interface by a User ActiveRecord class:
  *
- * ```php
+ * ```
  * class User extends ActiveRecord implements IdentityInterface
  * {
  *     public static function findIdentity($id)

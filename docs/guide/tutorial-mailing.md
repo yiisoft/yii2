@@ -8,7 +8,7 @@ only the content composition functionality and basic interface. Actual mail send
 be provided by the extension, because different projects may require its different implementation and
 it usually depends on the external services and libraries.
 
-For the most common cases you can use [yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) official extension.
+For the most common cases you can use [yii2-symfonymailer](https://www.yiiframework.com/extension/yiisoft/yii2-symfonymailer) official extension.
 
 
 Configuration
@@ -22,16 +22,11 @@ return [
     //....
     'components' => [
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => 'yii\symfonymailer\Mailer',
             'useFileTransport' => false,
             'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'encryption' => 'tls',
-                'host' => 'your_mail_server_host',
-                'port' => 'your_smtp_port',
-                'username' => 'your_username',
-                'password' => 'your_password',
-            ],             
+                'dsn' => 'smtp://user:pass@smtp.example.com:465',
+            ],
         ],
     ],
 ];
@@ -101,8 +96,10 @@ Example mail view file content:
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/* @var $this \yii\web\View view component instance */
-/* @var $message \yii\mail\BaseMessage instance of newly created mail message */
+/**
+ * @var \yii\web\View $this view component instance
+ * @var \yii\mail\BaseMessage $message instance of newly created mail message
+ */
 
 ?>
 <h2>This message allows you to visit our site home page by one click</h2>
@@ -148,9 +145,11 @@ Layout can be used to setup mail CSS styles or other shared content:
 <?php
 use yii\helpers\Html;
 
-/* @var $this \yii\web\View view component instance */
-/* @var $message \yii\mail\MessageInterface the message being composed */
-/* @var $content string main view render result */
+/**
+ * @var \yii\web\View $this view component instance
+ * @var \yii\mail\MessageInterface $message the message being composed
+ * @var string $content main view render result
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

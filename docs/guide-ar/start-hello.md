@@ -25,9 +25,9 @@
     لإنشاء صفحة "Hello"، ستقوم بإنشاء <code>say</code> <a href="../guide/structure-controllers.md#creating-actions">action</a> والذي بدوره سيقوم  بقراءة ال <code>message</code> parameter من ال request، ومن ثم عرض ال <code>message</code> مرة أخرى إلى المستخدم. إذا كان ال request لا يحمل معه ال message parameter فإن ال action سيقوم بطباعة message إفتراضية وهي "Hello".
 </p>
 
-<blockqoute class="info"><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: ال <a href="../guide/structure-controllers.md#creating-actions">Actions</a> هي الكائنات(objects) التي يمكن للمستخدمين من الوصول اليها وتنفيذ ما في بداخلها بشكل مباشر.  يتم تجميع هذه ال Actions بواسطة ال <a href="../guide/structure-controllers.md">controllers</a>. ونتيجة لذلك فإن ال response الراجعة للمستخدم ستكون هي نتيجة التنفيذ الخاصة بال action. 
-</p></blockqoute>
+</p></blockquote>
 
 <p dir="rtl">
     يجب تعريف ال actions داخل ال <a href="../guide/structure-controllers.md">controller</a>، ولتبسيط الفكرة، سنقوم بتعريف ال <code>say</code> action داخل أحد ال controller الموجود مسبقا وهو ال <code>siteController</code>. هذا ال controller ستجده داخل المسار <code>controllers/siteController.php</code>. ومن هنا سنبدأ بإضافة ال action الجديد: 
@@ -89,7 +89,7 @@ use yii\helpers\Html;
 </p>
 
 <p dir="rtl">
-    ملاحظة:  في الشيفرة البرمجية أعلاه، تكون ال <code>message</code> مضمنة داخل ال  [[yii\helpers\Html::encode()]] قبل أن يتم طباعتها، هذا الأمر ضروري لأن ال parameter التي تأتي من المستخدم النهائي لا يجب الوثوق بها،  فهي يمكن أن تحتوي على شيفرات برمجية تستغل الضعف الحاص بك بموضوع الأمان مثل <a href="http://en.wikipedia.org/wiki/Cross-site_scripting">vulnerable to XSS attack</a> عن طريق دمج JS code مع ال parameter. 
+    ملاحظة:  في الشيفرة البرمجية أعلاه، تكون ال <code>message</code> مضمنة داخل ال  [[yii\helpers\Html::encode()]] قبل أن يتم طباعتها، هذا الأمر ضروري لأن ال parameter التي تأتي من المستخدم النهائي لا يجب الوثوق بها،  فهي يمكن أن تحتوي على شيفرات برمجية تستغل الضعف الحاص بك بموضوع الأمان مثل <a href="https://en.wikipedia.org/wiki/Cross-site_scripting">vulnerable to XSS attack</a> عن طريق دمج JS code مع ال parameter. 
 </p>
 
 <p dir="rtl">
@@ -107,7 +107,7 @@ use yii\helpers\Html;
 </p>
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](../guide/images/start-hello-world.png)

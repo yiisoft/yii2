@@ -669,7 +669,7 @@ class m150101_185401_create_news_table extends Migration
 我们首先删除那一行数据，然后才删除那张表。
 
 > Note: 并不是所有的数据库都支持事务。有些数据库查询也是不能被放到事务里面的。
-  在 [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) 章节当中有相关的例子可以参考。
+  在 [implicit commit](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) 章节当中有相关的例子可以参考。
   如果遇到这种情况的话，那么你应该使用 `up()` 和 `down()` 方法进行替代。
 
 

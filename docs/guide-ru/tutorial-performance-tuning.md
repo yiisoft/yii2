@@ -11,7 +11,7 @@
 Хорошо сконфигурированное окружение PHP очень важно. Для получения максимальной производительности,
 
 - Используйте последнюю стабильную версию PHP. Мажорные релизы PHP могут принести значительные улучшения производительности.
-- Включите кеширование байткода в [Opcache](https://secure.php.net/manual/ru/book.opcache.php) (PHP 5.5 и старше) или [APC](http://secure.php.net/manual/ru/book.apc.php) 
+- Включите кеширование байткода в [Opcache](https://www.php.net/manual/ru/book.opcache.php) (PHP 5.5 и старше) или [APC](https://www.php.net/manual/ru/book.apc.php) 
   (PHP 5.4 и более ранние версии). Кеширование байткода позволяет избежать затрат времени на обработку и подключение PHP 
   скриптов при каждом входящем запросе.
 
@@ -130,7 +130,7 @@ CREATE TABLE session (
 хранилища кеша могут *сбрасывать* закешированные данные при достижении лимитов хранилища. По этой причине, вы должны в 
 основном использовать хранилища кеша, которые не имеют таких лимитов.
 
-Если на вашем сервере установлен [Redis](http://redis.io/), настоятельно рекомендуется выбрать его в качестве 
+Если на вашем сервере установлен [Redis](https://redis.io/), настоятельно рекомендуется выбрать его в качестве 
 хранилища сессий используя [[yii\redis\Session]].
 
 
@@ -212,5 +212,5 @@ composer dumpautoload -o
 Следующие инструменты для профилирования могут оказаться полезными:
 
 - [Отладочный тулбар Yii и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [Профайлер XDebug](http://xdebug.org/docs/profiler)
-- [XHProf](https://secure.php.net/manual/en/book.xhprof.php)
+- [Профайлер XDebug](https://xdebug.org/docs/profiler)
+- [XHProf](https://www.php.net/manual/ru/book.xhprof.php)

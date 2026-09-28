@@ -1,7 +1,7 @@
 アクティブ・レコード
 ====================
 
-[アクティブ・レコード](http://ja.wikipedia.org/wiki/Active_Record) は、データベースに保存されているデータにアクセスするために、
+[アクティブ・レコード](https://ja.wikipedia.org/wiki/Active_Record) は、データベースに保存されているデータにアクセスするために、
 オブジェクト指向のインタフェイスを提供するものです。
 アクティブ・レコード・クラスはデータベース・テーブルと関連付けられます。
 アクティブ・レコードのインスタンスはそのテーブルの行に対応し、アクティブ・レコードのインスタンスの *属性* がその行にある特定のカラムの値を表現します。
@@ -473,8 +473,8 @@ $post->updateCounters(['view_count' => 1]);
 > HTML フォームでは全ての値が文字列として表現されるからです。
 > 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように
 > [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
-> このフィルタは、[intval()](https://secure.php.net/manual/ja/function.intval.php), [floatval()](https://secure.php.net/manual/ja/function.floatval.php),
-> [boolval](https://secure.php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
+> このフィルタは、[intval()](https://www.php.net/manual/ja/function.intval.php), [floatval()](https://www.php.net/manual/ja/function.floatval.php),
+> [boolval](https://www.php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
 
 ### デフォルト属性値 <span id="default-attribute-values"></span>
 
@@ -650,6 +650,16 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
+> Note: パフォーマンスを考慮して、DI(依存注入) はデフォルトではサポートされていません。必要であれば、
+> [[Yii::createObject()]] によってクラスのインスタンス生成をするように [[yii\db\ActiveRecord::instantiate()|instantiate()]] メソッドをオーバーライドして、サポートを追加することが出来ます。
+> 
+> ```php
+> public static function instantiate($row)
+> {
+>     return Yii::createObject(static::class);
+> }
+> ```
+
 ### データをリフレッシュする際のライフサイクル <span id="refreshing-data-life-cycle"></span>
 
 [[yii\db\ActiveRecord::refresh()|refresh()]] を呼んでアクティブ・レコード・インスタンスをリフレッシュする際は、リフレッシュが成功してメソッドが `true` を返すと
@@ -689,7 +699,7 @@ try {
 ```
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの catch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://www.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]]
@@ -792,6 +802,12 @@ public function behaviors()
         OptimisticLockBehavior::class,
     ];
 }
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
 > Note: [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] は、ユーザが正しいバージョン番号を送信したときにだけ
 > レコードが保存されるという事を保証します。そして、そのために、[[\yii\web\Request::getBodyParam()|getBodyParam()]] の結果を直接に解析します。
@@ -859,6 +875,8 @@ class Order extends ActiveRecord
   続けて書く、ということです。ご覧のように、`customer_id` は `Order` のプロパティであり、
   `id` は`Customer` のプロパティです。
   
+> Warning: リレーション名としては `relation` は予約済みで使えません。これを使うと `ArgumentCountError` となります。
+
 
 ### リレーショナル・データにアクセスする <span id="accessing-relational-data"></span>
 
@@ -948,7 +966,7 @@ $orders = $customer->bigOrders;
 ### 中間テーブルによるリレーション <span id="junction-table"></span>
 
 データベースの設計において、二つの関連するテーブル間の多重性が多対多である場合は、通常、
-[中間テーブル](https://en.wikipedia.org/wiki/Junction_table) が導入されます。
+[中間テーブル](https://ja.wikipedia.org/wiki/%E9%80%A3%E6%83%B3%E3%82%A8%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3) が導入されます。
 例えば、`order` テーブルと `item` テーブルは、`order_item` と言う名前の中間テーブルによって関連付けることが出来ます。
 このようにすれば、一つの注文を複数の商品に対応させ、また、一つの商品を複数の注文に対応させることが出来ます。
 

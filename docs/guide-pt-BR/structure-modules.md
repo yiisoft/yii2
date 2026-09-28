@@ -20,7 +20,7 @@ controllers (controladores), models (modelos), views (visões) e outros códigos
 assim como em uma aplicação. O exemplo a seguir mostra o conteúdo dentro de um 
 módulo:
 
-```js
+```
 forum/
     Module.php                   o arquivo da classe do módulo 
     controllers/                 contém os arquivos da classe controller

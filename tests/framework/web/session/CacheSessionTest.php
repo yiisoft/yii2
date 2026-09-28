@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\caching\FileCache;
 use yii\web\CacheSession;
@@ -14,18 +16,18 @@ use yii\web\CacheSession;
 /**
  * @group web
  */
-class CacheSessionTest extends \yiiunit\TestCase
+class CacheSessionTest extends TestCase
 {
     use SessionTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
         Yii::$app->set('cache', new FileCache());
     }
 
-    public function testCacheSession()
+    public function testCacheSession(): void
     {
         $session = new CacheSession();
 
@@ -35,7 +37,7 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->assertEquals('', $session->readSession('test'));
     }
 
-    public function testInvalidCache()
+    public function testInvalidCache(): void
     {
         $this->expectException('\Exception');
         new CacheSession(['cache' => 'invalid']);
@@ -44,7 +46,7 @@ class CacheSessionTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13537
      */
-    public function testNotWrittenSessionDestroying()
+    public function testNotWrittenSessionDestroying(): void
     {
         $session = new CacheSession();
 
@@ -54,13 +56,13 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->assertTrue($session->destroySession($session->getId()));
     }
 
-    public function testInitUseStrictMode()
+    public function testInitUseStrictMode(): void
     {
-        $this->initStrictModeTest(CacheSession::className());
+        $this->initStrictModeTest(CacheSession::class);
     }
 
-    public function testUseStrictMode()
+    public function testUseStrictMode(): void
     {
-        $this->useStrictModeTest(CacheSession::className());
+        $this->useStrictModeTest(CacheSession::class);
     }
 }

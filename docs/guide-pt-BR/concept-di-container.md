@@ -1,7 +1,7 @@
 Container de Injeção de Dependência 
 ==============================
 
-Um container de injeção de dependência (DI) é um objeto que sabe como instanciar e configurar objetos e todas as suas dependências. O [artigo do Martin](http://martinfowler.com/articles/injection.html) explica bem porque o container de DI é útil. Aqui vamos explicar principalmente a utilização do container de DI fornecido pelo Yii.
+Um container de injeção de dependência (DI) é um objeto que sabe como instanciar e configurar objetos e todas as suas dependências. O [artigo do Martin](https://martinfowler.com/articles/injection.html) explica bem porque o container de DI é útil. Aqui vamos explicar principalmente a utilização do container de DI fornecido pelo Yii.
 
 
 Injeção de Dependência <span id="dependency-injection"></span>
@@ -317,7 +317,7 @@ Resumo <span id="summary"></span>
 -------
 
 Ambas as injeção de dependência e [service locator](concept-service-locator.md) são padrões de projetos conhecidos que permitem a construção de software com alta coesão e baixo acoplamento. É altamente recomendável que você leia o
-[Artigo do Martin](http://martinfowler.com/articles/injection.html) para obter uma compreensão mais profunda da injeção de dependência e service locator.
+[Artigo do Martin](https://martinfowler.com/articles/injection.html) para obter uma compreensão mais profunda da injeção de dependência e service locator.
 
 O Yii implementa o [service locator](concept-service-locator.md) no topo da injeção dependência container (DI).
 Quando um service locator tenta criar uma nova instância de objeto, ele irá encaminhar a chamada para o container de DI.

@@ -55,7 +55,7 @@ W przypadku serwera nginx nie powinieneś potrzebować dodatkowego pliku konfigu
 ### Sprawdzenie wymagań
 
 Aby uruchomić Yii, Twój serwer musi spełniać jego wymagania. Minimalnym wymaganiem jest PHP w wersji 5.4. Możesz sprawdzić wszystkie wymagania, kopiując plik 
-`requirements.php` z folderu root do folderu webroot i uruchamiając go w przeglądarce pod adresem `http://example.com/requirements.php`. 
+`requirements.php` z folderu root do folderu webroot i uruchamiając go w przeglądarce pod adresem `https://example.com/requirements.php`. 
 Nie zapomnij o skasowaniu tego pliku po sprawdzeniu wymagań.
 
 

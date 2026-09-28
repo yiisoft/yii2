@@ -1,14 +1,20 @@
 <?php
+
 /**
  * MIME types.
  *
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
-return [
+
+$mimeTypes = [
+    123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
     '3ds' => 'image/x-3ds',
     '3g2' => 'video/3gpp2',
@@ -37,6 +43,7 @@ return [
     'ait' => 'application/vnd.dvb.ait',
     'ami' => 'application/vnd.amiga.ami',
     'apk' => 'application/vnd.android.package-archive',
+    'apng' => 'image/apng',
     'appcache' => 'text/cache-manifest',
     'application' => 'application/x-ms-application',
     'apr' => 'application/vnd.lotus-approach',
@@ -53,6 +60,7 @@ return [
     'atx' => 'application/vnd.antix.game-component',
     'au' => 'audio/basic',
     'avi' => 'video/x-msvideo',
+    'avif' => 'image/avif',
     'aw' => 'application/applixware',
     'azf' => 'application/vnd.airzip.filesecure.azf',
     'azs' => 'application/vnd.airzip.filesecure.azs',
@@ -279,6 +287,7 @@ return [
     'geo' => 'application/vnd.dynageo',
     'gex' => 'application/vnd.geometry-explorer',
     'ggb' => 'application/vnd.geogebra.file',
+    'ggs' => 'application/vnd.geogebra.slides',
     'ggt' => 'application/vnd.geogebra.tool',
     'ghf' => 'application/vnd.groove-help',
     'gif' => 'image/gif',
@@ -309,6 +318,10 @@ return [
     'hal' => 'application/vnd.hal+xml',
     'hbci' => 'application/vnd.hbci',
     'hdf' => 'application/x-hdf',
+    'heic' => 'image/heic',
+    'heics' => 'image/heic-sequence',
+    'heif' => 'image/heif',
+    'heifs' => 'image/heif-sequence',
     'hh' => 'text/x-c',
     'hlp' => 'application/winhlp',
     'hpgl' => 'application/vnd.hp-hpgl',
@@ -355,6 +368,7 @@ return [
     'jam' => 'application/vnd.jam',
     'jar' => 'application/java-archive',
     'java' => 'text/x-java-source',
+    'jfif' => 'image/jpeg',
     'jisp' => 'application/vnd.jisp',
     'jlt' => 'application/vnd.hp-jlyt',
     'jnlp' => 'application/x-java-jnlp-file',
@@ -365,9 +379,10 @@ return [
     'jpgm' => 'video/jpm',
     'jpgv' => 'video/jpeg',
     'jpm' => 'video/jpm',
-    'js' => 'application/javascript',
+    'js' => 'text/javascript',
     'json' => 'application/json',
     'jsonml' => 'application/jsonml+json',
+    'jxl' => 'image/jxl',
     'kar' => 'audio/midi',
     'karbon' => 'application/vnd.kde.karbon',
     'kfo' => 'application/vnd.kde.kformula',
@@ -410,6 +425,8 @@ return [
     'm1v' => 'video/mpeg',
     'm21' => 'application/mp21',
     'm2a' => 'audio/mpeg',
+    'm2t' => 'video/mp2t',
+    'm2ts' => 'video/mp2t',
     'm2v' => 'video/mpeg',
     'm3a' => 'audio/mpeg',
     'm3u' => 'audio/x-mpegurl',
@@ -491,12 +508,11 @@ return [
     'mseed' => 'application/vnd.fdsn.mseed',
     'mseq' => 'application/vnd.mseq',
     'msf' => 'application/vnd.epson.msf',
-    0 => 'application/vnd.lotus-1-2-3',
     'msh' => 'model/mesh',
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',
     'msty' => 'application/vnd.muvee.style',
-    'mts' => 'model/vnd.mts',
+    'mts' => 'video/mp2t',
     'mus' => 'application/vnd.musician',
     'musicxml' => 'application/vnd.recordare.musicxml+xml',
     'mvb' => 'application/x-msmediaview',
@@ -598,6 +614,8 @@ return [
     'pgn' => 'application/x-chess-pgn',
     'pgp' => 'application/pgp-encrypted',
     'pic' => 'image/x-pict',
+    'pjp' => 'image/jpeg',
+    'pjpeg' => 'image/jpeg',
     'pkg' => 'application/octet-stream',
     'pki' => 'application/pkixcmp',
     'pkipath' => 'application/pkix-pkipath',
@@ -747,6 +765,8 @@ return [
     'spq' => 'application/scvp-vp-request',
     'spx' => 'audio/ogg',
     'sql' => 'application/x-sql',
+    'sqlite' => 'application/vnd.sqlite3',
+    'sqlite3' => 'application/vnd.sqlite3',
     'src' => 'application/x-wais-source',
     'srt' => 'application/x-subrip',
     'sru' => 'application/sru+xml',
@@ -809,6 +829,7 @@ return [
     'tr' => 'text/troff',
     'tra' => 'application/vnd.trueapp',
     'trm' => 'application/x-msterminal',
+    'ts' => 'video/mp2t',
     'tsd' => 'application/timestamped-data',
     'tsv' => 'text/tab-separated-values',
     'ttc' => 'font/collection',
@@ -882,6 +903,7 @@ return [
     'vxml' => 'application/voicexml+xml',
     'w3d' => 'application/x-director',
     'wad' => 'application/x-doom',
+    'wasm' => 'application/wasm',
     'wav' => 'audio/x-wav',
     'wax' => 'audio/x-ms-wax',
     'wbmp' => 'image/vnd.wap.wbmp',
@@ -995,3 +1017,10 @@ return [
     'zirz' => 'application/vnd.zul',
     'zmm' => 'application/vnd.handheld-entertainment+xml',
 ];
+
+# fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
+if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
+    $mimeTypes = array_replace($mimeTypes, ['xz' => 'application/octet-stream']);
+}
+
+return $mimeTypes;

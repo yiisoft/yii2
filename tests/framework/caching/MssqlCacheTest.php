@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\caching;
@@ -21,7 +22,7 @@ class MssqlCacheTest extends CacheTestCase
     private $_cacheInstance;
     private $_connection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlsrv')) {
             $this->markTestSkipped('pdo and pdo_mssql extensions are required.');
@@ -37,12 +38,11 @@ class MssqlCacheTest extends CacheTestCase
             'expire' => 'INT',
             'data' => 'VARBINARY(MAX)',
         ])->execute();
-
     }
 
     /**
      * @param  bool            $reset whether to clean up the test database
-     * @return \yii\db\Connection
+     * @return Connection
      */
     public function getConnection($reset = true)
     {
@@ -79,7 +79,7 @@ class MssqlCacheTest extends CacheTestCase
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -91,7 +91,7 @@ class MssqlCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_test'));
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -103,7 +103,7 @@ class MssqlCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_testa'));
     }
 
-    public function testSynchronousSetWithTheSameKey()
+    public function testSynchronousSetWithTheSameKey(): void
     {
         $KEY = 'sync-test-key';
         $VALUE = 'sync-test-value';
