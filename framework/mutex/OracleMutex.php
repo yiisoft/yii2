@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mutex;
@@ -33,7 +34,7 @@ use yii\base\InvalidConfigException;
  * ]
  * ```
  *
- * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
+ * @see https://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#ARPLS021
  * @see Mutex
  *
  * @author Alexander Zlakomanov <zlakomanoff@gmail.com>
@@ -42,16 +43,15 @@ use yii\base\InvalidConfigException;
 class OracleMutex extends DbMutex
 {
     /** available lock modes */
-    const MODE_X = 'X_MODE';
-    const MODE_NL = 'NL_MODE';
-    const MODE_S = 'S_MODE';
-    const MODE_SX = 'SX_MODE';
-    const MODE_SS = 'SS_MODE';
-    const MODE_SSX = 'SSX_MODE';
-
+    public const MODE_X = 'X_MODE';
+    public const MODE_NL = 'NL_MODE';
+    public const MODE_S = 'S_MODE';
+    public const MODE_SX = 'SX_MODE';
+    public const MODE_SS = 'SS_MODE';
+    public const MODE_SSX = 'SSX_MODE';
     /**
      * @var string lock mode to be used.
-     * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#CHDBCFDI
+     * @see https://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#ARPLS021#CHDBCFDI
      */
     public $lockMode = self::MODE_X;
     /**
@@ -74,7 +74,7 @@ class OracleMutex extends DbMutex
 
     /**
      * Acquires lock by given name.
-     * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
+     * @see https://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#ARPLS021
      * @param string $name of the lock to be acquired.
      * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
@@ -110,7 +110,7 @@ END;',
      * Releases lock by given name.
      * @param string $name of the lock to be released.
      * @return bool release result.
-     * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
+     * @see https://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#ARPLS021
      */
     protected function releaseLock($name)
     {

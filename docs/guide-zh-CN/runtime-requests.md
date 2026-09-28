@@ -76,13 +76,13 @@ if ($request->isPut)  { /* 请求方法是 PUT */ }
 
 `request` 组件提供了许多方式来检测当前请求的 URL。
 
-假设被请求的 URL 是 `http://example.com/admin/index.php/product?id=100`，
+假设被请求的 URL 是 `https://example.com/admin/index.php/product?id=100`，
 你可以像下面描述的那样获取 URL 的各个部分：
 
 * [[yii\web\Request::url|url]]：返回 `/admin/index.php/product?id=100`, 此 URL 不包括主机信息部分。
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]：返回 `http://example.com/admin/index.php/product?id=100`,
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]：返回 `https://example.com/admin/index.php/product?id=100`,
   包含host infode的整个URL。
-* [[yii\web\Request::hostInfo|hostInfo]]：返回 `http://example.com`, 只有主机信息部分。
+* [[yii\web\Request::hostInfo|hostInfo]]：返回 `https://example.com`, 只有主机信息部分。
 * [[yii\web\Request::pathInfo|pathInfo]]：返回 `/product`，
   这个是入口脚本之后，问号之前（查询字符串）的部分。
 * [[yii\web\Request::queryString|queryString]]：返回 `id=100`，问号之后的部分。

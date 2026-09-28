@@ -6,8 +6,8 @@
 
 受入テストは Codeception フレームワークの助けを借りて実装されています。Codeception フレームワークには優れたドキュメントがありますので、参照して下さい。
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Acceptance Tests](https://codeception.com/docs/03-AcceptanceTests)
 
 ## ベーシック・テンプレート、アドバンスト・テンプレートのテストを実行する
 

@@ -17,7 +17,7 @@ In case you are not using one of these templates, Codeception could be installed
 by issuing the following console commands:
 
 ```
-composer require codeception/codeception
-composer require codeception/specify
-composer require codeception/verify
+composer require --dev codeception/codeception
+composer require --dev codeception/specify
+composer require --dev codeception/verify
 ```

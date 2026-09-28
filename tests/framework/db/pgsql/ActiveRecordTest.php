@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\pgsql;
@@ -10,14 +11,10 @@ namespace yiiunit\framework\db\pgsql;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
-use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
-use yii\helpers\Json;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
-use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\TestCase;
 
 /**
  * @group db
@@ -27,11 +24,9 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     protected $driverName = 'pgsql';
 
-    public function testBooleanAttribute()
+    public function testBooleanAttribute(): void
     {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
-        /* @var $this TestCase|ActiveRecordTestTrait */
         $customer = new $customerClass();
         $customer->name = 'boolean customer';
         $customer->email = 'mail@example.com';
@@ -54,9 +49,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertCount(1, $customers);
     }
 
-    public function testFindAsArray()
+    public function testFindAsArray(): void
     {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -94,12 +88,14 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertArrayHasKey('bool_status', $customers[2]);
     }
 
-    public function testBooleanValues()
+    public function testBooleanValues(): void
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -123,7 +119,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     /**
      * @see https://github.com/yiisoft/yii2/issues/4672
      */
-    public function testBooleanValues2()
+    public function testBooleanValues2(): void
     {
         $db = $this->getConnection();
         $db->charset = 'utf8';
@@ -156,7 +152,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertCount(1, UserAR::find()->where(['is_deleted' => [true, false]])->all($db));
     }
 
-    public function testBooleanDefaultValues()
+    public function testBooleanDefaultValues(): void
     {
         $model = new BoolAR();
         $this->assertNull($model->bool_col);
@@ -170,7 +166,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertTrue($model->save(false));
     }
 
-    public function testPrimaryKeyAfterSave()
+    public function testPrimaryKeyAfterSave(): void
     {
         $record = new DefaultPk();
         $record->type = 'type';
@@ -181,7 +177,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     /**
      * @dataProvider arrayValuesProvider $attributes
      */
-    public function testArrayValues($attributes)
+    public function testArrayValues($attributes): void
     {
         $type = new ArrayAndJsonTypes();
         foreach ($attributes as $attribute => $expected) {
@@ -212,7 +208,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame(1, $type->update(), 'The record got updated');
     }
 
-    public function arrayValuesProvider()
+    public static function arrayValuesProvider(): array
     {
         return [
             'simple arrays values' => [[
@@ -305,6 +301,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 }
 
+/**
+ * @property int $id
+ * @property bool|null $bool_col
+ * @property bool|null $default_true
+ * @property bool|null $default_false
+ */
 class BoolAR extends ActiveRecord
 {
     public static function tableName()
@@ -313,11 +315,23 @@ class BoolAR extends ActiveRecord
     }
 }
 
+/**
+ * @property int $id
+ * @property string $username
+ * @property string $auth_key
+ * @property string $password_hash
+ * @property string|null $password_reset_token
+ * @property string $email
+ * @property int $role
+ * @property int $status
+ * @property int $created_at
+ * @property int $updated_at
+ */
 class UserAR extends ActiveRecord
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
-    const ROLE_USER = 10;
+    public const STATUS_DELETED = 0;
+    public const STATUS_ACTIVE = 10;
+    public const ROLE_USER = 10;
 
     public static function tableName()
     {
@@ -327,19 +341,19 @@ class UserAR extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 }
 
 /**
  * {@inheritdoc}
- * @property array id
- * @property array intarray_col
- * @property array textarray2_col
- * @property array json_col
- * @property array jsonb_col
- * @property array jsonarray_col
+ * @property int $id
+ * @property array $intarray_col
+ * @property array $textarray2_col
+ * @property array $json_col
+ * @property array $jsonb_col
+ * @property array $jsonarray_col
  */
 class ArrayAndJsonTypes extends ActiveRecord
 {

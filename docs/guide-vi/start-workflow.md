@@ -1,13 +1,13 @@
 Chạy ứng dụng
 ====================
 
-Sau khi cài đặt Yii, ứng dụng Yii của bạn đã được chạy, tùy thuộc vào cấu hình bạn có thể truy cập qua URL `http://hostname/basic/web/index.php`
-hoặc `http://hostname/index.php`. Bài hướng dẫn này sẽ mô tả chức năng của ứng dụng và cách tổ chức code trong ứng dụng,
+Sau khi cài đặt Yii, ứng dụng Yii của bạn đã được chạy, tùy thuộc vào cấu hình bạn có thể truy cập qua URL `https://hostname/basic/web/index.php`
+hoặc `https://hostname/index.php`. Bài hướng dẫn này sẽ mô tả chức năng của ứng dụng và cách tổ chức code trong ứng dụng,
 và làm thế nào để xử lý các yêu cầu của ứng dụng.
 
 > Lưu ý: Để đơn giản, xuyên suốt các bài hướng dẫn "Getting Started" này, giả sử rằng chúng ta đã thiết lập `basic/web`
   như thư mục gốc trong máy chủ Web, và cấu hình URL dể truy cập vào ứng dụng của ban thành
-  `http://hostname/index.php` hoặc điều tương tự. Tùy theo yêu cầu của bạn, bạn hãy điều chình 
+  `https://hostname/index.php` hoặc điều tương tự. Tùy theo yêu cầu của bạn, bạn hãy điều chình 
   URLs sao cho phù hợp với ứng dụng.
 
 
@@ -16,7 +16,7 @@ Chức năng <span id="functionality"></span>
 
 Mẫu ứng dụng *Basic Application* bao gồm 4 trang cơ bản:
 
-* Trang chủ (homepage), được hiển thị khi bạn truy cập vào URL `http://hostname/index.php`,
+* Trang chủ (homepage), được hiển thị khi bạn truy cập vào URL `https://hostname/index.php`,
 * Trang "About",
 * Trang "Contact", trang hiển thị form contact cho phép user liên hệ với bạn qua email,
 * Trang "Login", trang hiển thị form login cho phép bạn có thể xác thực user. Hãy thử đăng nhập với
@@ -58,7 +58,7 @@ basic/                  Thư mục gốc ứng dụng
 Nói chung, những tập tin trong ứng dụng có thể chia thành hai loại: tập tin nằm trong thư mục `basic/web` và những tập
 tin nằm ở thư mục khác. Trước dây có thể truy cập trực tiếp qua HTTP (chẳng hạn như một trình duyệt), tuy nhiên sau này không thể truy cập và không nên có.
 
-Yii thực thi theo mẫu thiết kế [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+Yii thực thi theo mẫu thiết kế [model-view-controller (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 Điều này được phản ánh trong cấu trúc đường dẫn ở trên. Thư mục `models` chứa tất cả [lớp dữ liệu (model)](structure-models.md),
 còn thư mục `views` sẽ chứa tất cả [view scripts](structure-views.md), và thư mục `controllers` chứa tất cả
 [lớp điều khiển (controller classes)](structure-controllers.md).

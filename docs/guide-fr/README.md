@@ -1,7 +1,7 @@
 Guide définitif pour Yii 2.0
 ============================
 
-Ce guide est soumis aux [Conditions de la Documentation de Yii](http://www.yiiframework.com/doc/terms/).
+Ce guide est soumis aux [Conditions de la Documentation de Yii](https://www.yiiframework.com/doc/terms/).
 
 Tous droits réservés.
 

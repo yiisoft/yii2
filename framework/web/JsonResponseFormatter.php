@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -19,13 +20,14 @@ use yii\helpers\Json;
  * To configure properties like [[encodeOptions]] or [[prettyPrint]], you can configure the `response`
  * application component like the following:
  *
- * ```php
+ * ```
  * 'response' => [
  *     // ...
  *     'formatters' => [
  *         \yii\web\Response::FORMAT_JSON => [
  *              'class' => 'yii\web\JsonResponseFormatter',
  *              'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+ *              'keepObjectType' => false, // keep object type for zero-indexed objects
  *              // ...
  *         ],
  *     ],
@@ -41,18 +43,17 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * JSON Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
+    public const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
     /**
      * JSONP Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
+    public const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
     /**
      * HAL JSON Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
-
+    public const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
     /**
      * @var string|null custom value of the `Content-Type` header of the response.
      * When equals `null` default content type will be used based on the `useJsonp` property.
@@ -67,7 +68,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
     public $useJsonp = false;
     /**
      * @var int the encoding options passed to [[Json::encode()]]. For more details please refer to
-     * <https://secure.php.net/manual/en/function.json-encode.php>.
+     * <https://www.php.net/manual/en/function.json-encode.php>.
      * Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * This property has no effect, when [[useJsonp]] is `true`.
      * @since 2.0.7
@@ -81,6 +82,13 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @since 2.0.7
      */
     public $prettyPrint = false;
+    /**
+     * @var bool Avoids objects with zero-indexed keys to be encoded as array
+     * Json::encode((object)['test']) will be encoded as an object not array. This matches the behaviour of json_encode().
+     * Defaults to Json::$keepObjectType value
+     * @since 2.0.44
+     */
+    public $keepObjectType;
 
 
     /**
@@ -97,7 +105,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
             $this->contentType .= '; charset=UTF-8';
         }
         $response->getHeaders()->set('Content-Type', $this->contentType);
-  
+
         if ($this->useJsonp) {
             $this->formatJsonp($response);
         } else {
@@ -116,7 +124,16 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
             if ($this->prettyPrint) {
                 $options |= JSON_PRETTY_PRINT;
             }
+
+            $default = Json::$keepObjectType;
+            if ($this->keepObjectType !== null) {
+                Json::$keepObjectType = $this->keepObjectType;
+            }
+
             $response->content = Json::encode($response->data, $options);
+
+            // Restore default value to avoid any unexpected behaviour
+            Json::$keepObjectType = $default;
         } elseif ($response->content === null) {
             $response->content = 'null';
         }
@@ -128,7 +145,8 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJsonp($response)
     {
-        if (is_array($response->data)
+        if (
+            is_array($response->data)
             && isset($response->data['data'], $response->data['callback'])
         ) {
             $response->content = sprintf(

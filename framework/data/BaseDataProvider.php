@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -16,19 +17,31 @@ use yii\base\InvalidArgumentException;
  *
  * For more details and usage information on BaseDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
- * @property int $count The number of data models in the current page. This property is read-only.
+ * @property-read int $count The number of data models in the current page.
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
- * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination is
- * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
- * [[setPagination()]] for details.
- * @property Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled. Note that
- * the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
+ * @property-read Pagination|false $pagination The pagination object. If this is false, it means the pagination is disabled.
+ * @property-write array|Pagination|false $pagination The pagination to be used by this data provider.
+ * This can be one of the following:
+ *
+ * - a configuration array for creating the pagination object. The "class" element defaults
+ *   to 'yii\data\Pagination'
+ * - an instance of [[Pagination]] or its subclass
+ * - false, if pagination needs to be disabled.
+ * @property-read Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled.
+ * @property-write array|Sort|bool $sort The sort definition to be used by this data provider.
+ * This can be one of the following:
+ *
+ * - a configuration array for creating the sort definition object. The "class" element defaults
+ *   to 'yii\data\Sort'
+ * - an instance of [[Sort]] or its subclass
+ * - false, if sorting needs to be disabled.
  * @property int $totalCount Total number of possible data models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
@@ -37,7 +50,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      */
     private static $counter = 0;
     /**
-     * @var string an ID that uniquely identifies the data provider among all data providers.
+     * @var string|null an ID that uniquely identifies the data provider among all data providers.
      * Generated automatically the following way in case it is not set:
      *
      * - First data provider ID is empty.
@@ -168,7 +181,6 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         } elseif ($this->_totalCount === null) {
             $this->_totalCount = $this->prepareTotalCount();
         }
-
         return $this->_totalCount;
     }
 
@@ -198,7 +210,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the pagination for this data provider.
-     * @param array|Pagination|bool $value the pagination to be used by this data provider.
+     * @param array|Pagination|false $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
      * - a configuration array for creating the pagination object. The "class" element defaults

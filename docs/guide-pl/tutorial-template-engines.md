@@ -2,7 +2,7 @@ Silniki szablonów
 =================
 
 Yii domyślnie używa PHP jako języka szablonów, ale nic nie stoi na przeszkodzie, aby skonfigurować wsparcie dla innych silników renderujących widok, 
-takich jak [Twig](http://twig.sensiolabs.org/) lub [Smarty](http://www.smarty.net/), dostępnych w postaci rozszerzeń.
+takich jak [Twig](https://twig.symfony.com/) lub [Smarty](https://www.smarty.net/), dostępnych w postaci rozszerzeń.
 
 Komponent `view` jest odpowiedzialny za renderowanie widoków. Aby dodać niestandardowy silnik szablonów, należy skonfigurować komponent jak poniżej:
 

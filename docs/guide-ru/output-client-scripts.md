@@ -32,8 +32,8 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] в `<head>`
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] сразу после открытия тега `<body>`
 - [[yii\web\View::POS_END|View::POS_END]] сразу после закрытия тега `</body>`
-- [[yii\web\View::POS_READY|View::POS_READY]] для выполнения кода сразу после того, как DOM полностью загрузился. Этому соответствует [событие `ready`](http://learn.jquery.com/using-jquery-core/document-ready/). При этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]. Код будет обёрнут в соответствующий код jQuery. `POS_READY` является позицией по умолчанию.
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] для выполнения кода после того, как DOM полностью загрузился (включая картинки). [Событие `load`](http://learn.jquery.com/using-jquery-core/document-ready/). Так же, как и выше, при этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]
+- [[yii\web\View::POS_READY|View::POS_READY]] для выполнения кода сразу после того, как DOM полностью загрузился. Этому соответствует [событие `ready`](https://learn.jquery.com/using-jquery-core/document-ready/). При этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]. Код будет обёрнут в соответствующий код jQuery. `POS_READY` является позицией по умолчанию.
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] для выполнения кода после того, как DOM полностью загрузился (включая картинки). [Событие `load`](https://learn.jquery.com/using-jquery-core/document-ready/). Так же, как и выше, при этом автоматически зарегистрируется [[yii\web\JqueryAsset|jQuery]]
 
 Последний аргумент — это уникальный ID, который используется для идентификации блока со скриптом. При повторной регистрации происходит замена существующего скрипта на новый. Если вы не зададите ID, вместо него будет использоваться сам код. Это помогает избежать регистрации одного и того же кода несколько раз.
 
@@ -46,7 +46,7 @@ $this->registerJs(
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -80,7 +80,7 @@ body { background: #f00; }
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```
@@ -156,7 +156,7 @@ JS
 );
 ```
 
-Приведенный выше пример кода использует PHP [синтаксис Heredoc](https://secure.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) для лучшей читаемости. Это также обеспечивает лучшую подсветку синтаксиса в большинстве IDE, поэтому это предпочтительный способ написания встроенного JavaScript, особенно полезный для кода, более длинного чем однострочный. Переменная `$message` создается PHP и благодаря [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] содержит строку в допустимом синтаксисе JS, которую можно вставить в JavaScript код, чтобы поместить динамическую строку в вызов функции `alert()`.
+Приведенный выше пример кода использует PHP [синтаксис Heredoc](https://www.php.net/manual/ru/language.types.string.php#language.types.string.syntax.heredoc) для лучшей читаемости. Это также обеспечивает лучшую подсветку синтаксиса в большинстве IDE, поэтому это предпочтительный способ написания встроенного JavaScript, особенно полезный для кода, более длинного чем однострочный. Переменная `$message` создается PHP и благодаря [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] содержит строку в допустимом синтаксисе JS, которую можно вставить в JavaScript код, чтобы поместить динамическую строку в вызов функции `alert()`.
 
 > Note: При использовании Heredoc, будьте осторожны с именами переменных в коде JS, поскольку переменные, начинающиеся с `$`, могут интерпретироваться как переменные PHP, которые будут заменены их содержимым.
 > jQuery функция в форме `$(` или `$.` не интерпретируется как переменная PHP и может безопасно использоваться.

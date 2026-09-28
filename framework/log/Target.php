@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log;
@@ -14,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
+use yii\web\User;
 
 /**
  * Target is the base class for all log target classes.
@@ -26,13 +28,24 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
- * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
- * @property int $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning all available levels. Note that the type of this property differs in getter and
- * setter. See [[getLevels()]] and [[setLevels()]] for details.
- *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
+ *
+ * @property-read bool $enabled A value indicating whether this log target is enabled.
+ * @property-write bool|callable $enabled A boolean value or a callable to obtain the value from.
+ * The callable value is available since version 2.0.13.
+ *
+ * A callable may be used to determine whether the log target should be enabled in a dynamic way.
+ * For example, to only enable a log if the current user is logged in you can configure the target
+ * as follows:
+ *
+ * ```
+ * 'enabled' => function() {
+ *     return !Yii::$app->user->isGuest;
+ * }
+ * ```
+ * @property-read int $levels The message levels that this target is interested in. This is a bitmap of
+ * level values. Defaults to 0, meaning all available levels.
+ * @property-write array|int $levels Message levels that this target is interested in.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -92,6 +105,11 @@ abstract class Target extends Component
      * - `var` - `var` will be logged as `***`
      * - `var.key` - only `var[key]` will be logged as `***`
      *
+     * In addition, this property accepts (case-insensitive) patterns. For example:
+     * - `_SERVER.*_SECRET` matches all ending with `_SECRET`, such as `$_SERVER['TOKEN_SECRET']` etc.
+     * - `_SERVER.SECRET_*` matches all starting with `SECRET_`, such as `$_SERVER['SECRET_TOKEN']` etc.
+     * - `_SERVER.*SECRET*` matches all containing `SECRET` i.e. both of the above.
+     *
      * @since 2.0.16
      */
     public $maskVars = [
@@ -100,7 +118,7 @@ abstract class Target extends Component
         '_SERVER.PHP_AUTH_PW',
     ];
     /**
-     * @var callable a PHP callable that returns a string to be prefixed to every exported message.
+     * @var callable|null a PHP callable that returns a string to be prefixed to every exported message.
      *
      * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
      * such as user IP, user ID and session ID.
@@ -170,9 +188,12 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        $items = ArrayHelper::flatten($context);
         foreach ($this->maskVars as $var) {
-            if (ArrayHelper::getValue($context, $var) !== null) {
-                ArrayHelper::setValue($context, $var, '***');
+            foreach ($items as $key => $value) {
+                if (StringHelper::matchWildcard($var, $key, ['caseSensitive' => false])) {
+                    ArrayHelper::setValue($context, $key, '***');
+                }
             }
         }
         $result = [];
@@ -203,7 +224,7 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
@@ -293,11 +314,11 @@ abstract class Target extends Component
      */
     public function formatMessage($message)
     {
-        list($text, $level, $category, $timestamp) = $message;
+        [$text, $level, $category, $timestamp] = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
-            if ($text instanceof \Throwable || $text instanceof \Exception) {
+            if ($text instanceof \Exception || $text instanceof \Throwable) {
                 $text = (string) $text;
             } else {
                 $text = VarDumper::export($text);
@@ -336,7 +357,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /* @var $user \yii\web\User */
+        /** @var User $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();
@@ -344,7 +365,7 @@ abstract class Target extends Component
             $userID = '-';
         }
 
-        /* @var $session \yii\web\Session */
+        /** @var \yii\web\Session $session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 
@@ -360,7 +381,7 @@ abstract class Target extends Component
      * For example, to only enable a log if the current user is logged in you can configure the target
      * as follows:
      *
-     * ```php
+     * ```
      * 'enabled' => function() {
      *     return !Yii::$app->user->isGuest;
      * }
@@ -373,7 +394,6 @@ abstract class Target extends Component
 
     /**
      * Check whether the log target is enabled.
-     * @property bool Indicates whether this log target is enabled. Defaults to true.
      * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()

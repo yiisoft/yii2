@@ -434,7 +434,7 @@ class EntryForm extends Model
     {
         return [
             [['name', 'email'], 'required'],
-            ['country', CountryValidator::className()],
+            ['country', CountryValidator::class],
             ['email', 'email'],
         ];
     }
@@ -584,7 +584,7 @@ JS;
 
 ### Validación Diferida <span id="deferred-validation"></span>
 
-Si necesitas realizar validación del lado del cliente asincrónica, puedes crear [Objetos Diferidos](http://api.jquery.com/category/deferred-object/).
+Si necesitas realizar validación del lado del cliente asincrónica, puedes crear [Objetos Diferidos](https://api.jquery.com/category/deferred-object/).
 Por ejemplo, para realizar validación AJAX personalizada, puedes utilizar el siguiente código:
 
 ```php

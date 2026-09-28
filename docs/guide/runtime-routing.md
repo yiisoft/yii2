@@ -156,7 +156,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // creates an anchored URL: /index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post%2Findex
+// creates an absolute URL: https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
 // creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post%2Findex
@@ -214,11 +214,11 @@ use yii\helpers\Url;
 // currently requested URL: /index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// an aliased URL: http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// an aliased URL: https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// an absolute URL: http://example.com/images/logo.gif
+// an absolute URL: https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -443,29 +443,29 @@ Without using optional parameters, you would have to create 4 rules to achieve t
 
 It is possible to include Web server names in the patterns of URL rules. This is mainly useful when your application
 should behave differently for different Web server names. For example, the following rules will parse the URL
-`http://admin.example.com/login` into the route `admin/user/login` and `http://www.example.com/login` into `site/login`.
+`https://admin.example.com/login` into the route `admin/user/login` and `https://www.example.com/login` into `site/login`.
 
 ```php
 'rules' => [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 You can also embed parameters in the server names to extract dynamic information from them. For example, the following rule
-will parse the URL `http://en.example.com/posts` into the route `post/index` and the parameter `language=en`.
+will parse the URL `https://en.example.com/posts` into the route `post/index` and the parameter `language=en`.
 
 ```php
 'rules' => [
-    'http://<language:\w+>.example.com/posts' => 'post/index',
+    'https://<language:\w+>.example.com/posts' => 'post/index',
 ]
 ```
 
 Since version 2.0.11, you may also use protocol relative patterns that work for both, `http` and `https`.
 The syntax is the same as above but skipping the `http:` part, e.g.: `'//www.example.com/login' => 'site/login'`.
 
-> Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `http://www.example.com/sandbox/blog/index.php`, then you should use the pattern
-  `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application
+> Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `https://www.example.com/sandbox/blog/index.php`, then you should use the pattern
+  `https://www.example.com/posts` instead of `https://www.example.com/sandbox/blog/posts`. This will allow your application
   to be deployed under any directory without the need to change your url rules. Yii will automatically detect the base url of the application.
 
 
@@ -631,8 +631,8 @@ And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
 ## URL normalization <span id="url-normalization"></span>
 
 Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
-with variations of the same URL, for example with and without a trailing slash. Because technically `http://example.com/path`
-and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO ranking.
+with variations of the same URL, for example with and without a trailing slash. Because technically `https://example.com/path`
+and `https://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO ranking.
 By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
 suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
 The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer

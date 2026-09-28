@@ -279,7 +279,7 @@ if (!$model && null === $event)
 ```
 
 Należy unikać stosowania `else` po `return`, kiedy ma to sens.
-Należy używać [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Należy używać [guard conditions](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -360,40 +360,20 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Dokumentacja
 ------------
 
-- Należy stosować dokumentację zgodnie ze składnią [phpDoc](http://phpdoc.org/).
+- Należy stosować dokumentację zgodnie ze składnią [phpDoc](https://phpdoc.org/).
 - Kod bez dokumentacji jest niedozwolony.
 - Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy"
   zaraz nad klasą.
 - Nie ma konieczności używania `@return`, jeśli metoda niczego nie zwraca.
-- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\BaseObject` są udokumentowane za pomocą tagu `@property`
-  w bloku dokumentacji klasy.
-  Adnotacje te są automatycznie generowane z tagów `@return` lub `@param` w odpowiednich getterach lub setterach przez
-  uruchomienie `./build php-doc` w folderze build.
-  Można dodać tag `@property` do gettera lub settera, aby wprost określić informację dla dokumentacji właściwości zadeklarowanej
-  w tych metodach, kiedy opis różni się od tego, co znajduje się w `@return`. Poniżej znajduje się przykład:
-
-  ```php
-    <?php
-    /**
-     * Returns the errors for all attribute or a single attribute.
-     * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-     * ...
-     */
-    public function getErrors($attribute = null)
-  ```
 
 #### Poziom pliku
 
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

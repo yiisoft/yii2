@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -14,8 +15,8 @@ namespace yii\base;
  * The interface does not declare any method. Classes implementing this interface must declare their constructors
  * like the following:
  *
- * ```php
- * public function __constructor($param1, $param2, ..., $config = [])
+ * ```
+ * public function __construct($param1, $param2, ..., $config = [])
  * ```
  *
  * That is, the last parameter of the constructor must accept a configuration array.

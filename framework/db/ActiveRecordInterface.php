@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -79,9 +80,6 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $asArray whether to return the primary key value as an array. If true,
      * the return value will be an array with column name as key and column value as value.
      * If this is `false` (default), a scalar value will be returned for non-composite primary key.
-     * @property mixed The old primary key value. An array (column name => column value) is
-     * returned if the primary key is composite. A string is returned otherwise (`null` will be
-     * returned if the key value is `null`).
      * @return mixed the old primary key value. An array (column name => column value) is returned if the primary key
      * is composite or `$asArray` is true. A string is returned otherwise (`null` will be returned if
      * the key value is `null`).
@@ -102,7 +100,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
      * populated ActiveRecord instances. For example,
      *
-     * ```php
+     * ```
      * // find the customer whose ID is 1
      * $customer = Customer::find()->where(['id' => 1])->one();
      *
@@ -118,7 +116,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * You may override this method to return a customized query. For example,
      *
-     * ```php
+     * ```
      * class Customer extends ActiveRecord
      * {
      *     public static function find()
@@ -131,7 +129,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * The following code shows how to apply a default condition for all queries:
      *
-     * ```php
+     * ```
      * class Customer extends ActiveRecord
      * {
      *     public static function find()
@@ -147,6 +145,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * // Use where() to ignore the default condition
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
+     * ```
      *
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface]] instance.
      */
@@ -164,6 +163,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
      *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limited to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
      * instance.
@@ -173,7 +173,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * See the following code for usage examples:
      *
-     * ```php
+     * ```
      * // find a single customer whose primary key value is 10
      * $customer = Customer::findOne(10);
      *
@@ -196,7 +196,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * If you need to pass user input to this method, make sure the input value is scalar or in case of
      * array condition, make sure the array structure can not be changed from the outside:
      *
-     * ```php
+     * ```
      * // yii\web\Controller ensures that $id is scalar
      * public function actionView($id)
      * {
@@ -231,6 +231,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
      *    a non-associative array.
      *    Column names are limited to current records table columns for SQL DBMS, or filtered otherwise to be limted to simple filter conditions.
+     *  - a yii\db\Expression: The expression will be used directly. (@since 2.0.37)
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
      * instances.
@@ -240,7 +241,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * See the following code for usage examples:
      *
-     * ```php
+     * ```
      * // find the customers whose primary key value is 10
      * $customers = Customer::findAll(10);
      *
@@ -263,7 +264,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * If you need to pass user input to this method, make sure the input value is scalar or in case of
      * array condition, make sure the array structure can not be changed from the outside:
      *
-     * ```php
+     * ```
      * // yii\web\Controller ensures that $id is scalar
      * public function actionView($id)
      * {
@@ -288,13 +289,13 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], ['status' => '2']);
      * ```
      *
      * @param array $attributes attribute values (name-value pairs) to be saved for the record.
      * Unlike [[update()]] these are not going to be validated.
-     * @param array $condition the condition that matches the records that should get updated.
+     * @param mixed $condition the condition that matches the records that should get updated.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
      * @return int the number of rows updated
@@ -307,11 +308,11 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll([status = 3]);
      * ```
      *
-     * @param array $condition the condition that matches the records that should get deleted.
+     * @param array|null $condition the condition that matches the records that should get deleted.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
      * @return int the number of rows deleted
@@ -326,7 +327,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to save a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -336,7 +337,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attribute names that need to be saved. Defaults to `null`,
+     * @param array|null $attributeNames list of attribute names that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the saving succeeded (i.e. no validation errors occurred).
      */
@@ -347,7 +348,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * $customer = new Customer;
      * $customer->name = $name;
      * $customer->email = $email;
@@ -357,7 +358,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
      */
@@ -368,7 +369,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -378,7 +379,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param bool $runValidation whether to perform validation (calling [[\yii\base\Model::validate()|validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return int|bool the number of rows affected, or `false` if validation fails
      * or updating process is stopped for other reasons.

@@ -5,11 +5,11 @@ Una buena API ha de ser *versionada*: los cambios y las nuevas características 
 las APIs están destinadas a ser usadas por los clientes fuera de tu control. Por esta razón, compatibilidad hacia atrás (BC Backward compatibility)
 de las APIs ha de ser mantenida siempre que sea posible. Si es necesario un cambio que puede romper la BC, debes de introducirla en la nueva versión del API, e incrementar el número de versión. Los clientes que la usan pueden continuar usando la antigua versión de trabajo del API; los nuevos y actualizados clientes pueden obtener la nueva funcionalidad de la nueva versión del API.
 
-> Tip: referirse a [Semántica del versionado](http://semver.org/)
+> Tip: referirse a [Semántica del versionado](https://semver.org/)
 para más información en el diseño del número de versión del API.
 
 Una manera común de implementar el versionado de la API es embeber el número de versión en las URLs de la  API.
-Por ejemplo, `http://example.com/v1/users` se refiere al punto final `/users` de la versión 1 de la API. 
+Por ejemplo, `https://example.com/v1/users` se refiere al punto final `/users` de la versión 1 de la API. 
 
 Otro método de versionado de la API,
 la cual está ganando predominancia recientemente, es poner el número de versión en las cabeceras de la petición HTTP. Esto se suele hacer típicamente a través la cabecera `Accept`:
@@ -90,8 +90,8 @@ return [
 ];
 ```
 
-Como consecuencia del código anterior, `http://example.com/v1/users` devolverá la lista de usuarios en la versión 1, mientras
-`http://example.com/v2/users` devolverá la versión 2 de los usuarios.
+Como consecuencia del código anterior, `https://example.com/v1/users` devolverá la lista de usuarios en la versión 1, mientras
+`https://example.com/v2/users` devolverá la versión 2 de los usuarios.
 
 Gracias a los módulos, el código de las diferentes principales versiones puede ser aislado. Pero los módulos hacen posible
 reutilizar el código a través de los módulos vía clases base comunes y otros recursos compartidos.

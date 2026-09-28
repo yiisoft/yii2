@@ -43,11 +43,13 @@ class SettingsController extends Controller
     {
         $settings = Setting::find()->indexBy('id')->all();
 
-        if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
+        if ($this->request->isPost) {
+            if (Setting::loadMultiple($settings, $this->request->post()) && Setting::validateMultiple($settings)) {
             foreach ($settings as $setting) {
                 $setting->save(false);
             }
             return $this->redirect('index');
+        }
         }
 
         return $this->render('update', ['settings' => $settings]);
@@ -71,9 +73,11 @@ use yii\widgets\ActiveForm;
 
 $form = ActiveForm::begin();
 
-foreach ($settings as $index => $setting) {
-    echo $form->field($setting, "[$index]value")->label($setting->name);
+foreach ($settings as $id => $setting) {
+    echo $form->field($setting, "[$id]value")->label($setting->name);
 }
+
+echo Html::submitButton('Save');
 
 ActiveForm::end();
 ```
@@ -88,20 +92,29 @@ ActiveForm::end();
 ```php
 public function actionCreate()
 {
-    $count = count(Yii::$app->request->post('Setting', []));
-    $settings = [new Setting()];
-    for($i = 1; $i < $count; $i++) {
-        $settings[] = new Setting();
+    $settings = [];
+    if ($this->request->isPost) {
+        $count = count($this->request->post($setting->tableName())) - 1;
+        for ($i = 0; $i < $count; $i++) {
+            $settings[$i] = new Setting();
+        }
+        if (Setting::loadMultiple($settings, $this->request->post()) && Setting::validateMultiple($settings)) {
+            foreach ($settings as $setting) {
+                $setting->save(false);
+            }
+            return $this->redirect('index');
     }
+    }
+    $settings[] = new Setting();
 
-    // ...
+    return $this->render('create', ['settings' => $settings]);
 }
 ```
 
 ここでは、デフォルトで一個のモデルを含む `$settings` 配列を初期値として作成し、少なくとも一個のテキスト・フィールドが常にビューに表示されるようにしています。
 そして、受信したインプットの行数に合せて、配列にモデルを追加しています。
 
-ビューでは javascript を使ってインプットの行を動的に追加することが出来ます。
+ビューでは JavaScript を使ってインプットの行を動的に追加することが出来ます。
 
 ### 更新、作成、削除を一つのページに組み合わせる
 

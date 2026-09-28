@@ -355,8 +355,10 @@ the method/function is:
  * @param mixed $params the value of the "params" given in the rule
  * @param \yii\validators\InlineValidator $validator related InlineValidator instance.
  * This parameter is available since version 2.0.11.
+ * @param mixed $current the currently validated value of attribute.
+ * This parameter is available since version 2.0.36.
  */
-function ($attribute, $params, $validator)
+function ($attribute, $params, $validator, $current)
 ```
 
 If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
@@ -467,7 +469,7 @@ class EntryForm extends Model
     {
         return [
             [['name', 'email'], 'required'],
-            ['country', CountryValidator::className()],
+            ['country', CountryValidator::class],
             ['email', 'email'],
         ];
     }
@@ -746,7 +748,7 @@ JS;
 
 ### Deferred Validation <span id="deferred-validation"></span>
 
-If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
+If you need to perform asynchronous client-side validation, you can create [Deferred objects](https://api.jquery.com/category/deferred-object/).
 For example, to perform a custom AJAX validation, you can use the following code:
 
 ```php

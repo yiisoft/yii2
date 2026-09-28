@@ -60,7 +60,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 ## <div dir="rtl">إعدادات الإتصال الخاصة بقواعد البيانات - Configuring a DB Connection</div> <span id="configuring-db-connection"></span>
 
 <p dir="rtl">
-    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="https://secure.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
+    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="https://www.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
 </p>
 
 <blockquote class="note"><p dir="rtl">
@@ -68,7 +68,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
     كما يمكنك تفعيل ال driver المطلوب عن طريق حذف الفاصلة المنقوطة قبل ال driver المقصود مثل: 
 <code>extension=php_pdo_mysql.dll</code>
     ويمكنك الإطلاع على المزيد من هنا: 
-<a href="https://secure.php.net/manual/en/pdo.installation.php">pdo installation</a>    
+<a href="https://www.php.net/manual/en/pdo.installation.php">pdo installation</a>    
 </p></blockquote>
 
 <p dir="rtl">
@@ -112,7 +112,7 @@ return [
 <li> <a href="https://github.com/sam-it/yii2-mariadb">MariaDB</a></li>
 </ul>
 
-## <div dir="rtl">إنشاء ال Active Record<span id="creating-active-record"></span>
+## <div dir="rtl">إنشاء ال Active Record</div> <span id="creating-active-record"></span>
 
 <p dir="rtl">
     لجلب البيانات وعرضها من جدول ال <code>country</code>، سنقوم بإضافة ال <a href="../guide/db-active-record.md">Active Record</a> الى ال class المسمى ب <code>country</code>، والموجود في المسار <code>models/Country.php</code>.
@@ -163,7 +163,7 @@ $country->save();
     ستجد معلومات أكثر تفصيلاً في الجزء الخاص بال <a href="../guide/db-active-record.md">Active Record</a>. بالإضافة الى ذلك، يمكنك التفاعل مباشرة مع قاعدة البيانات باستخدام lower-level data accessing والتي تسمى ب <a href="../guide/db-dao.md">Database Access Objects</a>.
 </p></blockquote>
 
-## <div dir="rtl">إنشاء ال Action</a> <span id="creating-action"></span>
+## <div dir="rtl">إنشاء ال Action</div> <span id="creating-action"></span>
 
 <p dir="rtl">
 لعرض بيانات ال country للمستخدمين، يلزمك إنشاء action جديد، وبدلاً من وضع ال action الجديد في ال <code>site</code> controller كما فعلنا في المرات السابقة، سنقوم بإنشاء controller جديد، ومن ثم سنقوم بوضع ال action بداخله، والسبب المنطقي لهذا العمل أنك ستقوم بتجميع الشيفرة البرمجية المسؤولة عن أداء وظائف معينة في مكان واحد، وبهذا فإن جميع الإجرائات التي تخص ال country من المنطقي أن تكون موجودة داخل ال <code>CountryController</code>، والآن لنقم بإنشاء هذا ال controller الجديد، وال action الجديد وسيكون باسم <code>index</code>، كما هو موضح أدناه: 
@@ -254,7 +254,7 @@ use yii\widgets\LinkPager;
 </p>
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Country List](../guide/images/start-country-list.png)
@@ -266,7 +266,7 @@ http://hostname/index.php?r=country%2Findex
 </p>
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 <p dir="rtl">
