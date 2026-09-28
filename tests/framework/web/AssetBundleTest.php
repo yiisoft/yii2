@@ -121,7 +121,7 @@ class AssetBundleTest extends TestCase
             $this->assertSame(
                 $first->basePath,
                 $second->basePath,
-                'The published CSS file does not match the source SCSS file.',
+                'The existing published directory should be reused.',
             );
             $this->assertSame(
                 'red',
@@ -157,7 +157,7 @@ class AssetBundleTest extends TestCase
             $this->assertNotSame(
                 $first->basePath,
                 $second->basePath,
-                'The published CSS file does not match the source SCSS file.',
+                'The changed source should be published to a new directory.',
             );
             $this->assertSame(
                 'blue',
@@ -195,7 +195,7 @@ class AssetBundleTest extends TestCase
             $this->assertNotSame(
                 $first->basePath,
                 $second->basePath,
-                'The published CSS file does not match the source SCSS file.',
+                'The changed source should be published to a new directory.',
             );
             $this->assertSame(
                 'blue',

@@ -182,6 +182,7 @@ class AssetManager extends Component
      *
      * Hashing reads every file under the source directory on each request, including files that are excluded
      * from publishing by the options passed to [[publish()]], which can be expensive for large directories.
+     * Symbolic links to directories are not followed, so changes behind them do not produce a new hash.
      * Previously published directories are not removed. Therefore, this should normally be enabled only
      * during development.
      * This option has no effect on single files, when [[linkAssets]] is enabled or when [[hashCallback]] is set.
@@ -694,7 +695,8 @@ class AssetManager extends Component
      * The hash only changes when a file under the directory is added, removed, renamed or modified,
      * regardless of file modification times. All files under the directory are included, regardless of
      * the options passed to [[publish()]], so that the hash does not depend on them and stays consistent
-     * with [[getPublishedPath()]] and [[getPublishedUrl()]].
+     * with [[getPublishedPath()]] and [[getPublishedUrl()]]. Symbolic links to directories are not followed,
+     * so a symlink cycle cannot make the scan loop, and changes behind such links do not change the hash.
      * This method is used by [[hash()]] when [[hashSourceContents]] is enabled.
      * @param string $dir the directory to be hashed.
      * @return string hashed string.
@@ -704,7 +706,12 @@ class AssetManager extends Component
     {
         $dir = rtrim($dir, '/\\');
 
-        $files = FileHelper::findFiles($dir);
+        // directory symlinks are not followed, so a symlink cycle cannot make the scan loop
+        $files = FileHelper::findFiles($dir, [
+            'filter' => function ($path) {
+                return is_link($path) && is_dir($path) ? false : null;
+            },
+        ]);
 
         // the order returned by the file system is not guaranteed to be stable
         sort($files, SORT_STRING);

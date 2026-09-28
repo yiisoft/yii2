@@ -524,10 +524,11 @@ the directory hash:
 ],
 ```
 
-Changes to any file under an asset bundle's source directory will then produce a new published directory and URL
-on the next request. This also causes converted assets, such as SCSS files, to be generated again. The option scans
-and hashes all source files on every request, and old published directories are not removed automatically. Keep it
-disabled in production unless that cost and storage growth are acceptable. This option has no effect when
+Changes to any file under an asset bundle's source directory will then produce a new published directory and URL on
+the next request. This also causes converted assets, such as SCSS files, to be generated again. Symbolic links to
+directories are not followed, so changes to files behind them are not detected. The option scans and hashes all
+source files on every request, and old published directories are not removed automatically. Keep it disabled in
+production unless that cost and storage growth are acceptable. This option has no effect when
 [[yii\web\AssetManager::linkAssets|linkAssets]] is enabled, and a custom
 [[yii\web\AssetManager::hashCallback|hashCallback]] takes precedence over it.
 
