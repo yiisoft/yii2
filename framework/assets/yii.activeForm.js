@@ -911,7 +911,6 @@
                     }
                     $ul.append(error);
                 });
-            
             $summary.toggle($ul.find('li').length > 0);
         }
     };
