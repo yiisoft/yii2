@@ -29,15 +29,15 @@ Yii 2.0 需要 PHP 5.4 或更高版本，该版本相对于 Yii 1.1 所需求的
 因此在语言层面上有很多的值得注意的不同之处。
 下面是 PHP 层的主要变化汇总：
 
-- [命名空间](http://php.net/manual/zh/language.namespaces.php)
-- [匿名函数](http://php.net/manual/zh/functions.anonymous.php)
+- [命名空间](https://www.php.net/manual/zh/language.namespaces.php)
+- [匿名函数](https://www.php.net/manual/zh/functions.anonymous.php)
 - 数组短语法 `[...元素...]` 用于取代 `array(...元素...)`
 - 视图文件中的短格式 echo 标签 `<?=`，自 PHP 5.4 起总会被识别并且合法，无论 short_open_tag 的设置是什么，可以安全使用。
-- [SPL 类和接口](http://php.net/manual/zh/book.spl.php)
-- [延迟静态绑定](http://php.net/manual/zh/language.oop5.late-static-bindings.php)
-- [日期和时间](http://php.net/manual/zh/book.datetime.php)
-- [Traits](http://php.net/manual/zh/language.oop5.traits.php)
-- [intl](http://php.net/manual/zh/book.intl.php) Yii 2.0 使用 PHP 扩展 `intl` 
+- [SPL 类和接口](https://www.php.net/manual/zh/book.spl.php)
+- [延迟静态绑定](https://www.php.net/manual/zh/language.oop5.late-static-bindings.php)
+- [日期和时间](https://www.php.net/manual/zh/book.datetime.php)
+- [Traits](https://www.php.net/manual/zh/language.oop5.traits.php)
+- [intl](https://www.php.net/manual/zh/book.intl.php) Yii 2.0 使用 PHP 扩展 `intl` 
   来支持国际化的相关功能。
 
 
@@ -292,7 +292,7 @@ Yii 2.0 支持基于代码注释自动生成相的关命令行帮助（help）�
 国际化（I18N）
 ------------
 
-Yii 2.0 移除了原来内置的日期格式器和数字格式器，为了支持 [PECL intl PHP module](http://pecl.php.net/package/intl)（PHP 的国际化扩展）的使用。
+Yii 2.0 移除了原来内置的日期格式器和数字格式器，为了支持 [PECL intl PHP module](https://pecl.php.net/package/intl)（PHP 的国际化扩展）的使用。
 
 消息翻译现在由 `i18n` 应用组件执行。
 该组件管理一系列消息源，

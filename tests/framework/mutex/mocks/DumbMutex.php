@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\mutex\mocks;
@@ -19,7 +20,7 @@ class DumbMutex extends Mutex
 {
     use RetryAcquireTrait;
 
-    public $attemptsCounter = 0;
+    public $attemptsTime = [];
     public static $locked = false;
 
     /**
@@ -28,7 +29,7 @@ class DumbMutex extends Mutex
     protected function acquireLock($name, $timeout = 0)
     {
         return $this->retryAcquire($timeout, function () {
-            $this->attemptsCounter++;
+            $this->attemptsTime[] = \microtime(true);
             if (!static::$locked) {
                 static::$locked = true;
 

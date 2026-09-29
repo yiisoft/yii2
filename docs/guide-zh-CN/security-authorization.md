@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ ACF 自顶向下逐一检查存取规则，直到找到一个与当前
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -157,9 +157,9 @@ class SiteController extends Controller
 
 基于角色的存取控制 （RBAC） 提供了一个简单而强大的集中式存取控制机制。
 详细的关于 RBAC 和诸多传统的存取控制方案对比的详情，请参阅
-[Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control)。
+[Wikipedia](https://zh.wikipedia.org/wiki/%E4%BB%A5%E8%A7%92%E8%89%B2%E7%82%BA%E5%9F%BA%E7%A4%8E%E7%9A%84%E5%AD%98%E5%8F%96%E6%8E%A7%E5%88%B6)。
 
-Yii 实现了通用的分层的 RBAC，遵循的模型是 [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii 实现了通用的分层的 RBAC，遵循的模型是 [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 它通过 [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md) 提供 RBAC 功能。
 
 使用 RBAC 涉及到两部分工作。第一部分是建立授权数据，
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -646,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+然后按 [in the previous section](#generating-rbac-data) 中的说明创建自己的 command/migration：
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;

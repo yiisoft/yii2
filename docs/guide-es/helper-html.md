@@ -3,7 +3,7 @@ Clase auxiliar Html (Html helper)
 
 Todas las aplicaciones web generan grandes cantidades de marcado HTML (HTML markup). Si el marcado es estático, se
 puede realizar de forma efectiva
-[mezclando PHP y HTML en un mismo archivo](http://php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
+[mezclando PHP y HTML en un mismo archivo](https://www.php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
 generan dinámicamente empieza a complicarse su gestión sin ayuda extra. Yii ofrece esta ayuda en forma de una clase auxiliar Html
 que proporciona un conjunto de métodos estáticos para gestionar las etiquetas HTML más comúnmente usadas, sus opciones y contenidos.
 
@@ -45,7 +45,7 @@ gestión adicional que se debe conocer:
 
 - Si un valor es `null`, el correspondiente atributo no se renderizará.
 - Los atributos cuyos valores son de tipo booleano serán tratados como
-  [atributos booleanos](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [atributos booleanos](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Los valores de los atributos se codificarán en HTML usando [[yii\helpers\Html::encode()|Html::encode()]].
 - El atributo "data" puede recibir un array. En este caso, se "expandirá" y se renderizará una lista de atributos
   `data` ej. `'data' => ['id' => 1, 'name' => 'yii']` se convierte en `data-id="1" data-name="yii"`.
@@ -96,8 +96,8 @@ eliminara una propiedad, se puede especificar como una cadena de texto.
 
 
 Para que el contenido se muestre correctamente y de forma segura con caracteres especiales HTML el contenido debe ser
-codificado. En PHP esto se hace con [htmlspecialchars](http://www.php.net/manual/es/function.htmlspecialchars.php) y
-[htmlspecialchars_decode](http://www.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
+codificado. En PHP esto se hace con [htmlspecialchars](https://www.php.net/manual/es/function.htmlspecialchars.php) y
+[htmlspecialchars_decode](https://www.php.net/manual/es/function.htmlspecialchars-decode.php). El problema con el uso
 de estos métodos directamente es que se tiene que especificar la codificación y opciones extra cada vez. Ya que las
 opciones siempre son las mismas y la codificación debe coincidir con la de la aplicación para prevenir problemas de
 seguridad, Yii proporciona dos métodos simples y compactos:
@@ -301,7 +301,7 @@ Si se quiere enlazar un estilo externo desde un archivo CSS:
 genera
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -353,7 +353,7 @@ Para generar una etiqueta de tipo imagen se puede usar el siguiente ejemplo:
 
 genera
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 Aparte de los [alias](concept-aliases.md) el primer argumento puede aceptar rutas, parámetros y URLs. Del mismo modo

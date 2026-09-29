@@ -23,6 +23,8 @@
 首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中读取数据。
 你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见，后面的内容将以 MySQL 为例做演示。
 
+> Info: 虽然 MariaDB 曾经是 MySQL 的直接替代品，但现在已经不再完全正确。如果您希望在 MariaDB 中使用“JSON”支持等高级功能，请查看下面列出的 MariaDB 扩展。
+
 然后在数据库中创建一个名为 `country` 的表并插入简单的数据。可以执行下面的语句：
 
 ```sql
@@ -49,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',278357000);
 配置数据库连接 <span id="configuring-db-connection"></span>
 ---------------------------
 
-开始之前，请确保你已经安装了 PHP [PDO](http://www.php.net/manual/en/book.pdo.php) 
+开始之前，请确保你已经安装了 PHP [PDO](https://www.php.net/manual/zh/book.pdo.php) 
 扩展和你所使用的数据库的 PDO 驱动（例如 MySQL 的 `pdo_mysql`）。
 对于使用关系型数据库来讲，这是基本要求。
 
@@ -83,6 +85,7 @@ return [
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 创建活动记录 <span id="creating-active-record"></span>
@@ -225,7 +228,7 @@ use yii\widgets\LinkPager;
 浏览器访问下面的 URL 看看能否工作：
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![国家列表](images/start-country-list.png)
@@ -235,7 +238,7 @@ http://hostname/index.php?r=country/index
 也就是第二页记录。如果观察仔细点你还会看到浏览器的 URL 变成了：
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 在这个场景里，[[yii\data\Pagination|Pagination]] 提供了为数据结果集分页的所有功能：

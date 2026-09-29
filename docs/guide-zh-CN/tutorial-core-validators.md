@@ -138,14 +138,14 @@ public function rules()
 另外，它还可以帮你把输入值转换为一个 UNIX 时间戳并保存到 
 [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 所指定的属性里。
 
-- `format`: 被验证值的日期/时间格式。
-   这里的值可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中定义的日期时间格式。
+- `format`：被验证值的日期/时间格式。
+   这里的值可以是 [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax) 中定义的日期时间格式。
    另外还可以设置以 `php:` 开头的字符串，用来表示PHP可以识别的日期时间格式。
-   `Datetime` 日期时间类。请参考 <http://php.net/manual/en/datetime.createfromformat.php> 获取更多支持的格式。
+   `Datetime` 日期时间类。请参考 <https://www.php.net/manual/zh/datetime.createfromformat.php> 获取更多支持的格式。
    如果没有设置，默认值将使用 `Yii::$app->formatter->dateFormat` 中的值。
    请参考 [[yii\validators\DateValidator::$format|API 文档]] 以获取更详细的说明。
 
-- `timestampAttribute`: 输入的日期时间将被转换为时间戳后设置到的属性的名称。
+- `timestampAttribute`：输入的日期时间将被转换为时间戳后设置到的属性的名称。
   可以设置为和被验证的属性相同。如果相同，
   原始值将在验证结束后被时间戳覆盖。
   请参考 ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md) 以获取更多使用事例。
@@ -154,7 +154,7 @@ public function rules()
   使用 [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] 设置日期时间格式
   和使用 [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] 设置时区。
   
-  注：如果使用 `timestampAttribute`，被验证的值将被转换为UTC标准的时间戳，
+  注意，如果使用 `timestampAttribute`，被验证的值将被转换为UTC标准的时间戳，
   所以使用 [[yii\validators\DateValidator::timeZone|input time zone]] 输入的时区将被转换为UTC时间。
 
 - 自版本 2.0.4 开始支持
@@ -201,7 +201,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> 注: 如何判断待测值是否为空，
+> Info: 如何判断待测值是否为空，
   被写在另外一个话题的
   [处理空输入](input-validation.md#handling-empty-inputs)章节。
 
@@ -223,7 +223,7 @@ function foo($model, $attribute) {
 
 ## [[yii\validators\EachValidator|each（循环验证）]] <span id="each"></span>
 
-> 注：此验证器自版本 2.0.4 后可用。
+> Info: 此验证器自版本 2.0.4 后可用。
 
 ```php
 [
@@ -286,6 +286,12 @@ function foo($model, $attribute) {
 
     // a1 必需存在，若 a1 为数组，则其每个子元素都必须存在。
     ['a1', 'exist', 'allowArray' => true],
+    
+    // type_id 需要存在于 ProductType 类中定义的表中的“id”列中
+    ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
+    
+    // 与前一个相同，但使用已定义的关联“type”
+    ['type_id', 'exist', 'targetRelation' => 'type'],
 ]
 ```
 
@@ -294,8 +300,8 @@ function foo($model, $attribute) {
 类型的模型类属性起作用，
 能支持对一个或多过字段的验证。
 
-可以使用此验证器验证单个数据列或多个数据列（如多个列不同的组合是否存在）。
-
+可以使用此验证器验证单个数据列或多个数据列
+（如多个列不同的组合是否存在）。
 
 - `targetClass`：用于查找输入值的目标 [AR](db-active-record.md) 类。
   若不设置，则会使用正在进行验证的当前模型类。
@@ -304,6 +310,7 @@ function foo($model, $attribute) {
   除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，
   数组的键和值都是代表字段的属性名，值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测属性名。
   若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
+- `targetRelation`: since version 2.0.14 you can use convenient attribute `targetRelation`, which overrides the `targetClass` and `targetAttribute` attributes using specs from the requested relation.  
 - `filter`：用于检查输入值存在性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。
   可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；
   或者样式为 `function ($query)` 的匿名函数，
@@ -334,7 +341,7 @@ function foo($model, $attribute) {
   MIME 的字符串 (如 "image/jpeg, image/png")。
   Mime 类型名是大小写不敏感的。默认为 null，
   意味着所有 MIME 类型都被接受。
-  请参考 [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) 获取更多详细内容。
+  请参考 [common media types](https://en.wikipedia.org/wiki/Media_type) 获取更多详细内容。
 - `minSize`：上传文件所需最少多少 Byte 的大小。默认为 null，代表没有下限。
 - `maxSize`：上传文件所需最多多少 Byte 的大小。默认为 null，代表没有上限。
 - `maxFiles`：给定属性最多能承载多少个文件。
@@ -360,6 +367,13 @@ function foo($model, $attribute) {
         // 在此处标准化输入的电话号码
         return $value;
     }],
+    
+    // 标准化 "phone" 使用方法 "normalizePhone"
+    ['phone', 'filter', 'filter' => [$this, 'normalizePhone']],
+    
+    public function normalizePhone($value) {
+        return $value;
+    }
 ]
 ```
 
@@ -372,11 +386,11 @@ function foo($model, $attribute) {
   请注意如果过滤器不能处理数组输入，你就应该把该属性设为 true。
   否则可能会导致 PHP Error 的发生。
 
-> 技巧：如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
+> Tip: 如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
-> 技巧：有许多的PHP方法结构和`filter`需要的结构一致。
-> 比如使用类型转换方法 ([intval](http://php.net/manual/en/function.intval.php)，
-> [boolval](http://php.net/manual/en/function.boolval.php), ...) 来确保属性为指定的类型，
+> Tip: 有许多的PHP方法结构和 `filter` 需要的结构一致。
+> 比如使用类型转换方法 ([intval](https://www.php.net/manual/zh/function.intval.php)，
+> [boolval](https://www.php.net/manual/zh/function.boolval.php), ...) 来确保属性为指定的类型，
 > 你可以简单的设置这些方法名而不是重新定义一个匿名函数：
 >
 > ```php
@@ -478,7 +492,7 @@ IPv4 地址 `192.168.10.128` 同样时允许的，因为这条规则在约束规
     * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
     * `system`: `multicast, linklocal, localhost, documentation`
 
-> 注：此验证器自版本 2.0.7 后可用。
+> Info: 此验证器自版本 2.0.7 后可用。
 
 ## [[yii\validators\RangeValidator|in（范围）]] <span id="in"></span>
 
@@ -677,3 +691,6 @@ IPv4 地址 `192.168.10.128` 同样时允许的，因为这条规则在约束规
   默认为 false。要注意但是为使用 IDN 验证功能，
   请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
 
+> Note: 验证器检查 URL 结构和主机部分是否正确。
+  它不会检查URL的其余部分，也不是为防止XSS或任何其他攻击而设计的。请参阅 [安全最佳实践](security-best-practices.md)
+  有关开发应用程序时威胁防范的更多信息的文章。

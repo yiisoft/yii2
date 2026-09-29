@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -41,14 +42,15 @@ use yii\base\NotSupportedException;
  * - `required`: [[RequiredValidator]]
  * - `safe`: [[SafeValidator]]
  * - `string`: [[StringValidator]]
- * - `trim`: [[FilterValidator]]
+ * - `trim`: [[TrimValidator]]
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
- * @property array $attributeNames Attribute names. This property is read-only.
+ * @property-read array $attributeNames Attribute names.
+ * @property-read array|null $validationAttributes List of attribute names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -90,8 +92,7 @@ class Validator extends Component
         'safe' => 'yii\validators\SafeValidator',
         'string' => 'yii\validators\StringValidator',
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
-            'filter' => 'trim',
+            'class' => 'yii\validators\TrimValidator',
             'skipOnArray' => true,
         ],
         'unique' => 'yii\validators\UniqueValidator',
@@ -104,7 +105,7 @@ class Validator extends Component
      */
     public $attributes = [];
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
+     * @var string|null the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated
@@ -133,7 +134,7 @@ class Validator extends Component
     public $skipOnError = true;
     /**
      * @var bool whether this validation rule should be skipped if the attribute value
-     * is null or an empty string.
+     * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
     /**
@@ -144,14 +145,14 @@ class Validator extends Component
      */
     public $enableClientValidation = true;
     /**
-     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
+     * @var callable|null a PHP callable that replaces the default implementation of [[isEmpty()]].
      * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
      * of the callable should be `function ($value)` which returns a boolean indicating
      * whether the value is empty.
      */
     public $isEmpty;
     /**
-     * @var callable a PHP callable whose return value determines whether this validator should be applied.
+     * @var callable|null a PHP callable whose return value determines whether this validator should be applied.
      * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
      * refer to the model and the attribute currently being validated. The callable should return a boolean value.
      *
@@ -160,7 +161,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```php
+     * ```
      * function ($model) {
      *     return $model->country == Country::USA;
      * }
@@ -170,7 +171,7 @@ class Validator extends Component
      */
     public $when;
     /**
-     * @var string a JavaScript function name whose return value determines whether this validator should be applied
+     * @var string|null a JavaScript function name whose return value determines whether this validator should be applied
      * on the client-side. The signature of the function should be `function (attribute, value)`, where
      * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
      * and `value` the current value of the attribute.
@@ -180,7 +181,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```javascript
+     * ```
      * function (attribute, value) {
      *     return $('#country').val() === 'USA';
      * }
@@ -208,11 +209,15 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
-            // method-based validator
+        if ($type instanceof \Closure) {
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
+        } elseif (!isset(static::$builtInValidators[$type]) && $model->hasMethod($type)) {
+            // method-based validator
+            $params['class'] = __NAMESPACE__ . '\InlineValidator';
+            $params['method'] = [$model, $type];
         } else {
+            unset($params['current']);
             if (isset(static::$builtInValidators[$type])) {
                 $type = static::$builtInValidators[$type];
             }
@@ -259,20 +264,32 @@ class Validator extends Component
         }
     }
 
+    /**
+     * Returns a list of attributes this validator applies to.
+     * @param array|string|null $attributes the list of attributes to be validated.
+     *
+     * - If this is `null`, the result will be equal to [[getAttributeNames()]].
+     * - If this is a string or an array, the intersection of [[getAttributeNames()]]
+     *   and the specified attributes will be returned.
+     *
+     * @return array|null list of attribute names.
+     * @since 2.0.16
+     */
     public function getValidationAttributes($attributes = null)
     {
         if ($attributes === null) {
             return $this->getAttributeNames();
         }
 
-        if (is_string($attributes)) {
+        if (is_scalar($attributes)) {
             $attributes = [$attributes];
         }
 
         $newAttributes = [];
         $attributeNames = $this->getAttributeNames();
         foreach ($attributes as $attribute) {
-            if (in_array($attribute, $attributeNames, true)) {
+            // do not strict compare, otherwise int attributes would fail due to to string conversion in getAttributeNames() using ltrim().
+            if (in_array($attribute, $attributeNames, false)) {
                 $newAttributes[] = $attribute;
             }
         }
@@ -297,8 +314,10 @@ class Validator extends Component
      * Validates a given value.
      * You may use this method to validate a value out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @param string $error the error message to be returned, if the validation fails.
+     * @param string|null $error the error message to be returned, if the validation fails.
      * @return bool whether the data is valid.
+     *
+     * @param-out string|null $error
      */
     public function validate($value, &$error = null)
     {
@@ -326,7 +345,7 @@ class Validator extends Component
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
      * @return array|null the error message and the array of parameters to be inserted into the error message.
-     * ```php
+     * ```
      * if (!$valid) {
      *     return [$this->message, [
      *         'param1' => $this->param1,

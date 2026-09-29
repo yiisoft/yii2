@@ -37,8 +37,8 @@ before they are used to resolve requests.
 In production mode, enable a bytecode cache, such as [PHP OPcache] or [APC], to minimize the time needed for including
 and parsing PHP files.
 
-[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
-[APC]: http://php.net/manual/en/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/en/intro.opcache.php
+[APC]: https://www.php.net/manual/en/book.apcu.php
 
 Some large applications have very complex application [configurations](concept-configurations.md)
 which are divided into many smaller configuration files. If this is the case, consider caching

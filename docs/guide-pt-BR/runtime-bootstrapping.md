@@ -44,8 +44,8 @@ regras de URL possam ter efeito antes que sejam usados para resolver as requisi�
 No modo de produção, habilite um cache de bytecode, como o [PHP OPcache] ou [APC], 
 para minimizar o tempo necessário para a inclusão e análise os arquivos PHP.
 
-[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
-[APC]: http://php.net/manual/en/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/pt_BR/intro.opcache.php
+[APC]: https://www.php.net/manual/pt_BR/book.apcu.php
 
 Algumas aplicações de larga escala possuem [configurações](concept-configurations.md) 
 complexas, que são divididos em vários arquivos menores. Se este for o caso, 

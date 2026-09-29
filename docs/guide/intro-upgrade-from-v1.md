@@ -29,15 +29,15 @@ Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 
 As a result, there are many differences on the language level that you should pay attention to.
 Below is a summary of the major changes regarding PHP:
 
-- [Namespaces](http://php.net/manual/en/language.namespaces.php).
-- [Anonymous functions](http://php.net/manual/en/functions.anonymous.php).
+- [Namespaces](https://www.php.net/manual/en/language.namespaces.php).
+- [Anonymous functions](https://www.php.net/manual/en/functions.anonymous.php).
 - Short array syntax `[...elements...]` is used instead of `array(...elements...)`.
 - Short echo tags `<?=` are used in view files. This is safe to use starting from PHP 5.4.
-- [SPL classes and interfaces](http://php.net/manual/en/book.spl.php).
-- [Late Static Bindings](http://php.net/manual/en/language.oop5.late-static-bindings.php).
-- [Date and Time](http://php.net/manual/en/book.datetime.php).
-- [Traits](http://php.net/manual/en/language.oop5.traits.php).
-- [intl](http://php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
+- [SPL classes and interfaces](https://www.php.net/manual/en/book.spl.php).
+- [Late Static Bindings](https://www.php.net/manual/en/language.oop5.late-static-bindings.php).
+- [Date and Time](https://www.php.net/manual/en/book.datetime.php).
+- [Traits](https://www.php.net/manual/en/language.oop5.traits.php).
+- [intl](https://www.php.net/manual/en/book.intl.php). Yii 2.0 makes use of the `intl` PHP extension
   to support internationalization features.
 
 
@@ -265,7 +265,7 @@ Themes work completely differently in 2.0. They are now based on a path mapping 
 view file path to a themed view file path. For example, if the path map for a theme is
 `['/web/views' => '/web/themes/basic']`, then the themed version for the view file
 `/web/views/site/index.php` will be `/web/themes/basic/site/index.php`. For this reason, themes can now
-be applied to any view file, even a view rendered outside of the context of a controller or a widget.
+be applied to any view file, even a view rendered outside the context of a controller or a widget.
 
 Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.
@@ -292,7 +292,7 @@ Please refer to the [Console Commands](tutorial-console.md) section for more det
 I18N
 ----
 
-Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](http://pecl.php.net/package/intl).
+Yii 2.0 removes the built-in date formatter and number formatter pieces in favor of the [PECL intl PHP module](https://pecl.php.net/package/intl).
 
 Message translation is now performed via the `i18n` application component.
 This component manages a set of message sources, which allows you to use different message

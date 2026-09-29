@@ -173,7 +173,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // cria uma URL ancorada: /index.php?r=post/view&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// cria uma URL absoluta: http://www.example.com/index.php?r=post/index
+// cria uma URL absoluta: https://www.example.com/index.php?r=post/index
 echo Url::to(['post/index'], true);
 
 // cria uma URL absoluta usando https: https://www.example.com/index.php?r=post/index
@@ -240,11 +240,11 @@ use yii\helpers\Url;
 // rota atual requerida: /index.php?r=admin/post/index
 echo Url::to();
 
-// uma alias da URL: http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// uma alias da URL: https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// uma URL absoluta: http://example.com/images/logo.gif
+// uma URL absoluta: https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -501,19 +501,19 @@ mesmo resultado.
 É possível incluir domínios nos padrões das regras de URL. Isto é útil quando sua
 aplicação se comporta de forma diferente em diferentes domínios. Por exemplo, a 
 regra a seguir obtém a rota `admin/user/login` pela análise da URL 
-`http://admin.example.com/login` e a rota `site/login` pela análise da URL 
-`http://www.example.com/login`.
+`https://admin.example.com/login` e a rota `site/login` pela análise da URL 
+`https://www.example.com/login`.
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 Você também pode incorporar parâmetros nos domínios para extrair informações 
 dinamicamente a partir deles. Por exemplo, a regra a seguir obtém a rota 
-`post/index` e o parâmetro `language=en` pela análise da URL `http://en.example.com/posts`
+`post/index` e o parâmetro `language=en` pela análise da URL `https://en.example.com/posts`
 
 ```php
 [
@@ -523,8 +523,8 @@ dinamicamente a partir deles. Por exemplo, a regra a seguir obtém a rota
 
 > Observação: Regras com domínios NÃO devem ser incluídos com subpastas do script 
   de entrada em seus padrões. Por exemplo, se a aplicação estiver sob 
-  `http://www.example.com/sandbox/blog`, você deve usar o padrão 
-  `http://www.example.com/posts` ao invés de `http://www.example.com/sandbox/blog/posts`. 
+  `https://www.example.com/sandbox/blog`, você deve usar o padrão 
+  `https://www.example.com/posts` ao invés de `https://www.example.com/sandbox/blog/posts`. 
   Isto permite que sua aplicação seja implantado sob qualquer diretório sem a 
   necessidade de alterar o código da aplicação.
 

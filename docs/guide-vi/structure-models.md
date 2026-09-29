@@ -1,7 +1,7 @@
 Model
 ======
 
-Model là phần trong kiến trúc [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Model là phần trong mô hình [MVC](https://vi.wikipedia.org/wiki/MVC).
 Là đối tượng đại diện cho phần dữ liệu, phương thức xử lý và nghiệp vụ logic.
 
 Bạn có thể tạo mới các lớp model bằng việc kế thừa từ lớp [[yii\base\Model]] hoặc các lớp con của nó. Lớp cơ sở
@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 Bạn có thể truy cập các thuộc tính như truy cập mảng các phần tử, nhờ sự hỗ trợ từ lớp
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) và [ArrayIterator](https://www.php.net/manual/en/class.arrayiterator.php)
 bởi [[yii\base\Model]]:
 
 ```php
@@ -119,10 +119,10 @@ class ContactForm extends Model
     public function attributeLabels()
     {
         return [
-            'name' => 'Your name',
-            'email' => 'Your email address',
-            'subject' => 'Subject',
-            'body' => 'Content',
+            'name' => 'Tên liên hệ',
+            'email' => 'Địa chỉ email',
+            'subject' => 'Tiêu đề',
+            'body' => 'Nội dung',
         ];
     }
 }
@@ -135,10 +135,10 @@ Với ứng dụng cần hỗ trợ đa ngôn ngữ, bạn cần dịch lại nh
 public function attributeLabels()
 {
     return [
-        'name' => \Yii::t('app', 'Your name'),
-        'email' => \Yii::t('app', 'Your email address'),
-        'subject' => \Yii::t('app', 'Subject'),
-        'body' => \Yii::t('app', 'Content'),
+        'name' => \Yii::t('app', 'Tên liên hệ'),
+        'email' => \Yii::t('app', 'Địa chỉ email'),
+        'subject' => \Yii::t('app', 'Tiêu đề'),
+        'body' => \Yii::t('app', 'Nội dung'),
     ];
 }
 ```
@@ -521,7 +521,7 @@ bạn có thể được thực hiện các chiến lược sau:
   ta định nghĩa lớp khung model bằng việc kế thừa từ lớp model cơ sở. Lớp khung model này
   có thể chứa các quy tắc logic được mô tả cụ thể chi ứng dụng hoặc module này.
 
-Ví dụ, với [Mẫu Dự án Advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), bạn có thể định nghĩa lớp cơ sở model
+Ví dụ, với [Mẫu dự án Advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), bạn có thể định nghĩa lớp cơ sở model
 là `common\models\Post`. Tiếp đến tại ứng dụng front end, bạn định nghĩa lớp khung là
 `frontend\models\Post` lớp này kế thừa từ lớp `common\models\Post`. Và tương tự cho ứng dụng back end,
 bạn định nghĩa model `backend\models\Post`. Với cách giải quyết này, bạn sẽ chắc chắn rằng mã của bạn tại model `frontend\models\Post`

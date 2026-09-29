@@ -107,7 +107,7 @@ Dans le code ci-dessus, lorsque le formulaire est soumis, la méthode [[yii\web\
 
 Vous pouvez également charger sur le serveur plusieurs fichiers à la fois, avec quelques ajustements au code présenté dans les sous-sections précédentes.
 
-Tout d'abord, vous devez ajuster la classe du modèle en ajoutant l'option `maxFiles` dans la règle de validation de `file` pour limiter le nombre maximum de fichiers à charger simultanément. Définir `maxFiles` à `0` signifie que ce nombre n'est pas limité. Le nombre maximal de fichiers que l'on peut charger simultanément est aussi limité par la directive PHP [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads), dont la valeur par défaut est 20. La méthode `upload()` doit aussi être modifiée pour permettre la sauvegarde des fichiers un à un.
+Tout d'abord, vous devez ajuster la classe du modèle en ajoutant l'option `maxFiles` dans la règle de validation de `file` pour limiter le nombre maximum de fichiers à charger simultanément. Définir `maxFiles` à `0` signifie que ce nombre n'est pas limité. Le nombre maximal de fichiers que l'on peut charger simultanément est aussi limité par la directive PHP [`max_file_uploads`](https://www.php.net/manual/fr/ini.core.php#ini.max-file-uploads), dont la valeur par défaut est 20. La méthode `upload()` doit aussi être modifiée pour permettre la sauvegarde des fichiers un à un.
 
 ```php
 namespace app\models;

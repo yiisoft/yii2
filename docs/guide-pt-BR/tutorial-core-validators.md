@@ -92,7 +92,7 @@ Este validador compara o valor de entrada especificado com um outro e certifica 
 
 Este validador verifica se o valor de entrada é uma data, hora ou data e hora em um formato adequado. Opcionalmente, pode converter o valor de entrada para um UNIX timestamp ou outro formato legível e armazená-lo em um atributo especificado via [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
-- `format`: o formato date/time que o valor que está sendo validado deve ter. Este pode ser um padrão de data e hora conforme descrito no [ICU manual] (http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax). Alternativamente esta pode ser uma string com o prefixo `php:` representando um formato que pode ser reconhecido pela classe PHP `Datetime`. Por favor, consulte <http://php.net/manual/en/datetime.createfromformat.php> para formatos suportados. Se isso não for definido, ele terá o valor de `Yii::$app->formatter->dateFormat`. Consulte a [[yii\validators\DateValidator::$format|documentação da API]] para mais detalhes.
+- `format`: o formato date/time que o valor que está sendo validado deve ter. Este pode ser um padrão de data e hora conforme descrito no [ICU manual] (https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax). Alternativamente esta pode ser uma string com o prefixo `php:` representando um formato que pode ser reconhecido pela classe PHP `Datetime`. Por favor, consulte <https://www.php.net/manual/pt_BR/datetime.createfromformat.php> para formatos suportados. Se isso não for definido, ele terá o valor de `Yii::$app->formatter->dateFormat`. Consulte a [[yii\validators\DateValidator::$format|documentação da API]] para mais detalhes.
 
 - `timestampAttribute`: o nome do atributo para que este validador possa atribuir o UNIX  timestamp convertido a partir da entrada de data / hora. Este pode ser o mesmo atributo que está sendo validado. Se este for o caso,  valor original será substituído pelo valor timestamp após a validação. Veja a seção ["Manipulando Datas com DatePicker"] (https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md) para exemplos de uso.
 
@@ -238,7 +238,7 @@ Você pode usar este validador para validar uma ou várias colunas (ex., a combi
 Este validador verifica se o dados de entrada é um arquivo válido.
 
 - `extensions`: uma lista de extensões de arquivos que são permitidos para upload. Pode ser utilizado tanto um array quanto uma string constituída de extensões de arquivos separados por espaços ou por vírgulas (Ex. "gif, jpg"). Os nomes das extensões são case-insensitive. O padrão é `null`, significa que todas as extensões são permitidas.
-- `mimeTypes`: uma lista de tipos de arquivos MIME que são permitidos no upload. Pode ser utilizado tanto um array quanto uma string constituída de tipos MIME separados por espaços ou por virgulas (ex. "image/jpeg, image/png"). Os nomes dos tipos MIME são case-insensitivo. O padrão é `null`, significa que todos os tipos MIME são permitidos. Para mais detalhes, consulte o artigo [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
+- `mimeTypes`: uma lista de tipos de arquivos MIME que são permitidos no upload. Pode ser utilizado tanto um array quanto uma string constituída de tipos MIME separados por espaços ou por virgulas (ex. "image/jpeg, image/png"). Os nomes dos tipos MIME são case-insensitivo. O padrão é `null`, significa que todos os tipos MIME são permitidos. Para mais detalhes, consulte o artigo [common media types](https://pt.wikipedia.org/wiki/Tipo_de_m%C3%ADdia_da_Internet).
 - `minSize`: o número mínimo de bytes exigido para o arquivo carregado. O padrão é `null`, significa não ter limite mínimo.
 - `maxSize`: o número máximo de bytes exigido para o arquivo carregado. O padrão é `null`, significa não ter limite máximo.
 - `maxFiles`: o número máximo de arquivos que o atributo pode receber. O padrão é 1, ou seja, a entrada de dados deve ser composto de um único arquivo. Se o `maxFiles` for maior que 1, então a entrada de dados deve ser composto por um array constituído de no máximo `maxFiles` arquivos.
@@ -270,8 +270,8 @@ Este validador não valida dados. Em vez disso, aplica um filtro no valor de ent
 > Dica: Se você quiser trimar valores de entrada, você deve utilizar o validador [trim](#trim).
 
 > Dica: Existem várias funções PHP que tem a assinatura esperada para o callback do `filter`.
-> Por exemplo, para aplicar a conversão de tipos (usando por exemplo [intval](http://php.net/manual/en/function.intval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), ...) para garantir um tipo específico para um atributo,
+> Por exemplo, para aplicar a conversão de tipos (usando por exemplo [intval](https://www.php.net/manual/pt_BR/function.intval.php),
+> [boolval](https://www.php.net/manual/pt_BR/function.boolval.php), ...) para garantir um tipo específico para um atributo,
 > você pode simplesmente especificar os nomes das funções do filtro sem a necessidade de envolvê-los em um closure:
 >
 > ```php

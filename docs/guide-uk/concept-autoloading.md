@@ -2,7 +2,7 @@
 =======================
 
 Пошук і підключення файлів класів в Yii реалізовано за допомогою
-[автозавантаження класів](http://www.php.net/manual/ru/language.oop5.autoload.php).
+[автозавантаження класів](https://www.php.net/manual/ru/language.oop5.autoload.php).
 Фреймворк надає власний швидкісний автозавантажувач, що сумісний з 
 [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md),
 який встановлюється в момент підключення файлу `Yii.php`.
@@ -16,7 +16,7 @@
 
 Для використання автозавантажувача класів Yii слід дотримуватися два простих правила створення і іменування класів:
 
-* Кожен клас повинен належати до [простору імен](http://php.net/manual/en/language.namespaces.php) (наприклад, `foo\bar\MyClass`)
+* Кожен клас повинен належати до [простору імен](https://www.php.net/manual/en/language.namespaces.php) (наприклад, `foo\bar\MyClass`)
 * Кожен клас повинен знаходитися в окремому файлі, шлях до якого визначаться наступним правилом:
 
 ```php

@@ -41,7 +41,7 @@ If a library carries its own class autoloader, you may install it in the [entry 
 of your application. It is recommended the installation is done before you include the `Yii.php` file so that
 the Yii class autoloader can take precedence in autoloading classes.
 
-If a library does not provide a class autoloader, but its class naming follows [PSR-4](http://www.php-fig.org/psr/psr-4/),
+If a library does not provide a class autoloader, but its class naming follows [PSR-4](https://www.php-fig.org/psr/psr-4/),
 you may use the Yii class autoloader to autoload the classes. All you need to do is just to declare a
 [root alias](concept-aliases.md#defining-aliases) for each root namespace used in its classes. For example,
 assume you have installed a library in the directory `vendor/foo/bar`, and the library classes are under
@@ -93,7 +93,7 @@ you should require a special composer package that prevent Bower and NPM package
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
 
-Otherwise, you can [download](http://www.yiiframework.com/download/) the Yii release file and unpack it in
+Otherwise, you can [download](https://www.yiiframework.com/download/) the Yii release file and unpack it in
 the `BasePath/vendor` directory.
 
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
@@ -159,6 +159,9 @@ class Yii extends \yii\BaseYii
 {
     // copy-paste the code from YiiBase (1.x) here
 }
+
+spl_autoload_unregister(array('YiiBase','autoload'));
+spl_autoload_register(array('Yii','autoload'));
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // register Yii 2 autoloader via Yii 1

@@ -95,8 +95,8 @@ Este validador comprueba si el valor de entrada es una fecha, tiempo or fecha/ti
 Opcionalmente, puede convertir el valor de entrada en una fecha/tiempo UNIX y almacenarla en un atributo especificado vía [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
 - `format`: el formato fecha/tiempo en el que debe estar el valor a ser validado. 
-   Esto tiene que ser un patrón fecha/tiempo descrito en [manual ICU](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
-   Alternativamente tiene que ser una cadena con el prefijo `php:` representando un formato que ha de ser reconocido por la clase `Datetime` de PHP. Por favor, refiérase a <http://php.net/manual/en/datetime.createfromformat.php> sobre los formatos soportados.
+   Esto tiene que ser un patrón fecha/tiempo descrito en [manual ICU](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax).
+   Alternativamente tiene que ser una cadena con el prefijo `php:` representando un formato que ha de ser reconocido por la clase `Datetime` de PHP. Por favor, refiérase a <https://www.php.net/manual/es/datetime.createfromformat.php> sobre los formatos soportados.
    Si no tiene ningún valor, ha de coger el valor de `Yii::$app->formatter->dateFormat`.
 - `timestampAttribute`: el nombre del atributo al cual este validador puede asignar el fecha/hora UNIX convertida desde la entrada fecha/hora.
 

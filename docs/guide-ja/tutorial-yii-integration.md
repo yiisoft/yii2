@@ -41,7 +41,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 複数のオートローダ・クラスの中で Yii のクラス・オートローダが優先されるように、
 ライブラリのオートローダは `Yii.php` ファイルをインクルードする前にインストールすることを推奨します。
 
-ライブラリがクラスオートローダを提供していない場合でも、クラスの命名規約が [PSR-4](http://www.php-fig.org/psr/psr-4/) に従っている場合は、ライブラリのクラスをオートロードするのに Yii のクラス・オートローダを使うことが出来ます。
+ライブラリがクラスオートローダを提供していない場合でも、クラスの命名規約が [PSR-4](https://www.php-fig.org/psr/psr-4/) に従っている場合は、ライブラリのクラスをオートロードするのに Yii のクラス・オートローダを使うことが出来ます。
 必要なことは、ライブラリのクラスによって使われている全てのルート名前空間に対して [ルート・エイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
 例えば、ライブラリを `vendor/foo/bar` ディレクトリの下にインストールしたとしましょう。
 そしてライブラリのクラスは `xyz` ルート名前空間の下にあるとします。
@@ -93,7 +93,7 @@ Bower および NPM のパッケージのインストールを阻止する特別
 Composer に関する更なる情報や、インストールの過程で出現しうる問題に対する解決方法については、
 一般的な [Composer によるインストール](start-installation.md#installing-via-composer) のセクションを参照してください。
 
-そうでない場合は、Yii のリリースを [ダウンロード](http://www.yiiframework.com/download/) して、
+そうでない場合は、Yii のリリースを [ダウンロード](https://www.yiiframework.com/download/) して、
 `BasePath/vendor` ディレクトリに解凍してください。
 
 次に、サードパーティのシステムのエントリ・スクリプトを修正します。次のコードをエントリ・スクリプトの先頭に追加してください。
@@ -159,6 +159,9 @@ class Yii extends \yii\BaseYii
 {
     // YiiBase (1.x) のコードをここにコピー・ペースト
 }
+
+spl_autoload_unregister(array('YiiBase','autoload'));
+spl_autoload_register(array('Yii','autoload'));
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // Yii 2 オートローダを Yii 1 によって登録

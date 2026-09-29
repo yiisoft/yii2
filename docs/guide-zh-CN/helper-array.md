@@ -1,7 +1,7 @@
 数组助手类（ArrayHelper）
 ======================
 
-除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)，
+除了 [PHP 中丰富的数组函数集](https://www.php.net/manual/zh/book.array.php)，
 Yii 数组助手类提供了额外的静态方法，让你更高效地处理数组。
 
 
@@ -117,7 +117,7 @@ $type = ArrayHelper::remove($array, 'type');
 
 ## 检查键名的存在（Checking Existence of Keys） <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` 工作原理和[array_key_exists](http://php.net/manual/en/function.array-key-exists.php)差不多，除了
+`ArrayHelper::keyExists` 工作原理和 [array_key_exists](https://www.php.net/manual/zh/function.array-key-exists.php) 差不多，除了
 它还可支持大小写不敏感的键名比较，比如：
 
 ```php
@@ -136,7 +136,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 
 ## 检索列（Retrieving Columns） <span id="retrieving-columns"></span>
 
-通常你要从多行数据或者多个对象构成的数组中获取某列的值，一个普通的例子是获取id值列表。
+通常你要从多行数据或者多个对象构成的数组中获取某列的值，一个普通的例子是获取 id 值列表。
 
 ```php
 $data = [
@@ -260,7 +260,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // 结果是： 
@@ -320,8 +320,8 @@ ArrayHelper::multisort($data, function($item) {
 `SORT_DESC` 之一。如果是按多个键名排序，你可以用一个数组为
 各个键指定不同的顺序。
 
-最后一个参数（译者注：第四个参数）是PHP的排序标识（sort flag），可使用的值和调用PHP
-[sort()](http://php.net/manual/zh/function.sort.php) 函数时传递的值一样。
+最后一个参数（译者注：第四个参数）是PHP的排序标识（sort flag），可使用的值和调用 PHP
+[sort()](https://www.php.net/manual/zh/function.sort.php) 函数时传递的值一样。
 
 
 ## 检测数组类型（Detecting Array Types） <span id="detecting-array-types"></span> 
@@ -356,7 +356,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 您可以使用 [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] 将两个或多个数组合并成一个递归的数组。
 如果每个数组都有一个具有相同字符串键值的元素，则后者将覆盖前者
-（不同于 [array_merge_recursive()](http://php.net/manual/en/function.array-merge-recursive.php)）。
+（不同于 [array_merge_recursive()](https://www.php.net/manual/zh/function.array-merge-recursive.phpp)）。
 如果两个数组都有一个数组类型的元素并且具有相同的键，则将执行递归合并。
 对于整数键的元素，来自后一个数组的元素将被附加到前一个数组。
 您可以使用 [[yii\helpers\UnsetArrayValue]] 对象来取消前一个数组的值或

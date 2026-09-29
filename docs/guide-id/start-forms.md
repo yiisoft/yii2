@@ -129,7 +129,7 @@ dimana form HTML akan ditampilkan, beserta informasi kegagalan pengiriman form t
 
 > Note: Pada contoh sederhana ini kita hanya me-_render_ halaman konfirmasi jika data yang dikirim tersebut valid. Pada prakteknya,
   anda harus pertimbangkan untuk menggunakan [[yii\web\Controller::refresh()|refresh()]] atau [[yii\web\Controller::redirect()|redirect()]]
-  untuk mencegah [permasalahan pengiriman form](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+  untuk mencegah [permasalahan pengiriman form](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Membuat View <span id="creating-views"></span>
@@ -186,7 +186,7 @@ Mari kita uji <span id="trying-it-out"></span>
 Untuk melihat bagaimana prosesnya, gunakan browser anda untuk mengakses URL ini :
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 Anda akan melihat halaman yang menampilkan form dengan dua field input. Dibagian atas dari semua input field, ada label yang menginformasikan data yang mana yang akan diinput. Jika anda menekan tombol pengiriman data tanpa

@@ -274,7 +274,7 @@ termasuk penerjemahan pesan, format tanggal, format penomoran, dll. Sebagai cont
 akan menggunakan _property_ ini secara _default_ untuk menentukan bahasa apa yang digunakan pada kalender yang ditampilkan dan bagaimana
 format tanggal pada kalender tersebut.
 
-Disarankan agar anda menentukan bahasa dalam format [Tag Bahasa IETF](http://en.wikipedia.org/wiki/IETF_language_tag).
+Disarankan agar anda menentukan bahasa dalam format [Tag Bahasa IETF](https://en.wikipedia.org/wiki/IETF_language_tag).
 Sebagai contoh, `en` berarti Bahasa Inggris, sedangkan `en-US` berarti Bahasa Inggris yang digunakan di Amerika Serikat.
 
 Informasi selengkapnya mengenai _property_ ini dapat dipelajari di bagian [Internasionalisasi](tutorial-i18n.md).
@@ -346,7 +346,7 @@ _Property_ ini menentukan bahasa apa yang digunakan dalam menulis kode aplikasi.
 yang berarti Bahasa Inggris (Amerika Serikat). Anda sebaiknya menentukan _property_ ini jika teks pada kode anda bukanlah Bahasa Inggris.
 
 Seperti layaknya _property_ [language](#language), anda seharusnya menentukan _property_ ini dalam
-format [Tag Bahasa IETF](http://en.wikipedia.org/wiki/IETF_language_tag). Sebagai contoh, `en` berarti Bahasa Inggris,
+format [Tag Bahasa IETF](https://en.wikipedia.org/wiki/IETF_language_tag). Sebagai contoh, `en` berarti Bahasa Inggris,
 sedangkan `en-US` berarti Bahasa Inggris (Amerika Serikat).
 
 Untuk informasi lebih lanjut mengenai _property_ ini bisa anda pelajari pada bagian [Internasionalisasi](tutorial-i18n.md).
@@ -356,7 +356,7 @@ Untuk informasi lebih lanjut mengenai _property_ ini bisa anda pelajari pada bag
 
 _Property_ ini disediakan sebagai cara alternatif untuk menentukan zona waktu default dari _PHP runtime_.
 Dengan menentukan _property_ ini, pada dasarnya anda memanggil _function_ PHP
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Sebagi contoh:
+[date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php). Sebagi contoh:
 
 ```php
 [

@@ -3,8 +3,8 @@
 
 Итак, вы хотите разрабатывать Yii? Хорошо! Но для того, чтобы увеличить шанс принятия ваших изменений,
 пожалуйста, следуйте следующим шагам. Если вы новичок в git и Github, вы можете сначала проверить
-[Github help](http://help.github.com/), [try git](https://try.github.com) или прочитать о
-[внутренней модели данных git](http://nfarina.com/post/9868516270/git-is-simpler).
+[Github help](https://help.github.com/), [try git](https://try.github.com) или прочитать о
+[внутренней модели данных git](https://nfarina.com/post/9868516270/git-is-simpler).
 
 Подготовка вашего рабочего окружения
 ------------------------------------
@@ -12,24 +12,24 @@
 Следующие шаги создадут рабочее окружение для Yii, которое вы можете использовать для работы над основным кодом
 фреймворка. *Эти шаги будут нужны только в первый раз*.
 
-### 1. [Сделайте форк](http://help.github.com/fork-a-repo/) репозитория Yii на Github и клонируйте этот форк в ваше рабочее окружение.
+### 1. [Сделайте форк](https://help.github.com/fork-a-repo/) репозитория Yii на Github и клонируйте этот форк в ваше рабочее окружение.
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 ```
 
 Если у вас есть проблемы с настройкой Git для работы с GitHub в Linux, или вы получаете ошибку похожую на "Permission Denied
-(publickey)", тогда вы должны настроить ваш Git по [этой инструкции](http://help.github.com/linux-set-up-git/)
+(publickey)", тогда вы должны настроить ваш Git по [этой инструкции](https://help.github.com/linux-set-up-git/)
 
 ### 2. Добавьте главный репозиторий Yii как дополнительный внешний git репозиторий называемый "upstream"
 
 Перейдите в каталог куда вы склонировали Yii, как правило "yii2". Затем введите следующую команду:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
-### 3. Настройка тестовой среды
+### 3. Настройка тестовой среды <span id="prepare-the-test-environment"></span>
 
 Следующие шаги не обязательны, если вы хотите работать только с переводом или документацией.
 
@@ -73,7 +73,35 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 Вы можете запустить модульные тесты JavaScript с помощью команды `npm test` в корневой директории приложения. 
 
-### Расширения
+### Статический анализ
+
+Мы используем [PHPStan](https://phpstan.org) для статического анализа. Он может быть запущен следующими командами:
+`php vendor/bin/phpstan` или `vendor\bin\phpstan.bat` в случае запуска на ОС Windows.
+
+По умолчанию PHPStan будет использовать конфигурацию из `phpstan.dist.neon`. Вы можете создать файл
+`phpstan.neon` с вашей собственной конфигурацией, и PHPStan будет использовать его.
+
+#### Примечание
+
+В аннотациях PHPDoc мы используем типы PHPStan. Если вам нужно указать другой тип для Psalm
+(такое обычно происходит в случае с дженериками), используйте аннотации Psalm в сочетании с
+аннотациями PHPStan.
+
+Пример того, как это должно выглядеть:
+
+```php
+/**
+ * @return Action<covariant static>|null
+ * @phpstan-return Action<covariant static>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
+
+### Расширения <span id="extensions"></span>
 
 Для работы над расширениями вы можете склонировать репозиторий расширения. Мы сделали команду, которая поможет вам
 сделать это:
@@ -112,7 +140,7 @@ php build/build dev/ext <extension-name> <fork>
 ### 2. Получите последний код из основного репозитория Yii
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 Вы должны начинать с этого действия работу над каждым новым предложением. Убедитесь, что вы работаете с самой
@@ -157,7 +185,7 @@ Enh #999: a description of the enhancement (Your Name)
 
 ### 6. Зафиксируйте изменения
 
-Добавляем файлы/изменения которые вы хотите зафиксировать в [staging area](http://git.github.io/git-reference/basic/#add):
+Добавляем файлы/изменения которые вы хотите зафиксировать в [staging area](https://git.github.io/git-reference/basic/#add):
 
 ```
 git add path/to/my/file.php
@@ -221,7 +249,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### Примечание
 
 Для обнаружения регрессии как можно раньше, каждое слияние кодовой базы Yii на Github будет подхвачено
-[Travis CI](http://travis-ci.org) для автоматического запуска тестов. Люди из *core team* не хотят нагружать
+[Travis CI](https://travis-ci.com) для автоматического запуска тестов. Люди из *core team* не хотят нагружать
 этот сервис, поэтому добавляют текст [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) в описание
 запроса на слияние, в следующих ситуациях:
 
@@ -235,7 +263,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

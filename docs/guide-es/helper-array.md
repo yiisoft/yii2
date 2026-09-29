@@ -1,7 +1,7 @@
 ArrayHelper
 ===========
 
-Adicionalmente al [rico conjunto de funciones para arrays de PHP](http://php.net/manual/es/book.array.php), el array helper de Yii proporciona
+Adicionalmente al [rico conjunto de funciones para arrays de PHP](https://www.php.net/manual/es/book.array.php), el array helper de Yii proporciona
 métodos estáticos adicionales permitiendo trabajar con arrays de manera más eficiente.
 
 
@@ -66,7 +66,7 @@ Después de ejecutar el código el `$array` contendrá `['options' => [1, 2]]` y
 
 ## Comprobando la Existencia de Claves <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` funciona de la misma manera que [array_key_exists](http://php.net/manual/es/function.array-key-exists.php)
+`ArrayHelper::keyExists` funciona de la misma manera que [array_key_exists](https://www.php.net/manual/es/function.array-key-exists.php)
 excepto que también soporta case-insensitive para la comparación de claves. Por ejemplo,
 
 ```php
@@ -270,7 +270,7 @@ El tercer argumento es la dirección. En caso de ordenar por una clave podría s
 direcciones de ordenación.
 
 El último argumento es un PHP sort flag que toma los mismos valores que los pasados a
-PHP [sort()](http://php.net/manual/es/function.sort.php).
+PHP [sort()](https://www.php.net/manual/es/function.sort.php).
 
 
 ## Detectando Tipos de Array <span id="detecting-array-types"></span>
@@ -373,7 +373,7 @@ A pesar de que PHP ofrece `in_array()`, este no soporta sub-grupos u objetos de 
 
 Para ayudar en este tipo de pruebas, [[yii\helpers\ArrayHelper]] provee [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 y [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método
-[in_array()](http://php.net/manual/en/function.in-array.php).
+[in_array()](https://www.php.net/manual/es/function.in-array.php).
 
 ```php
 // true

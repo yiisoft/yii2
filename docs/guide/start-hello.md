@@ -54,7 +54,7 @@ The name after the `action` prefix maps to the action's ID.
 
 When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
 referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
-(e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
+(e.g., `create-comment`). Action method IDs are mapped to action names by removing any dashes from the IDs,
 capitalizing the first letter in each word, and prefixing the resulting string with `action`. For example,
 the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
 
@@ -67,7 +67,7 @@ a `message` parameter with a value of `"Goodbye"`, the `$message` variable withi
 Within the action method, [[yii\web\Controller::render()|render()]] is called to render
 a [view](structure-views.md) file named `say`. The `message` parameter is also passed to the view
 so that it can be used there. The rendering result is returned by the action method. That result will be received
-by the application and displayed to the end user in the browser (as part of a complete HTML page). 
+by the application and displayed to the end user in the browser (as part of a complete HTML page).
 
 
 Creating a View <span id="creating-view"></span>
@@ -88,7 +88,7 @@ is called in an action, it will look for a PHP file named as `views/ControllerID
 
 Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
 before being printed. This is necessary as the parameter comes from an end user, making it vulnerable to
-[cross-site scripting (XSS) attacks](http://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
+[cross-site scripting (XSS) attacks](https://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
 malicious JavaScript code in the parameter.
 
 Naturally, you may put more content in the `say` view. The content can consist of HTML tags, plain text, and even PHP statements.
@@ -102,12 +102,12 @@ Trying it Out <span id="trying-it-out"></span>
 After creating the action and the view, you may access the new page by accessing the following URL:
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)
 
-This URL will result in a page displaying "Hello World". The page shares the same header and footer as the other application pages. 
+This URL will result in a page displaying "Hello World". The page shares the same header and footer as the other application pages.
 
 If you omit the `message` parameter in the URL, you would see the page display just "Hello". This is because `message` is passed as a parameter to the `actionSay()` method, and when it is omitted,
 the default value of `"Hello"` will be used instead.

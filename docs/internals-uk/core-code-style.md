@@ -251,7 +251,7 @@ if (!$model && null === $event)
 ```
 
 Краще уникайте використання `else` після `return`, де це має сенс.
-Використовуйте [вартові умови](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Використовуйте [вартові умови](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -332,42 +332,20 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Документація
 ------------
 
-- Див. [PHPDoc](http://phpdoc.org/) для довідки про синтаксис документації.
+- Див. [PHPDoc](https://phpdoc.org/) для довідки про синтаксис документації.
 - Код без документації не допускається.
 - Усі файли класів повинні містити файловий ("file-level") doc-блок на початку
   та класовий ("class-level") doc-блок безпосередньо над кожним класом.
 - Нема потреби використовувати `@return`, якщо метод нічого не повертає.
-- Усі віртуальні властивості у класах успадкованих від `yii\base\BaseObject`
-  документуються з тегом `@property` у класовому doc-блоці.
-  Ці анотації генеруються автоматично із тегів `@return` чи `@param`
-  відповідних геттерів або сеттерів виконанням команди `./build php-doc` у директорії build.
-  Ви можете додати тег `@property`
-  до геттеру або сеттеру, щоб точно визначити повідомлення для документації властивості,
-  яка представляється цими методами, коли опис відрізняється від того, що встановлено
-  тегом `@return`. Наприклад:
-
-  ```php
-    <?php
-    /**
-     * Returns the errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-     * ...
-     */
-    public function getErrors($attribute = null)
-  ```
 
 #### Файл
 
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

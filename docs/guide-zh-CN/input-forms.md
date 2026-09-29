@@ -107,7 +107,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 > 表单和它们的子元素不应该使用与表单的属性冲突的 input name 或 id，
 > 例如 `submit`，`length`，或者 `method`。
-> 要检查你的标签是否存在这些问题，一个完整的规则列表详见 [DOMLint](http://kangax.github.io/domlint/)。
+> 要检查你的标签是否存在这些问题，一个完整的规则列表详见 [DOMLint](https://kangax.github.io/domlint/)。
 
 额外的 HTML 标签可以使用纯 HTML 或者 [[yii\helpers\Html|Html]]-辅助类中的方法来添加到表单中，就如上面例子中的
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
@@ -127,7 +127,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > }
 > ```
 
-创建下拉列表 <span id="creating-activeform-dropdownlist"></span>
+创建下拉列表 <span id="creating-activeform-lists"></span>
 ------------
 
 有三种类型的列表：
@@ -162,7 +162,7 @@ $items = Category::find()
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::dropDownList()]] 方法创建一个下拉列表：
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->dropdownList([
         1 => 'item 1', 
@@ -177,7 +177,7 @@ echo $form->field($model, 'category')->dropdownList([
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::radioList()]] 方法创建一个单选列表：
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->radioList([
     1 => 'radio 1', 
@@ -190,7 +190,7 @@ echo $form->field($model, 'category')->radioList([
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::checkboxList()]] 方法创建一个复选框列表：
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->checkboxList([
     1 => 'checkbox 1', 
@@ -233,8 +233,8 @@ Pjax::end();
 
 #### 提交按钮和文件上传中的值
 
-在处理 [[https://github.com/jquery/jquery/issues/2321|files]] 和
-[[https://github.com/jquery/jquery/issues/2321|submit button values]] 
+在处理 [文件](https://github.com/jquery/jquery/issues/2321) 和
+[提交按钮值](https://github.com/jquery/jquery/issues/2321)
 时使用 `jQuery.serializeArray()` 
 有已知的问题，这将不会被解决，而是被弃用，
 以支持 HTML5 中引入的 FormData 类。
@@ -242,7 +242,7 @@ Pjax::end();
 这意味着对 ajax 或使用  [[yii\widgets\Pjax|Pjax]]
 小部件的文件和提交按钮值的唯一官方支持取决于
 `FormData` 类的
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|浏览器支持]]。
+[浏览器支持](https://developer.mozilla.org/zh-CN/docs/Web/API/FormData#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7)。
 
 延伸阅读 <span id="further-reading"></span>
 ---------------

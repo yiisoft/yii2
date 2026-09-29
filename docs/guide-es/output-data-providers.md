@@ -117,7 +117,7 @@ Basándose en las especificaciones de [[yii\data\SqlDataProvider::sort|sort]] y
 solicitados en el orden deseado.
 
 Para usar [[yii\data\SqlDataProvider]], hay que especificar las propiedades
-[[yii\data\SqlDataProvider::sql|sql]] y [yii\data\SqlDataProvider::totalCount|totalCount]].
+[[yii\data\SqlDataProvider::sql|sql]] y [[yii\data\SqlDataProvider::totalCount|totalCount]].
 Por ejemplo:
 
 ```php

@@ -35,13 +35,13 @@ determines at which position the script should be inserted into the page. Possib
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] for head section.
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] for right after opening `<body>`.
 - [[yii\web\View::POS_END|View::POS_END]] for right before closing `</body>`.
-- [[yii\web\View::POS_READY|View::POS_READY]] for executing code on the [document `ready` event](http://learn.jquery.com/using-jquery-core/document-ready/).
+- [[yii\web\View::POS_READY|View::POS_READY]] for executing code on the [document `ready` event](https://learn.jquery.com/using-jquery-core/document-ready/).
   This will automatically register [[yii\web\JqueryAsset|jQuery]] and wrap the code into the appropriate jQuery code. This is the default position.
 - [[yii\web\View::POS_LOAD|View::POS_LOAD]] for executing code on the
-  [document `load` event](http://learn.jquery.com/using-jquery-core/document-ready/). Same as the above, this will also register [[yii\web\JqueryAsset|jQuery]] automatically.
+  [document `load` event](https://learn.jquery.com/using-jquery-core/document-ready/). Same as the above, this will also register [[yii\web\JqueryAsset|jQuery]] automatically.
 
 The last argument is a unique script ID that is used to identify the script code block and replace an existing one with the same ID
-instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID. It is used to avoid registration of the same code muliple times.
+instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID. It is used to avoid registration of the same code multiple times.
 
 ### Registering script files <span id="script-files"></span>
 
@@ -56,7 +56,7 @@ An external script can be added like the following:
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -95,7 +95,7 @@ A CSS file can be registered using the following:
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```
@@ -189,7 +189,7 @@ JS
 ```
 
 The above example code uses PHP
-[Heredoc syntax](http://php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
+[Heredoc syntax](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
 preferred way of writing inline JavaScript, especially useful for code that is longer than a single line. The variable `$message` is created in PHP and
 thanks to [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] it contains the 
 string in valid JS syntax, which can be inserted into the JavaScript code to place the dynamic string in the function call to `alert()`.

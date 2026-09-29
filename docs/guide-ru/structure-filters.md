@@ -118,7 +118,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // разрешаем аутентифицированным пользователям
@@ -139,7 +139,7 @@ public function behaviors()
 ### Фильтр метода аутентификации<span id="auth-method-filters"></span>
 
 Фильтр метода аутентификации используется для аутентификации пользователя различными способами, такими как
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](http://oauth.net/2/).
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication), [OAuth 2](https://oauth.net/2/).
 Классы данных фильтров находятся в пространстве имён `yii\filters\auth`.
 
 Следующий пример показывает, как использовать [[yii\filters\auth\HttpBasicAuth]] для аутентификации пользователя с помощью
@@ -154,7 +154,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -180,7 +180,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -206,7 +206,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -236,7 +236,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::className(),
+            'class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -264,11 +264,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::className(),
+            'class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::className(),
+                'class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -285,7 +285,7 @@ public function behaviors()
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 Ограничитель количества запросов в единицу времени *(RateLimiter)* реализует алгоритм ограничения запросов, основанный на
-[алгоритме leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
+[алгоритме leaky bucket](https://en.wikipedia.org/wiki/Leaky_bucket). В основном, он используется при создании RESTful API.
 Подробнее об использовании данного фильтра можно прочитать в разделе [Ограничение запросов](rest-rate-limiting.md).
 
 
@@ -293,7 +293,7 @@ public function behaviors()
 
 Фильтр по типу запроса *(VerbFilter)* проверяет, разрешено ли запросам HTTP выполнять затребованные ими действия.
 Если нет, то будет выброшено исключение HTTP с кодом 405. В следующем примере в фильтре по типу запроса указан обычный
-набор разрешённых методов запроса при выполнения CRUD операций.
+набор разрешённых методов запроса при выполнении CRUD операций.
 
 ```php
 use yii\filters\VerbFilter;
@@ -302,7 +302,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -317,7 +317,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-Совместное использование разными источниками [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Access_control_CORS)
+Совместное использование разными источниками [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/CORS)
 - это механизм, который позволяет использовать различные ресурсы (шрифты, скрипты, и т.д.) с отличных от основного сайта
 доменов. В частности, AJAX вызовы JavaScript могут использовать механизм XMLHttpRequest. В противном случае, такие
 "междоменные" запросы были бы запрещены из-за политики безопасности same origin. CORS задаёт способ взаимодействия
@@ -334,7 +334,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -346,7 +346,7 @@ public function behaviors()
 Фильтрация Cors может быть настроена с помощью свойства [[yii\filters\Cors::$cors|$cors]].
 
 * `cors['Origin']`: массив, используемый для определения источников. Может принимать значение `['*']` (все) или
-  `['http://www.myserver.net', 'http://www.myotherserver.com']`. По умолчанию значение равно `['*']`.
+  `['https://www.myserver.net', 'https://www.myotherserver.com']`. По умолчанию значение равно `['*']`.
 * `cors['Access-Control-Request-Method']`: массив разрешенных типов запроса, таких как `['GET', 'OPTIONS', 'HEAD']`.
   Значение по умолчанию `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: массив разрешенных заголовков. Может быть `['*']` то есть все заголовки или
@@ -355,7 +355,7 @@ public function behaviors()
   Может принимать значения `true`, `false` или `null` (не установлено). Значение по умолчанию `null`.
 * `cors['Access-Control-Max-Age']`: определяет *срок жизни запроса, перед его началом*. По умолчанию `86400`.
 
-Например, разрешим CORS для источника : `http://www.myserver.net` с методами `GET`, `HEAD` и `OPTIONS` :
+Например, разрешим CORS для источника : `https://www.myserver.net` с методами `GET`, `HEAD` и `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -365,9 +365,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -387,9 +387,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

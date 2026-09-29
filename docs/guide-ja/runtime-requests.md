@@ -76,13 +76,13 @@ if ($request->isPut)  { /* リクエスト・メソッドは PUT */ }
 
 `request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
-リクエストされた URL が `http://example.com/admin/index.php/product?id=100` であると仮定したとき、
+リクエストされた URL が `https://example.com/admin/index.php/product?id=100` であると仮定したとき、
 次にまとめたように、この URL のさまざまな部分を取得することが出来ます。
 
 * [[yii\web\Request::url|url]]: `/admin/index.php/product?id=100` を返します。ホスト情報の部分を省略した URL です。
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: `https://example.com/admin/index.php/product?id=100` を返します。
   ホスト情報の部分を含んだ URL です。
-* [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
+* [[yii\web\Request::hostInfo|hostInfo]]: `https://example.com` を返します。URL のホスト情報の部分です。
 * [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。
   エントリ・スクリプトの後、疑問符 (クエリ文字列) の前の部分です。
 * [[yii\web\Request::queryString|queryString]]: `id=100` を返します。疑問符の後の部分です。
@@ -152,8 +152,9 @@ Yii アプリケーションに渡されるからです。
 信頼できるプロキシの情報を構成することが出来るようになっています。
 [[yii\web\Request::trustedHosts|trustedHosts]]、
 [[yii\web\Request::secureHeaders|secureHeaders]]、 
-[[yii\web\Request::ipHeaders|ipHeaders]] および
-[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+[[yii\web\Request::ipHeaders|ipHeaders]] 
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]] および
+[[yii\web\Request::portHeaders|portHeaders]] (2.0.46 以降)
 
 以下は、リバース・プロキシ・アレイの背後で動作するアプリケーションのための、request の構成例です
 (リバース・プロキシ・アレイは `10.0.2.0/24` のネットワークに設置されているとします)。
@@ -200,3 +201,27 @@ Yii アプリケーションに渡されるからです。
 信頼できるプロキシからのリクエストである場合にのみ、`X-ProxyUser-Ip` と `Front-End-Https` ヘッダが受け入れられます。
 その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
 後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。
+
+2.0.31 以降、[RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
+有効にするためには、ヘッダ名を `secureHeaders` に追加する必要があります。
+あなたのプロキシにそれを設定させることを忘れないで下さい。さもないと、エンド・ユーザが IP とプロトコルを盗み見ることが可能になります。
+
+### 解決済みのユーザ IP<span id="already-respolved-user-ip"></span>
+
+ユーザの IP アドレスが Yii アプリケーション以前に解決済みである場合(例えば、`ngx_http_realip_module` など) は、
+`request` コンポーネントは下記の構成で正しく動作します。
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '0.0.0.0/0',
+    ],
+    'ipHeaders' => [], 
+],
+```
+
+この場合、[[yii\web\Request::userIP|userIP]] の値は `$_SERVER['REMOTE_ADDR']` に等しくなります。
+同時に、HTTP ヘッダから解決されるプロパティも正しく動作します (例えば、[[yii\web\Request::getIsSecureConnection()]])。
+
+> 注意: `trustedHosts=['0.0.0.0/0']` の設定は、全ての IP が信頼できることを前提としています。

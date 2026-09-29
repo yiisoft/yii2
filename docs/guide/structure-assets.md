@@ -79,7 +79,7 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
@@ -201,13 +201,13 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+The above example defines an asset bundle for the ["fontawesome" package](https://fontawesome.com/). By specifying 
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
-Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
+Most JavaScript/CSS packages are managed by [Bower](https://bower.io/) and/or [NPM](https://www.npmjs.com/) package 
 managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
 both Bower and NPM packages using `composer.json` just as PHP packages.
 
@@ -257,7 +257,7 @@ requires global installation of a special Composer plugin by running the followi
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+This command installs [composer asset plugin](https://github.com/fxpio/composer-asset-plugin/) globally
 which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
 every single project on your computer will support Bower and NPM packages through `composer.json`. 
 
@@ -266,9 +266,11 @@ will be placed, if you want to publish them using Yii:
 
 ```json
 "config": {
-    "asset-installer-paths": {
-        "npm-asset-library": "vendor/npm",
-        "bower-asset-library": "vendor/bower"
+    "fxp-asset": {
+        "installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
     }
 }
 ```
@@ -459,10 +461,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // makes NO effect!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // makes NO effect!
                 ],
             ],
         ],
@@ -577,8 +579,8 @@ as described in the [Customizing Asset Bundle](#customizing-asset-bundles) subse
 ## Asset Conversion <span id="asset-conversion"></span>
 
 Instead of directly writing CSS and/or JavaScript code, developers often write them in some extended syntax and
-use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](http://lesscss.org/)
-or [SCSS](http://sass-lang.com/); and for JavaScript you may use [TypeScript](http://www.typescriptlang.org/).
+use special tools to convert it into CSS/JavaScript. For example, for CSS code you may use [LESS](https://lesscss.org/)
+or [SCSS](https://sass-lang.com/); and for JavaScript you may use [TypeScript](https://www.typescriptlang.org/).
 
 You can list the asset files in extended syntax in the [[yii\web\AssetBundle::css|css]] and [[yii\web\AssetBundle::js|js]] properties of an asset bundle. For example,
 
@@ -608,13 +610,13 @@ in extended syntax.
 Yii uses the file name extensions to identify which extended syntax an asset is in. By default it recognizes
 the following syntax and file name extensions:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](http://lesscss.org/)
+Yii relies on the installed pre-processor tools to convert assets. For example, to use [LESS](https://lesscss.org/)
 you should install the `lessc` pre-processor command.
 
 You can customize the pre-processor commands and the supported extended syntax by configuring
@@ -642,7 +644,7 @@ asset file extension names and the commands for performing the asset conversion.
 in the commands will be replaced with the source asset file paths and the target asset file paths.
 
 > Info: There are other ways of working with assets in extended syntax, besides the one described above.
-  For example, you can use build tools such as [grunt](http://gruntjs.com/) to monitor and automatically
+  For example, you can use build tools such as [grunt](https://gruntjs.com/) to monitor and automatically
   convert assets in extended syntax. In this case, you should list the resulting CSS/JavaScript files in
   asset bundles rather than the original files.
 
@@ -838,7 +840,7 @@ the last subsection.
 
 
 > Info: Using the `asset` command is not the only option to automate the asset combining and compressing process.
-  You can use the excellent task runner tool [grunt](http://gruntjs.com/) to achieve the same goal.
+  You can use the excellent task runner tool [grunt](https://gruntjs.com/) to achieve the same goal.
 
 
 ### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>

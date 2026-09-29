@@ -123,7 +123,7 @@ También puedes subir varios archivos a la vez, con algunos ajustes en el códig
 Primero debes ajustar la clase del modelo, agregando la opción `maxFiles` en la regla de validación `file` para limitar
 el número máximo de archivos a subir. Definir `maxFiles` como `0` significa que no hay límite en el número de archivos
 a subir simultáneamente. El número máximo de archivos permitidos para subir simultáneamente está también limitado
-por la directiva PHP [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
+por la directiva PHP [`max_file_uploads`](https://www.php.net/manual/es/ini.core.php#ini.max-file-uploads),
 cuyo valor por defecto es 20. El método `upload()` debería también ser modificado para guardar los archivos uno a uno.
 
 ```php

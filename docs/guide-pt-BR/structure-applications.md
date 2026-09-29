@@ -302,7 +302,7 @@ exemplo, o widget [[yii\jui\DatePicker]] usará o valor dessa propriedade por
 padrão para determinar em qual idioma o calendário deverá ser exibido e
 como a data deve ser formatada.
 
-Recomenda-se que você especifique um idioma em termos de um [código de idioma IETF](http://en.wikipedia.org/wiki/IETF_language_tag).
+Recomenda-se que você especifique um idioma em termos de um [código de idioma IETF](https://en.wikipedia.org/wiki/IETF_language_tag).
 Por exenplo, `en` corresponde ao inglês, enquanto `en-US` significa inglês dos
 Estados Unidos.
 
@@ -385,7 +385,7 @@ configurar essa propriedade se o conteúdo do texto no seu código não estiver
 em inglês.
 
 Conforme a propriedade [language](#language), você deve configurar essa propriedade
-em termos de um [código de idioma IETF](http://en.wikipedia.org/wiki/IETF_language_tag).
+em termos de um [código de idioma IETF](https://en.wikipedia.org/wiki/IETF_language_tag).
 Por exemplo, `en` corresponde ao inglês, enquanto `en-US` significa inglês dos
 Estados Unidos.
 
@@ -398,7 +398,7 @@ Mais detalhes sobre essa propriedade podem ser encontrados na seção
 Essa propriedade é disponibilizada como uma maneira alternativa de definir a
 timezone do PHP em tempo de execução. Ao confiugrar essa propriedade, você está
 essencialmente chamando a função
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)
+[date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php)
 do PHP. Por exemplo:
 
 ```php

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console;
@@ -16,7 +17,7 @@ use yiiunit\TestCase;
  */
 class UnknownCommandExceptionTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -24,11 +25,14 @@ class UnknownCommandExceptionTest extends TestCase
                 'cache' => 'yii\console\controllers\CacheController',
                 'migrate' => 'yii\console\controllers\MigrateController',
                 'message' => 'yii\console\controllers\MessageController',
+                'whatever' => 'yiiunit\data\console\controllers\FakeController',
+                'whatever-empty' => 'yiiunit\data\console\controllers\FakeEmptyController',
+                'whatever-no-default' => 'yiiunit\data\console\controllers\FakeNoDefaultController',
             ],
         ]);
     }
 
-    public function suggestedCommandsProvider()
+    public static function suggestedCommandsProvider(): array
     {
         return [
             ['migate', ['migrate']],
@@ -49,6 +53,7 @@ class UnknownCommandExceptionTest extends TestCase
             [str_repeat('asdw1234', 31), []],
             [str_repeat('asdw1234', 32), []],
             [str_repeat('asdw1234', 33), []],
+            ['what', ['whatever', 'whatever/default', 'whatever/second', 'whatever-no-default/index']],
         ];
     }
 
@@ -57,13 +62,13 @@ class UnknownCommandExceptionTest extends TestCase
      * @param string $command
      * @param array $expectedSuggestion
      */
-    public function testSuggestCommand($command, $expectedSuggestion)
+    public function testSuggestCommand($command, $expectedSuggestion): void
     {
         $exception = new UnknownCommandException($command, Yii::$app);
         $this->assertEquals($expectedSuggestion, $exception->getSuggestedAlternatives());
     }
 
-    public function testNameAndConstructor()
+    public function testNameAndConstructor(): void
     {
         $exception = new UnknownCommandException('test', Yii::$app);
         $this->assertEquals('Unknown command', $exception->getName());

@@ -36,6 +36,10 @@ class UserFixture extends ActiveFixture
 }
 ```
 
+These examples use the `app\tests\fixtures` namespace because the fixture classes are referenced directly
+by application tests. The `yii fixture` command has its own default namespace, `tests\unit\fixtures`.
+If your fixture classes use another namespace, configure the command or pass the `--namespace` option.
+
 > Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
 > by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
 > property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
@@ -47,8 +51,8 @@ class UserFixture extends ActiveFixture
 > - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (since version 2.0.2)
 
 
-The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `FixturePath/data/TableName.php`,
-where `FixturePath` stands for the directory containing the fixture class file, and `TableName`
+The fixture data for an `ActiveFixture` fixture is usually provided in a file located at `fixturepath/data/tablename.php`,
+where `fixturepath` stands for the directory containing the fixture class file, and `tablename`
 is the name of the table associated with the fixture. In the example above, the file should be
 `@app/tests/fixtures/data/user.php`. The data file should return an array of data rows
 to be inserted into the user table. For example,
@@ -80,7 +84,7 @@ values into the rows when the fixture is being loaded.
 > Tip: You may customize the location of the data file by setting the [[yii\test\ActiveFixture::dataFile]] property.
 > You may also override [[yii\test\ActiveFixture::getData()]] to provide the data.
 
-As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depends on `UserFixture`
+As we described earlier, a fixture may depend on other fixtures. For example, a `UserProfileFixture` may need to depend on `UserFixture`
 because the user profile table contains a foreign key pointing to the user table.
 The dependency is specified via the [[yii\test\Fixture::depends]] property, like the following,
 
@@ -96,7 +100,7 @@ class UserProfileFixture extends ActiveFixture
 }
 ```
 
-The dependency also ensures, that the fixtures are loaded and unloaded in a well defined order. In the above example `UserFixture` will
+The dependency also ensures, that the fixtures are loaded and unloaded in a well-defined order. In the above example `UserFixture` will
 always be loaded before `UserProfileFixture` to ensure all foreign key references exist and will be unloaded after `UserProfileFixture`
 has been unloaded for the same reason.
 
@@ -107,7 +111,7 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 
 ## Using Fixtures
 
-If you are using [Codeception](http://codeception.com/) to test your code, you can use built-in support for loading
+If you are using [Codeception](https://codeception.com/) to test your code, you can use the built-in support for loading
 and accessing fixtures.
 
 If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your
@@ -130,7 +134,7 @@ class UserProfileTest extends \Codeception\Test\Unit
     {
         return [
             'profiles' => [
-                'class' => UserProfileFixture::className(),
+                'class' => UserProfileFixture::class,
                 // fixture data located in tests/_data/user.php
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],
@@ -154,7 +158,7 @@ You may also assign an alias to a fixture. In the above example, the `UserProfil
 In the test methods, you may then access a fixture object using its alias in `grabFixture()` method. For example,
 
 ```php
-$profile = $I->grabFixture('profiles', 'user1');
+$profile = $I->grabFixture('profiles');
 ```
 
 will return the `UserProfileFixture` object.
@@ -178,7 +182,7 @@ different tests. We thus recommend that you organize the data files in a hierarc
 your class namespaces. For example,
 
 ```
-# under folder tests\unit\fixtures
+# under the folder that matches your fixture namespace, for example tests\unit\fixtures
 
 data\
     components\
@@ -201,7 +205,7 @@ In this way you will avoid collision of fixture data files between tests and use
 > from [[yii\test\ActiveFixture]] for DB fixtures, you should use DB table names as the fixture data file names;
 > If you are extending from [[yii\mongodb\ActiveFixture]] for MongoDB fixtures, you should use collection names as the file names.
 
-The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
+A similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
 want to use `fixtures` as the root directory to avoid conflict with the data files.
 
 ## Managing fixtures with `yii fixture`
@@ -243,7 +247,9 @@ Fixture classes name should not be plural.
 
 ### Loading fixtures
 
-Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
+Fixture classes should be suffixed by `Fixture`. By default, the `yii fixture` command searches for them
+under the `tests\unit\fixtures` namespace. This command default is independent from the fixture namespaces
+used by application tests. You can
 change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
@@ -277,7 +283,7 @@ yii fixture "*"
 yii fixture "*, -DoNotLoadThisOne"
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
-yii fixture User --namespace='alias\my\custom\namespace'
+yii fixture User --namespace='app\tests\fixtures'
 
 // load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
 // By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
@@ -309,8 +315,8 @@ Same command options like: `namespace`, `globalFixtures` also can be applied to 
 ### Configure Command Globally
 
 While command line options allow us to configure the fixture command
-on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
-different fixture path as follows:
+on-the-fly, sometimes we may want to configure the command once for all. For example, you can configure
+a different fixture namespace as follows:
 
 ```
 'controllerMap' => [
@@ -334,9 +340,9 @@ See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.
 ## Summary
 
 In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
-of running unit tests related with DB:
+of running DB related unit tests:
 
-1. Use `yii migrate` tool to upgrade your test database to the latest version;
+1. Use the `yii migrate` tool to upgrade your test database to the latest version;
 2. Run a test case:
    - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
    - Perform the actual test;

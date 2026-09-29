@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -22,10 +23,13 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
- * @property string[] $conditionClasses Map of condition aliases to condition classes. For example: ```php
- * ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
- * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
- * [[expressionBuilders]] property. This property is write-only.
+ * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
+ *
+ * ```
+ * ['LIKE' => yii\db\condition\LikeCondition::class]
+ * ```
+ * @property-write string[] $expressionBuilders Array of builders that should be merged with the pre-defined
+ * ones in [[expressionBuilders]] property.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -35,8 +39,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * The prefix for automatically generated query binding parameters.
      */
-    const PARAM_PREFIX = ':qp';
-
+    public const PARAM_PREFIX = ':qp';
     /**
      * @var Connection the database connection.
      */
@@ -62,7 +65,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @var array map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * return [
      *     'LIKE' => yii\db\condition\LikeCondition::class,
      * ];
@@ -73,7 +76,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * In case you want to add custom conditions support, use the [[setConditionClasses()]] method.
      *
-     * @see setConditonClasses()
+     * @see setConditionClasses()
      * @see defaultConditionClasses()
      * @since 2.0.14
      */
@@ -82,7 +85,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *    yii\db\Expression::class => yii\db\ExpressionBuilder::class
      * ]
@@ -159,7 +162,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * default expression builders for this query builder. See [[expressionBuilders]] docs for details.
      *
      * @return array
-     * @see $expressionBuilders
+     * @see expressionBuilders
      * @since 2.0.14
      */
     protected function defaultExpressionBuilders()
@@ -200,7 +203,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string[] $classes map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * ['LIKE' => yii\db\condition\LikeCondition::class]
      * ```
      *
@@ -260,6 +263,11 @@ class QueryBuilder extends \yii\base\BaseObject
             $sql = "($sql){$this->separator}$union";
         }
 
+        $with = $this->buildWithQueries($query->withQueries, $params);
+        if ($with !== '') {
+            $sql = "$with{$this->separator}$sql";
+        }
+
         return [$sql, $params];
     }
 
@@ -270,11 +278,11 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the expression building process.
      * @return string the SQL statement that will not be neither quoted nor encoded before passing to DBMS
-     * @see ExpressionInterface
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
      * @see ExpressionBuilderInterface
      * @see expressionBuilders
      * @since 2.0.14
-     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     * @see ExpressionInterface
      */
     public function buildExpression(ExpressionInterface $expression, &$params = [])
     {
@@ -289,9 +297,9 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param ExpressionInterface $expression
      * @return ExpressionBuilderInterface
-     * @see expressionBuilders
-     * @since 2.0.14
      * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     * @since 2.0.14
+     * @see expressionBuilders
      */
     public function getExpressionBuilder(ExpressionInterface $expression)
     {
@@ -311,7 +319,9 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
-            return $this;
+            /** @var $this&ExpressionBuilderInterface $result */
+            $result = $this;
+            return $result;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {
@@ -324,7 +334,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates an INSERT SQL statement.
      * For example,
-     * ```php
+     * ```
      * $sql = $queryBuilder->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
@@ -391,7 +401,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * Prepare select-subquery and field names for INSERT INTO ... SELECT SQL statement.
      *
      * @param Query $columns Object, which represents select query.
-     * @param \yii\db\Schema $schema Schema object to quote column name.
+     * @param Schema $schema Schema object to quote column name.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
      * @return array array of column names, values and params.
@@ -425,7 +435,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
@@ -488,7 +498,7 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+            . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 
     /**
@@ -498,10 +508,10 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
-     *     'url' => 'http://example.com/', // url is unique
+     *     'url' => 'https://example.com/', // url is unique
      *     'visits' => 0,
      * ], [
      *     'visits' => new \yii\db\Expression('visits + 1'),
@@ -531,7 +541,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
-     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return array
      * @since 2.0.14
@@ -559,7 +569,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string[] $columns source column list.
-     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter optionally receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return string[] column list.
      */
@@ -605,7 +615,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
      * ```
@@ -643,7 +653,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -661,7 +670,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->delete('user', 'status = 0');
      * ```
      *
@@ -685,9 +694,9 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Builds a SQL statement for creating a new DB table.
      *
-     * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
+     * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
+     * stands for the column type which must contain an abstract DB type.
      * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
@@ -695,17 +704,18 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
+     *  'column_name double precision null default null', # definition only example
      * ]);
      * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
-     * @param string $options additional SQL fragment that will be appended to the generated SQL.
+     * @param string|null $options additional SQL fragment that will be appended to the generated SQL.
      * @return string the SQL statement for creating a new DB table.
      */
     public function createTable($table, $columns, $options = null)
@@ -858,8 +868,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $refTable the table that the foreign key references to.
      * @param string|array $refColumns the name of the column that the foreign key references to.
      * If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return string the SQL statement for adding a foreign key constraint to an existing table.
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
@@ -1029,13 +1039,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
-     * @param string $table the name of the table whose primary key sequence will be reset
-     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
-    public function resetSequence($table, $value = null)
+    public function resetSequence($tableName, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
     }
@@ -1046,7 +1056,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * The sequence is reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence is reset
-     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      * @since 2.0.16
@@ -1136,7 +1146,7 @@ class QueryBuilder extends \yii\base\BaseObject
             list($rawQuery, $params) = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );
@@ -1223,7 +1233,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $columns
      * @param array $params the binding parameters to be populated
      * @param bool $distinct
-     * @param string $selectOption
+     * @param string|null $selectOption
      * @return string the SELECT clause built from [[Query::$select]].
      */
     public function buildSelect($columns, &$params, $distinct = false, $selectOption = null)
@@ -1247,7 +1257,7 @@ class QueryBuilder extends \yii\base\BaseObject
             } elseif ($column instanceof Query) {
                 list($sql, $params) = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
-            } elseif (is_string($i)) {
+            } elseif (is_string($i) && $i !== $column) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
                 }
@@ -1298,7 +1308,7 @@ class QueryBuilder extends \yii\base\BaseObject
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
             list($joinType, $table) = $join;
-            $tables = $this->quoteTableNames((array) $table, $params);
+            $tables = $this->quoteTableNames((array)$table, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
             if (isset($join[2])) {
@@ -1331,8 +1341,8 @@ class QueryBuilder extends \yii\base\BaseObject
                 }
                 $tables[$i] = "$table " . $this->db->quoteTableName($i);
             } elseif (strpos($table, '(') === false) {
-                if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) { // with alias
-                    $tables[$i] = $this->db->quoteTableName($matches[1]) . ' ' . $this->db->quoteTableName($matches[2]);
+                if ($tableWithAlias = $this->extractAlias($table)) { // with alias
+                    $tables[$i] = $this->db->quoteTableName($tableWithAlias[1]) . ' ' . $this->db->quoteTableName($tableWithAlias[2]);
                 } else {
                     $tables[$i] = $this->db->quoteTableName($table);
                 }
@@ -1454,7 +1464,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasLimit($limit)
     {
-        return ($limit instanceof ExpressionInterface) || ctype_digit((string) $limit);
+        return ($limit instanceof ExpressionInterface) || ctype_digit((string)$limit);
     }
 
     /**
@@ -1464,7 +1474,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasOffset($offset)
     {
-        return ($offset instanceof ExpressionInterface) || ctype_digit((string) $offset) && (string) $offset !== '0';
+        return ($offset instanceof ExpressionInterface) || ctype_digit((string)$offset) && (string)$offset !== '0';
     }
 
     /**
@@ -1490,6 +1500,38 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return trim($result);
+    }
+
+    /**
+     * @param array $withs of configurations for each WITH query
+     * @param array $params the binding parameters to be populated
+     * @return string compiled WITH prefix of query including nested queries
+     * @see Query::withQuery()
+     * @since 2.0.35
+     */
+    public function buildWithQueries($withs, &$params)
+    {
+        if (empty($withs)) {
+            return '';
+        }
+
+        $recursive = false;
+        $result = [];
+
+        foreach ($withs as $i => $with) {
+            if ($with['recursive']) {
+                $recursive = true;
+            }
+
+            $query = $with['query'];
+            if ($query instanceof Query) {
+                list($with['query'], $params) = $this->build($query, $params);
+            }
+
+            $result[] = $with['alias'] . ' AS (' . $with['query'] . ')';
+        }
+
+        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode(', ', $result);
     }
 
     /**
@@ -1543,7 +1585,7 @@ class QueryBuilder extends \yii\base\BaseObject
             return $this->buildExpression($condition, $params);
         }
 
-        return (string) $condition;
+        return (string)$condition;
     }
 
     /**
@@ -1552,8 +1594,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * [[conditionClasses]] map.
      *
      * @param string|array $condition
-     * @see conditionClasses
      * @return ConditionInterface
+     * @see conditionClasses
      * @since 2.0.14
      */
     public function createConditionFromArray($condition)
@@ -1732,5 +1774,20 @@ class QueryBuilder extends \yii\base\BaseObject
         $params[$phName] = $value;
 
         return $phName;
+    }
+
+    /**
+     * Extracts table alias if there is one or returns false
+     * @param $table
+     * @return bool|array
+     * @since 2.0.24
+     */
+    protected function extractAlias($table)
+    {
+        if (preg_match('/^(.*?)(?i:\s+as|)\s+([^ ]+)$/', $table, $matches)) {
+            return $matches;
+        }
+
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 Моделі
 ======
 
-Моделі є частиною архітектури [MVC](http://uk.wikipedia.org/wiki/Модель-вид-контролер).
+Моделі є частиною архітектури [MVC](https://uk.wikipedia.org/wiki/Модель-вид-контролер).
 Це об’єкти, які представляють бізнес-дані, бізнес-правила та бізнес-логіку.
 
 Ви можете створювати класи моделей шляхом розширення класу [[yii\base\Model]] або його нащадків. Базовий клас
@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 Ви також можете отримувати доступ до атрибутів як до елементів масиву, завдяки підтримці
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) та [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) та [ArrayIterator](https://www.php.net/manual/en/class.arrayiterator.php)
 у класі [[yii\base\Model]]:
 
 ```php

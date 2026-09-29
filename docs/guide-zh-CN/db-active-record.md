@@ -1,7 +1,7 @@
 活动记录（Active Record）
 ======================
 
-[Active Record](http://zh.wikipedia.org/wiki/Active_Record) 提供了一个面向对象的接口，
+[Active Record](https://zh.wikipedia.org/wiki/%E4%B8%BB%E5%8A%A8%E8%AE%B0%E5%BD%95) 提供了一个面向对象的接口，
 用以访问和操作数据库中的数据。Active Record 类与数据库表关联，
 Active Record 实例对应于该表的一行，
 Active Record 实例的*属性*表示该行中特定列的值。
@@ -10,7 +10,7 @@ Active Record 实例的*属性*表示该行中特定列的值。
 
 例如，假定 `Customer` Active Record 类关联着 `customer` 表，
 且该类的 `name` 属性代表 `customer` 表的 `name` 列。
-你可以写以下代码来哉 `customer` 表里插入一行新的记录:
+你可以写以下代码来哉 `customer` 表里插入一行新的记录：
 
 ```php
 $customer = new Customer();
@@ -18,7 +18,7 @@ $customer->name = 'Qiang';
 $customer->save();
 ```
 
-对于 MySql，上面的代码和使用下面的原生 SQL 语句是等效的，但显然前者更直观，
+对于 MySQL，上面的代码和使用下面的原生 SQL 语句是等效的，但显然前者更直观，
 更不易出错，并且面对不同的数据库系统（DBMS, Database Management System）时更不容易产生兼容性问题。
 
 ```php
@@ -36,13 +36,13 @@ Yii 为以下关系数据库提供 Active Record 支持：
 * Oracle：通过 [[yii\db\ActiveRecord]] 支持
 * CUBRID 9.3 及以上：通过 [[yii\db\ActiveRecord]] 支持 (提示， 由于 CUBRID PDO 扩展的 [bug](http://jira.cubrid.org/browse/APIS-658)，
   给变量加引用将不起作用，所以你得使用 CUBRID 9.3 客户端及服务端。
-* Sphinx：通过 [[yii\sphinx\ActiveRecord]] 支持, 依赖 `yii2-sphinx` 扩展
+* Sphinx：通过 [[yii\sphinx\ActiveRecord]] 支持，依赖 `yii2-sphinx` 扩展
 * ElasticSearch：通过 [[yii\elasticsearch\ActiveRecord]] 支持, 依赖 `yii2-elasticsearch` 扩展
 
 此外，Yii 的 Active Record 功能还支持以下 NoSQL 数据库：
 
-* Redis 2.6.12 及以上: 通过 [[yii\redis\ActiveRecord]] 支持, 依赖 `yii2-redis` 扩展
-* MongoDB 1.3.0 及以上: 通过 [[yii\mongodb\ActiveRecord]] 支持, 依赖 `yii2-mongodb` 扩展
+* Redis 2.6.12 及以上：通过 [[yii\redis\ActiveRecord]] 支持，依赖 `yii2-redis` 扩展
+* MongoDB 1.3.0 及以上：通过 [[yii\mongodb\ActiveRecord]] 支持，依赖 `yii2-mongodb` 扩展
 
 在本教程中，我们会主要描述对关系型数据库的 Active Record 用法。
 然而，绝大多数的内容在 NoSQL 的 Active Record 里同样适用。
@@ -61,8 +61,8 @@ Yii 为以下关系数据库提供 Active Record 支持：
 此外，[[yii\db\Connection::$tablePrefix|tablePrefix]] 表前缀也会起作用。例如，如果
 [[yii\db\Connection::$tablePrefix|tablePrefix]] 表前缀是 `tbl_`，`Customer` 的类名将转换成 `tbl_customer` 表名，`OrderItem` 转换成 `tbl_order_item`。
 
-如果你定义的表名是 `{{%TableName}}`, 百分比字符 `%` 会被替换成表前缀。
-例如, `{{%post}}` 会变成 `{{tbl_post}}`。表名两边的括号会被 [SQL 查询引用](db-dao.md#quoting-table-and-column-names) 处理。
+如果你定义的表名是 `{{%TableName}}`，百分比字符 `%` 会被替换成表前缀。
+例如，`{{%post}}` 会变成 `{{tbl_post}}`。表名两边的括号会被 [SQL 查询引用](db-dao.md#quoting-table-and-column-names) 处理。
 
 
 下面的例子中，我们给 `customer` 数据库表定义叫 `Customer` 的 Active Record 类。
@@ -88,10 +88,11 @@ class Customer extends ActiveRecord
 ```
 
 ### 将 Active Record 称为模型（Active records are called "models"）
+
 Active Record 实例称为[模型](structure-models.md)。因此, 我们通常将 Active Record 类
 放在 `app\models` 命名空间下（或者其他保存模型的命名空间）。
 
-因为 [[yii\db\ActiveRecord]] 继承了模型 [[yii\base\Model]], 它就拥有所有[模型](structure-models.md)特性，
+因为 [[yii\db\ActiveRecord]] 继承了模型 [[yii\base\Model]]，它就拥有所有[模型](structure-models.md)特性，
 比如说属性（attributes），验证规则（rules），数据序列化（data serialization），等等。
 
 
@@ -219,7 +220,7 @@ $customers = Customer::findAll([
 ]);
 ```
 
-> 注：如果你需要将用户输入传递给这些方法，请确保输入值是标量或者是
+> Warning: 如果你需要将用户输入传递给这些方法，请确保输入值是标量或者是
 > 数组条件，确保数组结构不能被外部所改变：
 >
 > ```php
@@ -273,7 +274,7 @@ $email = $customer->email;
   您不应该重新声明任何属性。
 
 由于 Active Record 的属性以表的列名命名，可能你会发现你正在编写像这样的 PHP 代码：
-`$ customer-> first_name`，如果你的表的列名是使用下划线分隔的，那么属性名中的单词
+`$customer->first_name`，如果你的表的列名是使用下划线分隔的，那么属性名中的单词
 以这种方式命名。 如果您担心代码风格一致性的问题，那么你应当重命名相应的表列名
 （例如使用骆驼拼写法）。
 
@@ -409,7 +410,7 @@ public function save($runValidation = true, $attributeNames = null)
 通过调用 [[yii\db\ActiveRecord::validate()|validate()]] 方法进行数据验证。
   
 当你调用 [[yii\db\ActiveRecord::save()|save()]] 时，默认情况下会自动调用 [[yii\db\ActiveRecord::validate()|validate()]]。
-只有当验证通过时，它才会真正地保存数据; 否则将简单地返回`false`，
+只有当验证通过时，它才会真正地保存数据; 否则将简单地返回 `false`，
 您可以检查 [[yii\db\ActiveRecord::errors|errors]] 属性来获取验证过程的错误消息。
 
 > Tip: 如果你确定你的数据不需要验证（比如说数据来自可信的场景），
@@ -418,7 +419,7 @@ public function save($runValidation = true, $attributeNames = null)
 
 ### 块赋值（Massive Assignment） <span id="massive-assignment"></span>
 
-和普通的 [models](structure-models.md) 一样，你亦可以享受 Active Record 实例的 [块赋值](structure-models.md#massive-assignment) 特性。
+和普通的 [模型](structure-models.md) 一样，你亦可以享受 Active Record 实例的 [块赋值](structure-models.md#massive-assignment) 特性。
 使用此功能，您可以在单个 PHP 语句中，给 Active Record 实例的多个属性批量赋值，
 如下所示。 记住，只有 [安全属性](structure-models.md#safe-attributes) 才可以批量赋值。
 
@@ -461,7 +462,7 @@ $post->updateCounters(['view_count' => 1]);
 
 Active Record 自动维护脏属性列表。 它保存所有属性的旧值，
 并其与最新的属性值进行比较，就是酱紫个道理。你可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-获取当前的脏属性。你也可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+获取当前的脏属性。你也可以调用 [[yii\db\ActiveRecord::markAttributeDirty()]] 
 将属性显式标记为脏。
 
 如果你有需要获取属性原先的值，你可以调用
@@ -472,8 +473,8 @@ Active Record 自动维护脏属性列表。 它保存所有属性的旧值，
 > 其中每个值都表示为一个字符串类型。
 > 为了确保正确的类型，比如，整型需要用[过滤验证器](input-validation.md#data-filtering)：
 > `['attributeName', 'filter', 'filter' => 'intval']`。其他 PHP 类型转换函数一样适用，像
-> [intval()](http://php.net/manual/en/function.intval.php)， [floatval()](http://php.net/manual/en/function.floatval.php)，
-> [boolval](http://php.net/manual/en/function.boolval.php)，等等
+> [intval()](https://www.php.net/manual/zh/function.intval.php)， [floatval()](https://www.php.net/manual/zh/function.floatval.php)，
+> [boolval](https://www.php.net/manual/zh/function.boolval.php)，等等
 
 ### 默认属性值（Default Attribute Values） <span id="default-attribute-values"></span>
 
@@ -510,7 +511,7 @@ $customer->loadDefaultValues();
 > Tip: 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
   在 ActiveRecord 验证或者保存过程中。
   
-从2.0.14开始，Yii ActiveRecord 支持了更多的复杂数据类型，例如 JSON 或多维数组。
+从 2.0.14 开始，Yii ActiveRecord 支持了更多的复杂数据类型，例如 JSON 或多维数组。
 
 #### MySQL 和 PostgreSQL 中的 JSON（JSON in MySQL and PostgreSQL）
 
@@ -548,7 +549,7 @@ $query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
-同样, 你可以调用 [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] 同时更新多条记录的计数列。
+同样，你可以调用 [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] 同时更新多条记录的计数列。
 
 
 ```php
@@ -688,7 +689,7 @@ try {
 ```
 
 > Tip: 在上面的代码中，我们有两个catch块用于兼容
-> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](https://www.php.net/manual/zh/class.throwable.php)
 > 由于 PHP 7.0 的改动，如果您的应用程序仅使用 PHP 7.0 及更高版本，您可以跳过 `\Exception` 部分。
 
 第二种方法是在 [[yii\db\ActiveRecord::transactions()]] 方法中列出需要事务支持的 DB 操作。 
@@ -742,11 +743,12 @@ class Customer extends ActiveRecord
 1. 在与 Active Record 类相关联的 DB 表中创建一个列，以存储每行的版本号。
    这个列应当是长整型（在 MySQL 中是  `BIGINT DEFAULT 0`）。
 2. 重写 [[yii\db\ActiveRecord::optimisticLock()]] 方法返回这个列的命名。
-3. 在用于用户填写的 Web 表单中，添加一个隐藏字段（hidden field）来存储正在更新的行的当前版本号。
-   （Active Record 类中）版本号这个属性你要自行写进 rules() 方法并自己验证一下。
-4. 在使用 Active Record 更新数据的控制器动作中，要捕获（try/catch） [[yii\db\StaleObjectException]] 异常。
+3. 在你的 Model 类里实现 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 行为（注：这个行为类在 2.0.16 版本加入），以便从请求参数里自动解析这个列的值。
+   然后从验证规则中删除 version 属性，因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 已经处理它了.
+4. 在用于用户填写的 Web 表单中，添加一个隐藏字段（hidden field）来存储正在更新的行的当前版本号。
+5. 在使用 Active Record 更新数据的控制器动作中，要捕获（try/catch） [[yii\db\StaleObjectException]] 异常。
    实现一些业务逻辑来解决冲突（例如合并更改，提示陈旧的数据等等）。
-   
+   
 例如，假定版本列被命名为 `version`。您可以使用下面的代码来实现乐观锁。
 
 
@@ -779,7 +781,29 @@ public function actionUpdate($id)
         // 解决冲突的代码
     }
 }
+
+// ------ Model 代码 -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::class,
+    ];
+}
+
+public function optimisticLock()
+{
+    return 'version';
+}
+
 ```
+> Note: 因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 仅仅在保存记录的时候被确认，
+> 如果用户提交的有效版本号被直接解析 ：[[\yii\web\Request::getBodyParam()|getBodyParam()]]，
+> 那么你的 Model 将扩展成这样：触发在步骤 3 中子类的行为，与此同时，调用步骤 2 中的父类的定义，
+> 这样你在把 Model 绑定到负责接收用户输入的控制器的同时，有一个专门用于内部逻辑处理的实例，
+> 或者，您可以通过配置其 [[\yii\behaviors\OptimisticLockBehavior::$value|value]] 的属性来实现自己的逻辑。（注：这一堆都是在解释 Behaviors 的原理）
 
 
 ## 使用关联数据（Working with Relational Data） <span id="relational-data"></span>
@@ -803,7 +827,7 @@ class Customer extends ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -813,7 +837,7 @@ class Order extends ActiveRecord
 
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -831,7 +855,7 @@ class Order extends ActiveRecord
   一个客户可以有很多订单，而每个订单只有一个客户。
 - 相关联 Active Record 类名：用来指定为 [[yii\db\ActiveRecord::hasMany()|hasMany()]] 或者 
   [[yii\db\ActiveRecord::hasOne()|hasOne()]] 方法的第一个参数。
-  推荐的做法是调用 `Xyz::className()` 来获取类名称的字符串，以便您
+  推荐的做法是调用 `Xyz::class` 来获取类名称的字符串，以便您
   可以使用 IDE 的自动补全，以及让编译阶段的错误检测生效。
 - 两组数据的关联列：用以指定两组数据相关的列（hasOne()/hasMany() 的第二个参数）。
   数组的值填的是主数据的列（当前要声明关联的 Active Record 类为主数据），
@@ -902,14 +926,14 @@ $orders = $customer->getOrders()
 都会执行 SQL 语句，即使你之前执行过相同的动态关联查询。
 
 有时你可能需要给你的关联声明传递参数，以便您能更方便地执行
-动态关系查询。例如，您可以声明一个 `bigOrders`  关联如下，
+动态关系查询。例如，您可以声明一个 `bigOrders` 关联如下，
 
 ```php
 class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100) // 老司机的提醒：$threshold 参数一定一定要给个默认值
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -930,7 +954,7 @@ $orders = $customer->bigOrders;
 ### 中间关联表（Relations via a Junction Table） <span id="junction-table"></span>
 
 在数据库建模中，当两个关联表之间的对应关系是多对多时，
-通常会引入一个[连接表](https://en.wikipedia.org/wiki/Junction_table)。例如，`order` 表
+通常会引入一个[连接表](https://zh.wikipedia.org/wiki/%E5%85%B3%E8%81%94%E5%AE%9E%E4%BD%93)。例如，`order` 表
 和 `item` 表可以通过名为 `order_item` 的连接表相关联。一个 order 将关联多个 order items，
 而一个 order item 也会关联到多个 orders。
 
@@ -944,7 +968,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -957,12 +981,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -984,9 +1008,9 @@ $items = $order->items;
 ### 通过多个表来连接关联声明（Chaining relation definitions via multiple tables） <span id="multi-table-relations"></span>
 
 通过使用 [[yii\db\ActiveQuery::via()|via()]] 方法，它还可以通过多个表来定义关联声明。
-再考虑考虑上面的例子，我们有 `Customer`, `Order`, 和 `Item` 类。
+再考虑考虑上面的例子，我们有 `Customer`，`Order` 和 `Item` 类。
 我们可以添加一个关联关系到 `Customer` 类，这个关联可以列出了 `Customer`（客户） 的订单下放置的所有 `Item`（商品），
-这个关联命名为 `getPurchasedItems（）`，关联声明如下代码示例所示：
+这个关联命名为 `getPurchasedItems()`，关联声明如下代码示例所示：
 
 ```php
 class Customer extends ActiveRecord
@@ -996,21 +1020,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // 客户的商品，将 Item 中的 'id' 列与 OrderItem 中的 'item_id' 相匹配
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // 客户订单中的商品，将 `Order` 的 'id' 列和 OrderItem 的 'order_id' 列相匹配
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // 见上述列子
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1077,7 +1101,7 @@ foreach ($customers as $customer) {
 通过嵌套关联符 `orders.items` 关联的 `items`。
 
 以下代码展示了 [[yii\db\ActiveQuery::with()|with()]] 的各种用法。我们假设 `Customer` 类
-有两个关联 `orders` 和 `country` ，而 `Order` 类有一个关联 `items`。
+有两个关联 `orders` 和 `country`，而 `Order` 类有一个关联 `items`。
 
 ```php
 //  即时加载 "orders" and "country"
@@ -1181,7 +1205,9 @@ $customers = Customer::find()
 调用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 方法会默认 [即时加载](#lazy-eager-loading) 相应的关联数据。
 如果你不需要那些关联数据，你可以指定它的第二个参数 `$eagerLoading` 为 `false`。
 
-> Note: 即使在启用即时加载的情况下使用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 或 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]，相应的关联数据也**不会**从这个 `JOIN` 查询的结果中填充。 因此，每个连接关系还有一个额外的查询，正如[即时加载](#lazy-eager-loading)部分所述。
+> Note: 即使在启用即时加载的情况下使用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 或 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]，
+  相应的关联数据也**不会**从这个 `JOIN` 查询的结果中填充。 
+  因此，每个连接关系还有一个额外的查询，正如[即时加载](#lazy-eager-loading)部分所述。
 
 和 [[yii\db\ActiveQuery::with()|with()]] 一样，你可以 join 多个关联表；你可以动态的自定义
 你的关联查询；你可以使用嵌套关联进行 join。你也可以将 [[yii\db\ActiveQuery::with()|with()]]
@@ -1261,7 +1287,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1269,7 +1295,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1303,7 +1329,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1414,7 +1440,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // 一个 customer 有很多条评论（comments）
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1429,7 +1455,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // 一条评论对应一位 customer
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1492,8 +1518,9 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> Note: 作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当
-  调用 [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
+> Note: 作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当调用
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，
+  不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
 
 然后你就可以先下面这样构建你的查询了：
 
@@ -1512,7 +1539,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1523,7 +1550,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1589,7 +1616,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1684,7 +1711,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1715,7 +1742,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**

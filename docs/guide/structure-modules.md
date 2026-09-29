@@ -160,6 +160,9 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
 ]
 ```
 
+> Info: To connect console commands of your module,
+> you also need to include it in the [console application configuration](tutorial-console.md#configuration)
+
 The [[yii\base\Application::modules|modules]] property takes an array of module configurations. Each array key
 represents a *module ID* which uniquely identifies the module among all modules in the application, and the corresponding
 array value is a [configuration](concept-configurations.md) for creating the module.

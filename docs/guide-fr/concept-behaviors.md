@@ -1,7 +1,7 @@
 Comportements
 =============
 
-Les comportements (*behaviors* sont des instances de la classe [[yii\base\Behavior]], ou de ses classes filles. Les comportements, aussi connus sous le nom de [mixins](http://en.wikipedia.org/wiki/Mixin), vous permettent d'améliorer les fonctionnalités d'une classe de [[yii\base\Component|composant]] existante sans avoir à modifier les héritages de cette classe. Le fait d'attacher un comportement à un composant injecte les méthodes et les propriétés de ce comportement dans le composant, rendant ces méthodes et ces propriétés accessibles comme si elles avaient été définies dans la classe du composant lui-même. En outre, un comportement peut répondre aux [événements](concept-events.md) déclenchés par le composant, ce qui permet aux comportements de personnaliser l'exécution normale du code du composant.
+Les comportements (*behaviors* sont des instances de la classe [[yii\base\Behavior]], ou de ses classes filles. Les comportements, aussi connus sous le nom de [mixins](https://fr.wikipedia.org/wiki/Mixin), vous permettent d'améliorer les fonctionnalités d'une classe de [[yii\base\Component|composant]] existante sans avoir à modifier les héritages de cette classe. Le fait d'attacher un comportement à un composant injecte les méthodes et les propriétés de ce comportement dans le composant, rendant ces méthodes et ces propriétés accessibles comme si elles avaient été définies dans la classe du composant lui-même. En outre, un comportement peut répondre aux [événements](concept-events.md) déclenchés par le composant, ce qui permet aux comportements de personnaliser l'exécution normale du code du composant.
 
 
 Définition des comportements <span id="defining-behaviors"></span>
@@ -106,21 +106,21 @@ class User extends ActiveRecord
     {
         return [
             // comportement anonyme, nom de la classe de comportement seulement
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // comportement nommé, nom de classe de comportement seulement
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // comportement anonyme, tableau de configuration
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // comportement nommé, tableau de configuration
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -138,14 +138,14 @@ Pour attacher un comportement de manière dynamique, appelez la méthode [[yii\b
 use app\components\MyBehavior;
 
 // attache un objet comportement 
-$component->attachBehavior('myBehavior1', new MyBehavior);
+$component->attachBehavior('myBehavior1', new MyBehavior());
 
 // attache un classe de comportement
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // attache un tableau de configuration 
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -155,8 +155,8 @@ Vous pouvez attacher plusieurs comportements à la fois en utilisant la méthode
 
 ```php
 $component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // un comportement nommé
-    MyBehavior::className(),          // un comportement anonyme
+    'myBehavior1' => new MyBehavior(), // un comportement nommé
+    MyBehavior::class,                 // un comportement anonyme
 ]);
 ```
 
@@ -164,10 +164,10 @@ Vous pouvez aussi attacher des comportements via les [configurations](concept-co
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -250,7 +250,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -299,7 +299,7 @@ Il existe plusieurs comportements pré-inclus et extérieurs disponibles :
 Comparaison des comportement et des traits <span id="comparison-with-traits"></span>
 ------------------------------------------
 
-Bien que les comportements  soient similaires aux [traits](http://www.php.net/traits) par le fait qu'ils *injectent* tous deux leurs propriétés et leurs méthodes dans la classe primaire, ils diffèrent par de nombreux aspects. Comme nous l'expliquons ci-dessous, ils ont chacun leurs avantages et leurs inconvénients. Ils sont plus des compléments l'un envers l'autre, que des alternatives. 
+Bien que les comportements  soient similaires aux [traits](https://www.php.net/manual/fr/language.oop5.traits.php) par le fait qu'ils *injectent* tous deux leurs propriétés et leurs méthodes dans la classe primaire, ils diffèrent par de nombreux aspects. Comme nous l'expliquons ci-dessous, ils ont chacun leurs avantages et leurs inconvénients. Ils sont plus des compléments l'un envers l'autre, que des alternatives. 
 
 
 ### Raisons d'utiliser des comportements <span id="pros-for-behaviors"></span>

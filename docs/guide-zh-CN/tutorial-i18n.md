@@ -19,10 +19,10 @@ Yii 提供的国际化功能支持全方位信息翻译，
 
 在 Yii 应用程序中使用的所有区域 ID 应该规范化为 `ll-CC`，
 其中 `ll` 是根据两个或三个字母的小写字母语言代码
-[ISO-639](http://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html)。
+[ISO-639](https://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes)。
 有关区域设置的更多细节可以看
-[ICU 项目文档](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept)。
+[ICU 项目文档](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)。
 
 ### 语言（Language）
 
@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> Note: 参数的格式化需要安装 [intl PHP 扩展](http://www.php.net/manual/en/intro.intl.php)。
+> Note: 参数的格式化需要安装 [intl PHP 扩展](https://www.php.net/manual/zh/intro.intl.php)。
 
 可以使用缩写的形式或完整的形式来格式化占位符：
 
@@ -246,7 +246,7 @@ full form: {PlaceholderName, ParameterType, ParameterStyle}
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 ```
 
-请参阅 [ICU 文档](http://icu-project.org/apiref/icu4c/classMessageFormat.html)
+请参阅 [ICU 文档](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html)
 关于如何指定这样的占位符的说明。接下来我们会展示一些常用的使用方法。
 
 
@@ -274,7 +274,7 @@ echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```
 
 自定义格式中使用的字符可以在“特殊模式字符”一节的
-[ICU API 参考](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html)
+[ICU API 参考](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html)
 中找到。
 
 
@@ -302,7 +302,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
+[格式化参考](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 时间（Time） <span id="time"></span>
@@ -325,7 +325,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
+[格式化参考](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 拼写（Spellout） <span id="spellout"></span>
@@ -347,7 +347,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 请注意，在 `spellout,` 之后和 `%` 之前不应该有空格。
 
 要获取可用于您正在使用的语言环境的选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，拼写”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，拼写”。
 
 #### 序数词（Ordinal） <span id="ordinal"></span>
 
@@ -368,7 +368,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 请注意，在 `ordinal,` 之后和 `%` 之前不应该有空格。
 
 要获取可用于您正在使用的语言环境的选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，序号”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，序号”。
 
 #### 持续时间（Duration） <span id="duration"></span>
 
@@ -389,7 +389,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 请注意，在 `duration,` 之后和 `%` 之前不应该有空格。
 
 要获取您正在使用的区域设置的可用选项列表，请查看
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“编号模式，持续时间”。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“编号模式，持续时间”。
 
 #### 复数（Plural） <span id="plural"></span>
 
@@ -441,7 +441,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 // You and one other person liked this
 ```
 
-#### 序数选择（Ordinal selection） <span id="ordinal-selection">
+#### 序数选择（Ordinal selection） <span id="ordinal-selection"></span>
 
 `selectordinal` 的参数类型旨在为您所翻译的语言环境选择一个基于语序规则的字符串：
 一个基于语序规则的字符串：
@@ -460,8 +460,8 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 格式与复数使用的格式非常接近。 要了解您应为特定语言环境指定哪些参数，请参阅
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) 上的“复数规则，序数”。
-或者，您可以参考 [unicode.org上的规则参考](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html)。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) 上的“复数规则，序数”。
+或者，您可以参考 [unicode.org上的规则参考](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html)。
 
 #### 选择（Selection） <span id="selection"></span>
 
@@ -679,7 +679,7 @@ class TranslationEventHandler
 > 你应该给它们每一个消息源指定相应的事件处理程序。
 
 
-### 使用 `message` 命令（Using the `message` command） <a name="message-command"></a>
+### 使用 `message` 命令（Using the `message` command） <span id="message-command"></span>
 
 翻译储存在 [[yii\i18n\PhpMessageSource|php 文件]]，[[yii\i18n\GettextMessageSource|.po 文件] 或者 [[yii\i18n\DbMessageSource|数据库]]。具体见类的附加选项。
 
@@ -738,13 +738,13 @@ class TranslationEventHandler
 
 ## 设置 PHP 环境（Setting Up PHP Environment） <span id="setup-environment"></span>
 
-Yii 使用 [PHP intl 扩展](http://php.net/manual/en/book.intl.php) 来提供大多数 I18N 的功能，
+Yii 使用 [PHP intl 扩展](https://www.php.net/manual/zh/book.intl.php) 来提供大多数 I18N 的功能，
 如日期和数字格式的 [[yii\i18n\Formatter]] 类和消息格式的 [[yii\i18n\MessageFormatter]] 类。
 当 `intl` 扩展没有安装时，两者会提供一个回调机制。然而，该回调机制只适用于目标语言是英语的情况下。
 因此，当 I18N 对你来说必不可少时，强烈建议你安装 `intl`。
 
-[PHP intl 扩展](http://php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
-提供格式化规则的 [ICU库](http://site.icu-project.org/)。
+[PHP intl 扩展](https://www.php.net/manual/zh/book.intl.php) 是基于对于所有不同的语言环境
+提供格式化规则的 [ICU库](https://icu.unicode.org/)。
 不同版本的 ICU 中可能会产生不同日期和数值格式的结果。
 为了确保你的网站在所有环境产生相同的结果，
 建议你安装与 `intl` 扩展相同的版本（和 ICU 同一版本）。
@@ -760,10 +760,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 此外，还建议你所使用的 ICU 版本应等于或大于 49 的版本。这确保了可以使用本文档描述的所有功能。例如，
 低于 49 版本的 ICU 不支持使用 `#` 占位符来实现复数规则。
-请参阅 <http://site.icu-project.org/download> 获取可用 ICU 版本的完整列表。
+请参阅 <https://icu.unicode.org/download> 获取可用 ICU 版本的完整列表。
 注意，版本编号在 4.8 之后发生了变化（如 ICU4.8，ICU49，50 ICU 等）。
 
 另外，ICU 库中时区数据库的信息可能过时。要更新时区数据库时详情请参阅
-[ICU 手册](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 。
+[ICU 手册](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) 。
 而对于 ICU 输出格式使用的时区数据库，PHP 用的时区数据库可能跟它有关。
-你可以通过安装 [pecl package `timezonedb`](http://pecl.php.net/package/timezonedb) 的最新版本来更新它。
+你可以通过安装 [pecl package `timezonedb`](https://pecl.php.net/package/timezonedb) 的最新版本来更新它。

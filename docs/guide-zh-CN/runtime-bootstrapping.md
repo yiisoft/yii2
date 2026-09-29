@@ -37,8 +37,8 @@
 在生产环境中，可以开启字节码缓存，比如 APC，
 来进一步最小化加载和解析 PHP 文件所需的时间。
 
-[PHP OPcache]: http://php.net/manual/en/intro.opcache.php
-[APC]: http://php.net/manual/en/book.apc.php
+[PHP OPcache]: https://www.php.net/manual/zh/intro.opcache.php
+[APC]: https://www.php.net/manual/zh/book.apcu.php
 
 一些大型应用都包含有非常复杂的应用[配置](concept-configurations.md)，
 它们会被分割到许多更小的配置文件中。

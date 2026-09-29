@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -24,9 +25,13 @@
  */
 return [
     ' and ' => ' et ',
+    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" ne supporte pas l\'opérateur "{operator}".',
     '(not set)' => '(non défini)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Une erreur de serveur interne s\'est produite.',
     'Are you sure you want to delete this item?' => 'Êtes-vous sûr de vouloir supprimer cet élément ?',
+    'Condition for "{attribute}" should be either a value or valid operator specification.' => 'La condition pour "{atttribute}" doit être soit une valeur, soit une spécification d\'opérateur valide.',
     'Delete' => 'Supprimer',
     'Error' => 'Erreur',
     'File upload failed.' => 'Le téléchargement du fichier a échoué.',
@@ -39,16 +44,19 @@ return [
     'No results found.' => 'Aucun résultat trouvé.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Seulement les fichiers ayant ces types MIME sont autorisés : {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Les extensions de fichiers autorisées sont : {extensions}.',
+    'Operator "{operator}" must be used with a search attribute.' => 'L\'opérateur "{operator}" doit être utilisé avec un attribut de recherche.',
+    'Operator "{operator}" requires multiple operands.' => 'L\'opérateur "{operator}" requière plusieurs opérandes.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Page non trouvée.',
     'Please fix the following errors:' => 'Veuillez vérifier les erreurs suivantes :',
     'Please upload a file.' => 'Veuillez télécharger un fichier.',
-    'Powered by {yii}' => 'Propulsé par {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Affichage de <b>{begin, number}-{end, number}</b> sur <b>{totalCount, number}</b> {totalCount, plural, one{élément} other{éléments}}.',
     'The combination {values} of {attributes} has already been taken.' => 'La combinaison {values} de {attributes} est déjà utilisée.',
     'The file "{file}" is not an image.' => 'Le fichier « {file} » n\'est pas une image.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Le fichier « {file} » est trop gros. Sa taille ne peut dépasser {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Le fichier « {file} » est trop petit. Sa taille ne peut être inférieure à {formattedLimit}.',
-    'The format of {attribute} is invalid.' => 'Le format de {attribute} est invalide',
+    'The format of {attribute} is invalid.' => 'Le format de {attribute} est invalide.',
+    'The format of {filter} is invalid.' => 'Le format de {filter} est invalide.',
     'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'L\'image « {file} » est trop grande. La hauteur ne peut être supérieure à {limit, number} {limit, plural, one{pixel} other{pixels}}.',
     'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'L\'image « {file} » est trop large. La largeur ne peut être supérieure à {limit, number} {limit, plural, one{pixel} other{pixels}}.',
     'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'L\'image « {file} » est trop petite. La hauteur ne peut être inférieure à {limit, number} {limit, plural, one{pixel} other{pixels}}.',
@@ -58,13 +66,14 @@ return [
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Total <b>{count, number}</b> {count, plural, one{élément} other{éléments}}.',
     'Unable to verify your data submission.' => 'Impossible de vérifier votre envoi de données.',
     'Unknown alias: -{name}' => 'Alias inconnu : -{name}',
+    'Unknown filter attribute "{attribute}"' => 'Attribut de filtre inconnu "{attribute}"',
     'Unknown option: --{name}' => 'Option inconnue : --{name}',
     'Update' => 'Modifier',
     'View' => 'Voir',
     'Yes' => 'Oui',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Vous n\'êtes pas autorisé à effectuer cette action.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Vous pouvez télécharger au maximum {limit, number} {limit, plural, one{fichier} other{fichiers}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Vous devez télécharger au moins {limit, number} {limit, plural, one{fichier} other{fichiers}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'dans {delta, plural, =1{un jour} other{# jours}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'dans {delta, plural, =1{une minute} other{# minutes}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'dans {delta, plural, =1{un mois} other{# mois}}',
@@ -101,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} doit comporter au moins {min, number} {min, plural, one{caractère} other{caractères}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} doit comporter au plus {max, number} {max, plural, one{caractère} other{caractères}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} doit comporter {length, number} {length, plural, one{caractère} other{caractères}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 jour} other{# jours}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 heure} other{# heures}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minute} other{# minutes}}',
@@ -116,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} o',
     '{nFormatted} GB' => '{nFormatted} Go',
     '{nFormatted} GiB' => '{nFormatted} Gio',
-    '{nFormatted} KB' => '{nFormatted} Ko',
     '{nFormatted} KiB' => '{nFormatted} Kio',
     '{nFormatted} MB' => '{nFormatted} Mo',
     '{nFormatted} MiB' => '{nFormatted} Mio',
@@ -124,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} Pio',
     '{nFormatted} TB' => '{nFormatted} To',
     '{nFormatted} TiB' => '{nFormatted} Tio',
+    '{nFormatted} kB' => '{nFormatted} Ko',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{octet} other{octets}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{# gigaoctet} other{# gigaoctets}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gibioctet} other{gibioctets}}',

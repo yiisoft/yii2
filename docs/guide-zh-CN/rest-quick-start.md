@@ -4,16 +4,17 @@
 Yii 提供了一整套用来简化实现 RESTful 风格的 Web Service 服务的 API。
 特别是，Yii 支持以下关于 RESTful 风格的 API：
 
-* 支持 [Active Record](db-active-record.md) 类的通用API的快速原型
-* 涉及的响应格式（在默认情况下支持 JSON 和 XML)
-* 支持可选输出字段的定制对象序列化
-* 适当的格式的数据采集和验证错误
-* 支持 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS)
-* 有适当HTTP动词检查的高效的路由
-* 内置`OPTIONS`和`HEAD`动词的支持
-* 认证和授权
-* 数据缓存和HTTP缓存
-* 速率限制
+* 支持 [Active Record](db-active-record.md) 类的通用 API 的快速原型；
+* 涉及的响应格式（在默认情况下支持 JSON 和 XML）；
+* 支持可选输出字段的定制对象序列化；
+* 适当的格式的数据采集和验证错误；
+* 集合分页，过滤和排序；
+* 支持 [HATEOAS](https://zh.wikipedia.org/wiki/HATEOAS)；
+* 有适当 HTTP 动词检查的高效的路由；
+* 内置 `OPTIONS` 和 `HEAD` 动词的支持；
+* 认证和授权；
+* 数据缓存和 HTTP 缓存；
+* 速率限制；
 
 
 如下， 我们用一个例子来说明如何用最少的编码来建立一套RESTful风格的API。
@@ -39,7 +40,7 @@ class UserController extends ActiveController
 
 控制器类扩展自 [[yii\rest\ActiveController]]。
 通过指定 [[yii\rest\ActiveController::modelClass|modelClass]]
-作为 `app\models\User`， 控制器就能知道使用哪个模型去获取和处理数据。
+作为 `app\models\User`，控制器就能知道使用哪个模型去获取和处理数据。
 
 
 ## 配置URL规则 <span id="configuring-url-rules"></span>
@@ -60,8 +61,8 @@ class UserController extends ActiveController
 上面的配置主要是为`user`控制器增加一个 URL 规则。这样，
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
-> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
-> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
+> Note: Yii 将自动复数控制器名称以便在端点中使用（参见下面的 [Trying it Out](#trying-it-out) 部分）。
+> 您可以使用 [[yii\rest\UrlRule::$pluralize]] 属性配置。
 
 
 ## 启用 JSON 输入 <span id="enabling-json-input"></span>
@@ -187,10 +188,15 @@ Content-Type: application/json; charset=UTF-8
 > 例如 `password_hash`, `auth_key` 你肯定不希望这些出现在你的 API 结果中。
 > 你应该在 [响应格式](rest-response-formatting.md) 部分中过滤掉这些字段。
 
+此外，您可以对 `http://localhost/users?sort=email` 或
+`http://localhost/users?sort=-email` 等集合进行排序。 可以使用数据过滤器来实现过滤集合 `http://localhost/users?filter[id]=10` 或
+`http://localhost/users?filter[email][like]=gmail.com`。
+有关详细信息，请参阅 [Resources](rest-resources.md#filtering-collections) 部分。
+
 
 ## 总结 <span id="summary"></span>
 
-使用 Yii 框架的 RESTful 风格的 API, 在控制器的动作中实现API末端，使用
+使用 Yii 框架的 RESTful 风格的 API, 在控制器的动作中实现 API 末端，使用
 控制器来组织末端接口为一个单一的资源类型。
 
 从 [[yii\base\Model]] 类扩展的资源被表示为数据模型。
@@ -199,5 +205,5 @@ Content-Type: application/json; charset=UTF-8
 
 你可以使用 [[yii\rest\UrlRule]] 简化路由到你的 API 末端。
 
-为了方便维护你的WEB前端和后端，建议你开发接口作为一个单独的应用程序，
+为了方便维护你的 WEB 前端和后端，建议你开发接口作为一个单独的应用程序，
 虽然这不是必须的。

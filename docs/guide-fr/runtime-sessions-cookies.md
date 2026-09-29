@@ -120,8 +120,8 @@ La classe par défaut [[yii\web\Session]] stocke les données de session sous fo
 
 * [[yii\web\DbSession]]: stocke les données de session dans une base de données. 
 * [[yii\web\CacheSession]]: stocke les données de session dans un cache avec l'aide d'un [composant cache](caching-data.md#cache-components) configuré.
-* [[yii\redis\Session]]: stocke les données de session en utilisant le médium de stockage [redis](http://redis.io/) as the storage medium.
-* [[yii\mongodb\Session]]: stocke les données de session dans une base de données de documents [MongoDB](http://www.mongodb.org/).
+* [[yii\redis\Session]]: stocke les données de session en utilisant le médium de stockage [redis](https://redis.io/) as the storage medium.
+* [[yii\mongodb\Session]]: stocke les données de session dans une base de données de documents [MongoDB](https://www.mongodb.com/).
 
 Toutes ces classes de session prennent en charge le même jeu de méthodes d'API. En conséquence, vous pouvez changer de support de stockage sans avoir à modifier le code de votre application qui utilise ces sessions. 
 
@@ -299,7 +299,7 @@ unset($cookies['language']);
 
 En plus des propriétés  [[yii\web\Cookie::name|name (nom)]], [[yii\web\Cookie::value|value (valeur)]] montrées dans les exemples ci-dessus, la classe  [[yii\web\Cookie]] définit également d'autres propriétés pour représenter complètement toutes les informations de témoin de connexion disponibles, comme les propriétés [[yii\web\Cookie::domain|domain (domaine)]], [[yii\web\Cookie::expire|expire (date d'expiration)]]. Vous pouvez configurer ces propriété selon vos besoins pour préparer un témoin de connexion et ensuite l'ajouter à la collection de témoins de connexion de la réponse.
 
-> Note: pour une meilleure sécurité, la valeur par défaut de la propriété [[yii\web\Cookie::httpOnly]] est définie à `true`. Cela permet de limiter le risque qu'un script client n'accède à un témoin de connexion protégé (si le navigateur le prend en charge). Reportez-vous à l'[article de wiki httpOnly](https://www.owasp.org/index.php/HttpOnly) pour plus de détails.
+> Note: pour une meilleure sécurité, la valeur par défaut de la propriété [[yii\web\Cookie::httpOnly]] est définie à `true`. Cela permet de limiter le risque qu'un script client n'accède à un témoin de connexion protégé (si le navigateur le prend en charge). Reportez-vous à l'[article de wiki httpOnly](https://owasp.org/www-community/HttpOnly) pour plus de détails.
 
 
 ### Validation des témoins de connexion <span id="cookie-validation"></span>

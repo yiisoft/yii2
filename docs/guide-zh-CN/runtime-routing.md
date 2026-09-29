@@ -43,15 +43,15 @@ $url = Url::to(['post/view', 'id' => 100]);
 - 默认URL格式；
 - 美化URL格式。
 
-默认URL格式试用一个参数`r`表示路由，
-并且试用一般的参数格式表示请求参数。例如，`/index.php?r=post/view&id=100`表示路由为`post/view`，参数`id`为100。
+默认URL格式使用一个参数`r`表示路由，
+并且使用一般的参数格式表示请求参数。例如，`/index.php?r=post/view&id=100`表示路由为`post/view`，参数`id`为100。
 默认URL格式不需要为[[yii\web\UrlManager|URL管理器]]做任何配置，
-并且在任何Web服务器都可以正常试用。
+并且在任何Web服务器都可以正常使用。
 
 美化URL格式在脚本名称后面使用更多的路径信息表示路由和参数信息。
 例如，用适当的[[yii\web\UrlManager::rules|URL规则]]，`/index.php/post/100`中附加的路径信息`/post/100`表示
 路由为`post/view`，参数`id`为100。
-要试用美化的URL格式，你需要根据实际的需求
+要使用美化的URL格式，你需要根据实际的需求
 设计一组[[yii\web\UrlManager::rules|URL规则]]来规定URL的样式。
  
 你可以仅设置[[yii\web\UrlManager|URL管理器]]中的[[yii\web\UrlManager::enablePrettyUrl|开启美化URL]]来切换两种URL格式，
@@ -69,7 +69,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 如果使用默认URL格式，解析请求到路由只是简单的从`GET`请求中得到命名为`r`的参数。
 
 
-当试用美化URL格式时，[[yii\web\UrlManager|URL管理器]]将检查注册的[[yii\web\UrlManager::rules|URL规则]]，
+当使用用美化URL格式时，[[yii\web\UrlManager|URL管理器]]将检查注册的[[yii\web\UrlManager::rules|URL规则]]，
 找到一条可以匹配的将请求转到路由的规则。
 如果找不到任何匹配的规则，系统将抛出[[yii\web\NotFoundHttpException]]异常。
 
@@ -156,7 +156,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // 创建一个带锚定的URL：/index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// 创建一个绝对路径URL：http://www.example.com/index.php?r=post%2Findex
+// 创建一个绝对路径URL：https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
 // 创建一个带https协议的绝对路径URL：https://www.example.com/index.php?r=post%2Findex
@@ -214,11 +214,11 @@ use yii\helpers\Url;
 // 当前请求URL：/index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// 设定了别名的URL：http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// 设定了别名的URL：https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// 绝对URL：http://example.com/images/logo.gif
+// 绝对URL：https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -280,7 +280,7 @@ echo Url::previous();
 
 > Note: 如果你想在URL中隐藏入口脚本名称，除了要设置 [[yii\web\UrlManager::showScriptName|showScriptName]] 为 false，
   同时应该配置 Web 服务，处理当请求 URL 没有特殊指定入口脚本时确定要执行哪个PHP文件，
-  如果你试用 Apache Web server，你可以参考[安装](start-installation.md#recommended-apache-configuration)中推荐的配置。
+  如果你使用 Apache Web server，你可以参考[安装](start-installation.md#recommended-apache-configuration)中推荐的配置。
 
 
 
@@ -313,8 +313,8 @@ echo Url::previous();
 ```
 
 > Info: 规则中的匹配模式用来匹配URL中的路径信息。例如，
-  `/index.php/post/100?source=ad`中的路径信息为 `post/100`（开始和结尾处的 `/` 将被忽略）和模式 `post/(\d+)` 匹配。
-
+  `/index.php/post/100?source=ad` 中的路径信息为
+  `post/100`（开始和结尾处的 `/` 将被忽略）和模式 `post/(\d+)` 匹配。
 
 除了定义 URL 规则外，你还可以将规则定义为配置数组。
 每个配置数组用来配置一个单独的 URL 规则对象。如果你需要配置 URL 规则的其它参数时可以这样用。
@@ -435,28 +435,25 @@ echo Url::previous();
 
 如果不使用可选参数，你必须创建 4 条规则才可以实现相同的效果。
 
-> Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中只存在可选参数和 `/`，只有所有参数被忽略时第一个参数才被忽略。
-
-
-> Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
-  only if all other parameters are omitted.
+> Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中仅包含可选参数和斜杠，
+  只有所有参数被忽略时第一个参数才被忽略。
 
 
 ### 带服务名称的规则 <span id="rules-with-server-names"></span>
 
 可以在URL规则中设置Web服务的名称，如果你需要使你的应用程序在不同的Web服务名称下表现不同的话。
-例如，下面的规则将URL`http://admin.example.com/login`解析成路由`admin/user/login`，
-URL`http://www.example.com/login`解析成路由`site/login`。
+例如，下面的规则将URL`https://admin.example.com/login`解析成路由`admin/user/login`，
+URL`https://www.example.com/login`解析成路由`site/login`。
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 你还可以在服务名称中嵌入参数用来动态的提取服务名称。例如，下面的规则
-将URL`http://en.example.com/posts`解析成路由`post/index`且参数`language=en`。
+将URL`https://en.example.com/posts`解析成路由`post/index`且参数`language=en`。
 
 ```php
 [
@@ -467,8 +464,8 @@ URL`http://www.example.com/login`解析成路由`site/login`。
 从版本 2.0.11 开始，你还可以使用不带协议类型的模式来同时匹配 `http` 和 `https`。
 规则语法和上面相比只是忽略掉 `http:` 部分，例如：`'//www.example.com/login' => 'site/login'`。
 
-> Note: 带服务名称的规则**不应该**包含任何子目录。例如，如果程序入口脚本在 `http://www.example.com/sandbox/blog/index.php`，
-  应该使用 `http://www.example.com/posts` 代替 `http://www.example.com/sandbox/blog/posts`。
+> Note: 带服务名称的规则**不应该**包含任何子目录。例如，如果程序入口脚本在 `https://www.example.com/sandbox/blog/index.php`，
+  应该使用 `https://www.example.com/posts` 代替 `https://www.example.com/sandbox/blog/posts`。
   这样才可以将你的应用部署到任何目录而不需要更改 URL 规则。Yii 将会自动的检测应用程序所在的根目录。
 
 
@@ -634,10 +631,10 @@ class CarUrlRule extends BaseObject implements UrlRuleInterface
 ## URL规范化 <span id="url-normalization"></span>
 
 从 2.0.10 版开始[[yii\web\UrlManager|Url管理器]]可以配置用[[yii\web\UrlNormalizer|URL规范器]]来处理
-相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `http://example.com/path`
-和 `http://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
+相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `https://example.com/path`
+和 `https://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
 默认情况下 URL 规范器会合并连续的斜线，根据配置决定是否添加或删除结尾斜线，
-并且会使用[永久重定向](https://en.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
+并且会使用[永久重定向](https://zh.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
 URL规范器可以针对URL管理器全局配置，也可以针对规则单独配置 - 默认每个规则都使用URL管理器中的规范器。
 你可以针对特定的URL规则设置 [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] 为 `false` 来关闭规范化。
 
@@ -685,7 +682,7 @@ URL规范器可以针对URL管理器全局配置，也可以针对规则单独�
 在开发复杂的 Web 应用程序时，优化 URL 规则非常重要，以便解析请求和创建 URL 所需
 的时间更少。
 
-通过使用参数化路由，您可以减少 URL 规则的数量，这可以显着提高性能。
+通过使用参数化路由，您可以减少 URL 规则的数量，这可以显著提高性能。
 
 当解析或创建URL时，[[yii\web\UrlManager|URL manager]] 按照它们声明的顺序检查 URL 规则。
 因此，您可以考虑调整 URL 规则的顺序，以便在较少使用的规则之前放置更具体和/或更常用的规则。
@@ -693,4 +690,3 @@ URL规范器可以针对URL管理器全局配置，也可以针对规则单独�
 如果多个 URL 规则使用相同的前缀，你可以考虑使用 [[yii\web\GroupUrlRule]]，
 这样作为一个组合，[[yii\web\UrlManager|URL管理器]]会更高效。
 特别是当应用程序由模块组合而成时，每个模块都有各自的 URL 规则且都有各自的模块 ID 作为前缀。
-

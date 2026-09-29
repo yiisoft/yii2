@@ -30,7 +30,7 @@ Una volta installato Composer, puoi installare Yii eseguendo questo comando in u
     composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-Il primo comando installa il [plugin composer asset](https://github.com/francoispluchino/composer-asset-plugin/)
+Il primo comando installa il [plugin composer asset](https://github.com/fxpio/composer-asset-plugin)
 che consente di gestire le dipendenze di bower e npm tramite Composer. Devi eseguire questo comando solo una volta. Il secondo 
 installa Yii in una directory di nome `basic`. Puoi scegliere un nome diverso, se preferisci.
 
@@ -54,7 +54,7 @@ Installazione da un archivio <span id="installing-from-archive-file"></span>
 
 L'installazione da un archivio compresso comporta tre passaggi:
 
-1. Scaricare l'archivio da [yiiframework.com](http://www.yiiframework.com/download/).
+1. Scaricare l'archivio da [yiiframework.com](https://www.yiiframework.com/download/).
 2. Scompattare l'archivio in una directory accessible via web.
 3. Modificare il file `config/web.php` inserendo una chiave segreta per il parametro di configurazione `cookieValidationKey` 
    (questa operazione viene fatta automaticamente se installi tramite Composer):
@@ -106,7 +106,7 @@ di Yii. Puoi verificare le richieste in due modi:
   ```
 
 Devi configurare la tua installazione di PHP in modo che soddisfi le richieste minime di Yii. E' molto importante che tu stia usando 
-PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](http://www.php.net/manual/en/pdo.installation.php) e un driver
+PHP 5.4 o successivo. Devi inoltre installare le [estensioni PDO di PHP](https://www.php.net/manual/en/pdo.installation.php) e un driver
 di database di PDO (come ad esempio `pdo_mysql` per i database MySQL), se la tua applicazione richiede un database.
 
 
@@ -116,12 +116,12 @@ Configurazione del webserver <span id="configuring-web-servers"></span>
 > Informazione: puoi saltare questa parte per ora se stai solo provando Yii e non hai intenzione di installarlo su un server di produzione.
 
 L'applicazione installata secondo le istruzioni sopra dovrebbe funzionare senza problemi su un server 
-[Apache](http://httpd.apache.org/) o [Nginx](http://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo. 
-Yii 2.0 è anche compatibile con le librerie [HHVM](http://hhvm.com/) di Facebook, tuttavia ci sono alcuni casi limite dove HHVM si
+[Apache](https://httpd.apache.org/) o [Nginx](https://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo. 
+Yii 2.0 è anche compatibile con le librerie [HHVM](https://hhvm.com/) di Facebook, tuttavia ci sono alcuni casi limite dove HHVM si
 comporta diversamente dal PHP nativo, quindi devi avere maggiore cura se intendi usare HHVM.
 
 Su un server di produzione vorrai probabilmente che la tua applicazione sia accessibile tramite l'url 
-`http://www.example.com/index.php` invece di `http://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la
+`https://www.example.com/index.php` invece di `https://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la
 *document root* del tuo webserver nella directory `basic/web`. Vorrai magari anche nascondere `index.php` dall'URL, come descritto
 nella sezione [analizzare e generare URL](runtime-url-handling.md).
 In questa parte vedrai configurare il tuo server Apache o Nginx per ottenere questo risultato.
@@ -160,7 +160,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
-Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
+Devi aver installato PHP con il demone [FPM](https://www.php.net/install.fpm) per usare [Nginx](https://wiki.nginx.org/).
 Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.test` con
 il nome reale del server web.
 

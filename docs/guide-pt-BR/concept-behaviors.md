@@ -1,7 +1,7 @@
 Behaviors (Comportamentos)
 =========
 
-Behaviors são instâncias de  [[yii\base\Behavior]], ou de uma classe-filha, também conhecido como [mixins](http://en.wikipedia.org/wiki/Mixin), permite melhorar a funcionalidade de uma classe [[yii\base\Component|componente]]  existente sem a necessidade de mudar a herança dela.
+Behaviors são instâncias de  [[yii\base\Behavior]], ou de uma classe-filha, também conhecido como [mixins](https://en.wikipedia.org/wiki/Mixin), permite melhorar a funcionalidade de uma classe [[yii\base\Component|componente]]  existente sem a necessidade de mudar a herança dela.
 Anexar um behavior a um componente "introduz" os métodos e propriedades do behavior dentro do componente, tornando esses métodos e propriedades acessíveis como se estes fossem definidos na própria classe do componente. Além disso, um behavior pode responder a um [evento](concept-events.md) disparado pelo componente, o que permite a customização do código normal.
 
 
@@ -111,21 +111,21 @@ class User extends ActiveRecord
    {
        return [
            // behavior anônimo, somente o nome da classe
-           MyBehavior::className(),
+           MyBehavior::class,
 
            // behavior nomeado, somente o nome da classe
-           'myBehavior2' => MyBehavior::className(),
+           'myBehavior2' => MyBehavior::class,
 
            // behavior anônimo, array de configuração
            [
-               'class' => MyBehavior::className(),
+               'class' => MyBehavior::class,
                'prop1' => 'value1',
                'prop2' => 'value2',
            ],
 
            // behavior nomeado, array de configuração
            'myBehavior4' => [
-               'class' => MyBehavior::className(),
+               'class' => MyBehavior::class,
                'prop1' => 'value1',
                'prop2' => 'value2',
            ]
@@ -145,11 +145,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // anexando uma classe behavior 
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // anexando através de um array de configuração
 $component->attachBehavior('myBehavior3', [
-   'class' => MyBehavior::className(),
+   'class' => MyBehavior::class,
    'prop1' => 'value1',
    'prop2' => 'value2',
 ]);
@@ -160,7 +160,7 @@ Você pode anexar vários behaviors de uma só vez usando o método [[yii\base\C
 ```php
 $component->attachBehaviors([
    'myBehavior1' => new MyBehavior,  // um behavior nomeado
-   MyBehavior::className(),          // um behavior anônimo 
+   MyBehavior::class,          // um behavior anônimo 
 ]);
 ```
 
@@ -168,10 +168,10 @@ Você também pode anexar behaviors através de [configurações](concept-config
 
 ```php
 [
-   'as myBehavior2' => MyBehavior::className(),
+   'as myBehavior2' => MyBehavior::class,
 
    'as myBehavior3' => [
-       'class' => MyBehavior::className(),
+       'class' => MyBehavior::class,
        'prop1' => 'value1',
        'prop2' => 'value2',
    ],
@@ -255,7 +255,7 @@ class User extends ActiveRecord
    {
        return [
            [
-               'class' => TimestampBehavior::className(),
+               'class' => TimestampBehavior::class,
                'attributes' => [
                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -291,7 +291,7 @@ $user->touch('login_time');
 Comparando Behaviors com Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-Apesar de behaviors serem semelhantes a [traits](http://www.php.net/traits) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
+Apesar de behaviors serem semelhantes a [traits](https://www.php.net/manual/pt_BR/language.oop5.traits.php) em que ambos "injetam" suas propriedades e métodos para a classe principal, eles diferem em muitos aspectos. Tal como explicado abaixo, ambos têm prós e contras. Eles funcionam mais como complemento um do outro.
 
 
 ### Razões para usar Behaviors <span id="pros-for-behaviors"></span>

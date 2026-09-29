@@ -2,13 +2,13 @@
 ============
 
 应用主体是管理 Yii 应用系统整体结构和生命周期的对象。
-每个Yii应用系统只能包含一个应用主体，应用主体在 
+每个 Yii 应用系统只能包含一个应用主体，应用主体在 
 [入口脚本](structure-entry-scripts.md) 中创建并能通过表达式 `\Yii::$app` 全局范围内访问。
 
-> Info: 当我们说"一个应用"，它可能是一个应用主体对象，也可能是一个应用系统，
-  是根据上下文来决定[译：中文为避免歧义，Application翻译为应用主体]。
+> Info: 当我们说“一个应用”，它可能是一个应用主体对象，也可能是一个应用系统，
+  是根据上下文来决定[译：中文为避免歧义，Application 翻译为应用主体]。
 
-Yii有两种应用主体: [[yii\web\Application|网页应用主体]] and
+Yii有两种应用主体: [[yii\web\Application|网页应用主体]] 和
 [[yii\console\Application|控制台应用主体]]， 
 如名称所示，前者主要处理网页请求，后者处理控制台请求。
 
@@ -60,14 +60,14 @@ $config = require __DIR__ . '/../config/web.php';
 
 [[yii\base\Application::basePath|basePath]] 指定该应用的根目录。
 根目录包含应用系统所有受保护的源代码。
-在根目录下可以看到对应MVC设计模式的`models`,
-`views`, `controllers`等子目录。
+在根目录下可以看到对应 MVC 设计模式的`models`，
+`views`，`controllers` 等子目录。
 
 可以使用路径或 [路径别名](concept-aliases.md) 来在配置 [[yii\base\Application::basePath|basePath]] 属性。
 两种格式所对应的目录都必须存在，否则系统会抛出一个异常。 
-系统会使用 `realpath()` 函数规范化配置的路径.
+系统会使用 `realpath()` 函数规范化配置的路径。
 
-[[yii\base\Application::basePath|basePath]] 属性经常用于派生一些其他重要路径（如runtime路径），
+[[yii\base\Application::basePath|basePath]] 属性经常用于派生一些其他重要路径（如 runtime 路径），
 因此，系统预定义 `@app` 代表这个路径。
 派生路径可以通过这个别名组成（如`@app/runtime`代表runtime的路径）。
 
@@ -150,8 +150,8 @@ $config = require __DIR__ . '/../config/web.php';
 > ```
 
 
-在启动阶段，每个组件都会实例化。如果组件类实现接口 
-[[yii\base\BootstrapInterface]],也会调用 
+在启动阶段，每个组件都会实例化。如果组件类实现接口
+[[yii\base\BootstrapInterface]]，也会调用
 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 方法。
 
 举一个实际的例子，[Basic Application Template](start-installation.md) 
@@ -196,7 +196,7 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
-这是最重要的属性，它允许你注册多个在其他地方使用的 [应用组件](#structure-application-components.md). 
+这是最重要的属性，它允许你注册多个在其他地方使用的 [应用组件](#structure-application-components.md)。
 例如
 
 ```php
@@ -224,8 +224,8 @@ value代表组件类名或 [配置](concept-configurations.md)。
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
-该属性允许你指定一个控制器ID到任意控制器类。
-Yii遵循一个默认的 [规则](#controllerNamespace) 指定控制器ID到任意控制器类（如`post`对应`app\controllers\PostController`）。
+该属性允许你指定一个控制器 ID 到任意控制器类。
+Yii 遵循一个默认的 [规则](#controllerNamespace) 指定控制器 ID 到任意控制器类（如 `post` 对应`app\controllers\PostController`）。
 通过配置这个属性，可以打破这个默认规则，在下面的例子中，
 `account`对应到`app\controllers\UserController`，
 `article` 对应到 `app\controllers\PostController`。
@@ -249,16 +249,16 @@ Yii遵循一个默认的 [规则](#controllerNamespace) 指定控制器ID到任�
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
 该属性指定控制器类默认的命名空间，默认为`app\controllers`。
-比如控制器ID为 `post` 默认对应 `PostController` （不带命名空间），
+比如控制器ID为 `post` 默认对应 `PostController`（不带命名空间），
 类全名为 `app\controllers\PostController`。
 
 控制器类文件可能放在这个命名空间对应目录的子目录下，
-例如，控制器ID `admin/post` 对应的控制器类全名为 
+例如，控制器 ID `admin/post` 对应的控制器类全名为 
 `app\controllers\admin\PostController`。
 
 控制器类全面能被 [自动加载](concept-autoloading.md)，
 这点是非常重要的，控制器类的实际命名空间对应这个属性，
-否则，访问时你会收到"Page Not Found"[译：页面找不到]。
+否则，访问时你会收到“Page Not Found”。
 
 如果你想打破上述的规则，
 可以配置 [controllerMap](#controllerMap) 属性。
@@ -275,7 +275,7 @@ Yii遵循一个默认的 [规则](#controllerNamespace) 指定控制器ID到任�
 例如 [[yii\jui\DatePicker]] 小部件会根据该属性
 展示对应语言的日历以及日期格式。
 
-推荐遵循 [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag) 来设置语言，
+推荐遵循 [IETF language tag](https://zh.wikipedia.org/wiki/IETF%E8%AA%9E%E8%A8%80%E6%A8%99%E7%B1%A4) 来设置语言，
 例如 `en` 代表英文， `en-US` 代表英文(美国).
 
 该属性的更多信息可参考 [国际化](tutorial-i18n.md) 一节.
@@ -347,7 +347,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 如果应用不是英文请修改该属性。
 
 和 [语言](#language) 属性类似，配置该属性需遵循 
-[IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+[IETF language tag](https://zh.wikipedia.org/wiki/IETF%E8%AA%9E%E8%A8%80%E6%A8%99%E7%B1%A4).
 例如 `en` 代表英文， `en-US` 代表英文(美国)。
 
 该属性的更多信息可参考 [国际化](tutorial-i18n.md) 一节.
@@ -355,8 +355,8 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
-该属性提供一种方式修改PHP运行环境中的默认时区，配置该属性本质上就是调用PHP函数
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php)，
+该属性提供一种方式修改 PHP 运行环境中的默认时区，配置该属性本质上就是调用 PHP 函数
+[date_default_timezone_set()](https://www.php.net/manual/zh/function.date-default-timezone-set.php)，
 例如：
 
 ```php
@@ -365,10 +365,11 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ]
 ```
 
+有关设置时区含义的更多详细信息，请查看[关于日期格式的部分](output-formatting.md#time-zones)。
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 
-该属性指定应用的版本，默认为`'1.0'`，
+该属性指定应用的版本，默认为 `'1.0'`，
 其他代码不使用的话可以不配置。
 
 
@@ -387,9 +388,9 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 #### [[yii\base\Application::defaultRoute|defaultRoute]] <span id="defaultRoute"></span>
 
 该属性指定未配置的请求的响应 [路由](runtime-routing.md) 规则，
-路由规则可能包含模块ID，控制器ID，动作ID。
-例如`help`, `post/create`, `admin/post/create`，如果动作ID没有指定，
-会使用[[yii\base\Controller::defaultAction]]中指定的默认值。
+路由规则可能包含模块 ID，控制器 ID，动作 ID。
+例如 `help`，`post/create`，`admin/post/create`，如果动作 ID 没有指定，
+会使用 [[yii\base\Controller::defaultAction]] 中指定的默认值。
 
 对于 [[yii\web\Application|Web applications]] 网页应用，
 默认值为 `'site'` 对应 `SiteController` 控制器，并使用默认的动作。
@@ -403,7 +404,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 #### [[yii\base\Application::extensions|extensions]] <span id="extensions"></span>
 
 该属性用数组列表指定应用安装和使用的 [扩展](structure-extensions.md)，
-默认使用`@vendor/yiisoft/extensions.php`文件返回的数组。
+默认使用 `@vendor/yiisoft/extensions.php` 文件返回的数组。
 当你使用 [Composer](https://getcomposer.org) 安装扩展，`extensions.php` 会被自动生成和维护更新。
 所以大多数情况下，不需要配置该属性。
 
@@ -430,7 +431,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 如上所示，该属性包含一个扩展定义数组，每个扩展为一个包含 `name` 和 `version` 项的数组。
 如果扩展要在 [引导启动](runtime-bootstrapping.md) 阶段运行，
-需要配置 `bootstrap`以及对应的引导启动类名或 [configuration](concept-configurations.md) 数组。
+需要配置 `bootstrap` 以及对应的引导启动类名或 [configuration](concept-configurations.md) 数组。
 扩展也可以定义 [别名](concept-aliases.md)
 
 
@@ -439,7 +440,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 该属性指定渲染 [视图](structure-views.md) 默认使用的布局名字，
 默认值为 `'main'` 对应[布局路径](#layoutPath)下的 `main.php` 文件，
 如果 [布局路径](#layoutPath) 和 [视图路径](#viewPath) 都是默认值，
-默认布局文件可以使用路径别名`@app/views/layouts/main.php`
+默认布局文件可以使用路径别名 `@app/views/layouts/main.php`
 
 如果不想设置默认布局文件，可以设置该属性为 `false`，这种做法比较罕见。
 
@@ -462,7 +463,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 注意应用运行时有对该路径的写入权限，
 以及终端用户不能访问该路径因为临时文件可能包含一些敏感信息。
 
-为了简化访问该路径，Yii预定义别名 `@runtime` 代表该路径。
+为了简化访问该路径，Yii 预定义别名 `@runtime` 代表该路径。
 
 
 #### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
@@ -516,7 +517,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 ### [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] <span id="beforeRequest"></span>
 
-该事件在应用处理请求*before*之前，实际的事件名为 `beforeRequest`。
+该事件在应用处理请求 *before* 之前，实际的事件名为 `beforeRequest`。
 
 在事件触发前，应用主体已经实例化并配置好了，
 所以通过事件机制将你的代码嵌入到请求处理过程中非常不错。
@@ -563,8 +564,8 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
-该事件在每个 [控制器动作](structure-controllers.md) 运行*after*之后会被触发，
-实际的事件名为 `afterAction`.
+该事件在每个 [控制器动作](structure-controllers.md) 运行 *after* 之后会被触发，
+实际的事件名为 `afterAction`。
 
 该事件的参数为 [[yii\base\ActionEvent]] 实例，
 通过 [[yii\base\ActionEvent::result]] 属性，
@@ -598,14 +599,14 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 2. 入口脚本创建一个应用主体实例：
   * 调用 [[yii\base\Application::preInit()|preInit()]] 配置几个高级别应用主体属性，
     比如 [[yii\base\Application::basePath|basePath]]。
-  * 注册 [[yii\base\Application::errorHandler|error handler]] 错误处理方法.
-  * 配置应用主体属性.
+  * 注册 [[yii\base\Application::errorHandler|error handler]] 错误处理方法。
+  * 配置应用主体属性。
   * 调用 [[yii\base\Application::init()|init()]] 初始化，该函数会调用 [[yii\base\Application::bootstrap()|bootstrap()]] 
-    运行引导启动组件.
+    运行引导启动组件。
 3. 入口脚本调用 [[yii\base\Application::run()]] 运行应用主体:
   * 触发 [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] 事件。
   * 处理请求：解析请求 [路由](runtime-routing.md) 和相关参数；
     创建路由指定的模块、控制器和动作对应的类，并运行动作。
   * 触发 [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] 事件。
-  * 发送响应到终端用户.
+  * 发送响应到终端用户。
 4. 入口脚本接收应用主体传来的退出状态并完成请求的处理。

@@ -1,14 +1,18 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
 use Yii;
 use yii\base\Controller;
+use yii\base\InlineAction;
 use yiiunit\TestCase;
 
 /**
@@ -18,7 +22,7 @@ class ControllerTest extends TestCase
 {
     public static $actionRuns = [];
 
-    public function testRunAction()
+    public function testRunAction(): void
     {
         $this->mockApplication();
 
@@ -44,9 +48,71 @@ class ControllerTest extends TestCase
         $this->assertEquals('test1', $controller->action->id);
         $this->assertEquals('test-controller/test1', $controller->action->uniqueId);
     }
+
+    /**
+     * @dataProvider createInlineActionProvider
+     * @param string $controllerClass
+     * @param string $actionId
+     * @param string|null $expectedActionMethod
+     */
+    public function testCreateInlineAction($controllerClass, $actionId, $expectedActionMethod): void
+    {
+        $this->mockApplication();
+        /** @var Controller $controller */
+        $controller = new $controllerClass('test-controller', Yii::$app);
+
+        /** @var InlineAction $action */
+        $action = $controller->createAction($actionId);
+        $actionMethod = $action !== null ? $action->actionMethod : null;
+
+        $this->assertEquals($expectedActionMethod, $actionMethod);
+    }
+
+    public static function createInlineActionProvider(): array
+    {
+        return [
+            ['\yiiunit\framework\base\TestController', 'non-existent-id', null],
+            ['\yiiunit\framework\base\TestController', 'test3', 'actionTest3'],
+            ['\yiiunit\framework\base\TestController', 'test-test', 'actionTestTest'],
+            ['\yiiunit\framework\base\Test1Controller', 'test_test', 'actionTest_test'],
+            ['\yiiunit\framework\base\Test1Controller', 'test_1', 'actionTest_1'],
+            ['\yiiunit\framework\base\Test1Controller', 'test-test_test_2', 'actionTestTest_test_2'],
+        ];
+    }
+
+    /**
+     * @param $input
+     * @param $expected
+     *
+     * @dataProvider actionIdMethodProvider
+     */
+    public function testActionIdMethod($input, $expected): void
+    {
+        $this->assertSame($expected, preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $input));
+    }
+
+    public static function actionIdMethodProvider(): array
+    {
+        return [
+            ['apple-id', 1],
+            ['-apple', 0],
+            ['apple.', 0],
+            ['apple--id', 0],
+            ['a', 1],
+            ['9', 1],
+            ['apple-999', 1],
+            ['app^le-999', 0],
+            ['!', 0],
+            ['apple\33', 0],
+            ['apple333]', 0],
+            ['apple_222', 1],
+        ];
+    }
 }
 
-
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
 class TestController extends Controller
 {
     public function actionTest1()
@@ -54,9 +120,40 @@ class TestController extends Controller
         ControllerTest::$actionRuns[] = $this->action->uniqueId;
         return 'test1';
     }
+
     public function actionTest2()
     {
         ControllerTest::$actionRuns[] = $this->action->uniqueId;
         return 'test2';
+    }
+
+    public function actionTest3()
+    {
+    }
+
+    public function actionTestTest()
+    {
+    }
+
+    public function actionTest_test()
+    {
+    }
+}
+
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
+class Test1Controller extends Controller
+{
+    public function actionTest_1()
+    {
+    }
+
+    public function actionTest_test()
+    {
+    }
+
+    public function actionTestTest_test_2()
+    {
     }
 }

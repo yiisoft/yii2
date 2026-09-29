@@ -1,12 +1,17 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
+use Exception;
+use yii\validators\Validator;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
@@ -14,14 +19,17 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
+use yii\widgets\MaskedInput;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
  *
  * @group widgets
  */
-class ActiveFieldTest extends \yiiunit\TestCase
+class ActiveFieldTest extends TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @var ActiveFieldExtend
      */
@@ -36,7 +44,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     private $helperForm;
     private $attributeName = 'attributeName';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
@@ -61,7 +69,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->attribute = $this->attributeName;
     }
 
-    public function testRenderNoContent()
+    public function testRenderNoContent(): void
     {
         $expectedValue = <<<EOD
 <div class="form-group field-activefieldtestmodel-attributename">
@@ -77,9 +85,9 @@ EOD;
     }
 
     /**
-     * @todo    discuss|review  Expected HTML shouldn't be wrapped only by the $content?
+     * @todo discuss|review Expected HTML shouldn't be wrapped only by the $content?
      */
-    public function testRenderWithCallableContent()
+    public function testRenderWithCallableContent(): void
     {
         // field will be the html of the model's attribute wrapped with the return string below.
         $field = $this->attributeName;
@@ -105,7 +113,7 @@ EOD;
     /**
      * @link https://github.com/yiisoft/yii2/issues/7627
      */
-    public function testRenderWithCustomInputId()
+    public function testRenderWithCustomInputId(): void
     {
         $expectedValue = <<<EOD
 <div class="form-group field-custom-input-id">
@@ -122,7 +130,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
-    public function testBeginHasErrors()
+    public function testBeginHasErrors(): void
     {
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
@@ -132,7 +140,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBeginAttributeIsRequired()
+    public function testBeginAttributeIsRequired(): void
     {
         $this->helperModel->addRule($this->attributeName, 'required');
 
@@ -142,7 +150,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBeginHasErrorAndRequired()
+    public function testBeginHasErrorAndRequired(): void
     {
         $this->helperModel->addError($this->attributeName, 'Error Message');
         $this->helperModel->addRule($this->attributeName, 'required');
@@ -153,7 +161,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBegin()
+    public function testBegin(): void
     {
         $expectedValue = '<article class="form-group field-activefieldtestmodel-attributename">';
         $this->activeField->options['tag'] = 'article';
@@ -174,7 +182,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testEnd()
+    public function testEnd(): void
     {
         $expectedValue = '</div>';
         $actualValue = $this->activeField->end();
@@ -201,7 +209,7 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testLabel()
+    public function testLabel(): void
     {
         $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
@@ -224,7 +232,7 @@ EOT;
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
 
-    public function testError()
+    public function testError(): void
     {
         $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
@@ -247,9 +255,9 @@ EOT;
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
 
-    public function testTabularInputErrors()
+    public function testTabularInputErrors(): void
     {
-        $this->activeField->attribute = '[0]'.$this->attributeName;
+        $this->activeField->attribute = '[0]' . $this->attributeName;
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
@@ -258,7 +266,7 @@ EOT;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function hintDataProvider()
+    public static function hintDataProvider(): array
     {
         return [
             ['Hint Content', '<div class="hint-block">Hint Content</div>'],
@@ -272,14 +280,14 @@ EOT;
      * @param mixed $hint
      * @param string $expectedHtml
      */
-    public function testHint($hint, $expectedHtml)
+    public function testHint($hint, $expectedHtml): void
     {
         $this->activeField->hint($hint);
 
         $this->assertEquals($expectedHtml, $this->activeField->parts['{hint}']);
     }
 
-    public function testInput()
+    public function testInput(): void
     {
         $expectedValue = <<<'EOD'
 <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
@@ -297,7 +305,7 @@ EOD;
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
 
-    public function testTextInput()
+    public function testTextInput(): void
     {
         $expectedValue = <<<'EOD'
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
@@ -306,7 +314,7 @@ EOD;
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
 
-    public function testHiddenInput()
+    public function testHiddenInput(): void
     {
         $expectedValue = <<<'EOD'
 <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
@@ -315,7 +323,7 @@ EOD;
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
 
-    public function testListBox()
+    public function testListBox(): void
     {
         $expectedValue = <<<'EOD'
 <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
@@ -353,7 +361,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
 
-    public function testRadioList()
+    public function testRadioList(): void
     {
         $expectedValue = <<<'EOD'
 <div class="form-group field-activefieldtestmodel-attributename">
@@ -367,7 +375,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->render());
     }
 
-    public function testGetClientOptionsReturnEmpty()
+    public function testGetClientOptionsReturnEmpty(): void
     {
         // setup: we want the real deal here!
         $this->activeField->setClientOptionsEmpty(false);
@@ -377,7 +385,7 @@ EOD;
         $this->assertEmpty($actualValue);
     }
 
-    public function testGetClientOptionsWithActiveAttributeInScenario()
+    public function testGetClientOptionsWithActiveAttributeInScenario(): void
     {
         $this->activeField->setClientOptionsEmpty(false);
 
@@ -389,7 +397,7 @@ EOD;
         $this->assertEmpty($actualValue);
     }
 
-    public function testGetClientOptionsClientValidation()
+    public function testGetClientOptionsClientValidation(): void
     {
         $this->activeField->setClientOptionsEmpty(false);
 
@@ -420,7 +428,7 @@ EOD;
         $this->assertSame($expectedEnableAjaxValidation, $actualValue['enableAjaxValidation']);
     }
 
-    public function testGetClientOptionsValidatorWhenClientSet()
+    public function testGetClientOptionsValidatorWhenClientSet(): void
     {
         $this->activeField->setClientOptionsEmpty(false);
         $this->activeField->enableAjaxValidation = true;
@@ -440,7 +448,7 @@ EOD;
     /**
      * @see https://github.com/yiisoft/yii2/issues/8779
      */
-    public function testEnctype()
+    public function testEnctype(): void
     {
         $this->activeField->fileInput();
         $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
@@ -449,7 +457,7 @@ EOD;
     /**
      * @link https://github.com/yiisoft/yii2/issues/7627
      */
-    public function testGetClientOptionsWithCustomInputId()
+    public function testGetClientOptionsWithCustomInputId(): void
     {
         $this->activeField->setClientOptionsEmpty(false);
 
@@ -459,7 +467,7 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
 
         $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
+            'id' => 'custom-input-id',
             'name' => $this->attributeName,
             'container' => '.field-custom-input-id',
             'input' => '#custom-input-id',
@@ -469,14 +477,14 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
 
         $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
+            'id' => 'custom-textinput-id',
             'name' => $this->attributeName,
             'container' => '.field-custom-textinput-id',
             'input' => '#custom-textinput-id',
         ], $actualValue);
     }
 
-    public function testAriaAttributes()
+    public function testAriaAttributes(): void
     {
         $this->activeField->addAriaAttributes = true;
 
@@ -493,7 +501,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
-    public function testAriaRequiredAttribute()
+    public function testAriaRequiredAttribute(): void
     {
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addRule([$this->attributeName], 'required');
@@ -511,7 +519,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
-    public function testAriaInvalidAttribute()
+    public function testAriaInvalidAttribute(): void
     {
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addError($this->attributeName, 'Some error');
@@ -529,7 +537,63 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
-    public function testEmptyTag()
+    public function testTabularAriaAttributes(): void
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaRequiredAttribute(): void
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addRule([$this->attributeName], 'required');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename required">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testTabularAriaInvalidAttribute(): void
+    {
+        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addError($this->attributeName, 'Some error');
+
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-0-attributename has-error">
+<label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block">Some error</div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testEmptyTag(): void
     {
         $this->activeField->options = ['tag' => false];
         $expectedValue = '<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">';
@@ -537,10 +601,10 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
     }
 
-    public function testWidget()
+    public function testWidget(): void
     {
-        $this->activeField->widget(TestInputWidget::className());
-        $this->assertEquals('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
+        $this->activeField->widget(TestInputWidget::class);
+        $this->assertEquals('Render: ' . TestInputWidget::class, $this->activeField->parts['{input}']);
         $widget = TestInputWidget::$lastInstance;
 
         $this->assertSame($this->activeField->model, $widget->model);
@@ -548,8 +612,33 @@ EOD;
         $this->assertSame($this->activeField->form->view, $widget->view);
         $this->assertSame($this->activeField, $widget->field);
 
-        $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
+        $this->activeField->widget(TestInputWidget::class, ['options' => ['id' => 'test-id']]);
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+    }
+
+    public function testWidgetOptions(): void
+    {
+        $this->activeField->form->validationStateOn = ActiveForm::VALIDATION_STATE_ON_INPUT;
+        $this->activeField->model->addError('attributeName', 'error');
+
+        $this->activeField->widget(TestInputWidget::class);
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'form-control has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
+
+        $this->activeField->inputOptions = [];
+        $this->activeField->widget(TestInputWidget::class);
+        $widget = TestInputWidget::$lastInstance;
+        $expectedOptions = [
+            'class' => 'has-error',
+            'aria-invalid' => 'true',
+            'id' => 'activefieldtestmodel-attributename',
+        ];
+        $this->assertEquals($expectedOptions, $widget->options);
     }
 
     /**
@@ -557,7 +646,7 @@ EOD;
      *
      * @see https://github.com/yiisoft/yii2/issues/14773
      */
-    public function testOptionsClass()
+    public function testOptionsClass(): void
     {
         $this->activeField->options = ['class' => 'test-wrapper'];
         $expectedValue = <<<'HTML'
@@ -582,6 +671,85 @@ HTML;
 HTML;
         $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    public function testInputOptionsTransferToWidget(): void
+    {
+        $widget = $this->activeField->widget(TestMaskedInput::class, [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_direct'],
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
+
+        // use regex clientOptions instead mask
+        $widget = $this->activeField->widget(TestMaskedInput::class, [
+            'options' => ['placeholder' => 'pholder_direct'],
+            'clientOptions' => ['regex' => '^.*$'],
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
+
+        // transfer options from ActiveField to widget
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::class, [
+            'mask' => '999-999-9999',
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_input"', (string) $widget);
+
+        // set both AF and widget options (second one takes precedence)
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
+        $widget = $this->activeField->widget(TestMaskedInput::class, [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_both_direct']
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
+    }
+
+    public function testExceptionToString(): void
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped('This test is for PHP 7.4+ only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Test exception in toString.');
+
+        (string) $field;
+    }
+
+    public function testExceptionToStringLegacy(): void
+    {
+        if (PHP_VERSION_ID >= 70400) {
+            $this->markTestSkipped('This test is for PHP < 7.4 only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $errorTriggered = false;
+        $errorMessage = '';
+
+        set_error_handler(
+            function ($severity, $message, $file, $line) use (&$errorTriggered, &$errorMessage) {
+                if ($severity === E_USER_ERROR) {
+                    $errorTriggered = true;
+                    $errorMessage = $message;
+
+                    return true;
+                }
+
+                return false;
+            },
+            E_USER_ERROR,
+        );
+
+        $result = (string) $field;
+
+        restore_error_handler();
+
+        $this->assertTrue($errorTriggered, 'E_USER_ERROR should have been triggered');
+        $this->assertStringContainsString('Test exception in toString.', $errorMessage);
+        $this->assertSame('', $result, 'Result should be an empty string');
     }
 
     /**
@@ -611,6 +779,10 @@ class ActiveFieldTestModel extends DynamicModel
 
 /**
  * Helper Classes.
+ *
+ * @property ActiveFieldTestModel $model
+ * @property-read mixed[] $clientOptions The JS options.
+ * @property-write mixed $clientOptionsEmpty
  */
 class ActiveFieldExtend extends ActiveField
 {
@@ -621,7 +793,7 @@ class ActiveFieldExtend extends ActiveField
         $this->getClientOptionsEmpty = $getClientOptionsEmpty;
     }
 
-    public function setClientOptionsEmpty($value)
+    public function setClientOptionsEmpty($value): void
     {
         $this->getClientOptionsEmpty = (bool) $value;
     }
@@ -636,14 +808,14 @@ class ActiveFieldExtend extends ActiveField
     }
 }
 
-class TestValidator extends \yii\validators\Validator
+class TestValidator extends Validator
 {
     public function clientValidateAttribute($object, $attribute, $view)
     {
         return 'return true;';
     }
 
-    public function setWhenClient($js)
+    public function setWhenClient($js): void
     {
         $this->whenClient = $js;
     }
@@ -656,7 +828,7 @@ class TestInputWidget extends InputWidget
      */
     public static $lastInstance;
 
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$lastInstance = $this;
@@ -665,5 +837,43 @@ class TestInputWidget extends InputWidget
     public function run()
     {
         return 'Render: ' . get_class($this);
+    }
+}
+
+class TestMaskedInput extends MaskedInput
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init(): void
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    public function run()
+    {
+        return 'Options: ' . implode(', ', array_map(
+            function ($v, $k) {
+                return sprintf('%s="%s"', $k, $v);
+            },
+            $this->options,
+            array_keys($this->options)
+        ));
+    }
+}
+
+class TestActiveFieldWithException extends ActiveField
+{
+    public function render($content = null)
+    {
+        throw new Exception('Test exception in toString.');
     }
 }

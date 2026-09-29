@@ -1,7 +1,7 @@
 Objetos de Acceso a Bases de Datos
 ==================================
 
-Construido sobre [PDO](http://php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
+Construido sobre [PDO](https://www.php.net/manual/es/book.pdo.php), Yii DAO (Objetos de Acceso a Bases de Datos) proporciona una
 API orientada a objetos para el acceso a bases de datos relacionales. Es el fundamento para otros métodos de acceso a bases de datos
 más avanzados, incluyendo el [constructor de consultas](db-query-builder.md) y [active record](db-active-record.md).
 
@@ -11,12 +11,12 @@ Yii DAO también significa que tienes que tienes que tomar un esfuerzo adicional
 
 Yii DAO soporta las siguientes bases de datos:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
-- [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): versión 8.4 o superior.
+- [CUBRID](https://www.cubrid.org/): versión 9.3 o superior.
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
 
 ## Creando Conexiones DB <span id="creating-db-connections"></span>
@@ -60,7 +60,7 @@ Puedes acceder a la conexión DB mediante la expresión `Yii::$app->db`.
 
 Cuando configuras una conexión DB, deberías siempre especificar el Nombre de Origen de Datos (DSN) mediante la
 propiedad [[yii\db\Connection::dsn|dsn]]. El formato del DSN varia para cada diferente base de datos. Por favor consulte el
-[manual de PHP](http://www.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
+[manual de PHP](https://www.php.net/manual/es/function.PDO-construct.php) para más detalles. Abajo están algunos ejemplos:
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -185,7 +185,7 @@ $post = $db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status',
            ->queryOne();
 ```
 
-La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](http://php.net/manual/es/mysqli.quickstart.prepared-statements.php).
+La vinculación parámetros es implementada mediante [sentencias preparadas (prepared statements)](https://www.php.net/manual/es/mysqli.quickstart.prepared-statements.php).
 Además de prevenir ataques de inyección de SQL, también puede mejorar el rendimiento preparando una sola vez una sentencia SQL y ejecutándola múltiples veces con diferentes
 parámetros. Por ejemplo,
 
@@ -396,7 +396,7 @@ En el momento de escribir esto, solo MSSQL y SQLite serán afectadas.
   puede especificar el nivel de aislamiento directamente cuando empieza la transacción. Se tiene que llamar a
   [[yii\db\Transaction::setIsolationLevel()]] después de que la transacción haya empezado.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://es.wikipedia.org/wiki/Aislamiento_(ACID)#Niveles_de_aislamiento
 
 
 ### Transacciones Anidadas <span id="nesting-transactions"></span>
@@ -437,7 +437,7 @@ try {
 
 ## Replicación y División Lectura-Escritura <span id="read-write-splitting"></span>
 
-Muchos DBMS soportan [replicación de bases de datos](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication) para tener
+Muchos DBMS soportan [replicación de bases de datos](https://es.wikipedia.org/wiki/Replicaci%C3%B3n_(inform%C3%A1tica)) para tener
 una mejor disponibilidad de la base de datos y un mejor tiempo de respuesta del servidor. Con la replicación de bases
 de datos, los datos están replicados en los llamados *servidores maestros* (master servers) y *servidores esclavos*
 (slave servers). Todas las escrituras y actualizaciones deben hacerse en el servidor maestro, mientras que las lecturas

@@ -51,7 +51,8 @@ describe('yii.gridView', function () {
 
     jsdom({
         html: html,
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {
@@ -128,8 +129,7 @@ describe('yii.gridView', function () {
      * @param $el
      */
     function click($el) {
-        var e = $.Event('click');
-        $el.trigger(e);
+        $el.click();
     }
 
     /**
@@ -588,6 +588,16 @@ describe('yii.gridView', function () {
         });
 
         describe('with name, multiple and checkAll options, multiple set to true and', function () {
+            var changedSpy;
+
+            before(function () {
+                changedSpy = sinon.spy();
+            });
+
+            after(function () {
+                changedSpy.reset();
+            });
+
             withData({
                 'nothing else': [{}],
                 // https://github.com/yiisoft/yii2/pull/11729
@@ -602,44 +612,63 @@ describe('yii.gridView', function () {
 
                     assert.equal($gridView.yiiGridView('data').selectionColumn, 'selection[]');
 
+                    $checkRowCheckboxes
+                        .off('change.yiiGridView') // unbind any subscriptions for clean expectations
+                        .on('change.yiiGridView', changedSpy);
+
                     var $checkFirstRowCheckbox = $checkRowCheckboxes.filter('[value="1"]');
 
                     // Check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Uncheck all manually
+                    changedSpy.reset();
                     click($checkRowCheckboxes);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 0);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 3);
 
                     // Check first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isTrue($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 1);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
 
                     // Then check all
+                    changedSpy.reset();
                     click($checkAllCheckbox);
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 3);
                     assert.isTrue($checkAllCheckbox.prop('checked'));
+                    // "change" should be called 2 more times for the remaining 2 unchecked rows
+                    assert.equal(changedSpy.callCount, 2);
 
                     // Uncheck first row
+                    changedSpy.reset();
                     click($checkFirstRowCheckbox);
                     assert.isFalse($checkFirstRowCheckbox.prop('checked'));
                     assert.lengthOf($checkRowCheckboxes.filter(':checked'), 2);
                     assert.isFalse($checkAllCheckbox.prop('checked'));
+                    assert.equal(changedSpy.callCount, 1);
                 });
             });
         });
@@ -683,12 +712,12 @@ describe('yii.gridView', function () {
                     checkAll: 'selection_all'
                 });
 
-                // Check first row ("prop" should be called once)
+                // Click first row checkbox ("prop" on "check all" checkbox should not be called)
                 click($gridView.find('input[name="selection[]"][value="1"]'));
-                // Check all rows ("prop" should be called 2 times, 1 time for each row)
+                // Click "check all" checkbox ("prop" should be called once on the remaining unchecked row)
                 click($gridView.find('input[name="selection_all"]'));
 
-                assert.equal(jQueryPropStub.callCount, 3);
+                assert.equal(jQueryPropStub.callCount, 1);
             });
         });
     });
@@ -759,7 +788,7 @@ describe('yii.gridView', function () {
 
             assert.throws(function () {
                 $gridView1.yiiGridView('applyFilter');
-            }, "Cannot read property 'settings' of undefined");
+            }, "Cannot read properties of undefined (reading \'settings\')");
             $gridView1.yiiGridView(settings); // Reinitialize without "beforeFilter" and "afterFilter" event handlers
 
             $gridView1.yiiGridView('applyFilter');
@@ -803,9 +832,9 @@ describe('yii.gridView', function () {
             click($gridView2.find('input[name="selection[]"][value="1"]'));
             assert.equal(jQueryPropStub.callCount, 0);
 
-            click($checkRowCheckboxes.filter('[value="1"]')); // Check first row ("prop" should be called once)
-            click($checkAllCheckbox); // Check all rows ("prop" should be called 3 times, 1 time for each row)
-            assert.equal(jQueryPropStub.callCount, 4);
+            click($checkRowCheckboxes.filter('[value="1"]')); // Click first row checkbox ("prop" on "check all" checkbox should not be called)
+            click($checkAllCheckbox); // Click "check all" checkbox ("prop" should be called 2 times on the remaining unchecked rows)
+            assert.equal(jQueryPropStub.callCount, 2);
         });
     });
 

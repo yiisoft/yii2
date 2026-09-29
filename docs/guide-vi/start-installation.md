@@ -1,7 +1,7 @@
 Cài đặt Yii
 ==============
 
-Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](http://getcomposer.org/) hoặc tải toàn bộ mã nguồn Yii về.
+Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](https://getcomposer.org/) hoặc tải toàn bộ mã nguồn Yii về.
 Cách thứ nhất thường được khuyến khích dùng hơn, vì nó cho phép bạn cài đặt thêm các [Gói mở rộng (extensions)](structure-extensions.md)  hoặc cập nhật Yii đơn giản chỉ mới một dòng lệnh.
 
 Mặc định, sau khi cài đặt Yii sẽ cung cấp cho bạn một số tính năng cơ bản, như đăng nhập (login), form liên hệ (contact form), vv. 
@@ -23,7 +23,7 @@ Cài đặt qua trinh quản lý gói Composer <span id="installing-via-composer
 Nếu bạn chưa cài Composer, bạn có thể cài đặt theo đường link sau
 [getcomposer.org](https://getcomposer.org/download/). Đối với hệ điều hành Linux và Mac OS X, bạn có thể chạy các lệnh sau đây:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -s https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Còn trên HĐH Windows, bạn có thể tải về và chạy [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -38,7 +38,7 @@ Sau khi cài đặt Composer, bạn có thể cài đặt Yii bằng cách chạ
     composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 và cho phép Composer có thể quản lý những package dependencies của bower và npm. Câu lệnh này chỉ cần chạy một lần.
 Câu lệnh thứ hai sẽ cài đặt phiên bản Yii có tên là  `basic`. Bạn có thể chọn một tên thư mục khác nếu bạn muốn.
 
@@ -59,7 +59,7 @@ Cài đặt từ tập tin lưu trữ <span id="installing-from-archive-file"></
 
 Việc cài đặt Yii từ một tập tin lưu trữ bao gồm ba bước:
 
-1. Tải gói cài đặt từ [yiiframework.com](http://www.yiiframework.com/download/).
+1. Tải gói cài đặt từ [yiiframework.com](https://www.yiiframework.com/download/).
 2. Giải nén file tải về vào một thư mục Web của ứng dụng cần chạy.
 3. Sửa đồi file `config/web.php`  bởi nhập thông tin secret key `cookieValidationKey` ở mục cấu hình
    (này được thực hiện tự động nếu bạn đang cài đặt Yii sử dụng Composer):
@@ -110,7 +110,7 @@ Các yêu cầu Yii. Bạn có thể kiểm tra xem các yêu cầu tối thiể
   ```
 
 Bạn nên cấu hình cài đặt PHP của bạn để nó đáp ứng các yêu cầu tối thiểu của Yii. Diều quan trọng nhất, bạn nên có PHP 5.4 hoặc hơn. Bạn cũng nên cài đặt
-các gói [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
+các gói [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php) và một trình điều khiển cơ sở dữ liệu tương ứng
 (như là `pdo_mysql` cho CSDL MySQL), nếu ứng dụng của bạn cần thao tác với CSLD.
 
 
@@ -120,13 +120,13 @@ Cấu hình máy chủ Web <span id="configuring-web-servers"></span>
 > Lưu ý: Lưu ý: Nếu bạn chỉ là chạy thử ứng dụng Yii thay vì được triển khai(deploying) trong một môi trường sản xuất,
   bạn có thể bỏ qua phần này.
 
-Các ứng dụng được cài đặt theo phương pháp trên, được chạy trong Windows, Max OS X, Linux hoặc máy chủ [Apache HTTP](http://httpd.apache.org/) 
-hoặc [Nginx HTTP server](http://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp. Yii 2.0 cũng tương thích với HHVM, 
-do [HHVM](http://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
+Các ứng dụng được cài đặt theo phương pháp trên, được chạy trong Windows, Max OS X, Linux hoặc máy chủ [Apache HTTP](https://httpd.apache.org/) 
+hoặc [Nginx HTTP server](https://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp. Yii 2.0 cũng tương thích với HHVM, 
+do [HHVM](https://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
 khi sử dụng HHVM đòi hỏi ít thay đổi.
 
-Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL http://www.example.com/index.php 
-thay vì http://www.example.com/basic/web/index.php. Cấu hình này đòi hỏi các thư mục gốc tài liệu của máy chủ Web vào thư mục basic/web. Bạn cũng có thể  ẩn index.php trên URL, 
+Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL https://www.example.com/index.php 
+thay vì https://www.example.com/basic/web/index.php. Cấu hình này đòi hỏi các thư mục gốc tài liệu của máy chủ Web vào thư mục basic/web. Bạn cũng có thể  ẩn index.php trên URL, 
 chi tiết trên URL phân tích và tạo ra một chương trình chiếu, bạn sẽ tìm hiểu làm thế nào để cấu hình Apache hoặc Nginx máy chủ để đạt được những mục tiêu này.
 
 > Lưu ý: Thiết lập `basic/web` như thư mục gốc, bạn có thể ngăn chặn người dùng truy cập vào các dữ liệu cá nhân và các thông tin nhạy cảm được lưu trữ
@@ -161,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](http://php.net/install.fpm).
+Để sử dụng [Nginx](https://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://www.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
 `basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 

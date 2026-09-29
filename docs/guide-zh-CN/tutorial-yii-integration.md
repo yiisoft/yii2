@@ -5,8 +5,8 @@
 在下面这个板块中，我们向你展示如何实现这些目标。
 
 
-## 在 Yii 中使用第三方类库（Using Third-Party Libraries in Yii） <span id="using-libs-in-yii"></span>
---------------------------------------------------------------
+在 Yii 中使用第三方类库（Using Third-Party Libraries in Yii） <span id="using-libs-in-yii"></span>
+--------------------------------------------------------
 
 要想在 Yii 应用中使用第三方类库，
 你主要需要确保这些库中的类文件都可以被正常导入或可以被自动加载。
@@ -41,7 +41,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 我们推荐你把它的安装代码置于`Yii.php` 的导入之前，
 这样 Yii 的官方自动加载器可以拥有更高的优先级。
 
-若一个类库并没有提供自动加载器，但是他的类库命名方式符合 [PSR-4](http://www.php-fig.org/psr/psr-4/) 标准，
+若一个类库并没有提供自动加载器，但是他的类库命名方式符合 [PSR-4](https://www.php-fig.org/psr/psr-4/) 标准，
 你可以使用 Yii 官方的自动加载器来自动加载这些类。
 你只需给他们的每个根命名空间声明一下[根路径别名](concept-aliases.md#defining-aliases)。
 比如，假设说你已经在目录 `vendor/foo/bar` 里安装了一个类库，且这些类库的根命名空间为 `xyz`。
@@ -70,7 +70,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## 在第三方系统内使用 Yii（Using Yii in Third-Party Systems） <span id="using-yii-in-others"></span>
+在第三方系统内使用 Yii（Using Yii in Third-Party Systems） <span id="using-yii-in-others"></span>
 -----------------------------------------------------------
 
 因为 Yii 提供了很多牛逼的功能，有时，你可能会想要使用它们中的一些功能用来支持开发或完善某些第三方的系统，
@@ -86,14 +86,14 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 composer require yiisoft/yii2
 ```
 
-In case you would like to use only the database abstraction layer or other non-asset related features of Yii,
-you should require a special composer package that prevent Bower and NPM packages installation. See 
-[cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2) for details.
+如果您只想使用数据库抽象层或 Yii 的其他非静态资源的相关功能，
+您应该需要一个特殊的 composer 包来阻止 Bower 和 NPM 包的安装。
+有关详细信息，请参见 [cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2)。
 
-See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
-on Composer and solution to possible issues popping up during the installation.
+有关 Composer 的更多信息以及安装过程中可能出现的问题的解决方案，另请参见
+[关于安装 Yii 的部分](start-installation.md#installing-via-composer)。
 
-不然的话，你可以[下载](http://www.yiiframework.com/download/) Yii 的发布包，
+不然的话，你可以[下载](https://www.yiiframework.com/download/) Yii 的发布包，
 并把它解压到对应系统的 `BasePath/vendor` 目录内。
 
 之后，你需要修改该第三方应用的入口脚本，在开头位置添加 Yii 的引入代码：
@@ -102,7 +102,7 @@ on Composer and solution to possible issues popping up during the installation.
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 $yiiConfig = require __DIR__ . '/../config/yii/web.php';
-new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（笑）
+new yii\web\Application($yiiConfig); // 不要在这里调用 run() 方法。
 ```
 
 如你所见，这段代码与典型的 Yii 应用的[入口脚本](structure-entry-scripts.md)非常相似。
@@ -118,8 +118,8 @@ new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（
 比如，创建 AR 类，并用它们来操作数据库。
 
 
-## 配合使用 Yii 2 和 Yii 1（Using Yii 2 with Yii 1） <span id="using-both-yii2-yii1"></span>
---------------------------------------------------
+配合使用 Yii 2 和 Yii 1（Using Yii 2 with Yii 1） <span id="using-both-yii2-yii1"></span>
+----------------------------------------------
 
 如果你之前使用 Yii 1，大概你也有正在运行的 Yii 1 应用吧。
 不必用 Yii 2 重写整个应用，你也可以通过增添对哪些

@@ -11,8 +11,8 @@ JavaScript.
 
 Functional testing is implemented with the help of Codeception framework which has a nice documentation about it:
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Functional Tests](https://codeception.com/docs/04-FunctionalTests)
 
 ## Running basic and advanced template tests
 

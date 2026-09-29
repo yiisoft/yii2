@@ -1,7 +1,7 @@
 Autoładowanie klas
 ==================
 
-Yii opiera się na [mechanizmie automatycznego ładowania klas](http://www.php.net/manual/pl/language.oop5.autoload.php) służącym do 
+Yii opiera się na [mechanizmie automatycznego ładowania klas](https://www.php.net/manual/pl/language.oop5.autoload.php) służącym do 
 zlokalizowania i dołączenia wszystkich wymaganych plików klas. Wbudowany wysoce wydajny autoloader klas, zgodny ze 
 [standardem PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md), jest instalowany po załączeniu 
 pliku `Yii.php`.
@@ -15,7 +15,7 @@ Korzystanie z autoloadera Yii <span id="using-yii-autoloader"></span>
 
 Aby skorzystać z autoloadera klas Yii, powinieneś przestrzegać dwóch prostych zasad tworzenia i nazywania własnych klas:
 
-* Każda klasa musi znajdować się w [przestrzeni nazw](http://php.net/manual/pl/language.namespaces.php) (np. `foo\bar\MyClass`)
+* Każda klasa musi znajdować się w [przestrzeni nazw](https://www.php.net/manual/pl/language.namespaces.php) (np. `foo\bar\MyClass`)
 * Każda klasa musi być zapisana jako oddzielny plik, do którego ścieżka określona jest poniższym algorytmem:
 
 ```php

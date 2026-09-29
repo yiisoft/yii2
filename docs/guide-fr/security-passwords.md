@@ -5,7 +5,7 @@ La plupart des développeurs savent que les mots de passe ne peuvent pas être s
 
 Pour apporter une sécurité améliorée pour les mots de passe des utilisateurs, même dans le pire des scénario (une brèche est ouverte dans votre application), vous devez utiliser des algorithmes de hachage qui résistent aux attaques en force brute. Le choix le meilleur couramment utilisé est `bcrypt`.
 
-En  PHP, vous pouvez créer une valeur de hachage `bcrypt` à l'aide de la  [fonction crypt](http://php.net/manual/en/function.crypt.php). Yii fournit deux fonctions d'aide qui facilitent l'utilisation de  `crypt` pour générer et vérifier des valeurs de hachage de manière sure. 
+En  PHP, vous pouvez créer une valeur de hachage `bcrypt` à l'aide de la  [fonction crypt](https://www.php.net/manual/fr/function.crypt.php). Yii fournit deux fonctions d'aide qui facilitent l'utilisation de  `crypt` pour générer et vérifier des valeurs de hachage de manière sure. 
 
 Quand un utilisateur fournit un mot de passe pour la première fois (p. ex. à l'enregistrement), le mot de passe doit être haché :
 

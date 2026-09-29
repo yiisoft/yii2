@@ -2,7 +2,7 @@ Modelos
 =======
 
 Los modelos forman parte de la arquitectura 
-[MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Son objetos que representan datos de 
+[MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Son objetos que representan datos de 
 negocio, reglas y lógica.
 
 Se pueden crear clases modelo extendiendo a [[yii\base\Model]] o a sus clases hijas. La clase base [[yii\base\Model]] 
@@ -39,8 +39,8 @@ echo $model->name;
 ```
 
 También se puede acceder a los atributos como se accede a los elementos de un array, gracias al soporte para 
-[ArrayAccess](http://php.net/manual/es/class.arrayaccess.php) y 
-[ArrayIterator](http://php.net/manual/es/class.arrayiterator.php) que brinda [[yii\base\Model]]:
+[ArrayAccess](https://www.php.net/manual/es/class.arrayaccess.php) y 
+[ArrayIterator](https://www.php.net/manual/es/class.arrayiterator.php) que brinda [[yii\base\Model]]:
 
 ```php
 $model = new \app\models\ContactForm;

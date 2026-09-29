@@ -1,7 +1,14 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
+use Exception;
 use yii\helpers\IpHelper;
 use yiiunit\TestCase;
 
@@ -17,13 +24,13 @@ class IpHelperTest extends TestCase
      * @param $value
      * @param $expected
      */
-    public function testGetIpVersion($value, $expected, $message = '')
+    public function testGetIpVersion($value, $expected, $message = ''): void
     {
         $version = IpHelper::getIpVersion($value);
         $this->assertSame($expected, $version, $message);
     }
 
-    public function getIpVersionProvider()
+    public static function getIpVersionProvider(): array
     {
         return [
             ['192.168.0.1', IpHelper::IPV4],
@@ -37,13 +44,13 @@ class IpHelperTest extends TestCase
     /**
      * @dataProvider expandIpv6Provider
      */
-    public function testExpandIpv6($value, $expected, $message = '')
+    public function testExpandIpv6($value, $expected, $message = ''): void
     {
         $expanded = IpHelper::expandIPv6($value);
         $this->assertSame($expected, $expanded, $message);
     }
 
-    public function expandIpv6Provider()
+    public static function expandIpv6Provider(): array
     {
         return [
             ['fa01::1', 'fa01:0000:0000:0000:0000:0000:0000:0001'],
@@ -51,35 +58,37 @@ class IpHelperTest extends TestCase
         ];
     }
 
-    public function testIpv6ExpandingWithInvalidValue()
+    public function testIpv6ExpandingWithInvalidValue(): void
     {
         try {
             IpHelper::expandIPv6('fa01::1/64');
-        } catch (\Exception $exception) {
+            $this->assertTrue(true);
+        } catch (Exception $exception) {
             $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
         }
     }
 
     /**
-     * @param $value
-     * @param $expected
+     * @param        $value
+     * @param        $expected
      * @param string $message
      *
      * @dataProvider ip2binProvider
      */
-    public function testIp2bin($value, $expected, $message = '')
+    public function testIp2bin($value, $expected, $message = ''): void
     {
         $result = IpHelper::ip2bin($value);
         $this->assertSame($expected, $result, $message);
     }
 
-    public function ip2binProvider()
+    public static function ip2binProvider(): array
     {
         return [
             ['192.168.1.1', '11000000101010000000000100000001'],
             ['', '00000000000000000000000000000000'],
             ['fa01:0000:0000:0000:0000:0000:0000:0001', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'],
-            ['fa01::1', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001']
+            ['fa01::1', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'],
+            ['2620:0:2d0:200::7', '00100110001000000000000000000000000000101101000000000010000000000000000000000000000000000000000000000000000000000000000000000111'],
         ];
     }
 
@@ -90,13 +99,13 @@ class IpHelperTest extends TestCase
      *
      * @dataProvider inRangeProvider
      */
-    public function testInRange($value, $range, $expected)
+    public function testInRange($value, $range, $expected): void
     {
         $result = IpHelper::inRange($value, $range);
         $this->assertSame($expected, $result);
     }
 
-    public function inRangeProvider()
+    public static function inRangeProvider(): array
     {
         return [
             ['192.168.1.1/24', '192.168.0.0/23', true],
@@ -108,6 +117,7 @@ class IpHelperTest extends TestCase
             ['fa01::1/128', 'fa01::/64', true],
             ['fa01::1/128', 'fa01::1/128', true],
             ['fa01::1/64', 'fa01::1/128', false],
+            ['2620:0:0:0:0:0:0:0', '2620:0:2d0:200::7/32', true],
         ];
     }
 }

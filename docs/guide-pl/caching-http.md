@@ -105,7 +105,7 @@ Dla przykładu, ETag może być zmieniony dla strony w momencie, gdy użyty na n
 Zasobożerne generowanie ETagów może przekreślić cały zysk z użycia `HttpCache` i wprowadzić niepotrzebny narzut, ponieważ muszą być one
 określane przy każdym żądaniu. Z tego powodu należy używać jak najprostszych metod generujących.
 
-> Note: Aby spełnić wymagania [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+> Note: Aby spełnić wymagania [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4),
   `HttpCache` przesyła zarówno nagłówek `ETag`, jak i `Last-Modified`, jeśli oba są skonfigurowane.
   Jeśli klient wysyła nagłówek `If-None-Match` razem z `If-Modified-Since`, tylko pierwszy z nich jest brany pod uwagę.
 
@@ -126,7 +126,7 @@ w `session.cache_limiter` w ustawieniach PHP INI. Mogą one kolidować z funkcjo
 aby temu zapobiec, `HttpCache` blokuje to automatyczne wysyłanie. Jeśli jednak chcesz zmienić to zachowanie, powinieneś skonfigurować
 właściwość [[yii\filters\HttpCache::sessionCacheLimiter]]. Powinna ona przyjmować wartość zawierającą łańcuch znaków `public`,
 `private`, `private_no_expire` i `nocache`. Szczegóły dotyczące tego zapisu znajdziesz w dokumentacji PHP dla
-[session_cache_limiter()](http://www.php.net/manual/pl/function.session-cache-limiter.php).
+[session_cache_limiter()](https://www.php.net/manual/pl/function.session-cache-limiter.php).
 
 
 ## Korzyści dla SEO <span id="seo-implications"></span>

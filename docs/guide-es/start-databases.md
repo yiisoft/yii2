@@ -49,7 +49,7 @@ Al final, tendrás una base de datos llamada `yii2basic`, y dentro de esta, una 
 Configurar una conexión a la Base de Datos <span id="configuring-db-connection"></span>
 ------------------------------------------
 
-Asegúrate de tener instalado la extensión de PHP [PDO](http://www.php.net/manual/es/book.pdo.php) y el driver
+Asegúrate de tener instalado la extensión de PHP [PDO](https://www.php.net/manual/es/book.pdo.php) y el driver
 de PDO para el motor que estés utilizando (ej. `pdo_mysql` para MySQL). Este es un requisito básico si tu aplicación
 va a utilizar bases de datos relacionales.
 
@@ -225,7 +225,7 @@ Probándolo <span id="trying-it-out"></span>
 Para ver cómo funciona, utiliza a la siguiente URL en tu navegador:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Lista de Países](images/start-country-list.png)
@@ -235,7 +235,7 @@ Si haces click en el botón "2", verás que la página muestra otros cinco país
 Observa más cuidadosamente y verás que la URL en el navegador cambia a
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Entre bastidores, [[yii\data\Pagination|Pagination]] está realizando su magia.

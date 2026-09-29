@@ -102,7 +102,7 @@ Por exemplo, um ETag pode ser invalidado se o site tiver sido alterado para um n
 Gerações muito complexas de ETags podem contrariar o propósito de se usar `HttpCache` e introduzir despesas desnecessárias ao processamento, já que eles precisam ser reavaliados a cada requisição.
 Tente encontrar uma expressão simples que invalida o cache se o conteúdo da página for modificado.
 
-> Observação: Em concordância com a [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4), o
+> Observação: Em concordância com a [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4), o
   `HttpCache` enviará os cabeçalhos `ETag` e `Last-Modified` se ambos forem assim configurados.
   E se o cliente enviar ambos o cabeçalhos `If-None-Match` e `If-Modified-Since`, apenas o primeiro será
   respeitado.
@@ -124,7 +124,7 @@ como especificado na configuração `session.cache_limiter` do PHP.INI. Estes ca
 desabilitar o cache que você deseja do `HttpCache`. Para prevenir-se deste problema, por padrão, o `HttpCache`
 desabilitará o envio destes cabeçalhos automaticamente. Se você quiser modificar estes comportamentos, deve
 configurar a propriedade [[yii\filters\HttpCache::sessionCacheLimiter]]. A propriedade pode receber um valor string, como: `public`, `private`, `private_no_expire` e `nocache`. Por favor, consulte o manual do
-PHP sobre [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
+PHP sobre [session_cache_limiter()](https://www.php.net/manual/pt_BR/function.session-cache-limiter.php)
 para mais explicações sobre estes valores.
 
 

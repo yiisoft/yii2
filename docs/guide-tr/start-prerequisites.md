@@ -4,7 +4,7 @@ Yii'yi öğrenmesi, diğer PHP kütüphaneleri kadar zor olmasada, yine de başl
 
 ## PHP
 
-Yii bir PHP kütüphanesidir, bu yüzden [PHP Dil Başvuru Kılavuzunu](http://php.net/manual/tr/langref.php) okuduğunuzdan ve anladığınızdan emin olun. Yii ile geliştirirken, nesne yönelimli bir şekilde kod yazacaksınız, bu yüzden [Sınıflar ve Nesneler](https://secure.php.net/manual/tr/language.oop5.basic.php) gibi [ad alanları](https://secure.php.net/manual/en/language.namespaces.php)na aşina olduğunuzdan emin olun.
+Yii bir PHP kütüphanesidir, bu yüzden [PHP Dil Başvuru Kılavuzunu](https://www.php.net/manual/tr/langref.php) okuduğunuzdan ve anladığınızdan emin olun. Yii ile geliştirirken, nesne yönelimli bir şekilde kod yazacaksınız, bu yüzden [Sınıflar ve Nesneler](https://www.php.net/manual/tr/language.oop5.basic.php) gibi [ad alanları](https://www.php.net/manual/en/language.namespaces.php)na aşina olduğunuzdan emin olun.
 
 ## Nesne Yönelimli Programlama (OOP)
 

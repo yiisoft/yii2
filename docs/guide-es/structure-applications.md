@@ -255,7 +255,7 @@ incluido la traducción de mensajes, formato de fecha y números, etc. Por ejemp
 utilizará el valor de esta propiedad para determinar en qué idioma el calendario debe ser mostrado y cómo dar formato
 a la fecha.
 
-Se recomienda que especifiques el idioma en términos de una [Código de idioma IETF](http://es.wikipedia.org/wiki/Código_de_idioma_IETF).
+Se recomienda que especifiques el idioma en términos de una [Código de idioma IETF](https://es.wikipedia.org/wiki/Código_de_idioma_IETF).
 Por ejemplo, `en` se refiere a English, mientras que `en-US` se refiere a English (United States).
 
 Se pueden encontrar más detalles de este aspecto en la sección [Internacionalización](tutorial-i18n.md).
@@ -326,7 +326,7 @@ sin necesidad de tocar el código que lo utiliza.
 Esta propiedad especifica el idioma en el cual la aplicación está escrita. El valor por defecto es `'en-US'`,
 referido a English (United States). Deberías configurar esta propiedad si el contenido de texto en tu código no está en inglés.
 
-Como la propiedad [language](#language), deberías configurar esta propiedad siguiendo el [Código de idioma IETF](http://es.wikipedia.org/wiki/Código_de_idioma_IETF).
+Como la propiedad [language](#language), deberías configurar esta propiedad siguiendo el [Código de idioma IETF](https://es.wikipedia.org/wiki/Código_de_idioma_IETF).
 Por ejemplo, `en` se refiere a English, mientras que `en-US` se refiere a English (United States).
 
 Puedes encontrar más detalles de esta propiedad en la sección [Internacionalización](tutorial-i18n.md).
@@ -335,7 +335,7 @@ Puedes encontrar más detalles de esta propiedad en la sección [Internacionaliz
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
 
 Esta propiedad es provista como una forma alternativa de definir el `time zone` de PHP por defecto en tiempo de ejecución.
-Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](http://php.net/manual/es/function.date-default-timezone-set.php).
+Configurando esta propiedad, escencialmente estás llamando a la función de PHP [date_default_timezone_set()](https://www.php.net/manual/es/function.date-default-timezone-set.php).
 Por ejemplo:
 
 ```php

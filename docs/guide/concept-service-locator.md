@@ -128,4 +128,4 @@ Added benefit is the option for a developer to override configuration in a modul
 
 Any request for a service to be retrieved from a module will be passed on to its parent in case the module is not able to satisfy it.
 
-Note that configuration from components in a module is never merged with configuration from a component in a parent module. The Service Locator pattern allows us to define named services but one cannot assume servicees with the same name use the same configuration parameters.
+Note that configuration from components in a module is never merged with configuration from a component in a parent module. The Service Locator pattern allows us to define named services but one cannot assume services with the same name use the same configuration parameters.

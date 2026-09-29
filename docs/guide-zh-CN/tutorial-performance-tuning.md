@@ -10,9 +10,9 @@
 
 一个好的 PHP 环境是非常重要的。为了得到最大的性能，
 
-- 使用最新稳定版本的 PHP 。 PHP 的主要版本可能带来显著的性能提升。
-- 启用字节码缓存 [Opcache](http://php.net/opcache)（PHP 5.5或更高版本）
-  或 [APC](http://ru2.php.net/apc)
+- 使用最新稳定版本的 PHP。 PHP 的主要版本可能带来显著的性能提升。
+- 启用字节码缓存 [Opcache](https://www.php.net/manual/zh/book.opcache.php)（PHP 5.5或更高版本）
+  或 [APC](https://www.php.net/manual/zh/book.apcu.php)
   （PHP 5.4或更早版本）。字节码缓存省去了每次解析和加载 PHP 脚本所带来的开销。
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
@@ -47,7 +47,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 Schema 缓存是一个特殊的缓存功能，
 每当你使用[活动记录](db-active-record.md)时应该要开启这个缓存功能。如你所知，
 活动记录能智能检测数据库对象的集合（例如列名、列类型、约束）而不需要手动地描述它们。
-活动记录是通过执行额外的SQL查询来获得该信息。
+活动记录是通过执行额外的 SQL 查询来获得该信息。
 通过启用 Schema 缓存，检索到的数据库对象的集合将被保存在缓存中并在将来的请求中重用。
 
 要开启 Schema 缓存，需要配置一个 `cache` [应用组件](structure-application-components.md)来储存 Schema 信息，
@@ -130,10 +130,10 @@ CREATE TABLE session (
 你也可以通过使用缓存来存储会话数据 [[yii\web\CacheSession]] 。
 理论上讲，你可以使用只要支持[数据缓存](caching-data.md#supported-cache-storage)。
 但是请注意，某些缓存的存储当达到存储限制会清除缓存数据。出于这个原因，你应主要在不存在存储限制时才使用这些缓存存储。
-如果你的服务器支持 [Redis](http://redis.io/)，强烈建议你通过使用 [[yii\redis\Session]] 来作为会话存储。
+如果你的服务器支持 [Redis](https://redis.io/)，强烈建议你通过使用 [[yii\redis\Session]] 来作为会话存储。
 
-If you have [Redis](http://redis.io/) on your server, it is highly recommended you use it as session storage by using
-[[yii\redis\Session]].
+如果您的服务器上有 [Redis](https://redis.io/)，
+强烈建议您使用 [[yii\redis\Session]] 作为会话存储。
 
 
 ## 优化数据库 <span id="optimizing-databases"></span>
@@ -157,7 +157,7 @@ If you have [Redis](http://redis.io/) on your server, it is highly recommended y
 
 尽管[活动记录](db-active-record.md)对象使用起来非常方便，
 但当你需要从数据库中检索大量数据时它的效率不如使用普通的数组。
-在这种情况下，你可以考虑在使用活动记录查询数据时调用 `asArray()` ，
+在这种情况下，你可以考虑在使用活动记录查询数据时调用 `asArray()`，
 使检索到的数据被表示为数组而不是笨重的活动记录对象。例如，
 
 ```php
@@ -173,9 +173,9 @@ class PostController extends Controller
 ```
 
 在上述代码中，$posts 将被表中的行填充形成数组。每一行是一个普通的数组。要访问
-第 i 行的 `title` 列，你可以使用表达式 `$post[$i]['title']` 。
+第 i 行的 `title` 列，你可以使用表达式 `$post[$i]['title']`。
 
-你也可以使用[DAO](db-dao.md)以数组的方式来构建查询和检索数据。
+你也可以使用 [DAO](db-dao.md) 以数组的方式来构建查询和检索数据。
 
 
 ## 优化 Composer 自动加载 <span id="optimizing-autoloader"></span>
@@ -186,6 +186,11 @@ class PostController extends Controller
 ```
 composer dumpautoload -o
 ```
+
+另外，您可以考虑使用
+[authoritative class maps](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps)
+和 [APCu 缓存](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-b-apcu-cache)。
+请注意，这两种选择可能适用于您的特定情况，也可能不适合您。
 
 
 ## 处理离线数据 <span id="processing-data-offline"></span>
@@ -212,9 +217,9 @@ composer dumpautoload -o
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 - [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [XHProf](https://www.php.net/manual/zh/book.xhprof.php)
+- [XDebug profiler](https://xdebug.org/docs/profiler)
 
-## Prepare application for scaling
+## 准备扩展应用程序
 
-When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
+当没有任何帮助时，您可以尝试使您的应用程序可扩展。[Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) 中提供了一个很好的介绍。有关进一步阅读，请参阅 [Web apps performance and scaling](https://thehighload.com/).

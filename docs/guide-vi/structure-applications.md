@@ -273,7 +273,7 @@ Giá trị của thuộc tính được xác định theo chuẩn [quốc tế h
 bao gồm các thông tin, định dạng ngày giờ, số, vv. Ví dụ, widget [[yii\jui\DatePicker]] 
 sẽ sử dụng các giá trị thuộc tính qua việc xác định ngôn ngữ nào cần được hiển thị và định dạng ngày giờ như thế nào.
 
-Khuyến khích bạn xác định các ngôn ngữ dựa theo [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag).
+Khuyến khích bạn xác định các ngôn ngữ dựa theo [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag).
 Ví dụ, `en` là chuẩn cho tiếng anh, trong khi đó `en-US` chuẩn cho tiếng anh ở Mỹ (United States).
 
 Xem thêm thông tin về thuộc tính này tại mục [Internationalization](tutorial-i18n.md).
@@ -345,7 +345,7 @@ Thuộc tính mô tả về ngôn ngữ được sử dụng để viết mã ng
 nghĩa là tiếng Anh Mỹ(United States). Bạn nên cấu hình thuộc tính này nếu nội dung trong mã nguồn của bạn không phải là tiếng Anh.
 
 Giống như thuộc tính [language](#language), you should configure this property in terms of
-an [IETF language tag](http://en.wikipedia.org/wiki/IETF_language_tag). Ví dụ, `en` chuẩn cho tiếng Anh,
+an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag). Ví dụ, `en` chuẩn cho tiếng Anh,
 trong khi `en-US` chuẩn cho tiếng Anh Mỹ (United States).
 
 Xem thêm trong phần [Quốc tế hóa](tutorial-i18n.md) để hiểu thêm thuộc tính này.
@@ -355,7 +355,7 @@ Xem thêm trong phần [Quốc tế hóa](tutorial-i18n.md) để hiểu thêm t
 
 Thuộc tính này cung cấp cách khác để thiết lập time zone trong PHP.
 Qua việc cấu hình thuộc tính này, chủ yếu được gọi qua hàm
-[date_default_timezone_set()](http://php.net/manual/en/function.date-default-timezone-set.php). Ví dụ:
+[date_default_timezone_set()](https://www.php.net/manual/en/function.date-default-timezone-set.php). Ví dụ:
 
 ```php
 [

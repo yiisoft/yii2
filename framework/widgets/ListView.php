@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -33,7 +34,7 @@ class ListView extends BaseListView
      *
      * If this property is specified as an anonymous function, it should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      *
@@ -54,7 +55,7 @@ class ListView extends BaseListView
      *
      * If this property is specified as a callback, it should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      */
@@ -75,10 +76,10 @@ class ListView extends BaseListView
      */
     public $options = ['class' => 'list-view'];
     /**
-     * @var Closure an anonymous function that is called once BEFORE rendering each data model.
+     * @var Closure|null an anonymous function that is called once BEFORE rendering each data model.
      * It should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      *
@@ -94,7 +95,7 @@ class ListView extends BaseListView
      */
     public $beforeItem;
     /**
-     * @var Closure an anonymous function that is called once AFTER rendering each data model.
+     * @var Closure|null an anonymous function that is called once AFTER rendering each data model.
      *
      * It should have the same signature as [[beforeItem]].
      *

@@ -72,7 +72,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Установка Yii из архива состоит из трёх шагов:
 
-1. Скачайте архив с [yiiframework.com](http://www.yiiframework.com/download/);
+1. Скачайте архив с [yiiframework.com](https://www.yiiframework.com/download/);
 2. Распакуйте скачанный архив в папку, доступную из Web.
 3. В файле `config/web.php` добавьте секретный ключ в значение `cookieValidationKey` (при установке через Composer
    это происходит автоматически):
@@ -122,7 +122,7 @@ php requirements.php
 
 Для корректной работы фреймворка вам необходима установка PHP, соответствующая его минимальным требованиям. Основное
 требование — PHP версии 5.4 и выше. Если ваше приложение работает с базой данных, необходимо установить
-[расширение PHP PDO](http://www.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
+[расширение PHP PDO](https://www.php.net/manual/ru/pdo.installation.php) и соответствующий драйвер 
 (например, `pdo_mysql` для MySQL).
 
 
@@ -132,13 +132,13 @@ php requirements.php
 > Info: можете пропустить этот подраздел если вы только начали знакомиться с фреймворком и пока не разворачиваете
   его на рабочем сервере.
 
-Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](http://httpd.apache.org/),
-так и с [Nginx](http://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше. Yii 2.0 также совместим с
-[HHVM](http://hhvm.com/). Тем не менее, в некоторых случаях поведение при работе с HHVM отличается от обычного PHP.
+Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](https://httpd.apache.org/),
+так и с [Nginx](https://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше. Yii 2.0 также совместим с
+[HHVM](https://hhvm.com/). Тем не менее, в некоторых случаях поведение при работе с HHVM отличается от обычного PHP.
 Будьте внимательны.
 
-На рабочем сервере вам наверняка захочется изменить URL приложения с `http://www.example.com/basic/web/index.php`
-на `http://www.example.com/index.php`. Для этого необходимо изменить корневую директорию в настройках веб сервера так,
+На рабочем сервере вам наверняка захочется изменить URL приложения с `https://www.example.com/basic/web/index.php`
+на `https://www.example.com/index.php`. Для этого необходимо изменить корневую директорию в настройках веб сервера так,
 чтобы та указывала на `basic/web`. Дополнительно можно спрятать `index.php` следуя описанию в разделе
 «[Разбор и генерация URL](runtime-routing.md)». Далее будет показано как настроить Apache и Nginx.
 
@@ -174,7 +174,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
-PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
+PHP должен быть установлен как [FPM SAPI](https://www.php.net/manual/ru/install.fpm.php) для [Nginx](https://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
 `mysite.test` на ваше имя хоста.
 

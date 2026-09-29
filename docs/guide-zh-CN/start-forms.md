@@ -98,7 +98,7 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
-        $model = new EntryForm;
+        $model = new EntryForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // 验证 $model 收到的数据
@@ -130,7 +130,7 @@ class SiteController extends Controller
 
 > Note: 在这个简单例子里我们只是呈现了有效数据的确认页面。
   实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 
-  或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
+  或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](https://en.wikipedia.org/wiki/Post/Redirect/Get)。
 
 
 创建视图 <span id="creating-views"></span>
@@ -187,7 +187,7 @@ use yii\widgets\ActiveForm;
 用浏览器访问下面的 URL 看它能否工作：
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 你会看到一个包含两个输入框的表单的页面。每个输入框的前面都有一个标签指明应该输入的数据类型。

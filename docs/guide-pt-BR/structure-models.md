@@ -1,7 +1,7 @@
 Models (Modelos)
 ================
 
-Os models (modelos) fazem parte da arquitetura [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Os models (modelos) fazem parte da arquitetura [MVC](https://pt.wikipedia.org/wiki/MVC).
 Eles representam os dados, as regras e a lógica de negócio.
 
 Você pode criar uma classe model estendendo de [[yii\base\Model]] ou de seus filhos.
@@ -43,8 +43,8 @@ echo $model->name;
 ```
 
 Você também pode acessar os atributos como elementos de um array, graças ao suporte 
-de [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) e 
-[ArrayIterator](http://php.net/manual/en/class.arrayiterator.php) pelo 
+de [ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) e 
+[ArrayIterator](https://www.php.net/manual/en/class.arrayiterator.php) pelo 
 [[yii\base\Model]]:
 
 ```php

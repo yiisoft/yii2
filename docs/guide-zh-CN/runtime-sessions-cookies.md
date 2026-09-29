@@ -124,25 +124,30 @@ $session['captcha.lifetime'] = 3600;
 而是将每个数组项变成有相同键前缀的 session 变量。
 
 
-### 自定义Session存储 <span id="custom-session-storage"></span>
+### 自定义 Session 存储 <span id="custom-session-storage"></span>
 
 [[yii\web\Session]] 类默认存储 session 数据为文件到服务器上，
 Yii 提供以下 session 类实现不同的 session 存储方式：
 
 * [[yii\web\DbSession]]：存储 session 数据在数据表中
 * [[yii\web\CacheSession]]：存储 session 数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
-* [[yii\redis\Session]]：存储 session 数据到以 [redis](http://redis.io/) 作为存储媒介中
-* [[yii\mongodb\Session]]：存储 session 数据到 [MongoDB](http://www.mongodb.org/)。
+* [[yii\redis\Session]]：存储 session 数据到以 [redis](https://redis.io/) 作为存储媒介中
+* [[yii\mongodb\Session]]：存储 session 数据到 [MongoDB](https://www.mongodb.com/)。
 
-所有这些session类支持相同的API方法集，因此，
-切换到不同的session存储介质不需要修改项目使用session的代码。
+所有这些 session 类支持相同的 API 方法集，因此，
+切换到不同的 session 存储介质不需要修改项目使用 session 的代码。
 
 > Note: 如果通过`$_SESSION`访问使用自定义存储介质的session，
   需要确保session已经用[[yii\web\Session::open()]] 开启，
   这是因为在该方法中注册自定义session存储处理器。
 
-学习如何配置和使用这些组件类请参考它们的API文档，如下为一个示例
-显示如何在应用配置中配置[[yii\web\DbSession]]
+> Note: 如果使用自定义会话存储，则可能需要显式配置会话垃圾收集器。
+  一些安装的 PHP（例如 Debian）使用垃圾收集器概率为 0，并在计划任务中离线清理会话文件。
+  此过程不适用于您的自定义存储，
+  因此您需要配置 [[yii\web\Session::$GCProbability]] 以使用非零值。
+
+学习如何配置和使用这些组件类请参考它们的 API 文档，如下为一个示例
+显示如何在应用配置中配置 [[yii\web\DbSession]]
 将数据表作为 session 存储介质。
 
 ```php
@@ -206,7 +211,7 @@ class m170529_050554_create_table_session extends Migration
 
 ### Flash 数据 <span id="flash-data"></span>
 
-Flash数据是一种特别的 session 数据，它一旦在某个请求中设置后，
+Flash 数据是一种特别的 session 数据，它一旦在某个请求中设置后，
 只会在下次请求中有效，然后该数据就会自动被删除。
 常用于实现只需显示给终端用户一次的信息，
 如用户提交一个表单后显示确认信息。
@@ -255,7 +260,7 @@ $alerts = $session->getFlash('alerts');
   会发现有时获取到一个数组，有时获取到一个字符串，
   取决于你调用这两个方法的顺序。
 
-> Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
+> Tip: 要显示 Flash 消息，您可以通过以下方式使用 [[yii\bootstrap\Alert|bootstrap Alert]] 小部件：
 >
 > ```php
 > echo Alert::widget([
@@ -267,7 +272,7 @@ $alerts = $session->getFlash('alerts');
 
 ## Cookies <span id="cookies"></span>
 
-Yii使用 [[yii\web\Cookie]] 对象来代表每个 cookie，
+Yii 使用 [[yii\web\Cookie]] 对象来代表每个 cookie，
 [[yii\web\Request]] 和 [[yii\web\Response]]
 通过名为 'cookies' 的属性维护一个 cookie 集合，前者的 cookie 集合代表请求提交的 cookies，
 后者的 cookie 集合表示发送给用户的 cookies。
@@ -277,7 +282,7 @@ Yii使用 [[yii\web\Cookie]] 对象来代表每个 cookie，
 
 ### 读取 Cookies <span id="reading-cookies"></span>
 
-当前请求的cookie信息可通过如下代码获取：
+当前请求的 cookie 信息可通过如下代码获取：
 
 ```php
 // 从 "request" 组件中获取 cookie 集合(yii\web\CookieCollection)
@@ -296,7 +301,7 @@ if (isset($cookies['language'])) {
     $language = $cookies['language']->value;
 }
 
-// 判断是否存在名为"language" 的 cookie
+// 判断是否存在名为 "language" 的 cookie
 if ($cookies->has('language')) ...
 if (isset($cookies['language'])) ...
 ```
@@ -323,24 +328,24 @@ unset($cookies['language']);
 ```
 
 除了上述例子定义的 [[yii\web\Cookie::name|name]] 和 [[yii\web\Cookie::value|value]] 属性
-[[yii\web\Cookie]] 类也定义了其他属性来实现cookie的各种信息，如
+[[yii\web\Cookie]] 类也定义了其他属性来实现 cookie 的各种信息，如
 [[yii\web\Cookie::domain|domain]]，[[yii\web\Cookie::expire|expire]]
 可配置这些属性到 cookie 中并添加到响应的 cookie 集合中。
 
 > Note: 为安全起见 [[yii\web\Cookie::httpOnly]] 被设置为 true，
   这可减少客户端脚本访问受保护 cookie（如果浏览器支持）的风险，
-  更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly)。
+  更多详情可阅读 [httpOnly wiki article](https://owasp.org/www-community/HttpOnly)。
 
 
-### Cookie验证 <span id="cookie-validation"></span>
+### Cookie 验证 <span id="cookie-validation"></span>
 
 在上两节中，当通过 `request` 和 `response` 组件读取和发送 cookie 时，
 你会喜欢扩展的 cookie 验证的保障安全功能，它能
-使 cookie 不被客户端修改。该功能通过给每个cookie签发一个哈希字符串来告知服务端 cookie 是否在客户端被修改，
+使 cookie 不被客户端修改。该功能通过给每个 cookie 签发一个哈希字符串来告知服务端 cookie 是否在客户端被修改，
 如果被修改，通过 `request` 组件的
 [[yii\web\Request::cookies|cookie collection]] cookie 集合访问不到该 cookie。
 
-> Note: Cookie验证只保护 cookie 值被修改，如果一个 cookie 验证失败，
+> Note: Cookie 验证只保护 cookie 值被修改，如果一个 cookie 验证失败，
   仍然可以通过 `$_COOKIE` 来访问该 cookie，
   因为这是第三方库对未通过 cookie 验证自定义的操作方式。
 

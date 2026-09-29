@@ -108,7 +108,7 @@ Arriba te mostramos cómo definir un fixture de BD. Para definir un fixture no r
 Utilizar Fixtures
 -----------------
 
-Si estás utilizando [Codeception](http://codeception.com/) para hacer tests de tu código, deberías considerar el utilizar
+Si estás utilizando [Codeception](https://codeception.com/) para hacer tests de tu código, deberías considerar el utilizar
 la extensión `yii2-codeception`, que tiene soporte incorporado para la carga y acceso a fixtures.
 En caso de que utilices otros frameworks de testing, puedes usar [[yii\test\FixtureTrait]] en tus casos de tests
 para alcanzar el mismo objetivo.
@@ -129,7 +129,7 @@ class UserProfileTest extends DbTestCase
     public function fixtures()
     {
         return [
-            'profiles' => UserProfileFixture::className(),
+            'profiles' => UserProfileFixture::class,
         ];
     }
 

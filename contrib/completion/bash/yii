@@ -3,7 +3,7 @@
 # See also:
 # - https://debian-administration.org/article/317/An_introduction_to_bash_completion_part_2 on how this works.
 # - https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html
-# - http://www.yiiframework.com/doc-2.0/guide-tutorial-console.html#bash-completion
+# - https://www.yiiframework.com/doc-2.0/guide-tutorial-console.html#bash-completion
 #
 # Usage:
 # Temporarily you can source this file in you bash by typing: source yii
@@ -57,4 +57,4 @@ _yii()
 
 # register completion for the ./yii command
 # you may adjust this line if your command file is named differently
-complete -F _yii ./yii yii
+complete -o default -F _yii ./yii yii

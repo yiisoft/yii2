@@ -16,7 +16,7 @@ Web 应用的入口脚本必须放在终端用户能够访问的目录下，
 入口脚本主要完成以下工作：
 
 * 定义全局常量；
-* 注册 [Composer 自动加载器](http://getcomposer.org/doc/01-basic-usage.md#autoloading)；
+* 注册 [Composer 自动加载器](https://getcomposer.org/doc/01-basic-usage.md#autoloading)；
 * 包含 [[Yii]] 类文件；
 * 加载应用配置；
 * 创建一个[应用](structure-applications.md)实例并配置;
@@ -57,9 +57,9 @@ $config = require __DIR__ . '/../config/web.php';
 /**
  * Yii console bootstrap file.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
@@ -99,7 +99,7 @@ exit($exitCode);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
-上面的代码等同于:
+上面的代码等同于：
 
 ```php
 if (!defined('YII_DEBUG')) {
@@ -111,4 +111,3 @@ if (!defined('YII_DEBUG')) {
 
 常量定义应该在入口脚本的开头，这样包含其他 PHP 文件时，
 常量就能生效。
-

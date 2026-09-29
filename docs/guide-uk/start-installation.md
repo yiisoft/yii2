@@ -44,7 +44,7 @@
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/francoispluchino/composer-asset-plugin/),
+Перша команда встановить [плагін ресурсів composer (composer-asset-plugin)](https://github.com/fxpio/composer-asset-plugin),
 що дозволить керувати залежностями пакунків Bower та NPM за допомогою Composer. Цю команду потрібно виконати лише
 один раз. Друга команда встановить Yii у директорію під назвою `basic`. За бажанням, ви можете обрати інше ім’я для директорії.
 
@@ -69,7 +69,7 @@
 
 Встановлення Yii з архіву складається з трьох кроків:
 
-1. Завантажте архів за адресою [yiiframework.com](http://www.yiiframework.com/download/);
+1. Завантажте архів за адресою [yiiframework.com](https://www.yiiframework.com/download/);
 2. Розпакуйте архів в директорію, доступну через Web.
 3. Відредагуйте файл конфігурації `config/web.php` - необхідно ввести таємний ключ до пункту `cookieValidationKey`
    (це виконується автоматично при вставленні Yii через Composer):
@@ -99,7 +99,7 @@
 ----------------------
 
 Після успішного встановлення ви можете налаштувати свій веб-сервер (див. наступний розділ)
-або використати [вбудований веб-сервер PHP](https://secure.php.net/manual/en/features.commandline.webserver.php),
+або використати [вбудований веб-сервер PHP](https://www.php.net/manual/en/features.commandline.webserver.php),
 виконавши наступну консольну команду із директорії `web`:
 
 ```bash
@@ -136,7 +136,7 @@ http://localhost:8080/
   ```
 
 Необхідно налаштувати PHP таким чином, щоб він відповідав мінімальним вимогам Yii. Основна вимога — PHP версії 5.4 або вище.
-Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](http://www.php.net/manual/en/pdo.installation.php)
+Якщо ваш додаток працює з базою даних, необхідно встановити [розширення PHP PDO](https://www.php.net/manual/en/pdo.installation.php)
 та відповідний драйвер (наприклад, `pdo_mysql` для MySQL).
 
 
@@ -147,13 +147,13 @@ http://localhost:8080/
   і не розгортаєте його на робочому сервері.
 
 Додаток, встановлений за інструкціями, наведеними вище, буде працювати одразу як
-з [Apache HTTP server](http://httpd.apache.org/), так і з [Nginx HTTP server](http://nginx.org/) на
+з [Apache HTTP server](https://httpd.apache.org/), так і з [Nginx HTTP server](https://nginx.org/) на
 Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище. Yii 2.0 також сумісний із віртуальною машиною Фейсбука
-[HHVM](http://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
+[HHVM](https://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
 ніж рідний PHP, тому ви повинні бути дуже уважними при використанні HHVM.  
 
-На робочому сервері вам напевно захочеться змінити URL додатку з `http://www.example.com/basic/web/index.php`
-на `http://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.
+На робочому сервері вам напевно захочеться змінити URL додатку з `https://www.example.com/basic/web/index.php`
+на `https://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.
 Додатково можна сховати `index.php` із URL, як це описано у розділі [Маршрутизація та створення URL](runtime-routing.md). 
 Далі буде описано як налаштувати Apache або Nginx для цих цілей.
 
@@ -191,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
+Для використання [Nginx](https://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
 `basic/web`, а `mysite.test` на актуальний домен.
 

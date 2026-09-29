@@ -32,7 +32,7 @@ Formatter может быть использован двумя различны
    ```
 
 Все данные, отображаемые через компонент formatter, будут локализованы, если
-[расширение PHP intl](http://php.net/manual/ru/book.intl.php) было установлено. Для этого вы можете настроить свойство
+[расширение PHP intl](https://www.php.net/manual/ru/book.intl.php) было установлено. Для этого вы можете настроить свойство
 [[yii\i18n\Formatter::locale|locale]]. Если оно не было настроено, то в качестве локали будет использован
 [[yii\base\Application::language|язык приложения]]. Подробнее смотрите в разделе «[интернационализация](tutorial-i18n.md)».
 Компонент форматирования будет выбирать корректный формат для даты и чисел в соответствии с локалью, включая имена
@@ -51,7 +51,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 ```
 
 > Обратите внимание, что форматирование может различаться между различными версиями библиотеки ICU, собранных с PHP,
-> а также на основе того установлено ли [расширение PHP intl](http://php.net/manual/ru/book.intl.php) или нет.
+> а также на основе того установлено ли [расширение PHP intl](https://www.php.net/manual/ru/book.intl.php) или нет.
 > Таким образом, чтобы гарантировать, что ваш сайт будет одинаково отображать данные во всех окружениях рекомендуется
 > установить расширение PHP intl во всех окружениях и проверить, что версия библиотеки ICU совпадает.
 > См. также: [Настройка PHP окружения для интернационализации](tutorial-i18n.md#setup-environment).
@@ -112,10 +112,10 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // выведет: 1 январ
 - `long` будет отображать `6 October 2014` и `15:58:42 GMT` соответственно и
 - `full` будет отображать `Monday, 6 October 2014` и `15:58:42 GMT` соответственно.
 
-Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](http://site.icu-project.org/),
+Дополнительно вы можете задать специальный формат, используя синтаксис, заданный [ICU Project](https://icu.unicode.org/),
 который описан в руководстве ICU по следующему адресу:
-<http://userguide.icu-project.org/formatparse/datetime>. Также вы можете использовать синтаксис, который распознаётся
-PHP-функцией [date()](http://php.net/manual/ru/function.date.php), используя строку с префиксом `php:`.
+<https://unicode-org.github.io/icu/userguide/format_parse/datetime/>. Также вы можете использовать синтаксис, который распознаётся
+PHP-функцией [date()](https://www.php.net/manual/ru/function.date.php), используя строку с префиксом `php:`.
 
 ```php
 // ICU форматирование
@@ -145,7 +145,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 
 > Note: Поскольку правила для часовых поясов принимаются различными правительствами и могут часто меняться,
 > вероятно, информация в базе данных часовых поясов на вашем сервере не самая свежая.
-> Как обновить базу вы можете узнать из [руководства ICU](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data).
+> Как обновить базу вы можете узнать из [руководства ICU](https://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data).
 > Смотрите также: [Настройка вашего PHP окружения для интернационализации](tutorial-i18n.md#setup-environment).
 
 Форматирование чисел <span id="numbers"></span>
@@ -170,7 +170,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 [[yii\i18n\Formatter::thousandSeparator|тысячного разделителя]], которые были заданы в соответствии с локалью.
 
 Для более сложной конфигурации [[yii\i18n\Formatter::numberFormatterOptions]] и [[yii\i18n\Formatter::numberFormatterTextOptions]]
-могут быть использованы для настройки внутренне используемого [класса NumberFormatter](http://php.net/manual/ru/class.numberformatter.php).
+могут быть использованы для настройки внутренне используемого [класса NumberFormatter](https://www.php.net/manual/ru/class.numberformatter.php).
 
 Например, чтобы настроить максимальное и минимальное количество знаков после запятой, вы можете настроить свойство
 [[yii\i18n\Formatter::numberFormatterOptions]] как в примере ниже:

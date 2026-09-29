@@ -49,7 +49,7 @@ Hingga saat ini, anda memiliki database bernama `yii2basic`, dan didalamnya terd
 Konfigurasi Koneksi Database <span id="configuring-db-connection"></span>
 ---------------------------
 
-Sebelum melanjutkan, pastikan anda memasang ekstensi PHP [PDO](http://www.php.net/manual/en/book.pdo.php) dan
+Sebelum melanjutkan, pastikan anda memasang ekstensi PHP [PDO](https://www.php.net/manual/en/book.pdo.php) dan
 driver PDO untuk database yang anda gunakan (misal, `pdo_mysql` untuk MySQL). Ini adalah kebutuhan mendasar
 jika aplikasi anda menggunakan _relational database_.
 
@@ -225,7 +225,7 @@ Mari Kita Coba <span id="trying-it-out"></span>
 Untuk melihat bagaimana kode-kode di atas bekerja, gunakan browser anda untuk mengakses URL ini:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Daftar Country](images/start-country-list.png)
@@ -235,7 +235,7 @@ Jika anda mengklik tombol "2", anda akan melihat halaman tersebut menampilkan 5 
 Silahkan melakukan observasi secara perlahan-lahan dan anda akan mengetahui bahwa URL pada browser juga akan berganti menjadi
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Di belakang layar, [[yii\data\Pagination|Pagination]] menyediakan semua kebutuhkan untuk memecah data menjadi halaman per halaman:

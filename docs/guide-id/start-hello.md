@@ -88,7 +88,7 @@ disebut dalam tindakan, itu akan mencari file PHP bernama `views/ControllerID/Vi
 
 Perhatikan bahwa dalam kode di atas, parameter `message` adalah di-[[yii\helpers\Html::encode()|HTML-encoded]]
 sebelum dicetak. Hal ini diperlukan karena sebagai parameter yang berasal dari pengguna akhir, sangat rentan terhadap
-[serangan Cross-site scripting (XSS)](http://en.wikipedia.org/wiki/Cross-site_scripting) dengan melekatkan
+[serangan Cross-site scripting (XSS)](https://en.wikipedia.org/wiki/Cross-site_scripting) dengan melekatkan
 kode JavaScript berbahaya dalam parameter.
 
 Tentu, Anda dapat menempatkan lebih banyak konten di view `say`. konten dapat terdiri dari tag HTML, teks biasa, dan bahkan pernyataan PHP.
@@ -102,7 +102,7 @@ Trying it Out <span id="trying-it-out"></span>
 Setelah membuat action dan view, Anda dapat mengakses halaman baru dengan mengakses URL berikut:
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

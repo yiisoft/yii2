@@ -50,7 +50,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 Налаштування підключення до БД <span id="configuring-db-connection"></span>
 ------------------------------
 
-Перш ніж продовжити, переконайтеся, що у вас встановлено розширення PHP [PDO](http://www.php.net/manual/en/book.pdo.php)
+Перш ніж продовжити, переконайтеся, що у вас встановлено розширення PHP [PDO](https://www.php.net/manual/en/book.pdo.php)
 та драйвер PDO для вашої БД (наприклад `pdo_mysql` для MySQL). Це є основною вимогою,
 якщо ваш додаток використовує реляційну базу даних.
 
@@ -220,7 +220,7 @@ use yii\widgets\LinkPager;
 Щоб побачити як весь вищезазначений код працює, відкрийте в браузері наступний URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Перелік країн](images/start-country-list.png)
@@ -230,7 +230,7 @@ http://hostname/index.php?r=country%2Findex
 Придивившись більш уважно, ви побачите, що URL в браузері також змінюється на
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 За лаштунками, [[yii\data\Pagination|Pagination]] надає всю необхідну функціональність для розділення набору даних на сторінки:

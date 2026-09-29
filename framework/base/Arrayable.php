@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -33,7 +34,7 @@ interface Arrayable
      * the corresponding field definition which can be either an object property name or a PHP callable
      * returning the corresponding field value. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($model, $field) {
      *     // return field value
      * }
@@ -47,7 +48,7 @@ interface Arrayable
      * - `fullName`: the field name is `fullName`. Its value is obtained by concatenating `first_name`
      *   and `last_name`.
      *
-     * ```php
+     * ```
      * return [
      *     'email',
      *     'firstName' => 'first_name',

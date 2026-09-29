@@ -49,7 +49,7 @@ W tym miejscu masz już utworzoną bazę danych o nazwie `yii2basic`, posiadają
 Konfiguracja połączenia z bazą danych <span id="configuring-db-connection"></span>
 ---------------------------
 
-Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](http://www.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
+Przed przystąpieniem do tej części, upewnij się, że masz zainstalowane rozszerzenie [PDO](https://www.php.net/manual/en/book.pdo.php) oraz sterownik PDO dla bazy danych której używasz 
 (np. `pdo_mysql` dla MySQL).
 Jest to podstawowe wymaganie, jeśli Twoja aplikacja używa relacyjnej bazy danych.
 
@@ -210,7 +210,7 @@ Sprawdź jak to działa <span id="trying-it-out"></span>
 Aby zobaczyć jak działa powyższy kod, użyj przeglądarki i przejdź pod podany adres URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Lista krajów](images/start-country-list.png)
@@ -220,7 +220,7 @@ Jeśli klikniesz przycisk "2", zobaczysz stronę wyświetlającą pięć innych 
 Zauważ, że adres URL w przeglądarce również się zmienił na 
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Za kulisami, [[yii\data\Pagination|Pagination]] dostarcza wszystkich niezbędnych funkcjonalności do stronicowania zbioru danych: 

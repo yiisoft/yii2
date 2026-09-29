@@ -65,7 +65,7 @@ using the following array structure:
   Note that it will not be HTML-encoded.
 
 > Info: You can directly feed the value of [[yii\data\Sort::$orders|orders]] to the database query to build
-  its `ORDER BY` clause. Do not use [[yii\data\Sort::$attributeOrders|attributeOrders]] because some of the
+  its `ORDER BY` clause. Do not use [[yii\data\Sort::$attributeOrders|attributeOrders]] because some
   attributes may be composite and cannot be recognized by the database query.
 
 You can call [[yii\data\Sort::link()]] to generate a hyperlink upon which end users can click to request sorting

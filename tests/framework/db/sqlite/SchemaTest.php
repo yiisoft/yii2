@@ -1,12 +1,15 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\sqlite;
 
+use yii\base\NotSupportedException;
+use yii\db\Constraint;
 use yiiunit\framework\db\AnyValue;
 
 /**
@@ -17,7 +20,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     protected $driverName = 'sqlite';
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in SQLite.');
     }
@@ -42,7 +45,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function testCompositeFk()
+    public function testCompositeFk(): void
     {
         $schema = $this->getConnection()->schema;
 
@@ -55,7 +58,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: primary key'][2]->name = null;
@@ -73,6 +76,37 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $result['4: primary key'][2]->name = null;
         $result['4: unique'][2][0]->name = AnyValue::getInstance();
+
+        $result['5: primary key'] = ['T_upsert', 'primaryKey', new Constraint([
+            'name' => AnyValue::getInstance(),
+            'columnNames' => ['id'],
+        ])];
+
         return $result;
+    }
+
+    /**
+     * @dataProvider quoteTableNameDataProvider
+     * @param $name
+     * @param $expectedName
+     * @throws NotSupportedException
+     */
+    public function testQuoteTableName($name, $expectedName): void
+    {
+        $schema = $this->getConnection()->getSchema();
+        $quotedName = $schema->quoteTableName($name);
+        $this->assertEquals($expectedName, $quotedName);
+    }
+
+    public function quoteTableNameDataProvider()
+    {
+        return [
+            ['test', '`test`'],
+            ['test.test', '`test`.`test`'],
+            ['test.test.test', '`test`.`test`.`test`'],
+            ['`test`', '`test`'],
+            ['`test`.`test`', '`test`.`test`'],
+            ['test.`test`.test', '`test`.`test`.`test`'],
+        ];
     }
 }

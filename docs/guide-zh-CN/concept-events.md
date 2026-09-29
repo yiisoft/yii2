@@ -13,7 +13,7 @@ Yii 引入了名为 [[yii\base\Component]] 的基类以支持事件。
 事件处理器（Event Handlers） <span id="event-handlers"></span>
 -------------------------
 
-事件处理器是一个[PHP 回调函数](http://www.php.net/manual/en/language.types.callable.php)，
+事件处理器是一个[PHP 回调函数](https://www.php.net/manual/zh/language.types.callable.php)，
 当它所附加到的事件被触发时它就会执行。可以使用以下回调函数之一：
 
 - 字符串形式指定的 PHP 全局函数，如 `'trim'` ；
@@ -211,7 +211,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -229,11 +229,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // 显示 "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 注意这种情况下 `$event->sender` 指向触发事件的类名而不是对象实例。
@@ -245,10 +245,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // 移除 $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // 移除 Foo::EVENT_HELLO 事件的全部处理器
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -304,10 +304,10 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 但是请注意, 你不能让所有实现这个接口的类都触发事件：

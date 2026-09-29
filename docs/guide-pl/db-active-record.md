@@ -1,7 +1,7 @@
 Active Record
 =============
 
-[Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) zapewnia zorientowany obiektowo interfejs dostępu i manipulacji danymi 
+[Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) zapewnia zorientowany obiektowo interfejs dostępu i manipulacji danymi 
 zapisanymi w bazie danych. Klasa typu Active Record jest powiązana z tabelą bazodanową, a instacja tej klasy odpowiada pojedynczemu wierszowi 
 w tabeli - *atrybut* obiektu Active Record reprezentuje wartość konkretnej kolumny w tym wierszu. Zamiast pisać bezpośrednie kwerendy bazy danych, 
 można skorzystać z atrybutów i metod klasy Active Record.
@@ -31,7 +31,7 @@ Yii zapewnia wsparcie Active Record dla następujących typów relacyjnych baz d
 * SQLite 2 i 3: poprzez [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 lub nowszy: poprzez [[yii\db\ActiveRecord]]
 * Oracle: poprzez [[yii\db\ActiveRecord]]
-* CUBRID 9.3 lub nowszy: poprzez [[yii\db\ActiveRecord]] (zwróć uwagę, że z powodu [błędu](http://jira.cubrid.org/browse/APIS-658) 
+* CUBRID 9.3 lub nowszy: poprzez [[yii\db\ActiveRecord]] (zwróć uwagę, że z powodu [błędu](https://jira.cubrid.org/browse/APIS-658) 
   w rozszerzeniu PDO cubrid, umieszczanie wartości w cudzysłowie nie będzie działać, zatem wymagane jest zainstalowanie CUBRID 9.3 zarówno 
   jako klienta jak i serwer)
 * Sphinx: poprzez [[yii\sphinx\ActiveRecord]], wymaga rozszerzenia `yii2-sphinx`
@@ -438,8 +438,8 @@ Jeśli chcesz sprawdzić wartość atrybutu sprzed ostatniej zmiany, możesz wyw
 > ma tą samą wartość, ale jest innego typu. Taka sytuacja zdarza się często, kiedy model jest aktualizowany danymi pochodzącymi z formularza 
 > HTML, gdzie każda wartość jest reprezentowana jako string.
 > Aby upewnić się, że wartości będą odpowiednich typów, np. integer, możesz zaaplikować [filtr walidacji](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](http://php.net/manual/en/function.intval.php), 
-> [floatval()](http://php.net/manual/en/function.floatval.php), [boolval](http://php.net/manual/en/function.boolval.php), itp...
+> `['attributeName', 'filter', 'filter' => 'intval']`.  Działa on z wszystkimi funkcjami PHP rzutującymi typy jak [intval()](https://www.php.net/manual/en/function.intval.php), 
+> [floatval()](https://www.php.net/manual/en/function.floatval.php), [boolval](https://www.php.net/manual/en/function.boolval.php), itp...
 
 
 ### Domyślne wartości atrybutów <span id="default-attribute-values"></span>
@@ -613,7 +613,7 @@ try {
 ```
 
 > Note: w powyższym kodzie znajdują się dwa bloki catch dla kompatybilności 
-> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](http://php.net/manual/en/class.throwable.php)
+> z PHP 5.x i PHP 7.x. `\Exception` implementuje [interfejs `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
 > od PHP 7.0, zatem można pominąć część z `\Exception`, jeśli Twoja aplikacja używa tylko PHP 7.0 lub wyższego.
 
 Drugi sposób polega na utworzeniu listy operacji bazodanowych, które wymagają transakcji za pomocą metody [[yii\db\ActiveRecord::transactions()|transactions()]]. 
@@ -719,7 +719,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -727,7 +727,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -744,7 +744,7 @@ Deklarując relację powinno się zwrócić uwagę na następujące dane:
   klient może mieć wiele zamówień, podczas gdy zamówienie ma tylko jednego klienta.
 - nazwę powiązanej klasy Active Record: określoną jako pierwszy argument w [[yii\db\ActiveRecord::hasMany()|hasMany()]] lub 
   [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  Rekomendowany sposób uzyskania nazwy klasy to wywołanie `Xyz::className()`, dzięki czemu możemy posiłkować się wsparciem autouzupełniania IDE 
+  Rekomendowany sposób uzyskania nazwy klasy to wywołanie `Xyz::class`, dzięki czemu możemy posiłkować się wsparciem autouzupełniania IDE 
   i wykrywaniem błędów na poziomie kompilacji. 
 - powiązanie pomiędzy dwoma rodzajami danych: określone jako kolumna(y), poprzez którą dane nawiązują relację.
   Wartości tablicy są kolumnami głównych danych (reprezentowanymi przez klasę Active Record, w której deklaruje się relacje), a klucze tablicy są 
@@ -818,7 +818,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -852,7 +852,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -865,12 +865,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -1123,7 +1123,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1131,7 +1131,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1163,7 +1163,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1267,7 +1267,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // klient posiada wiele komentarzy
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1282,7 +1282,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // komentarz jest przypisany do jednego klienta
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1365,7 +1365,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1376,7 +1376,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1440,7 +1440,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1534,7 +1534,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1565,7 +1565,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**

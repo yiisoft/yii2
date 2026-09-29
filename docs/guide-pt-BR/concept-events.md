@@ -9,7 +9,7 @@ Se sua classe precisar disparar eventos, ela deverá estender de [[yii\base\Comp
 Manipuladores de Evento <span id="event-handlers"></span>
 --------------
 
-Um manipulador de evento é uma função [Callback do PHP] (http://www.php.net/manual/en/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
+Um manipulador de evento é uma função [Callback do PHP] (https://www.php.net/manual/pt_BR/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
 - uma função global do PHP especificada como uma string (sem parênteses), por exemplo, `'trim'`;
 - Um método do objeto especificado como um array, informando o objeto e um nome do método como uma string (sem parênteses), por exemplo `[$object, 'methodName']`;
 - Um método estático da classe especificado como um array informando o nome da classe e nome do método como string (sem parênteses), por exemplo, `['ClassName', 'methodName']`; 
@@ -191,7 +191,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -205,11 +205,11 @@ Você pode disparar um evento de *nível de classe* chamando o método estático
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
    var_dump($event->sender);  // displays "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Note que, neste caso, `$event->sender` refere-se ao nome da classe acionando o evento em vez de uma instância do objeto.
@@ -220,10 +220,10 @@ Para desvincular um manipulador de evento de nível de classe, chame [[yii\base\
 
 ```php
 // desvincula $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // Desvincula todos os manipuladores de Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 

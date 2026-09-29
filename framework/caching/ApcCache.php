@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -12,8 +13,8 @@ use yii\base\InvalidConfigException;
 /**
  * ApcCache provides APC caching in terms of an application component.
  *
- * To use this application component, the [APC PHP extension](http://www.php.net/apc) must be loaded.
- * Alternatively [APCu PHP extension](http://www.php.net/apcu) could be used via setting `useApcu` to `true`.
+ * To use this application component, the [APC PHP extension](https://www.php.net/apc) must be loaded.
+ * Alternatively [APCu PHP extension](https://www.php.net/apcu) could be used via setting `useApcu` to `true`.
  * In order to enable APC or APCu for CLI you should add "apc.enable_cli = 1" to your php.ini.
  *
  * See [[Cache]] for common cache operations that ApcCache supports.
@@ -27,8 +28,8 @@ class ApcCache extends Cache
 {
     /**
      * @var bool whether to use apcu or apc as the underlying caching extension.
-     * If true, [apcu](http://pecl.php.net/package/apcu) will be used.
-     * If false, [apc](http://pecl.php.net/package/apc) will be used.
+     * If true, [apcu](https://pecl.php.net/package/apcu) will be used.
+     * If false, [apc](https://pecl.php.net/package/apc) will be used.
      * Defaults to false.
      * @since 2.0.7
      */

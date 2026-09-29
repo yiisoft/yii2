@@ -1,7 +1,7 @@
 Active Record
 =============
 
-O [Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
+O [Active Record](https://pt.wikipedia.org/wiki/Active_record) fornece uma interface orientada a objetos para acessar e manipular dados armazenados em bancos de dados. Uma classe Active Record está associado a uma tabela da base de dados, uma instância do Active Record corresponde a uma linha desta tabela, e um *atributo* desta instância representa o valor de uma coluna desta linha. Em vez de escrever instruções SQL a mão, você pode acessar os atributos do Active Record e chamar os métodos do Active Record para acessar e manipular  os dados armazenados nas tabelas do banco de dados.
 
 Por exemplo, assumindo que `Customer` é uma classe Active Record que está associada com a tabela `customer` e `name` é uma coluna desta tabela. Você pode escrever o seguinte código para inserir uma nova linha na tabela `customer`:
 
@@ -576,7 +576,7 @@ class Customer extends ActiveRecord
 {
    public function getOrders()
    {
-       return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+       return $this->hasMany(Order::class, ['customer_id' => 'id']);
    }
 }
 
@@ -584,7 +584,7 @@ class Order extends ActiveRecord
 {
    public function getCustomer()
    {
-       return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+       return $this->hasOne(Customer::class, ['id' => 'customer_id']);
    }
 }
 ```
@@ -596,7 +596,7 @@ Cada método de relação deve ser nomeado como `getXyz`. Nós chamamos de `xyz`
 Ao declarar uma relação, você deve especificar as seguintes informações:
 
 - A multiplicidade da relação: especificada chamando tanto o método [[yii\db\ActiveRecord::hasMany()|hasMany()]] quanto o método [[yii\db\ActiveRecord::hasOne()|hasOne()]]. No exemplo acima você pode facilmente ler nas declarações de relação que um `customer` tem vários `orders` enquanto uma `order` só tem um `customer`.
-- O nome da classe Active Record relacionada: especificada no primeiro parâmetro dos métodos [[yii\db\ActiveRecord::hasMany()|hasMany()]] e [[yii\db\ActiveRecord::hasOne()|hasOne()]]. Uma prática recomendada é chamar `Xyz::className()` para obter o nome da classe para que você possa receber suporte do preenchimento automático de IDEs bem como detecção de erros. 
+- O nome da classe Active Record relacionada: especificada no primeiro parâmetro dos métodos [[yii\db\ActiveRecord::hasMany()|hasMany()]] e [[yii\db\ActiveRecord::hasOne()|hasOne()]]. Uma prática recomendada é chamar `Xyz::class` para obter o nome da classe para que você possa receber suporte do preenchimento automático de IDEs bem como detecção de erros. 
 - A ligação entre os dois tipos de dados: especifica a(s) coluna(s) por meio do qual os dois tipos de dados se relacionam. Os valores do array são as colunas da tabela primária (representada pela classe Active Record que você declarou as relações), enquanto as chaves do array são as colunas da tabela relacionada.
 
 Uma regra fácil de lembrar é, como você pode ver no exemplo acima, você escreve a coluna que pertence ao Active Record relacionado diretamente ao lado dele. Você pode ver que `customer_id` é uma propriedade de `Order` e `id` é uma propriedade de  `Customer`.
@@ -654,7 +654,7 @@ class Customer extends ActiveRecord
 {
    public function getBigOrders($threshold = 100)
    {
-       return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+       return $this->hasMany(Order::class, ['customer_id' => 'id'])
            ->where('subtotal > :threshold', [':threshold' => $threshold])
            ->orderBy('id');
    }
@@ -674,7 +674,7 @@ $orders = $customer->bigOrders;
 
 ### Relações Através de Tabela de Junção <span id="junction-table"></span>
 
-Em uma modelagem de banco de dados, quando a multiplicidade entre duas tabelas relacionadas é `many-to-many`, geralmente é criada uma [tabela de junção](https://en.wikipedia.org/wiki/Junction_table). Por exemplo, a tabela `order` e a tabela `item` podem se relacionar através da tabela de junção chamada `order_item`. Um `order`, então, corresponderá a múltiplos `order items`, enquanto um `product item` também corresponderá a múltiplos `order items`.
+Em uma modelagem de banco de dados, quando a multiplicidade entre duas tabelas relacionadas é `many-to-many`, geralmente é criada uma [tabela de junção](https://pt.wikipedia.org/wiki/Entidade_associativa). Por exemplo, a tabela `order` e a tabela `item` podem se relacionar através da tabela de junção chamada `order_item`. Um `order`, então, corresponderá a múltiplos `order items`, enquanto um `product item` também corresponderá a múltiplos `order items`.
 
 Ao declarar tais relações, você chamaria [[yii\db\ActiveQuery::via()|via()]] ou [[yii\db\ActiveQuery::viaTable()|viaTable()]] para especificar a tabela de junção. A diferença entre [[yii\db\ActiveQuery::via()|via()]] e [[yii\db\ActiveQuery::viaTable()|viaTable()]] é que o primeiro especifica a tabela de junção em função a uma relação existente enquanto o último faz referência diretamente a tabela de junção. Por exemplo,
 
@@ -683,7 +683,7 @@ class Order extends ActiveRecord
 {
    public function getItems()
    {
-       return $this->hasMany(Item::className(), ['id' => 'item_id'])
+       return $this->hasMany(Item::class, ['id' => 'item_id'])
            ->viaTable('order_item', ['order_id' => 'id']);
    }
 }
@@ -696,12 +696,12 @@ class Order extends ActiveRecord
 {
    public function getOrderItems()
    {
-       return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+       return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
    }
 
    public function getItems()
    {
-       return $this->hasMany(Item::className(), ['id' => 'item_id'])
+       return $this->hasMany(Item::class, ['id' => 'item_id'])
            ->via('orderItems');
    }
 }
@@ -892,7 +892,7 @@ class Customer extends ActiveRecord
 {
    public function getOrders()
    {
-       return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+       return $this->hasMany(Order::class, ['customer_id' => 'id']);
    }
 }
 
@@ -900,7 +900,7 @@ class Order extends ActiveRecord
 {
    public function getCustomer()
    {
-       return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+       return $this->hasOne(Customer::class, ['id' => 'customer_id']);
    }
 }
 ```
@@ -930,7 +930,7 @@ class Customer extends ActiveRecord
 {
    public function getOrders()
    {
-       return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+       return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
    }
 }
 ```
@@ -1023,7 +1023,7 @@ class Customer extends \yii\db\ActiveRecord
    public function getComments()
    {
        // a customer tem muitos comments
-       return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+       return $this->hasMany(Comment::class, ['customer_id' => 'id']);
    }
 }
 
@@ -1038,7 +1038,7 @@ class Comment extends \yii\mongodb\ActiveRecord
    public function getCustomer()
    {
        // um comment tem um customer
-       return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+       return $this->hasOne(Customer::class, ['id' => 'customer_id']);
    }
 }
 
@@ -1106,7 +1106,7 @@ class Customer extends \yii\db\ActiveRecord
 {
    public function getActiveComments()
    {
-       return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+       return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
    }
 }
 
@@ -1166,7 +1166,7 @@ class Customer extends \yii\db\ActiveRecord
 
    public function getOrders()
    {
-       return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+       return $this->hasMany(Order::class, ['customer_id' => 'id']);
    }
 }
 ```

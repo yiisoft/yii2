@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -19,13 +20,20 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
  */
 class Behavior extends BaseObject
 {
     /**
-     * @var Component|null the owner of this behavior
+     * @var T|null the owner of this behavior
      */
     public $owner;
+
+    /**
+     * @var array Attached events handlers
+     */
+    private $_attachedEvents = [];
 
 
     /**
@@ -47,7 +55,7 @@ class Behavior extends BaseObject
      *
      * The following is an example:
      *
-     * ```php
+     * ```
      * [
      *     Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
      *     Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',
@@ -66,12 +74,13 @@ class Behavior extends BaseObject
      * The default implementation will set the [[owner]] property
      * and attach event handlers as declared in [[events]].
      * Make sure you call the parent implementation if you override this method.
-     * @param Component $owner the component that this behavior is to be attached to.
+     * @param T $owner the component that this behavior is to be attached to.
      */
     public function attach($owner)
     {
         $this->owner = $owner;
         foreach ($this->events() as $event => $handler) {
+            $this->_attachedEvents[$event] = $handler;
             $owner->on($event, is_string($handler) ? [$this, $handler] : $handler);
         }
     }
@@ -85,9 +94,10 @@ class Behavior extends BaseObject
     public function detach()
     {
         if ($this->owner) {
-            foreach ($this->events() as $event => $handler) {
+            foreach ($this->_attachedEvents as $event => $handler) {
                 $this->owner->off($event, is_string($handler) ? [$this, $handler] : $handler);
             }
+            $this->_attachedEvents = [];
             $this->owner = null;
         }
     }

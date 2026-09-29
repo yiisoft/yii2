@@ -1,7 +1,7 @@
 Models
 ======
 
-Models are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+Models are part of the [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are objects representing business data, rules and logic.
 
 You can create model classes by extending [[yii\base\Model]] or its child classes. The base class
@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 You can also access attributes like accessing array elements, thanks to the support for
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [Traversable](http://php.net/manual/en/class.traversable.php)
+[ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) and [Traversable](https://www.php.net/manual/en/class.traversable.php)
 by [[yii\base\Model]]:
 
 ```php
@@ -293,6 +293,8 @@ public function rules()
 
         // username and password are required in "login" scenario
         [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+        
+        [['username'], 'string'], // username must always be a string, this rule applies to all scenarios
     ];
 }
 ```
@@ -478,7 +480,7 @@ public function fields()
 }
 
 // filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// and exclude some sensitive fields.
 public function fields()
 {
     $fields = parent::fields();

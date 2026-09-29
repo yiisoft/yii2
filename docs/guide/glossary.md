@@ -40,7 +40,7 @@ Extension is a set of classes, asset bundles and configurations that adds more f
 
 ## installation
 
-Installation is a process of preparing something to work either by following a readme file or by executing specially prepared script. In case of Yii it's setting permissions and fullfilling software requirements.
+Installation is a process of preparing something to work either by following a readme file or by executing specially prepared script. In case of Yii it's setting permissions and fulfilling software requirements.
 
 # M
 
@@ -52,7 +52,7 @@ Module is a sub-application which contains MVC elements by itself, such as model
 
 ## namespace
 
-Namespace refers to a [PHP language feature](http://php.net/manual/en/language.namespaces.php) which is actively used in Yii 2.
+Namespace refers to a [PHP language feature](https://www.php.net/manual/en/language.namespaces.php) which is actively used in Yii 2.
 
 # P
 

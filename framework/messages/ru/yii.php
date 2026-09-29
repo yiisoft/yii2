@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -23,16 +24,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не поддерживает оператор "{operator}".',
-    'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Условие для "{attribute}" должно быть или значением или верной спецификацией оператора.',
-    'Operator "{operator}" must be used with a search attribute.' => 'Оператор "{operator}" должен использоваться через атрибут поиска.',
-    'Operator "{operator}" requires multiple operands.' => 'Оператор "{operator}" требует несколько операндов.',
-    'The format of {filter} is invalid.' => 'Формат фильтра {filter} не верен.',
-    'Unknown filter attribute "{attribute}"' => 'Неизвестный атрибут фильтра "{attribute}"',
     ' and ' => ' и ',
+    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не поддерживает оператор "{operator}".',
     '(not set)' => '(не задано)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
+    'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Условие для "{attribute}" должно быть или значением или верной спецификацией оператора.',
     'Delete' => 'Удалить',
     'Error' => 'Ошибка',
     'File upload failed.' => 'Загрузка файла не удалась.',
@@ -45,16 +44,19 @@ return [
     'No results found.' => 'Ничего не найдено.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Разрешена загрузка файлов только со следующими MIME-типами: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Разрешена загрузка файлов только со следующими расширениями: {extensions}.',
+    'Operator "{operator}" must be used with a search attribute.' => 'Оператор "{operator}" должен использоваться через атрибут поиска.',
+    'Operator "{operator}" requires multiple operands.' => 'Оператор "{operator}" требует несколько операндов.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Страница не найдена.',
     'Please fix the following errors:' => 'Исправьте следующие ошибки:',
     'Please upload a file.' => 'Загрузите файл.',
-    'Powered by {yii}' => 'Работает на {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Показаны записи <b>{begin, number}-{end, number}</b> из <b>{totalCount, number}</b>.',
     'The combination {values} of {attributes} has already been taken.' => 'Комбинация {values} параметров {attributes} уже существует.',
     'The file "{file}" is not an image.' => 'Файл «{file}» не является изображением.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Файл «{file}» слишком большой. Размер не должен превышать {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Файл «{file}» слишком маленький. Размер должен быть более {formattedLimit}.',
     'The format of {attribute} is invalid.' => 'Неверный формат значения «{attribute}».',
+    'The format of {filter} is invalid.' => 'Формат фильтра {filter} не верен.',
     'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Файл «{file}» слишком большой. Высота не должна превышать {limit, number} {limit, plural, one{пиксель} few{пикселя} many{пикселей} other{пикселя}}.',
     'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Файл «{file}» слишком большой. Ширина не должна превышать {limit, number} {limit, plural, one{пиксель} few{пикселя} many{пикселей} other{пикселя}}.',
     'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Файл «{file}» слишком маленький. Высота должна быть более {limit, number} {limit, plural, one{пиксель} few{пикселя} many{пикселей} other{пикселя}}.',
@@ -64,13 +66,14 @@ return [
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Всего <b>{count, number}</b> {count, plural, one{запись} few{записи} many{записей} other{записи}}.',
     'Unable to verify your data submission.' => 'Не удалось проверить переданные данные.',
     'Unknown alias: -{name}' => 'Неизвестный псевдоним: -{name}',
+    'Unknown filter attribute "{attribute}"' => 'Неизвестный атрибут фильтра "{attribute}"',
     'Unknown option: --{name}' => 'Неизвестная опция: --{name}',
     'Update' => 'Редактировать',
     'View' => 'Просмотр',
     'Yes' => 'Да',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Вам не разрешено производить данное действие.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы не можете загружать более {limit, number} {limit, plural, one{файла} few{файлов} many{файлов} other{файла}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы должны загрузить как минимум {limit, number} {limit, plural, one{файл} few{файла} many{файлов} other{файла}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'через {delta, plural, =1{день} one{# день} few{# дня} many{# дней} other{# дня}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'через {delta, plural, =1{минуту} one{# минуту} few{# минуты} many{# минут} other{# минуты}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'через {delta, plural, =1{месяц} one{# месяц} few{# месяца} many{# месяцев} other{# месяца}}',
@@ -107,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать максимум {max, number} {max, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать {length, number} {length, plural, one{символ} few{символа} many{символов} other{символа}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# день} few{# дня} many{# дней} other{# дня}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# час} few{# часа} many{# часов} other{# часа}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# минута} few{# минуты} many{# минут} other{# минуты}}',
@@ -122,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} Б',
     '{nFormatted} GB' => '{nFormatted} ГБ',
     '{nFormatted} GiB' => '{nFormatted} ГиБ',
-    '{nFormatted} KB' => '{nFormatted} КБ',
     '{nFormatted} KiB' => '{nFormatted} КиБ',
     '{nFormatted} MB' => '{nFormatted} МБ',
     '{nFormatted} MiB' => '{nFormatted} МиБ',
@@ -130,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} ПиБ',
     '{nFormatted} TB' => '{nFormatted} ТБ',
     '{nFormatted} TiB' => '{nFormatted} ТиБ',
+    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, one{байт} few{байта} many{байтов} other{байта}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, one{гибибайт} few{гибибайта} many{гибибайтов} other{гибибайта}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, one{гигабайт} few{гигабайта} many{гигабайтов} other{гигабайта}}',

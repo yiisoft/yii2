@@ -107,7 +107,7 @@ ETag 相比 `Last-Modified` 能实现更复杂和更精确的缓存策略。
 因为响应每一次请求都需要重新计算 Etag。
 请试着找出一个最简单的表达式去触发 Etag 失效。
 
-> Note: 为了遵循 [RFC 7232（HTTP 1.1 协议）](http://tools.ietf.org/html/rfc7232#section-2.4)，
+> Note: 为了遵循 [RFC 7232（HTTP 1.1 协议）](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4)，
 如果同时配置了 `ETag` 和 `Last-Modified` 头，`HttpCache` 将会同时发送它们。
 并且如果客户端同时发送 `If-None-Match` 头和 `If-Modified-Since` 头，
 则只有前者会被接受。
@@ -131,7 +131,7 @@ Cache-Control: public, max-age=3600
 为了避免此问题，默认情况下 `HttpCache` 禁止自动发送这些头。
 想改变这一行为，可以配置 [[yii\filters\HttpCache::sessionCacheLimiter]] 属性。
 该属性接受一个字符串值，包括 `public`，`private`，`private_no_expire`，和 `nocache`。
-请参考 PHP 手册中的[缓存限制器](http://www.php.net/manual/en/function.session-cache-limiter.php)
+请参考 PHP 手册中的[缓存限制器](https://www.php.net/manual/zh/function.session-cache-limiter.php)
 了解这些值的含义。
 
 

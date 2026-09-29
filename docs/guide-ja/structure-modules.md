@@ -160,6 +160,9 @@ yii <module_id>/<command>/<sub_command>
 ]
 ```
 
+> Info: モジュール内のコマンドを使用するためには、
+> モジュールを [コンソール・アプリケーション設定](tutorial-console.md#configuration) にも含める必要があります。
+
 [[yii\base\Application::modules|modules]] プロパティは、モジュールの構成情報の配列を取ります。
 各配列のキーは、アプリケーションの全てのモジュールの中でそのモジュールを特定するためのユニークな *モジュール ID* を表します。
 そして、対応する配列の値は、そのモジュールを作成するための [構成情報](concept-configurations.md) です。
@@ -178,7 +181,7 @@ yii <module_id>/<command>/<sub_command>
 
 モジュールのための URL マネージャの規則は [[yii\web\UrlManager::parseRequest()]] が起動される前に追加されなくてはなりません。
 すなわち、モジュールの `init()` の中で規則を追加しても動作しない、ということです。なぜなら、モジュールの初期化はルートの処理が済んだ後になるからです。
-従って、RUL 規則は [ブートストラップ段階](structure-extensions.md#bootstrapping-classes) で追加される必要があります。
+従って、URL 規則は [ブートストラップ段階](structure-extensions.md#bootstrapping-classes) で追加される必要があります。
 また、モジュールの URL 規則を [[\yii\web\GroupUrlRule]] に入れるのも良い方法です。
 
 モジュールが [バージョン管理された API](rest-versioning.md) で使用される場合は、その URL 規則はアプリケーション構成情報の

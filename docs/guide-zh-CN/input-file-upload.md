@@ -123,7 +123,7 @@ class SiteController extends Controller
 首先你得调整模型类，在 `file` 验证规则里增加一个 `maxFiles` 选项，用以限制一次上传文件的最大数量。
 `upload()`方法也得修改,以便一个一个地保存上传的文件。将 `maxFiles` 设置为 `0` 意味着可以同时上传的文件数量没有限制。
 允许同时上传的文件的最大数量也受到 PHP 指令
-[`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads)的限制，
+[`max_file_uploads`](https://www.php.net/manual/zh/ini.core.php#ini.max-file-uploads)的限制，
 默认为20。还应该更新 `upload()` 方法以逐个保存上传的文件。
 
 ```php

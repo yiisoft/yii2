@@ -1,7 +1,7 @@
 模型
 ======
 
-模型是 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分，
+模型是 [MVC](https://zh.wikipedia.org/wiki/MVC) 模式中的一部分，
 是代表业务数据、规则和逻辑的对象。
 
 可通过继承 [[yii\base\Model]] 或它的子类定义模型类，
@@ -37,8 +37,8 @@ echo $model->name;
 ```
 
 也可像访问数组单元项一样访问属性，这要感谢[[yii\base\Model]]支持 
-[ArrayAccess 数组访问](http://php.net/manual/en/class.arrayaccess.php) 
-和 [ArrayIterator 数组迭代器](http://php.net/manual/en/class.arrayiterator.php):
+[ArrayAccess 数组访问](https://www.php.net/manual/en/class.arrayaccess.php) 
+和 [ArrayIterator 数组迭代器](https://www.php.net/manual/en/class.arrayiterator.php):
 
 ```php
 $model = new \app\models\ContactForm;
@@ -403,7 +403,7 @@ public function rules()
 }
 ```
 
-In this case attributes `username`, `password` and `secret` are required, but `secret` must be assigned explicitly.
+在这种情况下，属性 `username`, `password` 和 `secret` 是必须的，但是 `secret`必须被明确指定。
 
 
 ## 数据导出 <span id="data-exporting"></span>

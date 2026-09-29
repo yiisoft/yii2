@@ -107,7 +107,7 @@ ETag はリクエスト毎に再評価する必要があるため、負荷の高
 の本来の目的を損なって不必要なオーバーヘッドが生じる場合があります。
 ページのコンテントが変更されたときにキャッシュを無効化するための式は単純なものを指定するようにして下さい。
 
-> Note: [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4) に準拠して
+> Note: [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4) に準拠して
   `Etag` と `Last-Modified` ヘッダの両方を設定した場合、
   `HttpCache` はその両方とも送信します。  また、もし `If-None-Match` ヘッダと
   `If-Modified-Since` ヘッダの両方を送信した場合は前者のみが尊重されます。
@@ -131,7 +131,7 @@ Cache-Control: public, max-age=3600
 この問題を防止するために、`HttpCache` はこれらのヘッダの送信をデフォルトで自動的に無効化します。
 この動作を変更したい場合は [[yii\filters\HttpCache::sessionCacheLimiter]] プロパティを設定します。
 このプロパティには `public`、`private`、`private_no_expire`、そして `nocache` などの文字列の値を使用することができます。
-これらの値についての説明は [session_cache_limiter()](http://www.php.net/manual/ja/function.session-cache-limiter.php)
+これらの値についての説明は [session_cache_limiter()](https://www.php.net/manual/ja/function.session-cache-limiter.php)
 を参照してください。
 
 

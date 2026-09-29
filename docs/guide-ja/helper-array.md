@@ -1,7 +1,7 @@
 配列ヘルパ
 ==========
 
-[PHP の充実した配列関数](http://php.net/manual/ja/book.array.php) への追加として、
+[PHP の充実した配列関数](https://www.php.net/manual/ja/book.array.php) への追加として、
 Yii の配列ヘルパは、配列をさらに効率的に扱うことを可能にするスタティックなメソッドを提供しています。
 
 
@@ -118,7 +118,7 @@ $type = ArrayHelper::remove($array, 'type');
 ## キーの存在をチェックする <span id="checking-existence-of-keys"></span>
 
 `ArrayHelper::keyExists` は、大文字と小文字を区別しないキーの比較をサポートすることを除いて、
-[array_key_exists](http://php.net/manual/ja/function.array-key-exists.php) と同じ動作をします。例えば、
+[array_key_exists](https://www.php.net/manual/ja/function.array-key-exists.php) と同じ動作をします。例えば、
 
 ```php
 $data1 = [
@@ -312,6 +312,7 @@ ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 
 ```php
 ArrayHelper::multisort($data, function($item) {
+    // 存在していれば 'age' で、さもなくば 'name' でソート
     return isset($item['age']) ? ['age', 'name'] : 'name';
 });
 ```
@@ -321,7 +322,7 @@ ArrayHelper::multisort($data, function($item) {
 複数の値による並べ替えの場合は、並べ替えの順序の配列を渡して、値ごとに違う順序で並べ替えることが出来ます。
 
 最後の引数は並べ替えのフラグで、
-PHP の [sort()](http://php.net/manual/ja/function.sort.php) 関数に渡されるのと同じ値を取ることが出来ます。
+PHP の [sort()](https://www.php.net/manual/ja/function.sort.php) 関数に渡されるのと同じ値を取ることが出来ます。
 
 
 ## 配列の型を検出する <span id="detecting-array-types"></span>
@@ -356,7 +357,7 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] を使って、二つまたはそれ以上の配列を再帰的に一つの配列にマージすることが出来ます。
 各配列に同じ文字列のキー値を持つ要素がある場合は、
-([array_merge_recursive()](http://php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
+([array_merge_recursive()](https://www.php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
 両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
 添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
 [[yii\helpers\UnsetArrayValue]] オブジェクトを使って前の配列にある値を非設定に指定したり、
@@ -471,7 +472,7 @@ PHP は `in_array()` を提供していますが、これはサブセットや `
 
 この種のチェックを助けるために、[[yii\helpers\ArrayHelper]] は [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 および [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] を
-[in_array()](http://php.net/manual/en/function.in-array.php) と同じシグニチャで提供しています。
+[in_array()](https://www.php.net/manual/ja/function.in-array.php) と同じシグニチャで提供しています。
 
 ```php
 // true

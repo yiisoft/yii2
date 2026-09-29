@@ -92,7 +92,7 @@ Pakiet opisuje listę powiązanych zasobów wraz z plikiem konfiguracyjnym defin
 
 ## przestrzeń nazw
 
-Przestrzeń nazw jest [funkcjonalnością języka PHP](http://php.net/manual/pl/language.namespaces.php), aktywnie wykorzystywaną w Yii 2.
+Przestrzeń nazw jest [funkcjonalnością języka PHP](https://www.php.net/manual/pl/language.namespaces.php), aktywnie wykorzystywaną w Yii 2.
 
 # R
 

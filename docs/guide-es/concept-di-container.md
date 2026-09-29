@@ -2,7 +2,7 @@ Contenedor de Inyección de Dependencias
 =======================================
 
 Un contenedor de Inyección de Dependencias (ID), es un objeto que sabe como instancias y configurar objetos y sus 
-objetos dependientes. El [articulo de Martin](http://martinfowler.com/articles/injection.html) contiene una buena 
+objetos dependientes. El [articulo de Martin](https://martinfowler.com/articles/injection.html) contiene una buena 
 explicación de porque son útiles los contenedores de ID. A continuación explicaremos como usar el contenedor de ID que 
 proporciona Yii.
 
@@ -14,7 +14,7 @@ de ID:
 
 * Inyección de constructores;
 * Inyección de setters y propiedades;
-* Inyección de [llamadas de retorno PHP](http://php.net/manual/es/language.types.callable.php);
+* Inyección de [llamadas de retorno PHP](https://www.php.net/manual/es/language.types.callable.php);
 
 ### Inyección de Constructores <span id="constructor-injection"></span>
 
@@ -316,7 +316,7 @@ Resumen <span id="summary"></span>
 
 Tanto la inyección de dependencias como el [localizador de servicios](concept-service-locator.md) son patrones de 
 diseño populares que permiten construir software con acoplamiento flexible y más fácil de testear. Se recomienda 
-encarecida la lectura del articulo de [Martin](http://martinfowler.com/articles/injection.html) para obtener una mejor 
+encarecida la lectura del articulo de [Martin](https://martinfowler.com/articles/injection.html) para obtener una mejor 
 comprensión de la inyección de dependencias y de la localización de servicios.
 
 Yii implementa su propio [localizador de servicios](concept-service-locator.md) por encima del contenedor de ID. 

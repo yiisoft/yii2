@@ -1,7 +1,7 @@
 Classe assistante Html
 ======================
 
-Toutes les applications Web génèrent un grand nombre de balises HTML. Si le code HTML est statique, il peut être créé efficacement sous forme de [mélange de code PHP et de code HTML dans un seul fichier](http://php.net/manual/en/language.basic-syntax.phpmode.php), mais lorsqu'il est généré dynamiquement, cela commence à être compliqué à gérer sans une aide supplémentaire. Yii fournit une telle aide sous la forme de la classe assistante Html, qui offre un jeu de méthodes statiques pour manipuler les balises Html les plus courantes, leurs options et leur contenu.
+Toutes les applications Web génèrent un grand nombre de balises HTML. Si le code HTML est statique, il peut être créé efficacement sous forme de [mélange de code PHP et de code HTML dans un seul fichier](https://www.php.net/manual/fr/language.basic-syntax.phpmode.php), mais lorsqu'il est généré dynamiquement, cela commence à être compliqué à gérer sans une aide supplémentaire. Yii fournit une telle aide sous la forme de la classe assistante Html, qui offre un jeu de méthodes statiques pour manipuler les balises Html les plus courantes, leurs options et leur contenu.
 
 > Note: si votre code HTML est presque statique, il vaut mieux utiliser HTML directement. Il n'est pas nécessaire d'envelopper tout dans des appels aux méthodes de la classe assistante Html.
 
@@ -36,7 +36,7 @@ Des options sont utilisées dans de nombreuses méthodes de la classe assistante
 
 - Si une valeur est `null`, l'attribut correspondant n'est pas rendu.
 - Les attributs du type booléen sont traités comme des 
-  [attributs booléens ](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [attributs booléens ](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Les valeurs des attributs sont encodés HTML à l'aide de la méthode [[yii\helpers\Html::encode()|Html::encode()]].
 - Si la valeur d'un attribut est un tableau, il est géré comme suit :
  
@@ -134,8 +134,8 @@ accepte un tableau de propriétés à retirer. S'il s'agit d'une propriété uni
 
 ### Encodage et décodage du contenu <span id="encoding-and-decoding-content"></span>
 
-Pour que le contenu puisse être affiché en HTML de manière propre et en toute sécurité, les caractères spéciaux du contenu doivent être encodés. En PHP, cela s'obtient avec [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) et 
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est que vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes et faciles à utiliser :
+Pour que le contenu puisse être affiché en HTML de manière propre et en toute sécurité, les caractères spéciaux du contenu doivent être encodés. En PHP, cela s'obtient avec [htmlspecialchars](https://www.php.net/manual/fr/function.htmlspecialchars.php) et 
+[htmlspecialchars_decode](https://www.php.net/manual/fr/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est que vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes et faciles à utiliser :
 
 ```php
 $userName = Html::encode($user->name);
@@ -326,7 +326,7 @@ Si vous désirez utiliser utiliser un style externe d'un fichier CSS :
 génère
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -373,7 +373,7 @@ Pour générer une balise image, utilisez le code suivant :
 
 qui génère
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 En plus des [alias](concept-aliases.md), le premier argument accepte les routes, les paramètres et les URL, tout comme [Url::to()](helper-url.md).

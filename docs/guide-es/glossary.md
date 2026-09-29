@@ -52,7 +52,7 @@ Módulo es una sub-aplicación que contiene elementos MVC en sí mismo, como mod
 
 ## namespace
 
-Namespace (espacio de nombres) se refiere a una [característica de PHP](http://php.net/manual/es/language.namespaces.php) activamente utilizada en Yii 2.
+Namespace (espacio de nombres) se refiere a una [característica de PHP](https://www.php.net/manual/es/language.namespaces.php) activamente utilizada en Yii 2.
 
 # P
 
