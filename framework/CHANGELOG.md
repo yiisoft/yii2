@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
-- Enh #20001: Improve `View` to allow ld+json and noscript tags (pgaultier)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
@@ -40,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Enh #20001: Add `yii\web\View::registerNoscriptTag()` and `yii\web\View::registerLdJson()` to register `<noscript>` and JSON-LD script tags (pgaultier, terabytesoftw)
 
 2.0.55 May 09, 2026
 -------------------
