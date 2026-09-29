@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Bug #19630: Fix eager loading of relations linked through a PostgreSQL array column (`ArrayExpression`) in `yii\db\ActiveRelationTrait::populateRelation()` (oleg1540, terabytesoftw)
 
 2.0.55 May 09, 2026
 -------------------

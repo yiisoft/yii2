@@ -15,6 +15,7 @@ use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
+use yiiunit\data\ar\OrderWithItemIds;
 
 /**
  * @group db
@@ -298,6 +299,105 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 ],
             ]],
         ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/19630
+     */
+    public function testRelationLinkedByArrayColumn(): void
+    {
+        $itemIds = static function (array $items): array {
+            $ids = array_map(static function ($item) {
+                return $item->id;
+            }, array_values($items));
+            sort($ids);
+
+            return $ids;
+        };
+
+        // lazy loading
+        $order = OrderWithItemIds::findOne(2);
+
+        $this->assertInstanceOf(
+            ArrayExpression::class,
+            $order->item_ids,
+            'Array column should be typecast to ArrayExpression.',
+        );
+        $this->assertSame(
+            [2, 3, 5],
+            $itemIds($order->items),
+            'Lazy loading should resolve items from the array column.',
+        );
+
+        // eager loading
+        $orders = OrderWithItemIds::find()->with('items')->orderBy('id')->all();
+
+        $this->assertCount(
+            4,
+            $orders,
+            'All orders should be loaded.',
+        );
+
+        foreach ($orders as $order) {
+            $this->assertTrue(
+                $order->isRelationPopulated('items'),
+                "Relation 'items' should be populated for order {$order->id}.",
+            );
+        }
+
+        $this->assertSame(
+            [1, 2],
+            $itemIds($orders[0]->items),
+            'Eager loading should populate items for array column {1,2}.',
+        );
+        $this->assertSame(
+            [2, 3, 5],
+            $itemIds($orders[1]->items),
+            'Eager loading should populate items for array column {2,3,5}.',
+        );
+        $this->assertSame(
+            [],
+            $orders[2]->items,
+            'Empty array column should populate no items.',
+        );
+        $this->assertSame(
+            [],
+            $orders[3]->items,
+            'NULL array column should populate no items.',
+        );
+
+        // eager loading with indexBy
+        $orders = OrderWithItemIds::find()
+            ->with(
+                [
+                    'items' => static function ($query) {
+                        $query->indexBy('id');
+                    },
+                ],
+            )
+            ->orderBy('id')
+            ->all();
+
+        $this->assertSame(
+            [1, 2],
+            array_keys($orders[0]->items),
+            'Eager loading with indexBy should keep item ids as keys for array column {1,2}.',
+        );
+        $this->assertSame(
+            [2, 3, 5],
+            array_keys($orders[1]->items),
+            'Eager loading with indexBy should keep item ids as keys for array column {2,3,5}.',
+        );
+        $this->assertSame(
+            [],
+            $orders[2]->items,
+            'Empty array column with indexBy should populate no items.',
+        );
+        $this->assertSame(
+            [],
+            $orders[3]->items,
+            'NULL array column with indexBy should populate no items.',
+        );
     }
 }
 
