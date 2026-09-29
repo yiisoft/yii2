@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,7 +13,7 @@ namespace yii\db;
  *
  * For example, it will be useful when you need to bind binary data to BLOB column in DBMS:
  *
- * ```php
+ * ```
  * [':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
  * ```
  *
@@ -21,6 +22,7 @@ namespace yii\db;
  * @see https://www.php.net/manual/en/pdostatement.bindparam.php
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 final class PdoValue implements ExpressionInterface
 {

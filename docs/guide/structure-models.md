@@ -293,6 +293,8 @@ public function rules()
 
         // username and password are required in "login" scenario
         [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+        
+        [['username'], 'string'], // username must always be a string, this rule applies to all scenarios
     ];
 }
 ```

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\helpers\Inflector;
  *
  * The following are examples of validation rules using this validator:
  *
- * ```php
+ * ```
  * // a1 needs to be unique
  * ['a1', 'unique']
  * // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
@@ -142,7 +143,7 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        /* @var $targetClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $targetClass */
         $targetClass = $this->getTargetClass($model);
         $db = $targetClass::getDb();
 
@@ -189,8 +190,8 @@ class UniqueValidator extends Validator
         /** @var ActiveRecordInterface|\yii\base\BaseObject $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
-            // if current $model isn't in the database yet then it's OK just to call exists()
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model::className() !== $targetClass::className()) {
+            // if current $model isn't in the database yet, then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
@@ -239,8 +240,7 @@ class UniqueValidator extends Validator
      * @param ActiveRecordInterface $targetClass the name of the ActiveRecord class that should be used to validate
      * the uniqueness of the current attribute value.
      * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
-     *
-     * @return ActiveQueryInterface|ActiveQuery
+     * @return ActiveQueryInterface|ActiveQuery<ActiveRecord>
      */
     private function prepareQuery($targetClass, $conditions)
     {
@@ -315,7 +315,7 @@ class UniqueValidator extends Validator
 
     /**
      * Returns conditions with alias.
-     * @param ActiveQuery $query
+     * @param ActiveQuery<ActiveRecord> $query
      * @param array $conditions array of condition, keys to be modified
      * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
@@ -328,7 +328,7 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
-                $columnName = preg_replace('/^' . preg_quote($alias) . '\.(.*)$/', '$1', $columnName);
+                $columnName = preg_replace('/^' . preg_quote($alias, '/') . '\.(.*)$/', '$1', $columnName);
                 if (strncmp($columnName, '[[', 2) === 0) {
                     $prefixedColumn = "{$alias}.{$columnName}";
                 } else {

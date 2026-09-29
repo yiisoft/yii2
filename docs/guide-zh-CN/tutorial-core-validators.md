@@ -141,7 +141,7 @@ public function rules()
 - `format`：被验证值的日期/时间格式。
    这里的值可以是 [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax) 中定义的日期时间格式。
    另外还可以设置以 `php:` 开头的字符串，用来表示PHP可以识别的日期时间格式。
-   `Datetime` 日期时间类。请参考 <https://www.php.net/manual/en/datetime.createfromformat.php> 获取更多支持的格式。
+   `Datetime` 日期时间类。请参考 <https://www.php.net/manual/zh/datetime.createfromformat.php> 获取更多支持的格式。
    如果没有设置，默认值将使用 `Yii::$app->formatter->dateFormat` 中的值。
    请参考 [[yii\validators\DateValidator::$format|API 文档]] 以获取更详细的说明。
 
@@ -389,8 +389,8 @@ function foo($model, $attribute) {
 > Tip: 如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
 > Tip: 有许多的PHP方法结构和 `filter` 需要的结构一致。
-> 比如使用类型转换方法 ([intval](https://www.php.net/manual/en/function.intval.php)，
-> [boolval](https://www.php.net/manual/en/function.boolval.php), ...) 来确保属性为指定的类型，
+> 比如使用类型转换方法 ([intval](https://www.php.net/manual/zh/function.intval.php)，
+> [boolval](https://www.php.net/manual/zh/function.boolval.php), ...) 来确保属性为指定的类型，
 > 你可以简单的设置这些方法名而不是重新定义一个匿名函数：
 >
 > ```php

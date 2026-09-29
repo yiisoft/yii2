@@ -71,7 +71,7 @@ SELECT * FROM user WHERE username = ''; DROP TABLE user; --'
 This is valid query that will search for users with empty username and then will drop `user` table most probably
 resulting in broken website and data loss (you've set up regular backups, right?).
 
-In Yii most of database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
+In Yii most database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
 statements internally. In case of prepared statements it's not possible to manipulate query as was demonstrated above.
 
 Still, sometimes you need [raw queries](db-dao.md) or [query builder](db-query-builder.md). In this case you should use
@@ -179,7 +179,7 @@ For this reason, Yii applies additional mechanisms to protect against CSRF attac
 In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
-   See [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) for more details.
+   See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:
@@ -261,6 +261,33 @@ Further reading on the topic:
 
 - <https://owasp.org/www-community/attacks/csrf>
 - <https://owasp.org/www-community/SameSite>
+
+
+Avoiding arbitrary object instantiations
+----------------------------------------
+
+Yii [configurations](concept-configurations.md) are associative arrays used by the framework to instantiate new objects through `Yii::createObject($config)`. These arrays specify the class name for instantiation, and it is important to ensure that this class name does not originate from untrusted sources. Otherwise, it can lead to Unsafe Reflection, a vulnerability that allows the execution of malicious code by exploiting the loading of specific classes. Additionally, when you need to dynamically add keys to an object derived from a framework class, such as the base `Component` class, it's essential to validate these dynamic properties using a whitelist approach. This precaution is necessary because the framework might employ `Yii::createObject($config)` within the `__set()` magic method.
+
+
+Avoiding unsafe deserialization
+-------------------------------
+
+Never pass untrusted or user-controlled data to PHP's `unserialize()`. Deserializing attacker-controlled bytes can
+instantiate arbitrary objects and trigger Property-Oriented Programming (POP) gadget chains, potentially leading to
+remote code execution. Parse untrusted input with a safe format such as JSON ([[yii\helpers\Json::decode()]]) instead.
+
+Yii relies on PHP's native `serialize()`/`unserialize()` for data it writes into *trusted* stores. The
+[cache](caching-overview.md) backend uses native serialization by default, configurable through
+[[yii\caching\Cache::$serializer]] (a custom serializer pair, or `false` to disable it, as in [[yii\caching\ArrayCache]]);
+the same applies to cache [dependencies](caching-data.md#cache-dependencies). RBAC storage always uses native
+`serialize()`/`unserialize()`: [[yii\rbac\DbManager]] persists to the `auth_item.data` and `auth_rule.data` columns,
+while [[yii\rbac\PhpManager]] writes to its rule files. These reads are safe only while those stores stay trusted. Make sure your
+cache backend (Redis, Memcached, files, database) and your RBAC tables and files are writable only by the application;
+an attacker who can write into them can stage a deserialization gadget. Cookies received over HTTP are not trusted: Yii
+verifies their integrity with an HMAC ([[yii\web\Request::$cookieValidationKey|cookieValidationKey]]) and deserializes
+them with `allowed_classes => false`, so no application or gadget class is instantiated: any serialized object becomes an
+inert `__PHP_Incomplete_Class` (its `__wakeup()`/`__destruct()` never run), and the cookie is ignored unless it
+deserializes to the expected `[name, value]` array.
 
 
 Avoiding file exposure

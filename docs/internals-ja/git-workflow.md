@@ -28,7 +28,7 @@ Linux において、GitHub で GIT を設定するのに問題が生じたり�
 Yii をクローンしたディレクトリ、通常は "yii2" に入って、以下のコマンドを打ち込みます。
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
@@ -232,7 +232,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +17,7 @@ use yii\validators\Validator;
  *
  * The typical usage of DynamicModel is as follows,
  *
- * ```php
+ * ```
  * public function actionSearch($name, $email)
  * {
  *     $model = DynamicModel::validateData(compact('name', 'email'), [
@@ -41,12 +42,14 @@ use yii\validators\Validator;
  *
  * Alternatively, you may use the following more "classic" syntax to perform ad-hoc data validation:
  *
- * ```php
+ * ```
  * $model = new DynamicModel(compact('name', 'email'));
  * $model->addRule(['name', 'email'], 'string', ['max' => 128])
  *     ->addRule('email', 'email')
  *     ->validate();
  * ```
+ *
+ * @property-write string[] $attributeLabels Attribute labels.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -67,8 +70,8 @@ class DynamicModel extends Model
 
     /**
      * Constructor.
-     * @param array $attributes the attributes (name-value pairs, or names) being defined.
-     * @param array $config the configuration array to be applied to this object.
+     * @param array<string, mixed>|string[] $attributes the attributes (name-value pairs, or names) being defined.
+     * @param array<string, mixed> $config the configuration array to be applied to this object.
      */
     public function __construct(array $attributes = [], $config = [])
     {
@@ -201,6 +204,7 @@ class DynamicModel extends Model
         }
 
         $validators->append($validator);
+        $this->defineAttributesByValidator($validator);
 
         return $this;
     }
@@ -216,16 +220,18 @@ class DynamicModel extends Model
      */
     public static function validateData(array $data, $rules = [])
     {
-        /* @var $model DynamicModel */
+        /** @var static $model */
         $model = new static($data);
         if (!empty($rules)) {
             $validators = $model->getValidators();
             foreach ($rules as $rule) {
                 if ($rule instanceof Validator) {
                     $validators->append($rule);
+                    $model->defineAttributesByValidator($rule);
                 } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
                     $validator = Validator::createValidator($rule[1], $model, (array)$rule[0], array_slice($rule, 2));
                     $validators->append($validator);
+                    $model->defineAttributesByValidator($validator);
                 } else {
                     throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
                 }
@@ -235,6 +241,19 @@ class DynamicModel extends Model
         $model->validate();
 
         return $model;
+    }
+
+    /**
+     * Define the attributes that applies to the specified Validator.
+     * @param Validator $validator the validator whose attributes are to be defined.
+     */
+    private function defineAttributesByValidator($validator)
+    {
+        foreach ($validator->getAttributeNames() as $attribute) {
+            if (!$this->hasAttribute($attribute)) {
+                $this->defineAttribute($attribute);
+            }
+        }
     }
 
     /**

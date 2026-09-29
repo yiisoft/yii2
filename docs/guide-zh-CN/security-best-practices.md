@@ -179,7 +179,7 @@ CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序
 为了避免 CSRF 攻击，你总是需要：
 
 1. 遵循 HTTP 准则，比如 GET 不应该改变应用的状态。
-   有关详细信息，请参阅 [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)。
+   有关详细信息，请参阅 [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions)。
 2. 保证 Yii CSRF 保护开启。
 
 有的时候你需要对每个控制器和/或方法使用禁用 CSRF。可以通过设置其属性来实现：

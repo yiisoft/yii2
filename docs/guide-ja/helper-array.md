@@ -472,7 +472,7 @@ PHP は `in_array()` を提供していますが、これはサブセットや `
 
 この種のチェックを助けるために、[[yii\helpers\ArrayHelper]] は [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 および [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] を
-[in_array()](https://www.php.net/manual/en/function.in-array.php) と同じシグニチャで提供しています。
+[in_array()](https://www.php.net/manual/ja/function.in-array.php) と同じシグニチャで提供しています。
 
 ```php
 // true

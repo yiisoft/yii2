@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,8 @@ return [
     ' and ' => ' en ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" ondersteun nie operateur "{operator}" nie.',
     '(not set)' => '(nie gestel nie)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => '\'n Interne bediener fout het plaasgevind.',
     'Are you sure you want to delete this item?' => 'Is jy seker jy wil hierdie item skrap?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Voorwaarde vir "{attribute}" moet óf \'n waarde, óf \'n geldige operateurspesifikasie wees.',
@@ -43,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Slegs hierdie soort lêers word toegelaat: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Operateur "{operator}" moet gebruik word met \'n soekkenmerk.',
     'Operator "{operator}" requires multiple operands.' => 'Operateur "{operator}" vereis veelvuldige operande.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Bladsy nie gevind nie.',
     'Please fix the following errors:' => 'Maak asseblief die volgende foute reg:',
     'Please upload a file.' => 'Laai asseblief \'n lêer op.',
-    'Powered by {yii}' => 'Aangedryf deur {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '',
     'The combination {values} of {attributes} has already been taken.' => 'Die kombinasie {values} van {attributes} is reeds geneem.',
     'The file "{file}" is not an image.' => 'Die lêer "{file}" is nie \'n prent nie.',
@@ -68,7 +71,6 @@ return [
     'Update' => 'Opdateer',
     'View' => 'Beskou',
     'Yes' => 'Ja',
-    'Yii Framework' => 'Yii Raamwerk',
     'You are not allowed to perform this action.' => 'Jy mag nie hierdie aksie uitvoer nie.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Jy kan \'n maksimum van {limit, number} {limit, plural, one{lêer} other{lêers}} oplaai.',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Jy moet ten minste {limit, number} {limit, plural, one{lêer} other{lêers}} oplaai.',
@@ -108,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} moet ten minste {min, number} {min, plural, one{karakter} other{karakters}} bevat.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} moet hoogstens {max, number} {max, plural, one{karakter} other{karakters}} bevat.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} moet {length, number} {length, plural, one{karakter} other{karakters}} bevat.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 dag} other{# dae}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta} uur',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minuut} other{# minute}}',
@@ -123,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -131,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{greep} other{grepe}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{gibigreep} other{gibigrepe}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gigagreep} other{gigagrepe}}',

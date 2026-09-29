@@ -27,7 +27,7 @@ To enable authentication for your APIs, do the following steps:
 
 1. Configure the `user` [application component](structure-application-components.md):
    - Set the [[yii\web\User::enableSession|enableSession]] property to be `false`.
-   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show a HTTP 403 error instead of redirecting to the login page. 
+   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show an HTTP 403 error instead of redirecting to the login page. 
 2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
 3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].

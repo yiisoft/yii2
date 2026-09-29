@@ -103,7 +103,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/en/book.apcu.php) 扩展。
+* [[yii\caching\ApcCache]]：使用 PHP [APC](https://www.php.net/manual/zh/book.apcu.php) 扩展。
   这个选项可以认为是集中式应用程序环境中
  （例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，
@@ -120,18 +120,14 @@ Yii 支持一系列缓存存储器，概况如下：
   `Yii::$app->cache` 可能是 `null`。
 * [[yii\caching\FileCache]]：使用标准文件存储缓存数据。
   这个特别适用于缓存大块数据，例如一个整页的内容。
-* [[yii\caching\MemCache]]：使用 PHP [memcache](https://www.php.net/manual/en/book.memcache.php) 
-  和 [memcached](https://www.php.net/manual/en/book.memcached.php) 扩展。
+* [[yii\caching\MemCache]]：使用 PHP [memcache](https://www.php.net/manual/zh/book.memcache.php) 
+  和 [memcached](https://www.php.net/manual/zh/book.memcached.php) 扩展。
   这个选项被看作分布式应用环境中（例如：多台服务器，有负载均衡等）
   最快的缓存方案。
 * [[yii\redis\Cache]]：实现了一个基于 [Redis](https://redis.io/) 键值对存储器的缓存组件
  （需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
- （[另可参考](https://www.php.net/manual/en/book.wincache.php)）扩展.
-* [[yii\caching\XCache]]：使用 PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache)扩展。
-* [[yii\caching\ZendDataCache]]：使用 
-  [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend- server.htm#data_cache_component.htm) 
-  作为底层缓存媒介。
+ （[另可参考](https://www.php.net/manual/zh/book.wincache.php)）扩展.
 
 
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器
@@ -275,6 +271,7 @@ $data = $cache->get($key);
 - [[yii\caching\ChainedDependency]]：如果依赖链上任何一个依赖产生变化，则依赖改变。
 - [[yii\caching\DbDependency]]：如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
 - [[yii\caching\ExpressionDependency]]：如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
+- [[yii\caching\CallbackDependency]]：如果指定的PHP回调结果发生变化，依赖性将改变。
 - [[yii\caching\FileDependency]]：如果文件的最后修改时间发生变化，则依赖改变。
 - [[yii\caching\TagDependency]]：将缓存的数据项与一个或多个标签相关联。 您可以通过调用
   [[yii\caching\TagDependency::invalidate()]] 来检查指定标签的缓存数据项是否有效。
@@ -431,4 +428,3 @@ $result = $db->cache(function ($db) {
 
 > Info: 默认情况下，控制台应用使用独立的配置文件。
 所以，为了上述命令发挥作用，请确保 Web 应用和控制台应用配置相同的缓存组件。
-

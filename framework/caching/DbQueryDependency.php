@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -48,7 +49,7 @@ class DbQueryDependency extends Dependency
      *
      * This field can be specified as a PHP callback of following signature:
      *
-     * ```php
+     * ```
      * function (QueryInterface $query, mixed $db) {
      *     //return mixed;
      * }

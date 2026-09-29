@@ -127,7 +127,7 @@ public function extraFields()
 
 ## Ссылки <span id="links"></span>
 
-Согласно [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), расшифровывающемуся как Hypermedia as the Engine of Application State,
+Согласно [HATEOAS](https://ru.wikipedia.org/wiki/HATEOAS), расшифровывающемуся как Hypermedia as the Engine of Application State,
 RESTful API должны возвращать достаточно информации для того, чтобы клиенты могли определить возможные действия над ресурсами.
 Ключевой момент HATEOAS заключается в том, чтобы возвращать вместе с данными набора гиперссылок, указывающих на связанную
 с ресурсом информацию.

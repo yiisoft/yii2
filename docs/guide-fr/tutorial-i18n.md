@@ -149,7 +149,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://www.php.net/manual/en/intro.intl.php).
+> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://www.php.net/manual/fr/intro.intl.php).
 
 Vous pouvez utiliser, soit la forme raccourcie, soit la forme complète pour spécifier une valeur à remplacer avec un format :
 ```
@@ -637,9 +637,9 @@ Reportez-vous à la section [Formatage des données](output-formatting.md) pour 
 
 ## Configuration de l'environnement PHP <span id="setup-environment"></span>
 
-Yii utilise l'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
+Yii utilise l'[extension intl de PHP](https://www.php.net/manual/fr/book.intl.php) pour fournir la plupart de ses fonctionnalités d'internationalisation, telles que le formatage des dates et des nombres de la classe [[yii\i18n\Formatter]] et le formatage des messages de la classe [[yii\i18n\MessageFormatter]].
 Les deux classes fournissent un mécanisme de remplacement lorsque l'extension `intl` n'est pas installée. Néanmoins, l'implémentation du mécanisme de remplacement ne fonctionne bien que quand la langue cible est l'anglais. C'est pourquoi, il est fortement recommandé d'installer `intl` quand c'est nécessaire.
-L'[extension intl de PHP](https://www.php.net/manual/en/book.intl.php) est basée sur la [bibliothèque ICU](https://icu.unicode.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
+L'[extension intl de PHP](https://www.php.net/manual/fr/book.intl.php) est basée sur la [bibliothèque ICU](https://icu.unicode.org/) qui fournit la base de connaissances et les règles de formatage pour les différentes locales. Des versions différentes d'ICU peuvent conduire à des formatages différents des dates et des nombres. Pour être sûr que votre site Web donne les même résultats dans tous les environnements, il  est recommandé d'installer la même version de l'extension `intl` (et par conséquent la même version d'ICU) dans tous les environnements. 
 
 Pour savoir quelle version d'ICU est utilisée par PHP, vous pouvez exécuter le script suivant, qui vous restitue la version de PHP et d'ICU en cours d'utilisation. 
 

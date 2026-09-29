@@ -299,7 +299,7 @@ $query->where([$column => $value]);
   値が自動的に一対のパーセント記号によって囲まれることに注意してください。
 
   > Note: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための
-  > [`ilike`](https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
+  > [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
 
 - `or like`: オペランド 2 が配列である場合に `LIKE` 述語が `OR` によって結合される以外は、
   `like` 演算子と同じです。

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ class MaskedInputAsset extends AssetBundle
 {
     public $sourcePath = '@bower/inputmask/dist';
     public $js = [
-        'jquery.inputmask.bundle.js',
+        'jquery.inputmask.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

@@ -41,7 +41,7 @@ determines at which position the script should be inserted into the page. Possib
   [document `load` event](https://learn.jquery.com/using-jquery-core/document-ready/). Same as the above, this will also register [[yii\web\JqueryAsset|jQuery]] automatically.
 
 The last argument is a unique script ID that is used to identify the script code block and replace an existing one with the same ID
-instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID. It is used to avoid registration of the same code muliple times.
+instead of adding a new one. If you don't provide it, the JS code itself will be used as the ID. It is used to avoid registration of the same code multiple times.
 
 ### Registering script files <span id="script-files"></span>
 

@@ -26,7 +26,7 @@ onda morate [podesiti vašu Git instalaciju da radi sa GitHub-om](https://help.g
 Locirajte se u direktorijum gde ste klonirali Yii, podrazumevano, "yii2" direktorijum. Nakon toga izvršite sledeću komandu:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Pripremite okruženje za testiranje
@@ -186,7 +186,7 @@ Na ovaj način će Travis započinjati testiranje samo izmena koje nisu prvenstv
 
 ```
 git clone git@github.com:VASE-GITHUB-KORISNICKO-IME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yii\db\oci;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
@@ -20,6 +22,7 @@ use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database.
@@ -29,8 +32,11 @@ use yii\helpers\ArrayHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T, QueryBuilder>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -192,6 +198,7 @@ LEFT JOIN "SYS"."USER_IND_COLUMNS" "uicol"
 LEFT JOIN "SYS"."USER_CONSTRAINTS" "uc"
     ON "uc"."OWNER" = "ui"."TABLE_OWNER" AND "uc"."CONSTRAINT_NAME" = "ui"."INDEX_NAME" AND "uc"."CONSTRAINT_TYPE" = 'P'
 WHERE "ui"."TABLE_OWNER" = :schemaName AND "ui"."TABLE_NAME" = :tableName
+    AND "ui"."INDEX_TYPE" != 'LOB'
 ORDER BY "uicol"."COLUMN_POSITION" ASC
 SQL;
 
@@ -261,7 +268,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -269,7 +276,7 @@ SQL;
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length, $this->db);
+        return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length]);
     }
 
     /**
@@ -396,7 +403,7 @@ SQL;
      * Creates ColumnSchema instance.
      *
      * @param array $column
-     * @return ColumnSchema
+     * @return T
      */
     protected function createColumn($column)
     {
@@ -508,7 +515,7 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:.
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],

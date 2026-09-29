@@ -106,7 +106,7 @@ class Country extends ActiveRecord
 }
 ```
 
-The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
+The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside it! With just the above code, 
 Yii will guess the associated table name from the class name. 
 
 > Info: If no direct match can be made from the class name to the table name, you can

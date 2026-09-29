@@ -11,7 +11,7 @@
 PHP 環境を正しく構成することは非常に重要です。最大のパフォーマンスを得るためには、
 
 - 最新の安定した PHP バージョンを使うこと。使用する PHP のメジャー・リリースを上げると、顕著なパフォーマンスの改善がもたらされることがあります。
-- [Opcache](https://www.php.net/opcache) (PHP 5.5 以降) または [APC](https://www.php.net/manual/en/book.apcu.php) (PHP 5.4) を使って、
+- [Opcache](https://www.php.net/manual/ja/book.opcache.php) (PHP 5.5 以降) または [APC](https://www.php.net/manual/ja/book.apcu.php) (PHP 5.4) を使って、
   バイト・コード・キャッシュを有効にすること。
   バイト・コード・キャッシュによって、リクエストが入ってくるたびに PHP スクリプトを解析してインクルードする時間の浪費を避けることが出来ます。
 - [`realpath()` キャッシュをチューニングする](https://github.com/samdark/realpath_cache_tuner).

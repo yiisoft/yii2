@@ -189,7 +189,7 @@ JS
 ```
 
 上面的示例代码使用 PHP
-[Heredoc 语法](https://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) 以获得更好的可读性。
+[Heredoc 语法](https://www.php.net/manual/zh/language.types.string.php#language.types.string.syntax.heredoc) 以获得更好的可读性。
 这也可以在大多数 IDE 中实现更好的语法突出显示，因此它是编写内联 JavaScript 的首选方式，对于长于单行的代码尤其有用。变量 `$message` 是在 PHP
 中创建的，感谢 [[yii\helpers\Json::htmlEncode|Json::htmlEncode]]
 它包含有效 JS 语法中的字符串，可以将其插入到 JavaScript 代码中以放置 函数中的动态字符串调用 `alert()`。

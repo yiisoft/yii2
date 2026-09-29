@@ -29,7 +29,7 @@ Jeśli napotkasz na problemy związane z Gitem i GitHubem na systemie operacyjny
 Przejdź do folderu, do którego sklonowałeś Yii (zwykle "yii2") i uruchom następującą komendę:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Przygotuj środowisko testowe <span id="prepare-the-test-environment"></span>
@@ -238,7 +238,7 @@ Dzięki temu pomijane są automatyczne testy travisa dla zmian, które i tak nie
 
 ```
 git clone git@github.com:TWOJA-NAZWA-UZYTKOWNIKA-GITHUB/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

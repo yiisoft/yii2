@@ -31,7 +31,7 @@ $config = require __DIR__ . '/../config/web.php';
 
 Like normal [configurations](concept-configurations.md), application configurations specify how
 to initialize properties of application objects. Because application configurations are often
-very complex, they usually are kept in [configuration files](concept-configurations.md#configuration-files),
+very complex, they are usually kept in [configuration files](concept-configurations.md#configuration-files),
 like the `web.php` file in the above example.
 
 

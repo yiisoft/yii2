@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,8 @@ return [
     ' and ' => ' і ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не падтрымлівае аператар "{operator}".',
     '(not set)' => '(не зададзена)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Узнікла ўнутраная памылка сервера.',
     'Are you sure you want to delete this item?' => 'Вы ўпэўнены, што жадаеце выдаліць гэты элемент?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Умова для "{attribute}" павінна быць ці значэннем, ці дакладнай спецыфікацыяй аператара.',
@@ -43,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Дазволена загрузка файлаў толькі з наступнымі пашырэннямі: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Аператар "{operator}" павінен выкарыстоўвацца праз атрыбут пошуку.',
     'Operator "{operator}" requires multiple operands.' => 'Аператар "{operator}" патрабуе некалькі аперандаў.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Старонка не знойдзена.',
     'Please fix the following errors:' => 'Выпраўце наступныя памылкі:',
     'Please upload a file.' => 'Загрузіце файл.',
-    'Powered by {yii}' => 'Працуе на {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Паказаны запісы <b>{begin, number}-{end, number}</b> з <b>{totalCount, number}</b>.',
     'The combination {values} of {attributes} has already been taken.' => 'Камбінацыя {values} параметраў {attributes} ужо існуе.',
     'The file "{file}" is not an image.' => 'Файл «{file}» не зьяўляецца малюнкам.',
@@ -68,7 +71,6 @@ return [
     'Update' => 'Рэдагаваць',
     'View' => 'Прагляд',
     'Yes' => 'Так',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'You are not allowed to perform this action.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы не можаце загружаць больш за {limit, number} {limit, plural, one{файл} few{файлы} many{файлаў} other{файла}}.',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы павінны загрузіць мінімум {limit, number} {limit, plural, one{файл} few{файлы} many{файлаў} other{файла}}',
@@ -108,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значэнне «{attribute}» павінна ўтрымліваць мінімум {min, number} {min, plural, one{сімвал} few{сімвала} many{сімвалаў} other{сімвала}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значэнне «{attribute}» павінна ўтрымліваць максімум {max, number} {max, plural, one{сімвал} few{сімвала} many{сімвалаў} other{сімвала}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значэнне «{attribute}» павінна ўтрымліваць {length, number} {length, plural, one{сімвал} few{сімвала} many{сімвалаў} other{сімвала}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# дзень} few{# дні} many{# дзён} other{# дні}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# гадзіна} few{# гадзіны} many{# гадзін} other{# гадзіны}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# хвіліна} few{# хвіліны} many{# хвілін} other{# хвіліны}}',
@@ -123,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} Б',
     '{nFormatted} GB' => '{nFormatted} ГБ',
     '{nFormatted} GiB' => '{nFormatted} ГіБ',
-    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} KiB' => '{nFormatted} КіБ',
     '{nFormatted} MB' => '{nFormatted} МБ',
     '{nFormatted} MiB' => '{nFormatted} МіБ',
@@ -131,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} ПіБ',
     '{nFormatted} TB' => '{nFormatted} ТБ',
     '{nFormatted} TiB' => '{nFormatted} ЦіБ',
+    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, one{байт} few{байта} many{байтаў} other{байта}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, one{гібібайт} few{гібібайта} many{гібібайтаў} other{гібібайта}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, one{гігабайт} few{гігабайта} many{гігабайтаў} other{гігабайта}}',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,10 +12,10 @@ namespace yiiunit\data\ar;
  * Class NullValues.
  *
  * @property int $id
- * @property int $var1
- * @property int $var2
- * @property int $var3
- * @property string $stringcol
+ * @property int|null $var1
+ * @property int|null $var2
+ * @property int|null $var3
+ * @property string|null $stringcol
  */
 class NullValues extends ActiveRecord
 {

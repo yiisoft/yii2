@@ -373,7 +373,7 @@ A pesar de que PHP ofrece `in_array()`, este no soporta sub-grupos u objetos de 
 
 Para ayudar en este tipo de pruebas, [[yii\helpers\ArrayHelper]] provee [[yii\helpers\ArrayHelper::isIn()|isIn()]]
 y [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método
-[in_array()](https://www.php.net/manual/en/function.in-array.php).
+[in_array()](https://www.php.net/manual/es/function.in-array.php).
 
 ```php
 // true

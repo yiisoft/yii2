@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -56,7 +57,7 @@ class Markdown extends \cebe\markdown\Parser
     /**
      * Render a paragraph block.
      *
-     * @param string $block
+     * @param array $block
      * @return string
      */
     protected function renderParagraph($block)
