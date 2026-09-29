@@ -12,6 +12,7 @@ use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 
 /**
  * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
@@ -22,7 +23,7 @@ use yii\db\ActiveRecord;
  * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
  * For example,
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributeBehavior;
  *
  * public function behaviors()
@@ -48,6 +49,9 @@ use yii\db\ActiveRecord;
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends Behavior<T>
  */
 class AttributeBehavior extends Behavior
 {
@@ -57,7 +61,7 @@ class AttributeBehavior extends Behavior
      * and the array values are the corresponding attribute(s) to be updated. You can use a string to represent
      * a single attribute, or an array to represent a list of attributes. For example,
      *
-     * ```php
+     * ```
      * [
      *     ActiveRecord::EVENT_BEFORE_INSERT => ['attribute1', 'attribute2'],
      *     ActiveRecord::EVENT_BEFORE_UPDATE => 'attribute2',
@@ -72,7 +76,7 @@ class AttributeBehavior extends Behavior
      * function will be assigned to the attributes.
      * The signature of the function should be as follows,
      *
-     * ```php
+     * ```
      * function ($event)
      * {
      *     // return value will be assigned to the attribute

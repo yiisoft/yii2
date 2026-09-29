@@ -1,6 +1,6 @@
 <?php
 
-/* @var $exception Exception */
+/** @var \Exception $exception */
 
 ?>
 Code: <?= Yii::$app->response->statusCode ?>

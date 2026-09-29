@@ -11,6 +11,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
+use yii\base\Component;
 use yii\web\BadRequestHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\Request;
@@ -33,7 +34,7 @@ use yii\web\Response;
  * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
  * the content negotiation applies to the whole application.
  *
- * ```php
+ * ```
  * // in application configuration
  * use yii\web\Response;
  *
@@ -58,7 +59,7 @@ use yii\web\Response;
  * In this case, the content negotiation result only applies to the corresponding controller or module, or even
  * specific actions if you configure the `only` or `except` property of the filter.
  *
- * ```php
+ * ```
  * use yii\web\Response;
  *
  * public function behaviors()
@@ -83,6 +84,9 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {

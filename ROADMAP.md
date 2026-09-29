@@ -1,4 +1,4 @@
-> Roadmap for Yii 3.0 and further was moved to [yiisoft/docs](https://github.com/yiisoft/docs/blob/master/003-roadmap.md).
+> Roadmap for Yii 3.0 and further was moved to [yiisoft/docs](https://yiisoft.github.io/docs/internals/003-roadmap).
 
 - Enhancements are not accepted for framework version 2.0.
 - Enhancements are accepted for 2.0 extensions.

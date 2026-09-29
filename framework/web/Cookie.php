@@ -25,7 +25,7 @@ class Cookie extends \yii\base\BaseObject
      * When a user follows a link from https://otherdomain.com to https://yourdomain.com it will include the cookie
      * @see sameSite
      */
-    const SAME_SITE_LAX = 'Lax';
+    public const SAME_SITE_LAX = 'Lax';
     /**
      * SameSite policy Strict will prevent the cookie from being sent by the browser in all cross-site browsing context
      * regardless of the request method and even when following a regular link.
@@ -33,7 +33,7 @@ class Cookie extends \yii\base\BaseObject
      * https://otherdomain.com to https://yourdomain.com will not include the cookie.
      * @see sameSite
      */
-    const SAME_SITE_STRICT = 'Strict';
+    public const SAME_SITE_STRICT = 'Strict';
     /**
      * SameSite policy None disables the SameSite policy so cookies will be sent in all contexts,
      * i.e in responses to both first-party and cross-origin requests.
@@ -43,8 +43,7 @@ class Cookie extends \yii\base\BaseObject
      * @see secure
      * @since 2.0.43
      */
-    const SAME_SITE_NONE = 'None';
-
+    public const SAME_SITE_NONE = 'None';
     /**
      * @var string name of the cookie
      */
@@ -89,7 +88,7 @@ class Cookie extends \yii\base\BaseObject
     /**
      * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
      *
-     * ```php
+     * ```
      * if (isset($request->cookies['name'])) {
      *     $value = (string) $request->cookies['name'];
      * }

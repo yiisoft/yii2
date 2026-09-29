@@ -10,6 +10,7 @@ namespace yii\rest;
 
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\base\Module;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -37,6 +38,9 @@ use yii\web\ForbiddenHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module = Module
+ * @extends Controller<T>
  */
 class ActiveController extends Controller
 {

@@ -18,9 +18,11 @@ use yii\base\InvalidConfigException;
  * I18N is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->i18n`.
  *
- * @property MessageFormatter $messageFormatter The message formatter to be used to format message via ICU
- * message format. Note that the type of this property differs in getter and setter. See
- * [[getMessageFormatter()]] and [[setMessageFormatter()]] for details.
+ * @property-read MessageFormatter $messageFormatter The message formatter to be used to format message via
+ * ICU message format.
+ * @property-write string|array|MessageFormatter $messageFormatter The message formatter to be used to format
+ * message via ICU message format. Can be given as array or string configuration that will be given to
+ * [[Yii::createObject]] to create an instance or a [[MessageFormatter]] instance.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

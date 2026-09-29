@@ -4,6 +4,6 @@ namespace yiiunit\framework\db\enums;
 
 enum Status
 {
-    case ACTIVE;
-    case INACTIVE;
+    case Active;
+    case Inactive;
 }

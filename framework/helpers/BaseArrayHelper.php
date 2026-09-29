@@ -30,7 +30,7 @@ class BaseArrayHelper
      * @param array $properties a mapping from object class names to the properties that need to put into the resulting arrays.
      * The properties specified for each class is an array of the following format:
      *
-     * ```php
+     * ```
      * [
      *     'app\models\Post' => [
      *         'id',
@@ -47,7 +47,7 @@ class BaseArrayHelper
      *
      * The result of `ArrayHelper::toArray($post, $properties)` could be like the following:
      *
-     * ```php
+     * ```
      * [
      *     'id' => 123,
      *     'title' => 'test',
@@ -116,12 +116,12 @@ class BaseArrayHelper
      * be appended to the former array.
      * You can use [[UnsetArrayValue]] object to unset value from previous array or
      * [[ReplaceArrayValue]] to force replace former value instead of recursive merging.
-     * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
+     * @param array<array-key, mixed> $a array to be merged to
+     * @param array<array-key, mixed> ...$b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
-     * @return array the merged array (the original arrays are not changed.)
+     * @return array<array-key, mixed> the merged array (the original arrays are not changed.)
      */
-    public static function merge($a, $b)
+    public static function merge($a, ...$b)
     {
         $args = func_get_args();
         $res = array_shift($args);
@@ -163,7 +163,7 @@ class BaseArrayHelper
      *
      * Below are some usage examples,
      *
-     * ```php
+     * ```
      * // working with array
      * $username = \yii\helpers\ArrayHelper::getValue($_POST, 'username');
      * // working with object
@@ -238,7 +238,7 @@ class BaseArrayHelper
      * If there is no such key path yet, it will be created recursively.
      * If the key exists, it will be overwritten.
      *
-     * ```php
+     * ```
      *  $array = [
      *      'key' => [
      *          'in' => [
@@ -251,7 +251,7 @@ class BaseArrayHelper
      *
      * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` will be the following:
      *
-     * ```php
+     * ```
      *  [
      *      'key' => [
      *          'in' => [
@@ -268,7 +268,7 @@ class BaseArrayHelper
      * `ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);`
      * will be the following:
      *
-     * ```php
+     * ```
      *  [
      *      'key' => [
      *          'in' => [
@@ -315,7 +315,7 @@ class BaseArrayHelper
      *
      * Usage examples,
      *
-     * ```php
+     * ```
      * // $array = ['type' => 'A', 'options' => [1, 2]];
      * // working with array
      * $type = \yii\helpers\ArrayHelper::remove($array, 'type');
@@ -350,7 +350,7 @@ class BaseArrayHelper
      *
      * Example,
      *
-     * ```php
+     * ```
      * $array = ['Bob' => 'Dylan', 'Michael' => 'Jackson', 'Mick' => 'Jagger', 'Janet' => 'Jackson'];
      * $removed = \yii\helpers\ArrayHelper::removeValue($array, 'Jackson');
      * // result:
@@ -393,7 +393,7 @@ class BaseArrayHelper
      *
      * For example:
      *
-     * ```php
+     * ```
      * $array = [
      *     ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
      *     ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
@@ -404,7 +404,7 @@ class BaseArrayHelper
      *
      * The result will be an associative array, where the key is the value of `id` attribute
      *
-     * ```php
+     * ```
      * [
      *     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
      *     '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
@@ -414,7 +414,7 @@ class BaseArrayHelper
      *
      * An anonymous function can be used in the grouping array as well.
      *
-     * ```php
+     * ```
      * $result = ArrayHelper::index($array, function ($element) {
      *     return $element['id'];
      * });
@@ -422,14 +422,13 @@ class BaseArrayHelper
      *
      * Passing `id` as a third argument will group `$array` by `id`:
      *
-     * ```php
+     * ```
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
-     * and indexed by `data` on the third level:
+     * The result will be a multidimensional array grouped by `id`:
      *
-     * ```php
+     * ```
      * [
      *     '123' => [
      *         ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
@@ -443,7 +442,7 @@ class BaseArrayHelper
      *
      * The anonymous function can be used in the array of grouping keys as well:
      *
-     * ```php
+     * ```
      * $result = ArrayHelper::index($array, 'data', [function ($element) {
      *     return $element['id'];
      * }, 'device']);
@@ -452,7 +451,7 @@ class BaseArrayHelper
      * The result will be a multidimensional array grouped by `id` on the first level, by the `device` on the second one
      * and indexed by the `data` on the third level:
      *
-     * ```php
+     * ```
      * [
      *     '123' => [
      *         'laptop' => [
@@ -519,7 +518,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ```php
+     * ```
      * $array = [
      *     ['id' => '123', 'data' => 'abc'],
      *     ['id' => '345', 'data' => 'def'],
@@ -562,7 +561,7 @@ class BaseArrayHelper
      *
      * For example,
      *
-     * ```php
+     * ```
      * $array = [
      *     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
      *     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
@@ -598,6 +597,9 @@ class BaseArrayHelper
      */
     public static function map($array, $from, $to, $group = null)
     {
+        if (is_string($from) && is_string($to) && $group === null && strpos($from, '.') === false && strpos($to, '.') === false) {
+            return array_column($array, $to, $from);
+        }
         $result = [];
         foreach ($array as $element) {
             $key = static::getValue($element, $from);
@@ -617,7 +619,7 @@ class BaseArrayHelper
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
      * @param string|int $key the key to check
-     * @param array|ArrayAccess $array the array with keys to check
+     * @param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array the array with keys to check
      * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return bool whether the array contains the specified key
      */
@@ -924,7 +926,7 @@ class BaseArrayHelper
      *
      * For example:
      *
-     * ```php
+     * ```
      * $array = [
      *     'A' => [1, 2],
      *     'B' => [
@@ -1042,5 +1044,62 @@ class BaseArrayHelper
         call_user_func_array($sorter, [&$array]);
 
         return $array;
+    }
+
+    /**
+     * Flattens a multidimensional array into a one-dimensional array.
+     *
+     * This method recursively traverses the input array and concatenates the keys
+     * in a dot format to form a new key in the resulting array.
+     *
+     * Example:
+     *
+     * ```
+     * $array = [
+     *      'A' => [1, 2],
+     *      'B' => [
+     *          'C' => 1,
+     *          'D' => 2,
+     *      ],
+     *      'E' => 1,
+     *  ];
+     * $result = \yii\helpers\ArrayHelper::flatten($array);
+     * // $result will be:
+     * // [
+     * //     'A.0' => 1
+     * //     'A.1' => 2
+     * //     'B.C' => 1
+     * //     'B.D' => 2
+     * //     'E' => 1
+     * // ]
+     * ```
+     *
+     * @param array $array the input array to be flattened in terms of name-value pairs.
+     * @param string $separator the separator to use between keys. Defaults to '.'.
+     *
+     * @return array the flattened array.
+     * @throws InvalidArgumentException if `$array` is neither traversable nor an array.
+     */
+    public static function flatten($array, $separator = '.'): array
+    {
+        if (!static::isTraversable($array)) {
+            throw new InvalidArgumentException('Argument $array must be an array or implement Traversable');
+        }
+
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $newKey = $key;
+            if (is_array($value)) {
+                $flattenedArray = self::flatten($value, $separator);
+                foreach ($flattenedArray as $subKey => $subValue) {
+                    $result[$newKey . $separator . $subKey] = $subValue;
+                }
+            } else {
+                $result[$newKey] = $value;
+            }
+        }
+
+        return $result;
     }
 }

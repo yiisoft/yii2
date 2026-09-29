@@ -17,12 +17,14 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
+ * @template TUserIdentity of IdentityInterface = IdentityInterface
+ *
  * @property-read ErrorHandler $errorHandler The error handler application component.
  * @property string $homeUrl The homepage URL.
  * @property-read Request $request The request component.
  * @property-read Response $response The response component.
  * @property-read Session $session The session component.
- * @property-read User $user The user component.
+ * @property-read User<TUserIdentity> $user The user component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -41,7 +43,7 @@ class Application extends \yii\base\Application
      * The rest of the array elements (key-value pairs) specify the parameters to be bound
      * to the action. For example,
      *
-     * ```php
+     * ```
      * [
      *     'offline/notice',
      *     'param1' => 'value1',
@@ -53,7 +55,7 @@ class Application extends \yii\base\Application
      */
     public $catchAll;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
 
@@ -181,7 +183,7 @@ class Application extends \yii\base\Application
 
     /**
      * Returns the user component.
-     * @return User the user component.
+     * @return User<TUserIdentity> the user component.
      */
     public function getUser()
     {

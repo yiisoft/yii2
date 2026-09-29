@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db;
 
 use yiiunit\data\ar\ActiveRecord;
@@ -27,6 +33,10 @@ abstract class BaseActiveRecordTest extends DatabaseTestCase
             'associative array with data change case 2' => [
                 ['pineapple' => 2, 'apple' => 5, 'banana' => 1],
                 ['pineapple' => 2, 'apple' => 3, 'banana' => 1],
+            ],
+            'multi-dimensional array' => [
+                ['foo' => ['c', 'b', 'a']],
+                ['foo' => ['b', 'c', 'a']],
             ],
 
             'filling an empty array' => [

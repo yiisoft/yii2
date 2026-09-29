@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,6 +22,7 @@ trait StdOutBufferControllerTrait
     public function stdout($string)
     {
         $this->stdOutBuffer .= $string;
+        return 0;
     }
 
     public function flushStdOutBuffer()
