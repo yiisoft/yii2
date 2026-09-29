@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ use yii\helpers\Json;
  * and save the processed value back to the attribute. The filter must be
  * a valid PHP callback with the following signature:
  *
- * ```php
+ * ```
  * function foo($value) {
  *     // compute $newValue here
  *     return $newValue;
@@ -40,7 +41,7 @@ class FilterValidator extends Validator
      * @var callable the filter. This can be a global function name, anonymous function, etc.
      * The function signature must be as follows,
      *
-     * ```php
+     * ```
      * function foo($value) {
      *     // compute $newValue here
      *     return $newValue;

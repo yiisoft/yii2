@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -107,9 +108,8 @@ class FileTarget extends Target
     public function export()
     {
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
-        $trimmedText = trim($text);
 
-        if (empty($trimmedText)) {
+        if (trim($text) === '') {
             return; // No messages to export, so we exit the function early
         }
 
@@ -130,12 +130,15 @@ class FileTarget extends Target
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles();
         }
-        $writeResult = @fwrite($fp, $trimmedText);
+        $writeResult = @fwrite($fp, $text);
         if ($writeResult === false) {
-            $error = error_get_last();
-            throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
+            $message = "Unable to export log through file ($this->logFile)!";
+            if ($error = error_get_last()) {
+                $message .= ": {$error['message']}";
+            }
+            throw new LogRuntimeException($message);
         }
-        $textSize = strlen($trimmedText);
+        $textSize = strlen($text);
         if ($writeResult < $textSize) {
             throw new LogRuntimeException("Unable to export whole log through file ({$this->logFile})! Wrote $writeResult out of $textSize bytes.");
         }
@@ -191,7 +194,12 @@ class FileTarget extends Target
      */
     private function rotateByCopy($rotateFile, $newFile)
     {
-        @copy($rotateFile, $newFile);
+        $mtime = @filemtime($rotateFile);
+
+        if (@copy($rotateFile, $newFile) && $mtime !== false) {
+            @touch($newFile, $mtime);
+        }
+
         if ($this->fileMode !== null) {
             @chmod($newFile, $this->fileMode);
         }

@@ -162,7 +162,7 @@ by the current value of the `$model`'s attribute.
 We can use ActiveField [[\yii\widgets\ActiveField::dropDownList()]] method to create a drop-down list:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->dropdownList([
         1 => 'item 1', 
@@ -177,7 +177,7 @@ echo $form->field($model, 'category')->dropdownList([
 We can use ActiveField [[\yii\widgets\ActiveField::radioList()]] method to create a radio list:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->radioList([
     1 => 'radio 1', 
@@ -190,7 +190,7 @@ echo $form->field($model, 'category')->radioList([
 We can use ActiveField [[\yii\widgets\ActiveField::checkboxList()]] method to create a checkbox list:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->checkboxList([
     1 => 'checkbox 1', 

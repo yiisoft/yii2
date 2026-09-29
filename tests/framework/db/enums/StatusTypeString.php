@@ -4,6 +4,6 @@ namespace yiiunit\framework\db\enums;
 
 enum StatusTypeString: string
 {
-    case ACTIVE = 'active';
-    case INACTIVE = 'inactive';
+    case Active = 'active';
+    case Inactive = 'inactive';
 }

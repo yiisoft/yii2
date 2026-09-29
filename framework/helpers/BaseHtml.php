@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -205,6 +206,11 @@ class BaseHtml
      */
     public static function style($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->styleOptions)) {
+            $options = array_merge($view->styleOptions, $options);
+        }
+
         return static::tag('style', $content, $options);
     }
 
@@ -219,6 +225,11 @@ class BaseHtml
      */
     public static function script($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->scriptOptions)) {
+            $options = array_merge($view->scriptOptions, $options);
+        }
+
         return static::tag('script', $content, $options);
     }
 
@@ -402,7 +413,7 @@ class BaseHtml
      * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
      * like this:
      *
-     * ```php
+     * ```
      * Html::a('link text', Url::to($url, true))
      * ```
      *
@@ -807,14 +818,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -865,14 +876,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -951,7 +962,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1044,7 +1055,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1120,7 +1131,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1171,7 +1182,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1260,6 +1271,7 @@ class BaseHtml
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
      *   only the first error message for each attribute will be shown. Defaults to `false`.
      *   Option is available since 2.0.10.
+     * - emptyClass: string, the class name that is added to an empty summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag.
      *
@@ -1271,12 +1283,17 @@ class BaseHtml
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
+        $emptyClass = ArrayHelper::remove($options, 'emptyClass', null);
         unset($options['header']);
         $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
-            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            if ($emptyClass !== null) {
+                $options['class'] = $emptyClass;
+            } else {
+                $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            }
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
@@ -1654,14 +1671,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1709,14 +1726,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1769,7 +1786,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1810,7 +1827,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -2041,7 +2058,7 @@ class BaseHtml
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
      *
-     * ```php
+     * ```
      * $options = ['class' => ['persistent' => 'initial']];
      * Html::addCssClass($options, ['persistent' => 'override']);
      * var_dump($options['class']); // outputs: array('persistent' => 'initial');
@@ -2123,7 +2140,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::addCssStyle($options, 'width: 100px; height: 200px');
      * ```
      *
@@ -2158,7 +2175,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::removeCssStyle($options, ['width', 'height']);
      * ```
      *
@@ -2183,7 +2200,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleFromArray(['width' => '100px', 'height' => '200px']));
      * // will display: 'width: 100px; height: 200px;'
      * ```
@@ -2210,7 +2227,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleToArray('width: 100px; height: 200px;'));
      * // will display: ['width' => '100px', 'height' => '200px']
      * ```
@@ -2268,7 +2285,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array the corresponding attribute value
+     * @return string|array|null the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)

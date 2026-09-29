@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MIME type extensions.
  *
@@ -6,9 +7,13 @@
  * If there are multiple extensions for a singe MIME type
  * they are ordered from most to least common.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
+
 return [
     'application/andrew-inset' => 'ez',
     'application/applixware' => 'aw',
@@ -299,6 +304,7 @@ return [
     'application/vnd.fuzzysheet' => 'fzs',
     'application/vnd.genomatix.tuxedo' => 'txd',
     'application/vnd.geogebra.file' => 'ggb',
+    'application/vnd.geogebra.slides' => 'ggs',
     'application/vnd.geogebra.tool' => 'ggt',
     'application/vnd.geometry-explorer' => [
         'gex',
@@ -571,6 +577,10 @@ return [
     ],
     'application/vnd.spotfire.dxp' => 'dxp',
     'application/vnd.spotfire.sfs' => 'sfs',
+    'application/vnd.sqlite3' => [
+        'sqlite',
+        'sqlite3',
+    ],
     'application/vnd.stardivision.calc' => 'sdc',
     'application/vnd.stardivision.draw' => 'sda',
     'application/vnd.stardivision.impress' => 'sdd',
@@ -655,6 +665,7 @@ return [
     ],
     'application/vnd.zzazz.deck+xml' => 'zaz',
     'application/voicexml+xml' => 'vxml',
+    'application/wasm' => 'wasm',
     'application/widget' => 'wgt',
     'application/winhlp' => 'hlp',
     'application/wsdl+xml' => 'wsdl',
@@ -942,11 +953,18 @@ return [
     'font/woff' => 'woff',
     'font/woff2' => 'woff2',
     'image/apng' => 'apng',
-    'image/avif' => 'avif',
+    'image/avif' => [
+        'avif',
+        'avif',
+    ],
     'image/bmp' => 'bmp',
     'image/cgm' => 'cgm',
     'image/g3fax' => 'g3',
     'image/gif' => 'gif',
+    'image/heic' => 'heic',
+    'image/heic-sequence' => 'heics',
+    'image/heif' => 'heif',
+    'image/heif-sequence' => 'heifs',
     'image/ief' => 'ief',
     'image/jpeg' => [
         'jpeg',
@@ -956,6 +974,7 @@ return [
         'pjp',
         'pjpeg',
     ],
+    'image/jxl' => 'jxl',
     'image/ktx' => 'ktx',
     'image/png' => 'png',
     'image/prs.btif' => 'btif',
@@ -1036,7 +1055,6 @@ return [
     'model/vnd.dwf' => 'dwf',
     'model/vnd.gdl' => 'gdl',
     'model/vnd.gtw' => 'gtw',
-    'model/vnd.mts' => 'mts',
     'model/vnd.vtu' => 'vtu',
     'model/vrml' => [
         'wrl',
@@ -1159,6 +1177,12 @@ return [
     'video/mj2' => [
         'mj2',
         'mjp2',
+    ],
+    'video/mp2t' => [
+        'ts',
+        'm2t',
+        'm2ts',
+        'mts',
     ],
     'video/mp4' => [
         'mp4',

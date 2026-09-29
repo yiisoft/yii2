@@ -1,13 +1,18 @@
 <?php
+
 /**
  * MIME types.
  *
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
+
 $mimeTypes = [
     123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
@@ -282,6 +287,7 @@ $mimeTypes = [
     'geo' => 'application/vnd.dynageo',
     'gex' => 'application/vnd.geometry-explorer',
     'ggb' => 'application/vnd.geogebra.file',
+    'ggs' => 'application/vnd.geogebra.slides',
     'ggt' => 'application/vnd.geogebra.tool',
     'ghf' => 'application/vnd.groove-help',
     'gif' => 'image/gif',
@@ -312,6 +318,10 @@ $mimeTypes = [
     'hal' => 'application/vnd.hal+xml',
     'hbci' => 'application/vnd.hbci',
     'hdf' => 'application/x-hdf',
+    'heic' => 'image/heic',
+    'heics' => 'image/heic-sequence',
+    'heif' => 'image/heif',
+    'heifs' => 'image/heif-sequence',
     'hh' => 'text/x-c',
     'hlp' => 'application/winhlp',
     'hpgl' => 'application/vnd.hp-hpgl',
@@ -372,6 +382,7 @@ $mimeTypes = [
     'js' => 'text/javascript',
     'json' => 'application/json',
     'jsonml' => 'application/jsonml+json',
+    'jxl' => 'image/jxl',
     'kar' => 'audio/midi',
     'karbon' => 'application/vnd.kde.karbon',
     'kfo' => 'application/vnd.kde.kformula',
@@ -414,6 +425,8 @@ $mimeTypes = [
     'm1v' => 'video/mpeg',
     'm21' => 'application/mp21',
     'm2a' => 'audio/mpeg',
+    'm2t' => 'video/mp2t',
+    'm2ts' => 'video/mp2t',
     'm2v' => 'video/mpeg',
     'm3a' => 'audio/mpeg',
     'm3u' => 'audio/x-mpegurl',
@@ -499,7 +512,7 @@ $mimeTypes = [
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',
     'msty' => 'application/vnd.muvee.style',
-    'mts' => 'model/vnd.mts',
+    'mts' => 'video/mp2t',
     'mus' => 'application/vnd.musician',
     'musicxml' => 'application/vnd.recordare.musicxml+xml',
     'mvb' => 'application/x-msmediaview',
@@ -752,6 +765,8 @@ $mimeTypes = [
     'spq' => 'application/scvp-vp-request',
     'spx' => 'audio/ogg',
     'sql' => 'application/x-sql',
+    'sqlite' => 'application/vnd.sqlite3',
+    'sqlite3' => 'application/vnd.sqlite3',
     'src' => 'application/x-wais-source',
     'srt' => 'application/x-subrip',
     'sru' => 'application/sru+xml',
@@ -814,6 +829,7 @@ $mimeTypes = [
     'tr' => 'text/troff',
     'tra' => 'application/vnd.trueapp',
     'trm' => 'application/x-msterminal',
+    'ts' => 'video/mp2t',
     'tsd' => 'application/timestamped-data',
     'tsv' => 'text/tab-separated-values',
     'ttc' => 'font/collection',
@@ -887,6 +903,7 @@ $mimeTypes = [
     'vxml' => 'application/voicexml+xml',
     'w3d' => 'application/x-director',
     'wad' => 'application/x-doom',
+    'wasm' => 'application/wasm',
     'wav' => 'audio/x-wav',
     'wax' => 'audio/x-ms-wax',
     'wbmp' => 'image/vnd.wap.wbmp',
@@ -1001,8 +1018,9 @@ $mimeTypes = [
     'zmm' => 'application/vnd.handheld-entertainment+xml',
 ];
 
-if (PHP_VERSION_ID >= 80100) {
-    $mimeTypes = array_replace($mimeTypes, array('xz' => 'application/octet-stream'));
+# fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
+if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
+    $mimeTypes = array_replace($mimeTypes, ['xz' => 'application/octet-stream']);
 }
 
 return $mimeTypes;
