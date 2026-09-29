@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,8 @@ return [
     ' and ' => ' и ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не поддерживает оператор "{operator}".',
     '(not set)' => '(не задано)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Условие для "{attribute}" должно быть или значением или верной спецификацией оператора.',
@@ -43,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Разрешена загрузка файлов только со следующими расширениями: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Оператор "{operator}" должен использоваться через атрибут поиска.',
     'Operator "{operator}" requires multiple operands.' => 'Оператор "{operator}" требует несколько операндов.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Страница не найдена.',
     'Please fix the following errors:' => 'Исправьте следующие ошибки:',
     'Please upload a file.' => 'Загрузите файл.',
-    'Powered by {yii}' => 'Работает на {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Показаны записи <b>{begin, number}-{end, number}</b> из <b>{totalCount, number}</b>.',
     'The combination {values} of {attributes} has already been taken.' => 'Комбинация {values} параметров {attributes} уже существует.',
     'The file "{file}" is not an image.' => 'Файл «{file}» не является изображением.',
@@ -68,9 +71,9 @@ return [
     'Update' => 'Редактировать',
     'View' => 'Просмотр',
     'Yes' => 'Да',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Вам не разрешено производить данное действие.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы не можете загружать более {limit, number} {limit, plural, one{файла} few{файлов} many{файлов} other{файла}}.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы должны загрузить как минимум {limit, number} {limit, plural, one{файл} few{файла} many{файлов} other{файла}}.',
     'in {delta, plural, =1{a day} other{# days}}' => 'через {delta, plural, =1{день} one{# день} few{# дня} many{# дней} other{# дня}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'через {delta, plural, =1{минуту} one{# минуту} few{# минуты} many{# минут} other{# минуты}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'через {delta, plural, =1{месяц} one{# месяц} few{# месяца} many{# месяцев} other{# месяца}}',
@@ -107,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать максимум {max, number} {max, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать {length, number} {length, plural, one{символ} few{символа} many{символов} other{символа}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# день} few{# дня} many{# дней} other{# дня}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# час} few{# часа} many{# часов} other{# часа}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# минута} few{# минуты} many{# минут} other{# минуты}}',
@@ -122,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} Б',
     '{nFormatted} GB' => '{nFormatted} ГБ',
     '{nFormatted} GiB' => '{nFormatted} ГиБ',
-    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} KiB' => '{nFormatted} КиБ',
     '{nFormatted} MB' => '{nFormatted} МБ',
     '{nFormatted} MiB' => '{nFormatted} МиБ',
@@ -130,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} ПиБ',
     '{nFormatted} TB' => '{nFormatted} ТБ',
     '{nFormatted} TiB' => '{nFormatted} ТиБ',
+    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, one{байт} few{байта} many{байтов} other{байта}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, one{гибибайт} few{гибибайта} many{гибибайтов} other{гибибайта}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, one{гигабайт} few{гигабайта} many{гигабайтов} other{гигабайта}}',
@@ -141,5 +145,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, one{петабайт} few{петабайта} many{петабайтов} other{петабайта}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, one{тебибайт} few{тебибайта} many{тебибайтов} other{тебибайта}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, one{терабайт} few{терабайта} many{терабайтов} other{терабайта}}',
-    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Вы должны загрузить как минимум {limit, number} {limit, plural, one{файл} few{файла} many{файлов} other{файла}}.',
 ];

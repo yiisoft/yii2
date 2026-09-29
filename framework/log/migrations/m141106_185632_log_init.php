@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,7 @@ class m141106_185632_log_init extends Migration
     /**
      * @var DbTarget[] Targets to create log table for
      */
-    private $dbTargets = [];
+    private $_dbTargets = [];
 
     /**
      * @throws InvalidConfigException
@@ -32,7 +33,7 @@ class m141106_185632_log_init extends Migration
      */
     protected function getDbTargets()
     {
-        if ($this->dbTargets === []) {
+        if ($this->_dbTargets === []) {
             $log = Yii::$app->getLog();
 
             $usedTargets = [];
@@ -45,17 +46,17 @@ class m141106_185632_log_init extends Migration
                     if (!in_array($currentTarget, $usedTargets, true)) {
                         // do not create same table twice
                         $usedTargets[] = $currentTarget;
-                        $this->dbTargets[] = $target;
+                        $this->_dbTargets[] = $target;
                     }
                 }
             }
 
-            if ($this->dbTargets === []) {
+            if ($this->_dbTargets === []) {
                 throw new InvalidConfigException('You should configure "log" component to use one or more database targets before executing this migration.');
             }
         }
 
-        return $this->dbTargets;
+        return $this->_dbTargets;
     }
 
     public function up()

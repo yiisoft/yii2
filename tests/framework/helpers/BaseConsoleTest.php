@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use yiiunit\TestCase;
@@ -12,7 +19,7 @@ use yii\helpers\BaseConsole;
  */
 class BaseConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -21,7 +28,7 @@ class BaseConsoleTest extends TestCase
     /**
      * @test
      */
-    public function renderColoredString()
+    public function renderColoredString(): void
     {
         $data = '%yfoo';
         $actual = BaseConsole::renderColoredString($data);
@@ -29,14 +36,14 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($expected, $actual);
 
         $actual = BaseConsole::renderColoredString($data, false);
-        $expected = "foo";
+        $expected = 'foo';
         $this->assertEquals($expected, $actual);
     }
 
     /**
      * @test
      */
-    public function ansiColorizedSubstr_withoutColors()
+    public function ansiColorizedSubstrWithoutColors(): void
     {
         $str = 'FooBar';
 
@@ -55,13 +62,13 @@ class BaseConsoleTest extends TestCase
 
     /**
      * @test
-     * @dataProvider ansiColorizedSubstr_withColors_data
+     * @dataProvider ansiColorizedSubstrWithColorsData
      * @param $str
      * @param $start
      * @param $length
      * @param $expected
      */
-    public function ansiColorizedSubstr_withColors($str, $start, $length, $expected)
+    public function ansiColorizedSubstrWithColors($str, $start, $length, $expected): void
     {
         $ansiStr = BaseConsole::renderColoredString($str);
 
@@ -70,7 +77,7 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($ansiExpected, $ansiActual);
     }
 
-    public function ansiColorizedSubstr_withColors_data()
+    public static function ansiColorizedSubstrWithColorsData(): array
     {
         return [
             ['%rFoo%gBar%n', 0, 3, '%rFoo%n'],
@@ -81,7 +88,7 @@ class BaseConsoleTest extends TestCase
         ];
     }
 
-    public function testAnsiStrlen()
+    public function testAnsiStrlen(): void
     {
         $this->assertSame(3, BaseConsole::ansiStrlen('Foo'));
         $this->assertSame(3, BaseConsole::ansiStrlen(BaseConsole::renderColoredString('Bar%y')));

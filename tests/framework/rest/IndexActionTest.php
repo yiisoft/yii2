@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\rest;
 
 use Yii;
@@ -18,7 +24,7 @@ use yiiunit\TestCase;
  */
 class IndexActionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -28,7 +34,7 @@ class IndexActionTest extends TestCase
                     'dsn' => 'sqlite::memory:',
                 ],
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ]);
@@ -39,26 +45,28 @@ class IndexActionTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable(IndexActionModel::tableName(), $columns)->execute();
     }
 
-    public function testPrepareSearchQueryAttribute()
+    public function testPrepareSearchQueryAttribute(): void
     {
         $sql = '';
         Yii::$app->controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
-                        $this->assertTrue($query instanceof Query);
-                        $sql = $query->createCommand()->getRawSql();
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
+                            $this->assertTrue($query instanceof Query);
+                            $sql = $query->createCommand()->getRawSql();
 
-                        return $query;
-                    },
+                            return $query;
+                        },
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
         Yii::$app->controller->run('index');
 
         $this->assertEquals(
@@ -70,9 +78,12 @@ class IndexActionTest extends TestCase
     /**
      * @dataProvider dataProviderTestPrepareDataProviderWithPaginationAndSorting
      *
-     * @param string $sql
-     * @param array $params
-     * @param string $expectedRawSql
+     * @param Pagination|array|false $pagination
+     * @param Sort|array|false $sort
+     * @param int|null $expectedPaginationPageSize
+     * @param int|null $expectedPaginationDefaultPageSize
+     * @param array $expectedSortOrders
+     * @param array|null $expectedSortDefaultOrder
      */
     public function testPrepareDataProviderWithPaginationAndSorting(
         $pagination,
@@ -81,7 +92,7 @@ class IndexActionTest extends TestCase
         $expectedPaginationDefaultPageSize = null,
         $expectedSortOrders = [],
         $expectedSortDefaultOrder = null
-    ) {
+    ): void {
         Yii::$app->getRequest()->setBodyParams([
             'per-page' => 11,
             'sort' => '-test-sort'
@@ -89,17 +100,19 @@ class IndexActionTest extends TestCase
 
         $controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'pagination' => $pagination,
-                    'sort' => $sort,
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'pagination' => $pagination,
+                        'sort' => $sort,
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $controller->createAction('index')->runWithParams([]);
@@ -125,7 +138,7 @@ class IndexActionTest extends TestCase
      * Data provider for [[testPrepareDataProviderWithPaginationAndSorting()]].
      * @return array test data
      */
-    public function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
+    public static function dataProviderTestPrepareDataProviderWithPaginationAndSorting(): array
     {
         return [
             [ // Default config
@@ -197,7 +210,6 @@ class RestController extends ActiveController
 
 class Module extends \yii\base\Module
 {
-
 }
 
 /**

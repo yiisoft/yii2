@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -131,8 +132,11 @@ class FileTarget extends Target
         }
         $writeResult = @fwrite($fp, $text);
         if ($writeResult === false) {
-            $error = error_get_last();
-            throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
+            $message = "Unable to export log through file ($this->logFile)!";
+            if ($error = error_get_last()) {
+                $message .= ": {$error['message']}";
+            }
+            throw new LogRuntimeException($message);
         }
         $textSize = strlen($text);
         if ($writeResult < $textSize) {
@@ -190,7 +194,12 @@ class FileTarget extends Target
      */
     private function rotateByCopy($rotateFile, $newFile)
     {
-        @copy($rotateFile, $newFile);
+        $mtime = @filemtime($rotateFile);
+
+        if (@copy($rotateFile, $newFile) && $mtime !== false) {
+            @touch($newFile, $mtime);
+        }
+
         if ($this->fileMode !== null) {
             @chmod($newFile, $this->fileMode);
         }

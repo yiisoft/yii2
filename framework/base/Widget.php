@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,10 +16,9 @@ use Yii;
  *
  * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
  *
- * @property string|null $id ID of the widget. Note that the type of this property differs in getter and
- * setter. See [[getId()]] and [[setId()]] for details.
- * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
- * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
+ * @property-read string|null $id ID of the widget.
+ * @property-write string $id Id of the widget.
+ * @property \yii\web\View $view The view object that can be used to render views or view files.
  * @property-read string $viewPath The directory containing the view files for this widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -30,19 +30,18 @@ class Widget extends Component implements ViewContextInterface
      * @event Event an event that is triggered when the widget is initialized via [[init()]].
      * @since 2.0.11
      */
-    const EVENT_INIT = 'init';
+    public const EVENT_INIT = 'init';
     /**
      * @event WidgetEvent an event raised right before executing a widget.
      * You may set [[WidgetEvent::isValid]] to be false to cancel the widget execution.
      * @since 2.0.11
      */
-    const EVENT_BEFORE_RUN = 'beforeRun';
+    public const EVENT_BEFORE_RUN = 'beforeRun';
     /**
      * @event WidgetEvent an event raised right after executing a widget.
      * @since 2.0.11
      */
-    const EVENT_AFTER_RUN = 'afterRun';
-
+    public const EVENT_AFTER_RUN = 'afterRun';
     /**
      * @var int a counter used to generate [[id]] for widgets.
      * @internal
@@ -59,6 +58,11 @@ class Widget extends Component implements ViewContextInterface
      * @internal
      */
     public static $stack = [];
+
+    /**
+     * @var string[] used widget classes that have been resolved to their actual class name.
+     */
+    private static $_resolvedClasses = [];
 
 
     /**
@@ -85,9 +89,10 @@ class Widget extends Component implements ViewContextInterface
     public static function begin($config = [])
     {
         $config['class'] = get_called_class();
-        /* @var $widget Widget */
+        /** @var static $widget */
         $widget = Yii::createObject($config);
         self::$stack[] = $widget;
+        self::$_resolvedClasses[get_called_class()] = get_class($widget);
 
         return $widget;
     }
@@ -104,13 +109,10 @@ class Widget extends Component implements ViewContextInterface
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
 
-            $calledClass = get_called_class();
-            if (Yii::$container->has($calledClass) && isset(Yii::$container->getDefinitions()[$calledClass]['class'])) {
-                $calledClass = Yii::$container->getDefinitions()[$calledClass]['class'];
-            }
+            $calledClass = self::$_resolvedClasses[get_called_class()] ?? get_called_class();
 
             if (get_class($widget) === $calledClass) {
-                /* @var $widget Widget */
+                /** @var static $widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();
                     $result = $widget->afterRun($result);
@@ -138,8 +140,8 @@ class Widget extends Component implements ViewContextInterface
         ob_start();
         ob_implicit_flush(false);
         try {
-            /* @var $widget Widget */
             $config['class'] = get_called_class();
+            /** @var self $widget */
             $widget = Yii::createObject($config);
             $out = '';
             if ($widget->beforeRun()) {
@@ -188,6 +190,7 @@ class Widget extends Component implements ViewContextInterface
         $this->_id = $value;
     }
 
+    /** @var \yii\web\View|null */
     private $_view;
 
     /**
@@ -200,7 +203,9 @@ class Widget extends Component implements ViewContextInterface
     public function getView()
     {
         if ($this->_view === null) {
-            $this->_view = Yii::$app->getView();
+            /** @var \yii\web\View $view */
+            $view = Yii::$app->getView();
+            $this->_view = $view;
         }
 
         return $this->_view;
@@ -208,7 +213,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Sets the view object to be used by this widget.
-     * @param View $view the view object that can be used to render views or view files.
+     * @param \yii\web\View $view the view object that can be used to render views or view files.
      */
     public function setView($view)
     {
@@ -281,7 +286,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeRun()
      * {
      *     if (!parent::beforeRun()) {
@@ -312,7 +317,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function afterRun($result)
      * {
      *     $result = parent::afterRun($result);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,6 @@ use yii\db\Query;
 class InConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally
@@ -235,7 +235,8 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * @return string is null or is not null condition
      * @since 2.0.31
      */
-    protected function getNullCondition($operator, $column) {
+    protected function getNullCondition($operator, $column)
+    {
         $column = $this->queryBuilder->db->quoteColumnName($column);
         if ($operator === 'IN') {
             return sprintf('%s IS NULL', $column);

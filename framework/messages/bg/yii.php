@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,8 @@ return [
     ' and ' => ' и ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не поддържа оператор "{operator}".',
     '(not set)' => '(не е попълнено)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Възникна вътрешна грешка в сървъра.',
     'Are you sure you want to delete this item?' => 'Сигурни ли сте, че искате да изтриете записа?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Условието за "{attribute}" трябва да е валидна стойност или оператор.',
@@ -43,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Допускат се файлове със следните разширения: {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'Операторът "{operator}" трябва да се използва с атрибут за търсене.',
     'Operator "{operator}" requires multiple operands.' => 'Операторът "{operator}" изисква множество елементи.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Страницата не беше намерена.',
     'Please fix the following errors:' => 'Моля, коригирайте следните грешки:',
     'Please upload a file.' => 'Моля, прикачете файл.',
-    'Powered by {yii}' => 'Задвижвано от {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Показване на <b>{begin, number}-{end, number}</b> от <b>{totalCount, number}</b> {totalCount, plural, one{запис} other{записа}}.',
     'The combination {values} of {attributes} has already been taken.' => 'Комбинацията от {values} от {attributes} е вече заета.',
     'The file "{file}" is not an image.' => 'Файлът "{file}" не е изображение.',
@@ -68,7 +71,6 @@ return [
     'Update' => 'Обнови',
     'View' => 'Виж',
     'Yes' => 'Да',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Нямате права да изпълните тази операция.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Може да прикачите най-много {limit, number} {limit, plural, one{файл} other{файла}}.',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Трябва да качите поне {limit, number} {limit, plural, one{файл} other{файлове}}.',
@@ -108,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Полето {attribute} трябва да съдържа поне {min, number} {min, plural, one{символ} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Полето "{attribute}" трябва да съдържа най-много {max, number} {max, plural, one{символ} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Полето "{attribute}" трябва да съдържа точно {length, number} {length, plural, one{символ} other{символа}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 ден} other{# дни}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 час} other{# часа}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 минута} other{# минути}}',
@@ -123,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -131,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{байта} other{байта}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{гибибайт} other{гибибайта}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{гигабайт} other{гигабайта}}',
