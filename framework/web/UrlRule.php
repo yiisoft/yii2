@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -17,15 +18,15 @@ use yii\base\InvalidConfigException;
  * To define your own URL parsing and creation logic you can extend from this class
  * and add it to [[UrlManager::rules]] like this:
  *
- * ```php
+ * ```
  * 'rules' => [
  *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
  * ```
  *
- * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
- * if rule does not provide info about create status. This property is read-only.
+ * @property-read int|null $createUrlStatus Status of the URL creation after the last [[createUrl()]] call.
+ * `null` if rule does not provide info about create status.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -35,40 +36,39 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
-    const PARSING_ONLY = 1;
+    public const PARSING_ONLY = 1;
     /**
      * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
-    const CREATION_ONLY = 2;
+    public const CREATION_ONLY = 2;
     /**
      * Represents the successful URL generation by last [[createUrl()]] call.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_SUCCESS = 0;
+    public const CREATE_STATUS_SUCCESS = 0;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because rule does not support
      * creating URLs.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_PARSING_ONLY = 1;
+    public const CREATE_STATUS_PARSING_ONLY = 1;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched route.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_ROUTE_MISMATCH = 2;
+    public const CREATE_STATUS_ROUTE_MISMATCH = 2;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched
      * or missing parameters.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_PARAMS_MISMATCH = 4;
-
+    public const CREATE_STATUS_PARAMS_MISMATCH = 4;
     /**
-     * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
+     * @var string|null the name of this rule. If not set, it will use [[pattern]] as the name.
      */
     public $name;
     /**
@@ -79,7 +79,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $pattern;
     /**
-     * @var string the pattern used to parse and create the host info part of a URL (e.g. `http://example.com`).
+     * @var string|null the pattern used to parse and create the host info part of a URL (e.g. `https://example.com`).
      * @see pattern
      */
     public $host;
@@ -94,20 +94,22 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $defaults = [];
     /**
-     * @var string the URL suffix used for this rule.
+     * @var string|null the URL suffix used for this rule.
      * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
      * If not set, the value of [[UrlManager::suffix]] will be used.
+     * Default values should be strings. Non-string values will be automatically converted to
+     * strings for comparison with URL parameters.
      */
     public $suffix;
     /**
-     * @var string|array the HTTP verb (e.g. GET, POST, DELETE) that this rule should match.
+     * @var string|array|null the HTTP verb (e.g. GET, POST, DELETE) that this rule should match.
      * Use array to represent multiple verbs that this rule may match.
      * If this property is not set, the rule can match any verb.
      * Note that this property is only used when parsing a request. It is ignored for URL creation.
      */
     public $verb;
     /**
-     * @var int a value indicating if this rule should be used for both request parsing and URL creation,
+     * @var int|null a value indicating if this rule should be used for both request parsing and URL creation,
      * parsing only, or creation only.
      * If not set or 0, it means the rule is both request parsing and URL creation.
      * If it is [[PARSING_ONLY]], the rule is for request parsing only.
@@ -336,7 +338,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (strncmp($this->host, '//', 2) === 0) {
+        if ($this->host !== null && strncmp($this->host, '//', 2) === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 
@@ -494,7 +496,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                     return false;
                 }
             }
-            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+            if (strcmp($params[$name], (string) $value) === 0) {
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';
@@ -541,9 +543,9 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * Returns status of the URL creation after the last [[createUrl()]] call.
      *
-     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * @return int|null Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
-     * @see $createStatus
+     * @see createStatus
      * @since 2.0.12
      */
     public function getCreateUrlStatus()

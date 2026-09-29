@@ -1,7 +1,7 @@
 Tổng quan về kiến trúc ứng dụng
 ========
 
-Các ứng dụng Yii được tổ chức dựa theo mẫu thiết kế [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller)
+Các ứng dụng Yii được tổ chức dựa theo mẫu thiết kế [model-view-controller (MVC)](https://vi.wikipedia.org/wiki/MVC)
 . [Models](structure-models.md) chứa nghiệp vụ logic, truy xuất database và định nghĩa các quy tắc xác thực dữ liệu; [views](structure-views.md)
 đảm nhận việc hiển thị thôn tin của model; và [controllers](structure-controllers.md) có nhiệm vụ điều hướng các yêu cầu và chuyển các tương tác giữa
 [models](structure-models.md) và [views](structure-views.md).

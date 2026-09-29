@@ -1,7 +1,7 @@
 Console applications
 ====================
 
-Besides the rich features for building web applications, Yii also has full-featured support for console applications
+Besides, the rich features for building web applications, Yii also has full-featured support for console applications
 which are mainly used to create background and maintenance tasks that need to be performed for a website.
 
 The structure of console applications is very similar to a Yii web application. It consists of one
@@ -113,11 +113,11 @@ Console command completion <span id="console-command-completion"></span>
 ---------------
 
 Auto-completion of command arguments is a useful thing when working with the shell. 
-Since version 2.0.11, the `./yii` command provides auto completion for the Bash and ZSH out of the box. 
+Since version 2.0.11, the `./yii` command provides auto-completion for the Bash and ZSH out of the box. 
 
 ### Bash completion
 
-Make sure bash completion is installed. For most of installations it is available by default.
+Make sure bash completion is installed. For most of the installations it is available by default.
 
 Place the completion script in `/etc/bash_completion.d/`:
 

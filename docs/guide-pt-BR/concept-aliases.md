@@ -15,7 +15,7 @@ Você pode definir um alias para um caminho de arquivo ou URL chamando [[Yii::se
 Yii::setAlias('@foo', '/caminho/para/foo');
 
 // um alias de uma URL
-Yii::setAlias('@bar', 'http://www.exemplo.com.br');
+Yii::setAlias('@bar', 'https://www.exemplo.com.br');
 ```
 
 > Observação: O caminho do arquivo ou URL sendo *apelidado* (aliased) *não* necessariamente refere-se a um arquivo ou a recursos existentes.
@@ -37,7 +37,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/caminho/para/foo',
-        '@bar' => 'http://www.exemplo.com.br',
+        '@bar' => 'https://www.exemplo.com.br',
     ],
 ];
 ```
@@ -51,7 +51,7 @@ O mesmo método pode resolver também um alias derivado em seu caminho de arquiv
 
 ```php
 echo Yii::getAlias('@foo');               // exibe: /caminho/para/foo
-echo Yii::getAlias('@bar');               // exibe: http://www.example.com
+echo Yii::getAlias('@bar');               // exibe: https://www.example.com
 echo Yii::getAlias('@foo/bar/arquivo.php');  // exibe: /caminho/para/foo/bar/arquivo.php
 ```
 
@@ -101,8 +101,8 @@ O Yii já predefine uma gama de aliases para referenciar facilmente caminhos de 
 - `@web`, a URL base da aplicacão sendo executada no momento. Esta tem o mesmo valor de [[yii\web\Request::baseUrl]].
 - `@vendor`, o [[yii\base\Application::vendorPath|caminho da pasta vendor do Composer]]. 
    Seu padrão é `@app/vendor`.
-- `@bower`, o caminho raiz que contém os [pacotes bower](http://bower.io/). Seu padrão é `@vendor/bower`.
-- `@npm`, o caminho raiz que contém [pacotes npm](https://www.npmjs.org/). Seu padrão é `@vendor/npm`.
+- `@bower`, o caminho raiz que contém os [pacotes bower](https://bower.io/). Seu padrão é `@vendor/bower`.
+- `@npm`, o caminho raiz que contém [pacotes npm](https://www.npmjs.com/). Seu padrão é `@vendor/npm`.
 
 O alias `@yii` é definido quando você inclui o arquivo `Yii.php` em seu [script de entrada](structure-entry-scripts.md).
 O resto dos aliases são definidos no construtor da aplicação ao aplicar a [configuração](concept-configurations.md) da aplicação.

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -18,7 +19,7 @@ use yii\helpers\StringHelper;
  *
  * In order to enable this parser you should configure [[Request::parsers]] in the following way:
  *
- * ```php
+ * ```
  * return [
  *     'components' => [
  *         'request' => [
@@ -41,7 +42,7 @@ use yii\helpers\StringHelper;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * use yii\web\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();
@@ -109,7 +110,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     public function getUploadFileMaxCount()
     {
         if ($this->_uploadFileMaxCount === null) {
-            $this->_uploadFileMaxCount = ini_get('max_file_uploads');
+            $this->_uploadFileMaxCount = (int)ini_get('max_file_uploads');
         }
 
         return $this->_uploadFileMaxCount;
@@ -141,10 +142,11 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             return [];
         }
 
-        if (!preg_match('/boundary=(.*)$/is', $contentType, $matches)) {
+        if (!preg_match('/boundary="?(.*)"?$/is', $contentType, $matches)) {
             return [];
         }
-        $boundary = $matches[1];
+
+        $boundary = trim($matches[1], '"');
 
         $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary, '/') . '/s', $rawBody);
         array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`

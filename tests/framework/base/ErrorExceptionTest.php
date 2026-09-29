@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -15,15 +18,39 @@ use yiiunit\TestCase;
  */
 class ErrorExceptionTest extends TestCase
 {
-    public function testXdebugTrace()
+    private function isXdebugStackAvailable()
     {
         if (!function_exists('xdebug_get_function_stack')) {
-            $this->markTestSkipped('Xdebug are required.');
+            return false;
+        }
+        $version = phpversion('xdebug');
+        if ($version === false) {
+            return false;
+        }
+        if (version_compare($version, '3.0.0', '<')) {
+            return true;
+        }
+        return false !== strpos(ini_get('xdebug.mode'), 'develop');
+    }
+
+    public function testXdebugTrace(): void
+    {
+        if (!$this->isXdebugStackAvailable()) {
+            $this->markTestSkipped('Xdebug is required.');
         }
         try {
             throw new ErrorException();
-        } catch (ErrorException $e){
+        } catch (ErrorException $e) {
             $this->assertEquals(__FUNCTION__, $e->getTrace()[0]['function']);
         }
+    }
+
+    public function testStrictError(): void
+    {
+        if (!defined('E_STRICT')) {
+            $this->markTestSkipped('E_STRICT has been removed.');
+        }
+        $e = new ErrorException('', @E_STRICT);
+        $this->assertEquals(PHP_VERSION_ID < 80400 ? 'PHP Strict Warning' : 'Error', $e->getName());
     }
 }

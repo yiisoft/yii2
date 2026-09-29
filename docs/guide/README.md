@@ -1,7 +1,7 @@
 The Definitive Guide to Yii 2.0
 ===============================
 
-This tutorial is released under the [Terms of Yii Documentation](http://www.yiiframework.com/doc/terms/).
+This tutorial is released under the [Terms of Yii Documentation](https://www.yiiframework.com/doc/terms/).
 
 All Rights Reserved.
 
@@ -136,6 +136,7 @@ RESTful Web Services
 * [Quick Start](rest-quick-start.md)
 * [Resources](rest-resources.md)
 * [Controllers](rest-controllers.md)
+* [Filtering Collections](rest-filtering-collections.md)
 * [Routing](rest-routing.md)
 * [Response Formatting](rest-response-formatting.md)
 * [Authentication](rest-authentication.md)
@@ -201,5 +202,6 @@ Helpers
 * [Helpers Overview](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
+* [Json](helper-json.md)
 * [Url](helper-url.md)
 

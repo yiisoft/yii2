@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 use yii\base\InvalidConfigException;
@@ -41,8 +42,8 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             ->from(['fkc' => 'sys.foreign_key_columns'])
             ->innerJoin(['c' => 'sys.columns'], 'fkc.parent_object_id = c.object_id AND fkc.parent_column_id = c.column_id')
             ->innerJoin(['r' => 'sys.columns'], 'fkc.referenced_object_id = r.object_id AND fkc.referenced_column_id = r.column_id')
-            ->andWhere('fkc.parent_object_id=OBJECT_ID(:fkc_parent_object_id)',[':fkc_parent_object_id' => $this->db->schema->getRawTableName($table)])
-            ->andWhere('fkc.referenced_object_id=OBJECT_ID(:fkc_referenced_object_id)',[':fkc_referenced_object_id' => $this->db->schema->getRawTableName($referenceTable)])
+            ->andWhere('fkc.parent_object_id=OBJECT_ID(:fkc_parent_object_id)', [':fkc_parent_object_id' => $this->db->schema->getRawTableName($table)])
+            ->andWhere('fkc.referenced_object_id=OBJECT_ID(:fkc_referenced_object_id)', [':fkc_referenced_object_id' => $this->db->schema->getRawTableName($referenceTable)])
             ->andWhere(['c.name' => $column])
             ->andWhere(['r.name' => $referenceColumn])
             ->scalar($this->db);
@@ -67,8 +68,8 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             $schema = $this->db->getSchema()->defaultSchema;
             $triggerSuffix = $this->db->schema->getRawTableName($authManager->itemChildTable);
 
-            $this->execute("DROP TRIGGER IF EXISTS {$schema}.trigger_{$triggerSuffix};");
-            $this->execute("DROP TRIGGER IF EXISTS {$schema}.trigger_auth_item_child;");
+            $this->execute("IF (OBJECT_ID(N'{$schema}.trigger_{$triggerSuffix}') IS NOT NULL) DROP TRIGGER {$schema}.trigger_{$triggerSuffix};");
+            $this->execute("IF (OBJECT_ID(N'{$schema}.trigger_auth_item_child') IS NOT NULL) DROP TRIGGER {$schema}.trigger_auth_item_child;");
 
             $this->execute("CREATE TRIGGER {$schema}.trigger_delete_{$triggerSuffix}
             ON {$schema}.{$authManager->itemTable}
@@ -77,8 +78,7 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
             BEGIN
                   DELETE FROM {$schema}.{$authManager->itemChildTable} WHERE parent IN (SELECT name FROM deleted) OR child IN (SELECT name FROM deleted);
                   DELETE FROM {$schema}.{$authManager->itemTable} WHERE name IN (SELECT name FROM deleted);
-            END;"
-            );
+            END;");
 
             $foreignKey = $this->findForeignKeyName($authManager->itemChildTable, 'child', $authManager->itemTable, 'name');
             $this->execute("CREATE TRIGGER {$schema}.trigger_update_{$triggerSuffix}
@@ -106,8 +106,7 @@ class m200409_110543_rbac_update_mssql_trigger extends Migration
                 BEGIN
                     ALTER TABLE {$authManager->itemChildTable} CHECK CONSTRAINT {$foreignKey};
                 END
-            END;"
-            );
+            END;");
         }
     }
 

@@ -105,7 +105,7 @@ function (event)
 
 ### `ajaxBeforeSend`
          
-`ajaxBeforeSend` cобытие инициируется перед отправкой AJAX запроса для проверки основанной на AJAX.
+`ajaxBeforeSend` событие инициируется перед отправкой AJAX запроса для проверки основанной на AJAX.
 
 Сигнатура обработчика события должна быть:
 
@@ -134,6 +134,28 @@ function (event, jqXHR, textStatus)
 - `event`: объект `Event`
 - `jqXHR`: объект `jqXHR`
 - `textStatus`: статус запроса ("success", "notmodified", "error", "timeout", "abort", или "parsererror")
+
+### `afterInit`
+
+`afterInit` событие запускается после инициализации JavaScript плагина ActiveForm.
+
+Сигнатура обработчика события должна быть:
+
+```javascript
+function (event)
+```
+
+где событие является объектом `Event`.
+
+Обратите внимание, что плагин инициализируется самим виджетом, поэтому обработчик необходимо назначить до того, как это произойдёт.
+Регистрируйте свой код в позиции, которая выполняется раньше, чем [[yii\web\View::POS_READY|POS_READY]], например:
+
+```php
+$this->registerJs(
+    "jQuery('#contact-form').on('afterInit', function () { /* ... */ });",
+    \yii\web\View::POS_END
+);
+```
 
 ## Отправка формы через AJAX
 

@@ -2,13 +2,13 @@ Executando Aplicações
 =====================
 
 Após instalar o Yii, você tem uma aplicação Yii funcional que pode ser acessada
-pela URL `http://hostname/basico/web/index.php` ou `http://hostname/index.php`,
+pela URL `https://hostname/basico/web/index.php` ou `https://hostname/index.php`,
 dependendo de sua configuração. Esta seção introduzirá a funcionalidade embutida
 da aplicação, como o código é organizado e como a aplicação trata as requisições em geral.
 
 > Info: Por questões de simplicidade, por todo este tutorial de "Primeiros Passos"
   assume-se que você definiu `basico/web` como a raiz de documentos do seu
-  servidor Web e configurou a URL de acesso de sua aplicação como `http://hostname/index.php`
+  servidor Web e configurou a URL de acesso de sua aplicação como `https://hostname/index.php`
   ou algo semelhante.
   Por favor, ajuste as URLs em nossas descrições conforme necessário.
 
@@ -20,7 +20,7 @@ Funcionalidade <span id="functionality"></span>
 
 O template básico de projetos instalado contém quatro páginas:
 
-* A página inicial, exibida quando você acessa a URL `http://hostname/index.php`,
+* A página inicial, exibida quando você acessa a URL `https://hostname/index.php`,
 * a página "About" (Sobre),
 * a página "Contact" (Contato), que exibe um formulário de contato que permite
   que usuários finais entrem em contato com você via e-mail,
@@ -63,7 +63,7 @@ basico/                  caminho base de sua aplicação
 Em geral, os arquivos na aplicação podem ser divididos em dois tipos: aqueles em `basico/web` e aqueles em outros diretórios.
 Os primeiros podem ser acessados diretamente via HTTP (ou seja, em um navegador), enquanto os demais não podem e deveriam ser acessados.
 
-O Yii implementa o padrão de arquitetura [modelo-visão-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+O Yii implementa o padrão de arquitetura [modelo-visão-controlador (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 que se reflete na organização de diretórios acima. O diretório `models` contém
 todas as [classes de modelos](structure-models.md), o diretório `views` contém todos
 os [scripts de visões](structure-views.md), e o diretório `controllers` contém

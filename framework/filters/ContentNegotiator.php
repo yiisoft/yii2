@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -10,6 +11,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
+use yii\base\Component;
 use yii\web\BadRequestHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\Request;
@@ -32,7 +34,7 @@ use yii\web\Response;
  * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
  * the content negotiation applies to the whole application.
  *
- * ```php
+ * ```
  * // in application configuration
  * use yii\web\Response;
  *
@@ -57,7 +59,7 @@ use yii\web\Response;
  * In this case, the content negotiation result only applies to the corresponding controller or module, or even
  * specific actions if you configure the `only` or `except` property of the filter.
  *
- * ```php
+ * ```
  * use yii\web\Response;
  *
  * public function behaviors()
@@ -82,6 +84,9 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {
@@ -102,7 +107,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $languageParam = '_lang';
     /**
-     * @var array list of supported response formats. The keys are MIME types (e.g. `application/json`)
+     * @var array|null list of supported response formats. The keys are MIME types (e.g. `application/json`)
      * while the values are the corresponding formats (e.g. `html`, `json`) which must be supported
      * as declared in [[\yii\web\Response::$formatters]].
      *
@@ -110,7 +115,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $formats;
     /**
-     * @var array a list of supported languages. The array keys are the supported language variants (e.g. `en-GB`, `en-US`),
+     * @var array|null a list of supported languages. The array keys are the supported language variants (e.g. `en-GB`, `en-US`),
      * while the array values are the corresponding language codes (e.g. `en`, `de`) recognized by the application.
      *
      * Array keys are not always required. When an array value does not have a key, the matching of the requested language
@@ -124,7 +129,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
 

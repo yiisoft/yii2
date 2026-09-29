@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -18,7 +19,6 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     /**
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
@@ -29,6 +29,12 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
+        // https://github.com/yiisoft/yii2/issues/19771
+        if ($expression instanceof ActiveQuery && $expression->sql !== null) {
+            $params = array_merge($params, $expression->params ?? []);
+            return '(' . $expression->sql . ')';
+        }
+
         list($sql, $params) = $this->queryBuilder->build($expression, $params);
 
         return "($sql)";

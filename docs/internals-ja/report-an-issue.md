@@ -13,8 +13,8 @@
 
 **以下の場合は課題を報告しないでください**
 
-* Yii の何らかの機能の使い方に関する質問。この目的のためには、[フォーラム](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) または [チャット・ルーム](http://www.yiiframework.com/chat/) を使うべきです。
-* 問題がセキュリティに関するものである場合。セキュリティ問題を報告するときは、[開発者に直接コンタクト](http://www.yiiframework.com/security/) してください。
+* Yii の何らかの機能の使い方に関する質問。この目的のためには、[フォーラム](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) または [チャット・ルーム](https://www.yiiframework.com/chat/) を使うべきです。
+* 問題がセキュリティに関するものである場合。セキュリティ問題を報告するときは、[開発者に直接コンタクト](https://www.yiiframework.com/security/) してください。
 
 **課題の重複を避ける**
 

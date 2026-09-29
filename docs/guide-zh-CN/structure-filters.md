@@ -121,7 +121,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // 允许认证用户
@@ -141,8 +141,8 @@ public function behaviors()
 
 ### 认证方法过滤器 <span id="auth-method-filters"></span>
 
-认证方法过滤器通过 [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication)
-或 [OAuth 2](http://oauth.net/2/)
+认证方法过滤器通过 [HTTP Basic Auth](https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81)
+或 [OAuth 2](https://oauth.net/2/)
 来认证一个用户，认证方法过滤器类在 `yii\filters\auth` 命名空间下。
 
 如下示例表示可使用 [[yii\filters\auth\HttpBasicAuth]] 来认证一个用户，
@@ -157,7 +157,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -183,7 +183,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -210,7 +210,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -241,7 +241,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::className(),
+            'class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -269,11 +269,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::className(),
+            'class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::className(),
+                'class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -289,7 +289,7 @@ public function behaviors()
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter 根据 [漏桶算法](http://en.wikipedia.org/wiki/Leaky_bucket) 来实现速率限制。
+RateLimiter 根据 [漏桶算法](https://en.wikipedia.org/wiki/Leaky_bucket) 来实现速率限制。
 主要用在实现 RESTful APIs，更多关于该过滤器详情请参阅
 [Rate Limiting](rest-rate-limiting.md) 一节。
 
@@ -307,7 +307,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 
+跨域资源共享 [CORS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS) 
 机制允许一个网页的许多资源（例如字体、JavaScript等）
 这些资源可以通过其他域名访问获取。
 特别是 JavaScript 的 AJAX 调用可使用 XMLHttpRequest 机制，
@@ -339,7 +339,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -350,13 +350,13 @@ public function behaviors()
 
 CROS过滤器可以通过 [[yii\filters\Cors::$cors|$cors]] 属性进行调整。
 
-* `cors['Origin']`：定义允许来源的数组，可为 `['*']`（任何用户）或 `['http://www.myserver.net', 'http://www.myotherserver.com']`。 默认为 `['*']`。
+* `cors['Origin']`：定义允许来源的数组，可为 `['*']`（任何用户）或 `['https://www.myserver.net', 'https://www.myotherserver.com']`。 默认为 `['*']`。
 * `cors['Access-Control-Request-Method']`：允许动作数组如 `['GET', 'OPTIONS', 'HEAD']`。默认为 `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`。
 * `cors['Access-Control-Request-Headers']`：允许请求头部数组，可为 `['*']` 所有类型头部 或 `['X-Request-With']` 指定类型头部。默认为 `['*']`。
 * `cors['Access-Control-Allow-Credentials']`：定义当前请求是否使用证书，可为 `true`，`false` 或 `null`（不设置）。默认为 `null`。
 * `cors['Access-Control-Max-Age']`: 定义请求的有效时间，默认为 `86400`。
 
-例如，允许来源为 `http://www.myserver.net` 和方式为 `GET`，`HEAD` 和 `OPTIONS` 的 CORS 如下：
+例如，允许来源为 `https://www.myserver.net` 和方式为 `GET`，`HEAD` 和 `OPTIONS` 的 CORS 如下：
 
 ```php
 use yii\filters\Cors;
@@ -366,9 +366,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -387,9 +387,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

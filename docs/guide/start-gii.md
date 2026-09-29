@@ -42,7 +42,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 Thanks to that line, your application is in development mode, and will have already enabled Gii, per the above configuration. You can now access Gii via the following URL:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note: If you are accessing Gii from a machine other than localhost, the access will be denied by default
@@ -107,7 +107,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how it works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 You will see a data grid showing the countries from the database table. You may sort the grid,

@@ -556,7 +556,7 @@ JS;
 ### Отложенная валидация <span id="deferred-validation"></span>
 
 Если Вам необходимо выполнить асинхронную проверку на стороне клиента, вы можете создавать
-[Deferred objects](http://api.jquery.com/category/deferred-object/). Например, чтобы выполнить
+[Deferred objects](https://api.jquery.com/category/deferred-object/). Например, чтобы выполнить
 пользовательские AJAX проверки, вы можете использовать следующий код:
 
 ```php

@@ -39,7 +39,7 @@ Na samym końcu zmodyfikuj plik README, aby pasował do szablonu.
 Tworzenie paczki
 ----------------
 
-Nowy szablon umieść w odpowiadającym mu repozytorium Git. Jeśli zamierzasz udostępnić go jako open source, [Github](http://github.com) jest najlepszym miejscem do tego celu. 
+Nowy szablon umieść w odpowiadającym mu repozytorium Git. Jeśli zamierzasz udostępnić go jako open source, [Github](https://github.com) jest najlepszym miejscem do tego celu. 
 Jeśli jednak nie przewidujesz współpracy z innymi nad swoim szablonem, dowolne repozytorium Git będzie odpowiednie.
 
 Następnie należy zarejestrować swoją paczkę dla Composera. Dla publicznie dostępnych szablonów paczkę należy zarejestrować w serwisie [Packagist](https://packagist.org/).

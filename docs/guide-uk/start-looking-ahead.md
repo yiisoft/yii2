@@ -9,26 +9,26 @@
 У цьому розділі зібрані ресурси пов’язані з Yii, які допоможуть вам бути більш продуктивними при використанні фреймворку.
 
 * Документація
-    - [Докладний Посібник](http://www.yiiframework.com/doc-2.0/guide-README.html):
+    - [Докладний Посібник](https://www.yiiframework.com/doc-2.0/guide-README.html):
       Як випливає з назви, посібник точно визначає, як Yii повинен працювати і дає вам загальні вказівки
       щодо його застосування. Це найважливіший Yii підручник, з яким ви маєте ознайомитись, перш ніж писати Yii код.
-    - [Довідник класів](http://www.yiiframework.com/doc-2.0/index.html):
+    - [Довідник класів](https://www.yiiframework.com/doc-2.0/index.html):
       Визначає використання кожного класу, представленого в Yii. Ним слід користуватися, коли ви пишете
       код і хочете розібратися у використанні конкретного класу, методу, властивості. Довідник класів найкраще використовувати після контекстного розуміння всього фреймворку.
-    - [Wiki-статті](http://www.yiiframework.com/wiki/?tag=yii2):
+    - [Wiki-статті](https://www.yiiframework.com/wiki/?tag=yii2):
       Wiki-статті написані користувачами Yii на основі їх власного досвіду. Більшість з них написані
       як рецепти з куховарської книги, які показують, як вирішити конкретні проблеми, використовуючи Yii. 
       Варто зауважити, що якість даних статей може бути не такою гарною, як у Докладному Посібнику, але вони корисні тим,
       що охоплюють ширші теми і часто можуть забезпечити готовими рішеннями для подальшого використання.
-    - [Книги](http://www.yiiframework.com/doc/)
-* [Розширення](http://www.yiiframework.com/extensions/):
+    - [Книги](https://www.yiiframework.com/books)
+* [Розширення](https://www.yiiframework.com/extensions/):
   Yii пишається бібліотекою із тисяч розширень, внесених користувачами, які можуть бути легко підключені у ваші додатки та зробити розробку додатків ще швидшим і простішим.
 * Спільнота
-    - Форум: <http://www.yiiframework.com/forum/>
-    - Чат IRC: Канал #yii мережі freenode (<irc://irc.freenode.net/yii>)
+    - Форум: <https://forum.yiiframework.com/>
+    - Чат IRC: Канал #yii мережі Libera (<ircs://irc.libera.chat:6697/yii>)
     - Чат Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Фейсбук: <https://www.facebook.com/groups/yiitalk/>
     - Твіттер: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow: <https://stackoverflow.com/questions/tagged/yii2>

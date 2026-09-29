@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\caching;
@@ -23,7 +24,7 @@ class ApcCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!extension_loaded('apc')) {
+        if (!extension_loaded('apc') && !extension_loaded('apcu')) {
             $this->markTestSkipped('APC not installed. Skipping.');
         } elseif ('cli' === PHP_SAPI && !ini_get('apc.enable_cli')) {
             $this->markTestSkipped('APC cli is not enabled. Skipping.');
@@ -33,19 +34,21 @@ class ApcCacheTest extends CacheTestCase
             $this->markTestSkipped('APC is installed but not enabled. Skipping.');
         }
 
-        if ($this->_cacheInstance === null) {
+        if ($this->_cacheInstance === null && PHP_VERSION_ID >= 70400) {
+            $this->_cacheInstance = new ApcCache(['useApcu' => true]);
+        } elseif ($this->_cacheInstance === null) {
             $this->_cacheInstance = new ApcCache();
         }
 
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
         $this->markTestSkipped('APC keys are expiring only on the next request.');
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
         $this->markTestSkipped('APC keys are expiring only on the next request.');
     }

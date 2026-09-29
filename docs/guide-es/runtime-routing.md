@@ -143,7 +143,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // crea una URL interna: /index.php?r=post/view&id=100#contentecho 
 Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// crea una URL absoluta: http://www.example.com/index.php?r=post/index
+// crea una URL absoluta: https://www.example.com/index.php?r=post/index
 echo Url::to(['post/index'], true);
 
 // crea una URL absoluta usando el esquema https: https://www.example.com/index.php?r=post/index
@@ -195,10 +195,10 @@ use yii\helpers\Url;
 // la URL solicitada actualmente: /index.php?r=admin/post/index
 echo Url::to();
 
-// una URL con alias: http://example.comYii::setAlias('@example', 'http://example.com/');
+// una URL con alias: https://example.comYii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// una URL absoluta: http://example.com/images/logo.gif
+// una URL absoluta: https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);```
 ```
 
@@ -427,18 +427,18 @@ Sin usar ningún parámetro opcional, se tendrían que crear 4 reglas para logra
 
 Es posible incluir nombres de servidores Web en los parámetros de las URLs. Esto es practico principalmente cuando una 
 aplicación debe tener distintos comportamientos paro diferentes nombres de servidores Web. Por ejemplo, las siguientes 
-reglas convertirán la URL `http://admin.example.com/login` en la ruta `admin/user/login` y 
-`http://www.example.com/login` en `site/login`.
+reglas convertirán la URL `https://admin.example.com/login` en la ruta `admin/user/login` y 
+`https://www.example.com/login` en `site/login`.
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
 También se pueden incrustar parámetros en los nombres de servidor para extraer información dinámica de ellas. Por 
-ejemplo, la siguiente regla convertirá la URL `http://en.example.com/posts` en la ruta `post/index` y el parámetro 
+ejemplo, la siguiente regla convertirá la URL `https://en.example.com/posts` en la ruta `post/index` y el parámetro 
 `language=en`.
 
 ```php
@@ -448,8 +448,8 @@ ejemplo, la siguiente regla convertirá la URL `http://en.example.com/posts` en 
 ```
 
 > Note: Las reglas con nombres de servidor NO deben incluir el subdirectorio del script de entrada (entry script) en 
-  sus patrones. Por ejemplo, is la aplicación se encuentra en `http://www.example.com/sandbox/blog`, entonces se debe 
-  usar el patrón `http://www.example.com/posts` en lugar de `http://www.example.com/sandbox/blog/posts`. Esto 
+  sus patrones. Por ejemplo, is la aplicación se encuentra en `https://www.example.com/sandbox/blog`, entonces se debe 
+  usar el patrón `https://www.example.com/posts` en lugar de `https://www.example.com/sandbox/blog/posts`. Esto 
   permitirá que la aplicación se pueda desarrollar en cualquier directorio sin la necesidad de cambiar el código de la 
   aplicación.
 

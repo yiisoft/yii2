@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\grid;
@@ -46,7 +47,7 @@ class DataColumn extends Column
      */
     public $attribute;
     /**
-     * @var string label to be displayed in the [[header|header cell]] and also to be used as the sorting
+     * @var string|null label to be displayed in the [[header|header cell]] and also to be used as the sorting
      * link label when sorting is enabled for this column.
      * If it is not set and the models provided by the GridViews data provider are instances
      * of [[\yii\db\ActiveRecord]], the label will be determined using [[\yii\db\ActiveRecord::getAttributeLabel()]].
@@ -60,7 +61,7 @@ class DataColumn extends Column
      */
     public $encodeLabel = true;
     /**
-     * @var string|Closure an anonymous function or a string that is used to determine the value to display in the current column.
+     * @var string|Closure|null an anonymous function or a string that is used to determine the value to display in the current column.
      *
      * If this is an anonymous function, it will be called for each row and the return value will be used as the value to
      * display for every data model. The signature of this function should be: `function ($model, $key, $index, $column)`.
@@ -117,7 +118,24 @@ class DataColumn extends Column
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    /**
+     * @var string|null the attribute name of the [[GridView::filterModel]] associated with this column. If not set,
+     * will have the same value as [[attribute]].
+     * @since 2.0.41
+     */
+    public $filterAttribute;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->filterAttribute === null) {
+            $this->filterAttribute = $this->attribute;
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -133,8 +151,10 @@ class DataColumn extends Column
             $label = Html::encode($label);
         }
 
-        if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+        if (
+            $this->attribute !== null && $this->enableSorting &&
+            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)
+        ) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
         }
 
@@ -142,7 +162,7 @@ class DataColumn extends Column
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()
@@ -150,22 +170,24 @@ class DataColumn extends Column
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
-            if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /* @var $modelClass Model */
+            if ($this->attribute === null) {
+                $label = '';
+            } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
+                /** @var Model $modelClass */
                 $modelClass = $provider->query->modelClass;
                 $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-                /* @var $modelClass Model */
+                /** @var Model $modelClass */
                 $modelClass = $provider->modelClass;
                 $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
-                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
+                $label = $this->grid->filterModel->getAttributeLabel($this->filterAttribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
-                    /* @var $model Model */
+                    /** @var Model $model */
                     $label = $model->getAttributeLabel($this->attribute);
                 } else {
                     $label = Inflector::camel2words($this->attribute);
@@ -189,25 +211,26 @@ class DataColumn extends Column
 
         $model = $this->grid->filterModel;
 
-        if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
-            if ($model->hasErrors($this->attribute)) {
+        if ($this->filter !== false && $model instanceof Model && $this->filterAttribute !== null && $model->isAttributeActive($this->filterAttribute)) {
+            if ($model->hasErrors($this->filterAttribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
-                $error = ' ' . Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
+                $error = ' ' . Html::error($model, $this->filterAttribute, $this->grid->filterErrorOptions);
             } else {
                 $error = '';
             }
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
+                return Html::activeDropDownList($model, $this->filterAttribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, [
+                $options = array_merge(['prompt' => '', 'strict' => true], $this->filterInputOptions);
+                return Html::activeDropDownList($model, $this->filterAttribute, [
                     1 => $this->grid->formatter->booleanFormat[1],
                     0 => $this->grid->formatter->booleanFormat[0],
                 ], $options) . $error;
             }
+            $options = array_merge(['maxlength' => true], $this->filterInputOptions);
 
-            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+            return Html::activeTextInput($model, $this->filterAttribute, $options) . $error;
         }
 
         return parent::renderFilterCellContent();
@@ -218,7 +241,7 @@ class DataColumn extends Column
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
      * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string the data cell value
+     * @return string|null the data cell value
      */
     public function getDataCellValue($model, $key, $index)
     {

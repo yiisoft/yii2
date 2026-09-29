@@ -2,9 +2,9 @@
  * Database schema required by \yii\i18n\DbMessageSource.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  * @since 2.0.7
  */
 

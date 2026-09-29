@@ -2,7 +2,7 @@
 ====================================
 
 默认情况下，Yii 使用 PHP 作为其默认的模板引擎语言，但是，你可以配置 Yii 以扩展的方式支持其他的渲染引擎，
-比如 [Twig](http://twig.sensiolabs.org/) 或 [Smarty](http://www.smarty.net/)等。
+比如 [Twig](https://twig.symfony.com/) 或 [Smarty](https://www.smarty.net/)等。
 
 组件 `view` 就是用于渲染视图的。
 你可以重新配置这个组件的行为以增加一个自定义的模板引擎。

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -23,7 +24,7 @@ class DefaultValueValidator extends Validator
      * be assigned to the attributes being validated if they are empty. The signature of the anonymous function
      * should be as follows,
      *
-     * ```php
+     * ```
      * function($model, $attribute) {
      *     // compute value
      *     return $value;

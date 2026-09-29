@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
@@ -23,7 +23,7 @@ use yii\helpers\Html;
  * Classes extending from this widget can be used in an [[\yii\widgets\ActiveForm|ActiveForm]]
  * using the [[\yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
  *
- * ```php
+ * ```
  * <?= $form->field($model, 'from_date')->widget('WidgetClassName', [
  *     // configure additional widget properties here
  * ]) ?>
@@ -43,15 +43,15 @@ class InputWidget extends Widget
      */
     public $field;
     /**
-     * @var Model the data model that this widget is associated with.
+     * @var Model|null the data model that this widget is associated with.
      */
     public $model;
     /**
-     * @var string the model attribute that this widget is associated with.
+     * @var string|null the model attribute that this widget is associated with.
      */
     public $attribute;
     /**
-     * @var string the input name. This must be set if [[model]] and [[attribute]] are not set.
+     * @var string|null the input name. This must be set if [[model]] and [[attribute]] are not set.
      */
     public $name;
     /**

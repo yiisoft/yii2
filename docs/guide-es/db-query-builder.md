@@ -241,7 +241,7 @@ El operando puede ser uno de los siguientes (ver también [[yii\db\QueryInterfac
   automáticamente entre un par de caracteres de porcentaje.
 
 > Note: Cuando se usa PostgreSQL también se puede usar
-[`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) en lugar de `like` para
+[`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) en lugar de `like` para
 filtrar resultados insensibles a mayúsculas (case-insensitive).
 
 - `or like`: similar al operando `like` exceptuando que se usa `OR` para concatenar los predicados `LIKE` cuando haya

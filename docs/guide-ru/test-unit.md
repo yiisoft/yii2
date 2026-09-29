@@ -9,8 +9,8 @@
 
 Модульное тестирование в Yii использует PHPUnit и, опционально, Codeception. Рекомендуется проверить его документацию:
 
-- [Документация PHPUnit начиная с главы 2](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Codeception Unit Tests](http://codeception.com/docs/05-UnitTests).
+- [Документация PHPUnit начиная с главы 2](https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
+- [Codeception Unit Tests](https://codeception.com/docs/05-UnitTests).
 
 Запуск тестов шаблонов проектов basic и advanced
 ------------------------------------------------

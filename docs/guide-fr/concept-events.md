@@ -9,7 +9,7 @@ Yii introduit une classe de base appelée [[yii\base\Component]] pour prendre en
 Gestionnaires d'événements <span id="event-handlers"></span>
 --------------------------
 
-Un gestionnaire d'événement est une  [fonction de rappel PHP](https://secure.php.net/manual/en/language.types.callable.php) qui est exécutée lorsque l'événement à laquelle elle est attachée est déclenché. Vous pouvez utiliser n'importe laquelle des fonctions de rappel suivantes :
+Un gestionnaire d'événement est une  [fonction de rappel PHP](https://www.php.net/manual/fr/language.types.callable.php) qui est exécutée lorsque l'événement à laquelle elle est attachée est déclenché. Vous pouvez utiliser n'importe laquelle des fonctions de rappel suivantes :
 
 - une fonction PHP globale spécifiée sous forme de chaîne de caractères (sans les parenthèses) p. ex., `'trim'` ;
 - une méthode d'objet spécifiée sous forme de tableau constitué d'un nom d'objet et d'un nom de méthode sous forme de chaîne de caractères (sans les parenthèses), p. ex., `[$object, 'methodName']`;
@@ -185,7 +185,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -199,11 +199,11 @@ Vous pouvez déclencher un événement au *niveau de la classe* en appelant la m
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // displays "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Notez que, dans ce cas, `$event->sender` fait référence au nom de la classe qui a déclenché l'événement plutôt qu'à une instance de classe.
@@ -214,10 +214,10 @@ Pour détacher un gestionnaire attaché au niveau de la classe, appelez  [[yii\b
 
 ```php
 // détache $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // détache tous les gestionnaires de Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -271,10 +271,10 @@ Vous pouvez déclencher l'événement de ces classes :
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Notez bien que vous ne pouvez pas déclencher l'événement de toutes les classes qui implémentent l'interface :,

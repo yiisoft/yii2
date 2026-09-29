@@ -42,7 +42,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 この行のおかげで、アプリケーションは開発モードになっており、上記の構成情報によって、Gii が既に有効になっています。これで、下記の URL によって Gii にアクセスすることが出来ます。
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note: ローカルホスト以外のマシンから Gii にアクセスしようとすると、デフォルトではセキュリティ上の理由でアクセスが拒否されます。
@@ -107,7 +107,7 @@ CRUD は Create(作成)、Read(読出し)、Update(更新)、そして Delete(�
 どのように動作するかを見るために、ブラウザを使って下記の URL にアクセスしてください。
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 データ・グリッドがデータベース・テーブルから取得した国を表示しているページが表示されます。

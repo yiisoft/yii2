@@ -1,13 +1,13 @@
 La guida definitiva a Yii 2.0
 =============================
 
-Questa guida è rilasciata nei [termini della documentazione di Yii](http://www.yiiframework.com/doc/terms/).
+Questa guida è rilasciata nei [termini della documentazione di Yii](https://www.yiiframework.com/doc/terms/).
 
 Tutti i diritti riservati.
 
 2014 (c) Yii Software LLC.
 
-Traduzione italiana a cura di Lorenzo Milesi ([yetopen.it](http://www.yetopen.it)).
+Traduzione italiana a cura di Lorenzo Milesi ([yetopen.it](https://www.yetopen.it)).
 
 
 Introduzione

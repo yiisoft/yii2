@@ -10,15 +10,15 @@
 
 下面有几种方式来发送 access token：
 
-* [HTTP 基本认证](http://en.wikipedia.org/wiki/Basic_access_authentication)：access token
+* [HTTP 基本认证](https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81)：access token
   当作用户名发送，应用在 access token 可安全存在 API 使用端的场景，
   例如，API 使用端是运行在一台服务器上的程序。
 * 请求参数：access token 当作 API URL 请求参数发送，例如
   `https://example.com/users?access-token=xxxxxxxx`，
   由于大多数服务器都会保存请求参数到日志，
   这种方式应主要用于`JSONP` 请求，因为它不能使用HTTP头来发送access token 
-* [OAuth 2](http://oauth.net/2/)：使用者从认证服务器上获取基于 OAuth2 协议的 access token，
-  然后通过 [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 
+* [OAuth 2](https://oauth.net/2/)：使用者从认证服务器上获取基于 OAuth2 协议的 access token，
+  然后通过 [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750) 
   发送到 API 服务器。
 
 Yii 支持上述的认证方式，你也可很方便的创建新的认证方式。
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -19,7 +20,7 @@ use yii\web\UrlRuleInterface;
  *
  * The simplest usage of UrlRule is to declare a rule like the following in the application configuration,
  *
- * ```php
+ * ```
  * [
  *     'class' => 'yii\rest\UrlRule',
  *     'controller' => 'user',
@@ -41,7 +42,7 @@ use yii\web\UrlRuleInterface;
  * You may configure [[controller]] with multiple controller IDs to generate rules for all these controllers.
  * For example, the following code will disable the `delete` rule and generate rules for both `user` and `post` controllers:
  *
- * ```php
+ * ```
  * [
  *     'class' => 'yii\rest\UrlRule',
  *     'controller' => ['user', 'post'],
@@ -62,7 +63,7 @@ use yii\web\UrlRuleInterface;
 class UrlRule extends CompositeUrlRule
 {
     /**
-     * @var string the common prefix string shared by all patterns.
+     * @var string|null the common prefix string shared by all patterns.
      */
     public $prefix;
     /**
@@ -158,7 +159,7 @@ class UrlRule extends CompositeUrlRule
         }
         $this->controller = $controllers;
 
-        $this->prefix = trim($this->prefix, '/');
+        $this->prefix = trim((string)$this->prefix, '/');
 
         parent::init();
     }
@@ -205,9 +206,6 @@ class UrlRule extends CompositeUrlRule
         $config['verb'] = $verbs;
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
-        if (!empty($verbs) && !in_array('GET', $verbs)) {
-            $config['mode'] = WebUrlRule::PARSING_ONLY;
-        }
         $config['suffix'] = $this->suffix;
 
         return Yii::createObject($config);
@@ -219,10 +217,18 @@ class UrlRule extends CompositeUrlRule
     public function parseRequest($manager, $request)
     {
         $pathInfo = $request->getPathInfo();
+        if (
+            $this->prefix !== ''
+            && strpos($this->prefix, '<') === false
+            && strpos($pathInfo . '/', $this->prefix . '/') !== 0
+        ) {
+            return false;
+        }
+
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
-                    /* @var $rule WebUrlRule */
+                    /** @var WebUrlRule $rule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
                         Yii::debug([
@@ -249,7 +255,7 @@ class UrlRule extends CompositeUrlRule
         $this->createStatus = WebUrlRule::CREATE_STATUS_SUCCESS;
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
-                /* @var $rules UrlRuleInterface[] */
+                /** @var UrlRuleInterface[] $rules */
                 $rules = $this->rules[$urlName];
                 $url = $this->iterateRules($rules, $manager, $route, $params);
                 if ($url !== false) {
