@@ -19,9 +19,13 @@ use ReturnTypeWillChange;
 use ArrayAccess;
 use Iterator;
 use yii\base\BaseObject;
+use yii\base\DynamicModel;
 use yii\base\Model;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
+use yiiunit\data\helpers\enums\IntBackedStatus;
+use yiiunit\data\helpers\enums\Status;
+use yiiunit\data\helpers\enums\StringBackedStatus;
 use yiiunit\TestCase;
 
 /**
@@ -130,6 +134,115 @@ class ArrayHelperTest extends TestCase
             'timezone_type' => 3,
             'timezone' => 'UTC',
         ], ArrayHelper::toArray(new DateTime('2021-09-13 15:16:17', new DateTimeZone('UTC'))));
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testToArrayWithEnums(): void
+    {
+        $this->assertSame(
+            ['string' => 'active', 'int' => 0, 'pure' => 'Inactive'],
+            ArrayHelper::toArray([
+                'string' => StringBackedStatus::Active,
+                'int' => IntBackedStatus::Inactive,
+                'pure' => Status::Inactive,
+            ]),
+            'Backed enum cases should be converted to their value and pure enum cases to their name, preserving the keys.',
+        );
+        $this->assertSame(
+            ['active', 'inactive'],
+            ArrayHelper::toArray(StringBackedStatus::cases()),
+            'A list of enum cases should be converted to a list of their values.',
+        );
+        $this->assertSame(
+            ['id' => 1, 'status' => 'active', 'tags' => ['status' => 1]],
+            ArrayHelper::toArray([
+                'id' => 1,
+                'status' => StringBackedStatus::Active,
+                'tags' => ['status' => IntBackedStatus::Active],
+            ]),
+            'Enum cases nested in sub-arrays should be converted when converting recursively.',
+        );
+        $this->assertSame(
+            ['active'],
+            ArrayHelper::toArray(StringBackedStatus::Active),
+            'A backed enum case passed directly should be converted like a scalar value.',
+        );
+        $this->assertSame(
+            ['Active'],
+            ArrayHelper::toArray(Status::Active),
+            'A pure enum case passed directly should be converted like a scalar value.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testToArrayWithEnumsNonRecursive(): void
+    {
+        $this->assertSame(
+            ['status' => StringBackedStatus::Active, 'nested' => ['status' => Status::Active]],
+            ArrayHelper::toArray(
+                ['status' => StringBackedStatus::Active, 'nested' => ['status' => Status::Active]],
+                [],
+                false,
+            ),
+            'Enum cases should not be converted when converting an array non-recursively, like any other object.',
+        );
+        $this->assertSame(
+            ['active'],
+            ArrayHelper::toArray(StringBackedStatus::Active, [], false),
+            'An enum case passed directly should be converted even when converting non-recursively.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testToArrayWithEnumsAndProperties(): void
+    {
+        $properties = [
+            StringBackedStatus::class => [
+                'value',
+                'label' => function (StringBackedStatus $status) {
+                    return $status->label();
+                },
+            ],
+        ];
+
+        $this->assertSame(
+            ['value' => 'active', 'label' => 'Active'],
+            ArrayHelper::toArray(StringBackedStatus::Active, $properties),
+            'A mapping specified for the enum class should take precedence over the scalar conversion.',
+        );
+        $this->assertSame(
+            [
+                'status' => ['value' => 'inactive', 'label' => 'Inactive'],
+                'other' => 'Active',
+            ],
+            ArrayHelper::toArray(['status' => StringBackedStatus::Inactive, 'other' => Status::Active], $properties),
+            'A mapping specified for the enum class should also take precedence for nested enum cases, while enum classes without a mapping are converted to scalar values.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testToArrayWithEnumsInArrayable(): void
+    {
+        $model = new DynamicModel(['status' => StringBackedStatus::Active, 'flag' => Status::Inactive]);
+
+        $this->assertSame(
+            ['status' => 'active', 'flag' => 'Inactive'],
+            $model->toArray(),
+            'Enum attributes of an `Arrayable` object should be converted to scalar values.',
+        );
+        $this->assertSame(
+            [['status' => 'active', 'flag' => 'Inactive']],
+            ArrayHelper::toArray([$model]),
+            'Enum attributes of an `Arrayable` object nested in an array should be converted to scalar values.',
+        );
     }
 
     public function testRemove(): void
