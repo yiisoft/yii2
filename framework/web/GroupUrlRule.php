@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  * GroupUrlRule is best used by a module which often uses module ID as the prefix for the URL rules.
  * For example, the following code creates a rule for the `admin` module:
  *
- * ```php
+ * ```
  * new GroupUrlRule([
  *     'prefix' => 'admin',
  *     'rules' => [
@@ -49,7 +49,7 @@ use yii\base\InvalidConfigException;
 class GroupUrlRule extends CompositeUrlRule
 {
     /**
-     * @var array the rules contained within this composite rule. Please refer to [[UrlManager::rules]]
+     * @var UrlRuleInterface[]|array[]|string[] the rules contained within this composite rule. Please refer to [[UrlManager::rules]]
      * for the format of this property.
      * @see prefix
      * @see routePrefix

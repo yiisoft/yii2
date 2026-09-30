@@ -19,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Application configuration example:
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'mutex' => [

@@ -22,7 +22,7 @@ use yii\helpers\Json;
 class StringValidator extends Validator
 {
     /**
-     * @var int|array specifies the length limit of the value to be validated.
+     * @var int|array|null specifies the length limit of the value to be validated.
      * This can be specified in one of the following forms:
      *
      * - an integer: the exact length that the value should be of;
@@ -67,7 +67,7 @@ class StringValidator extends Validator
      */
     public $encoding;
     /**
-     * @var boolean whether to require the value to be a string data type.
+     * @var bool whether to require the value to be a string data type.
      * If false any scalar value will be treated as it's string equivalent.
      * @since 2.0.33
      */

@@ -38,7 +38,6 @@ class PgsqlMutex extends DbMutex
 {
     use RetryAcquireTrait;
 
-
     /**
      * Initializes PgSQL specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not PgSQL connection.

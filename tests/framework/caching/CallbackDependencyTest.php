@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use PHPUnit\Framework\TestCase;
@@ -8,7 +14,7 @@ use yii\caching\CallbackDependency;
 
 class CallbackDependencyTest extends TestCase
 {
-    public function testDependencyChange()
+    public function testDependencyChange(): void
     {
         $cache = new ArrayCache();
         $dependencyValue = true;
@@ -25,7 +31,7 @@ class CallbackDependencyTest extends TestCase
         $this->assertTrue($dependency->isChanged($cache));
     }
 
-    public function testDependencyNotChanged()
+    public function testDependencyNotChanged(): void
     {
         $cache = new ArrayCache();
 

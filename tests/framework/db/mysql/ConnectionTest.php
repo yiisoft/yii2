@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     /**
      * @doesNotPerformAssertions
      */
-    public function testTransactionAutocommit()
+    public function testTransactionAutocommit(): void
     {
         /** @var Connection $connection */
         $connection = $this->getConnection(true);

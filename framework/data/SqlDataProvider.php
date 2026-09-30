@@ -8,7 +8,6 @@
 
 namespace yii\data;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Expression;
@@ -27,7 +26,7 @@ use yii\di\Instance;
  *
  * SqlDataProvider may be used in the following way:
  *
- * ```php
+ * ```
  * $count = Yii::$app->db->createCommand('
  *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();
@@ -128,6 +127,7 @@ class SqlDataProvider extends BaseDataProvider
         }
 
         if ($pagination !== false) {
+            $pagination->totalCount = $this->getTotalCount();
             $limit = $pagination->getLimit();
             $offset = $pagination->getOffset();
         }

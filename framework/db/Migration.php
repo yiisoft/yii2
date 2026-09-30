@@ -57,7 +57,7 @@ class Migration extends Component implements MigrationInterface
      * by the command. If you do not want to use the DB connection provided by the command, you may override
      * the [[init()]] method like the following:
      *
-     * ```php
+     * ```
      * public function init()
      * {
      *     $this->db = 'db2';
@@ -314,7 +314,7 @@ class Migration extends Component implements MigrationInterface
      * put into the generated SQL.
      *
      * Example usage:
-     * ```php
+     * ```
      * class m200000_000000_create_table_fruits extends \yii\db\Migration
      * {
      *     public function safeUp()
@@ -517,6 +517,35 @@ class Migration extends Component implements MigrationInterface
     {
         $time = $this->beginCommand("drop index $name on $table");
         $this->db->createCommand()->dropIndex($name, $table)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        $time = $this->beginCommand("add check $name in table $table");
+        $this->db->createCommand()->addCheck($name, $table, $expression)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     */
+    public function dropCheck($name, $table)
+    {
+        $time = $this->beginCommand("drop check $name in table $table");
+        $this->db->createCommand()->dropCheck($name, $table)->execute();
         $this->endCommand($time);
     }
 

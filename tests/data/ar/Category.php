@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,11 @@ namespace yiiunit\data\ar;
  *
  * @property int $id
  * @property string $name
+ *
+ * @property-read Item[] $items
+ * @property-read Item[] $limitedItems
+ * @property-read OrderItem[] $orderItems
+ * @property-read Order[] $orders
  */
 class Category extends ActiveRecord
 {
@@ -22,22 +28,22 @@ class Category extends ActiveRecord
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['category_id' => 'id']);
+        return $this->hasMany(Item::class, ['category_id' => 'id']);
     }
 
     public function getLimitedItems()
     {
-        return $this->hasMany(Item::className(), ['category_id' => 'id'])
+        return $this->hasMany(Item::class, ['category_id' => 'id'])
             ->onCondition(['item.id' => [1, 2, 3]]);
     }
 
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['item_id' => 'id'])->via('items');
+        return $this->hasMany(OrderItem::class, ['item_id' => 'id'])->via('items');
     }
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['id' => 'order_id'])->via('orderItems');
+        return $this->hasMany(Order::class, ['id' => 'order_id'])->via('orderItems');
     }
 }

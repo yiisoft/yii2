@@ -26,8 +26,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property-read array $dirtyAttributes The changed attribute values (name-value pairs).
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
- * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
+ * @property-read array $oldAttributes The old attribute values (name-value pairs).
+ * @property-write array|null $oldAttributes Old attribute values to be set. If set to `null` this record is
+ * considered to be [[isNewRecord|new]].
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is `true`. A string is returned otherwise (null will be
  * returned if the key value is null).
@@ -45,44 +46,43 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * @event Event an event that is triggered when the record is initialized via [[init()]].
      */
-    const EVENT_INIT = 'init';
+    public const EVENT_INIT = 'init';
     /**
      * @event Event an event that is triggered after the record is created and populated with query result.
      */
-    const EVENT_AFTER_FIND = 'afterFind';
+    public const EVENT_AFTER_FIND = 'afterFind';
     /**
      * @event ModelEvent an event that is triggered before inserting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the insertion.
      */
-    const EVENT_BEFORE_INSERT = 'beforeInsert';
+    public const EVENT_BEFORE_INSERT = 'beforeInsert';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is inserted.
      */
-    const EVENT_AFTER_INSERT = 'afterInsert';
+    public const EVENT_AFTER_INSERT = 'afterInsert';
     /**
      * @event ModelEvent an event that is triggered before updating a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the update.
      */
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    public const EVENT_BEFORE_UPDATE = 'beforeUpdate';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is updated.
      */
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    public const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
      * @event ModelEvent an event that is triggered before deleting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the deletion.
      */
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
     /**
      * @event Event an event that is triggered after a record is deleted.
      */
-    const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
     /**
      * @event Event an event that is triggered after a record is refreshed.
      * @since 2.0.8
      */
-    const EVENT_AFTER_REFRESH = 'afterRefresh';
-
+    public const EVENT_AFTER_REFRESH = 'afterRefresh';
     /**
      * @var array attribute values indexed by attribute names
      */
@@ -151,7 +151,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
@@ -171,7 +171,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to increment all customers' age by 1,
      *
-     * ```php
+     * ```
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
@@ -193,7 +193,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll('status = 3');
      * ```
      *
@@ -372,7 +372,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `country` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getCountry()
      * {
      *     return $this->hasOne(Country::class, ['id' => 'country_id']);
@@ -385,8 +385,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Call methods declared in [[ActiveQuery]] to further customize the relation.
      *
-     * @param string $class the class name of the related record
-     * @param array $link the primary-foreign key constraint. The keys of the array refer to
+     * @param class-string $class the class name of the related record
+     * @param array<string, string> $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
@@ -407,7 +407,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `orders` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getOrders()
      * {
      *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
@@ -420,8 +420,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Call methods declared in [[ActiveQuery]] to further customize the relation.
      *
-     * @param string $class the class name of the related record
-     * @param array $link the primary-foreign key constraint. The keys of the array refer to
+     * @param class-string $class the class name of the related record
+     * @param array<string, string> $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
@@ -443,8 +443,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     protected function createRelationQuery($class, $link, $multiple)
     {
-        /* @var $class ActiveRecordInterface */
-        /* @var $query ActiveQuery */
+        /**
+         * @var ActiveRecordInterface $class
+         * @var ActiveQuery<ActiveRecord> $query
+         */
+
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
@@ -496,6 +499,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
+        // using null as an array offset is deprecated in PHP 8.5
+        if ($name === null || $name === '') {
+            return false;
+        }
+
         return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
     }
 
@@ -668,7 +676,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to save a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -714,7 +722,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to update a customer record:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -725,7 +733,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ```php
+     * ```
      * if ($customer->update() !== false) {
      *     // update successful
      * } else {
@@ -824,7 +832,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        if (isset($values[$lock])) {
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($lock !== null && isset($values[$lock])) {
             $this->$lock = $values[$lock];
         }
 
@@ -845,7 +854,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * An example usage is as follows:
      *
-     * ```php
+     * ```
      * $post = Post::findOne($id);
      * $post->updateCounters(['view_count' => 1]);
      * ```
@@ -962,7 +971,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is `false`.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeSave($insert)
      * {
      *     if (!parent::beforeSave($insert)) {
@@ -1018,7 +1027,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeDelete()
      * {
      *     if (!parent::beforeDelete()) {
@@ -1062,7 +1071,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function refresh()
     {
-        /* @var $record BaseActiveRecord */
+        /** @var self $record */
         $record = static::findOne($this->getPrimaryKey(true));
         return $this->refreshInternal($record);
     }
@@ -1301,7 +1310,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function link($name, $model, $extraColumns = [])
     {
-        /* @var $relation ActiveQueryInterface|ActiveQuery */
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
@@ -1309,7 +1318,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
-                /* @var $viaRelation ActiveQuery */
+                /** @var ActiveQuery $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
@@ -1329,15 +1338,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $columns[$k] = $v;
             }
             if (is_array($relation->via)) {
-                /* @var $viaClass ActiveRecordInterface */
-                /* @var $record ActiveRecordInterface */
+                /** @var ActiveRecordInterface $viaClass */
+                /** @var ActiveRecordInterface $record */
                 $record = Yii::createObject($viaClass);
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
                 $record->insert(false);
             } else {
-                /* @var $viaTable string */
+                /** @var string $viaTable */
                 static::getDb()->createCommand()->insert($viaTable, $columns)->execute();
             }
         } else {
@@ -1397,12 +1406,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function unlink($name, $model, $delete = false)
     {
-        /* @var $relation ActiveQueryInterface|ActiveQuery */
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /* @var $viaRelation ActiveQuery */
+                /** @var ActiveQuery<ActiveRecord> $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1425,15 +1434,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $columns = ['and', $columns, $viaRelation->on];
             }
             if (is_array($relation->via)) {
-                /* @var $viaClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $viaClass */
                 if ($delete) {
                     $viaClass::deleteAll($columns);
                 } else {
                     $viaClass::updateAll($nulls, $columns);
                 }
             } else {
-                /* @var $viaTable string */
-                /* @var $command Command */
+                /** @var string $viaTable */
+                /** @var Command $command */
                 $command = static::getDb()->createCommand();
                 if ($delete) {
                     $command->delete($viaTable, $columns)->execute();
@@ -1474,7 +1483,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (!$relation->multiple) {
             unset($this->_related[$name]);
         } elseif (isset($this->_related[$name])) {
-            /* @var $b ActiveRecordInterface */
+            /** @var ActiveRecordInterface $b */
             foreach ($this->_related[$name] as $a => $b) {
                 if ($model->getPrimaryKey() === $b->getPrimaryKey()) {
                     unset($this->_related[$name][$a]);
@@ -1500,12 +1509,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function unlinkAll($name, $delete = false)
     {
-        /* @var $relation ActiveQueryInterface|ActiveQuery */
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         $relation = $this->getRelation($name);
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /* @var $viaRelation ActiveQuery */
+                /** @var ActiveQuery $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1526,15 +1535,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $condition = ['and', $condition, $viaRelation->on];
             }
             if (is_array($relation->via)) {
-                /* @var $viaClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $viaClass */
                 if ($delete) {
                     $viaClass::deleteAll($condition);
                 } else {
                     $viaClass::updateAll($nulls, $condition);
                 }
             } else {
-                /* @var $viaTable string */
-                /* @var $command Command */
+                /** @var string $viaTable */
+                /** @var Command $command */
                 $command = static::getDb()->createCommand();
                 if ($delete) {
                     $command->delete($viaTable, $condition)->execute();
@@ -1543,7 +1552,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         } else {
-            /* @var $relatedModel ActiveRecordInterface */
+            /** @var ActiveRecordInterface $relatedModel */
             $relatedModel = $relation->modelClass;
             if (!$delete && count($relation->link) === 1 && is_array($this->{$b = reset($relation->link)})) {
                 // relation via array valued attribute
@@ -1639,7 +1648,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 break;
             }
 
-            list ($relationName, $modelAttribute) = $parts;
+            list($relationName, $modelAttribute) = $parts;
 
             if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
                 $model = $model->$relationName;
@@ -1649,7 +1658,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 } catch (InvalidArgumentException $e) {
                     break;
                 }
-                /* @var $modelClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $modelClass */
                 $modelClass = $relation->modelClass;
                 $model = $modelClass::instance();
             }
@@ -1685,7 +1694,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    /* @var $modelClass ActiveRecordInterface */
+                    /** @var ActiveRecordInterface $modelClass */
                     $modelClass = $relation->modelClass;
                     $relatedModel = $modelClass::instance();
                 }
@@ -1782,9 +1791,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function isValueDifferent($newValue, $oldValue)
     {
-        if (is_array($newValue) && is_array($oldValue) && ArrayHelper::isAssociative($oldValue)) {
-            $newValue = ArrayHelper::recursiveSort($newValue);
-            $oldValue = ArrayHelper::recursiveSort($oldValue);
+        if (is_array($newValue) && is_array($oldValue)) {
+            // Only sort associative arrays
+            $sorter = function (&$array) {
+                if (ArrayHelper::isAssociative($array)) {
+                    ksort($array);
+                }
+            };
+            $newValue = ArrayHelper::recursiveSort($newValue, $sorter);
+            $oldValue = ArrayHelper::recursiveSort($oldValue, $sorter);
         }
 
         return $newValue !== $oldValue;
@@ -1796,19 +1811,23 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customers = Customer::find()->where(['country_id' => 123])->all();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     Customer::loadRelationsFor($customers, 'orders.items');
      * }
      * ```
      *
-     * @param array|ActiveRecordInterface[] $models array of primary models. Each model should have the same type and can be:
+     * @template TModels of array
+     *
+     * @param TModels $models array of primary models. Each model should have the same type and can be:
      * - an active record instance;
      * - active record instance represented by array (i.e. active record was loaded using [[ActiveQuery::asArray()]]).
      * @param string|array $relationNames the names of the relations of primary models to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
      * @param bool $asArray whether to load each related model as an array or an object (if the relation itself does not specify that).
      * @since 2.0.50
+     *
+     * @param-out TModels $models
      */
     public static function loadRelationsFor(&$models, $relationNames, $asArray = false)
     {
@@ -1826,7 +1845,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customer = Customer::find()->where(['id' => 123])->one();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     $customer->loadRelations('orders.items');

@@ -46,7 +46,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
@@ -63,7 +63,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ```php
+     * ```
      * [
      *     Yii::$app->language,
      * ]

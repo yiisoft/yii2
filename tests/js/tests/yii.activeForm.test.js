@@ -49,7 +49,8 @@ describe('yii.activeForm', function () {
 
     jsdom({
         html: html,
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {
@@ -320,6 +321,69 @@ describe('yii.activeForm', function () {
                 $activeForm.yiiActiveForm('validate');
                 assert.notEqual(null, eventData);
             });
+        });
+    });
+
+    // https://github.com/yiisoft/yii2/issues/20217
+
+    describe('validationDelay', function () {
+        var inputId = 'test-text4';
+        var $input;
+        var windowSetTimeoutStub;
+        var delays;
+
+        before(function () {
+            $activeForm = $('#w4');
+            $activeForm.yiiActiveForm([
+                {
+                    id: inputId,
+                    input: '#' + inputId,
+                    container: '.field-' + inputId,
+                    validateOnType: true,
+                    validationDelay: 500
+                }
+            ]);
+            $input = $('#' + inputId);
+        });
+
+        beforeEach(function () {
+            delays = [];
+            windowSetTimeoutStub = sinon.stub(window, 'setTimeout', function (callback, delay) {
+                delays.push(delay);
+                callback();
+            });
+        });
+
+        afterEach(function () {
+            windowSetTimeoutStub.restore();
+            $activeForm.yiiActiveForm('find', inputId).validationDelay = 500;
+        });
+
+        it('should be applied while the user is typing', function () {
+            $input.val('typed value').trigger('keyup');
+            assert.deepEqual([500], delays);
+        });
+
+        it('should be honored while the user is typing when it is set to 0', function () {
+            $activeForm.yiiActiveForm('find', inputId).validationDelay = 0;
+            $input.val('instantly validated value').trigger('keyup');
+            assert.deepEqual([0], delays);
+        });
+
+        it('should not be applied when the input loses focus', function () {
+            $input.val('blurred value').trigger('blur');
+            assert.deepEqual([0], delays);
+        });
+
+        it('should not be applied when a change is detected on the input', function () {
+            $input.val('changed value').trigger('change');
+            assert.deepEqual([0], delays);
+        });
+
+        it('should not be applied when the validation is triggered manually', function () {
+            $input.val('manually validated value');
+            $activeForm.yiiActiveForm('validateAttribute', inputId);
+            assert.deepEqual([0], delays);
         });
     });
 });
