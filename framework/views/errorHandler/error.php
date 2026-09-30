@@ -1,6 +1,9 @@
 <?php
-/* @var $exception \Throwable */
-/* @var $handler \yii\web\ErrorHandler */
+/**
+ * @var \yii\web\View $this
+ * @var \Throwable $exception
+ * @var \yii\web\ErrorHandler $handler
+ */
 if ($exception instanceof \yii\web\HttpException) {
     $code = $exception->statusCode;
 } else {

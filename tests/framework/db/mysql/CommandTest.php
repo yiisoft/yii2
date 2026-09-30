@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,6 +7,8 @@
  */
 
 namespace yiiunit\framework\db\mysql;
+
+use yii\db\ConstraintFinderInterface;
 
 /**
  * @group db
@@ -17,7 +20,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
 
-    public function testAddDropCheckSeveral()
+    public function testAddDropCheckSeveral(): void
     {
         $db = $this->getConnection(false);
 
@@ -27,6 +30,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $tableName = 'test_ck_several';
         $schema = $db->getSchema();
+        $this->assertInstanceOf(ConstraintFinderInterface::class, $schema);
 
         if ($schema->getTableSchema($tableName) !== null) {
             $db->createCommand()->dropTable($tableName)->execute();

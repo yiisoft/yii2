@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,7 @@ namespace yiiunit\data\ar;
  *
  * @property int $id
  * @property string $stringcol
+ * @property mixed $RV
  */
 class TestTrigger extends ActiveRecord
 {

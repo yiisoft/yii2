@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,10 +10,13 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Application;
+use yii\base\Module;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
+use yii\console\Application as ConsoleApplication;
 
 /**
  * Provides help information about console commands.
@@ -34,6 +38,9 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of ConsoleApplication = ConsoleApplication
+ * @extends Controller<T>
  */
 class HelpController extends Controller
 {
@@ -66,6 +73,8 @@ class HelpController extends Controller
         } else {
             $this->getDefaultHelp();
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -77,7 +86,6 @@ class HelpController extends Controller
     {
         foreach ($this->getCommandDescriptions() as $command => $description) {
             $result = Yii::$app->createController($command);
-            /** @var $controller Controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $prefix = $controller->getUniqueId();
@@ -105,7 +113,6 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller $controller */
         list($controller, $actionID) = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -138,7 +145,6 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller $controller */
         list($controller, $actionID) = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -191,7 +197,7 @@ class HelpController extends Controller
         $descriptions = [];
         foreach ($this->getCommands() as $command) {
             $result = Yii::$app->createController($command);
-            /** @var Controller $controller */
+            /** @var Controller<Application> $controller */
             list($controller, $actionID) = $result;
             $descriptions[$command] = $controller->getHelpSummary();
         }
@@ -221,7 +227,7 @@ class HelpController extends Controller
 
     /**
      * Returns available commands of a specified module.
-     * @param \yii\base\Module $module the module instance
+     * @param Module $module the module instance
      * @return array the available command names
      */
     protected function getModuleCommands($module)
@@ -300,7 +306,6 @@ class HelpController extends Controller
         $maxLength = 0;
         foreach ($commands as $command => $description) {
             $result = Yii::$app->createController($command);
-            /** @var $controller Controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $prefix = $controller->getUniqueId();
@@ -314,6 +319,7 @@ class HelpController extends Controller
         }
         foreach ($commands as $command => $description) {
             $result = Yii::$app->createController($command);
+            /** @var Controller<Application> $controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $this->stdout('- ' . $this->ansiFormat($command, Console::FG_YELLOW));
@@ -432,9 +438,7 @@ class HelpController extends Controller
         ];
         ksort($options);
 
-        if (!empty($options)) {
-            $this->stdout(' [...options...]', Console::FG_RED);
-        }
+        $this->stdout(' [...options...]', Console::FG_RED);
         $this->stdout("\n\n");
 
         if (!empty($args)) {
@@ -449,21 +453,19 @@ class HelpController extends Controller
             }
         }
 
-        if (!empty($options)) {
-            $this->stdout("\nOPTIONS\n\n", Console::BOLD);
-            foreach ($options as $name => $option) {
-                $this->stdout($this->formatOptionHelp(
-                    $this->ansiFormat(
-                        '--' . $name . $this->formatOptionAliases($controller, $name),
-                        Console::FG_RED,
-                        empty($option['required']) ? Console::FG_RED : Console::BOLD
-                    ),
-                    !empty($option['required']),
-                    $option['type'],
-                    $option['default'],
-                    $option['comment']
-                ) . "\n\n");
-            }
+        $this->stdout("\nOPTIONS\n\n", Console::BOLD);
+        foreach ($options as $name => $option) {
+            $this->stdout($this->formatOptionHelp(
+                $this->ansiFormat(
+                    '--' . $name . $this->formatOptionAliases($controller, $name),
+                    Console::FG_RED,
+                    empty($option['required']) ? Console::FG_RED : Console::BOLD
+                ),
+                !empty($option['required']),
+                $option['type'],
+                $option['default'],
+                $option['comment']
+            ) . "\n\n");
         }
     }
 

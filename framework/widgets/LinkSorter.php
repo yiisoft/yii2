@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,6 @@
 
 namespace yii\widgets;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\data\Sort;

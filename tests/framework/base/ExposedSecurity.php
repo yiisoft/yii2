@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,13 +29,5 @@ class ExposedSecurity extends Security
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
         return parent::pbkdf2($algo, $password, $salt, $iterations, $length);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function shouldUseLibreSSL()
-    {
-        return parent::shouldUseLibreSSL();
     }
 }
