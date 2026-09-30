@@ -116,4 +116,50 @@ class FileCacheTest extends CacheTestCase
         $this->assertTrue($cache->set(__FUNCTION__, 'cache2', 2));
         $this->assertSame('cache2', $cache->get(__FUNCTION__));
     }
+
+    /**
+     * @dataProvider \yiiunit\framework\caching\providers\FileCacheProvider::missingCacheFile
+     *
+     * @see https://github.com/yiisoft/yii2/pull/20260
+     *
+     * @param string $method Cache method invoked for a key whose cache file does not exist.
+     * @param array $arguments Arguments passed to the method.
+     * @param mixed $expected Expected return value.
+     */
+    public function testMissingCacheFileDoesNotTriggerStatWarning(string $method, array $arguments, $expected): void
+    {
+        $cache = $this->getCacheInstance();
+        $cache->flush();
+
+        $errors = [];
+
+        set_error_handler(
+            static function ($errno, $errstr) use (&$errors) {
+                if (strpos($errstr, 'filemtime(): stat failed') !== false) {
+                    $errors[] = $errstr;
+
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        try {
+            $result = $cache->$method(...$arguments);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(
+            [],
+            $errors,
+            "No 'filemtime' stat warnings expected.",
+        );
+        $this->assertSame(
+            $expected,
+            $result,
+            "Unexpected result from cache method.",
+        );
+    }
 }
