@@ -13,6 +13,9 @@ namespace yiiunit\framework\validators;
 use ArrayObject;
 use yii\validators\RangeValidator;
 use yii\validators\Validator;
+use yiiunit\data\enums\ColorEnum;
+use yiiunit\data\enums\PriorityEnum;
+use yiiunit\data\enums\StatusEnum;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -214,6 +217,191 @@ class RangeValidatorTest extends TestCase
             'yii.validation.range(value, messages, {"range":["3","4"],"not":true,"message":"attr_range is invalid.","skipOnEmpty":1,"allowArray":1});',
             $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
             'The computed range must reach the client options.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateValueWithBackedEnum(): void
+    {
+        $val = new RangeValidator(['range' => StatusEnum::cases()]);
+
+        $this->assertTrue(
+            $val->validate(StatusEnum::ACTIVE),
+            'A case of the backed enum must be accepted.',
+        );
+        $this->assertTrue(
+            $val->validate(StatusEnum::INACTIVE),
+            'A case of the backed enum must be accepted.',
+        );
+        $this->assertTrue(
+            $val->validate(1),
+            'The backing value of a case must be accepted.',
+        );
+        $this->assertTrue(
+            $val->validate('1'),
+            'The backing value submitted as a string must be accepted.',
+        );
+        $this->assertFalse(
+            $val->validate(5),
+            'A value not in the range must be rejected.',
+        );
+        $this->assertFalse(
+            $val->validate('5'),
+            'A value not in the range must be rejected.',
+        );
+        $this->assertFalse(
+            $val->validate('ACTIVE'),
+            'The case name of a backed enum is not its scalar representation.',
+        );
+        $this->assertFalse(
+            $val->validate(PriorityEnum::LOW),
+            'A case of another enum must not be accepted, even if it has the same backing value.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateValueWithUnitEnum(): void
+    {
+        $val = new RangeValidator(['range' => ColorEnum::cases()]);
+
+        $this->assertTrue(
+            $val->validate(ColorEnum::RED),
+            'The case must be accepted.',
+        );
+        $this->assertTrue(
+            $val->validate('RED'),
+            'The case name must be accepted.',
+        );
+        $this->assertFalse(
+            $val->validate('PURPLE'),
+            'The case name must not be accepted.',
+        );
+        $this->assertFalse(
+            $val->validate(0),
+            'The value must not be accepted.',
+        );
+        $this->assertFalse(
+            $val->validate(StatusEnum::ACTIVE),
+            'The value must not be accepted.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateValueStrictWithBackedEnum(): void
+    {
+        $val = new RangeValidator(['range' => StatusEnum::cases(), 'strict' => true]);
+
+        $this->assertTrue(
+            $val->validate(StatusEnum::ACTIVE),
+            'A case of the backed enum must be accepted.',
+        );
+        $this->assertTrue(
+            $val->validate(1),
+            'The backing value of a case must be accepted.',
+        );
+        $this->assertFalse(
+            $val->validate('1'),
+            'Strict comparison must keep rejecting a string for an integer backing value.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateArrayValueWithEnum(): void
+    {
+        $val = new RangeValidator(['range' => StatusEnum::cases(), 'allowArray' => true]);
+
+        $this->assertTrue(
+            $val->validate([StatusEnum::ACTIVE, 2, '0']),
+            'All values in the array must be in the range.',
+        );
+        $this->assertFalse(
+            $val->validate([StatusEnum::ACTIVE, 5]),
+            'If any value in the array is not in the range, validation must fail.',
+        );
+        $this->assertFalse(
+            $val->validate([PriorityEnum::HIGH]),
+            'If any value in the array is not in the range, validation must fail.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateValueNotWithEnum(): void
+    {
+        $val = new RangeValidator(['range' => StatusEnum::cases(), 'not' => true]);
+
+        $this->assertFalse(
+            $val->validate(StatusEnum::ACTIVE),
+            'The value must not be in the range.',
+        );
+        $this->assertFalse(
+            $val->validate(1),
+            'The value must not be in the range.',
+        );
+        $this->assertTrue(
+            $val->validate(5),
+            'The value must not be in the range.',
+        );
+        $this->assertTrue(
+            $val->validate(PriorityEnum::LOW),
+            'The value must not be in the range.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateAttributeWithEnumRange(): void
+    {
+        $val = new RangeValidator(['range' => StatusEnum::cases()]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_r1' => '2', 'attr_r2' => '9']);
+
+        $val->validateAttribute($m, 'attr_r1');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_r1'),
+            'A submitted backing value must pass server-side validation.',
+        );
+
+        $val->validateAttribute($m, 'attr_r2');
+
+        $this->assertTrue(
+            $m->hasErrors('attr_r2'),
+            'A submitted backing value must fail server-side validation.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testClientValidateAttributeWithEnumRange(): void
+    {
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => StatusEnum::ACTIVE]);
+
+        $val = new RangeValidator(['range' => StatusEnum::cases()]);
+
+        $this->assertSame(
+            'yii.validation.range(value, messages, {"range":["1","2","0"],"not":false,"message":"attr_range is invalid.","skipOnEmpty":1});',
+            $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
+            'The client options must contain the backing values of the cases.',
+        );
+
+        $val = new RangeValidator(['range' => ColorEnum::cases()]);
+
+        $this->assertSame(
+            'yii.validation.range(value, messages, {"range":["BLUE","GREEN","RED"],"not":false,"message":"attr_range is invalid.","skipOnEmpty":1});',
+            $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
+            'The client options must contain the names of the cases of a pure enum.',
         );
     }
 }

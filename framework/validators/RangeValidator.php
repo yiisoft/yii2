@@ -35,6 +35,11 @@ class RangeValidator extends Validator
      *     return $range;
      * }
      * ```
+     *
+     * The list may contain enum cases (PHP 8.1+), e.g. `Status::cases()`. In this case both the enum case
+     * itself and its scalar representation (the backing value of a backed enum or the case name of a pure enum)
+     * are considered valid, so that a value submitted by a form is accepted before it is typecast to the enum.
+     * The scalar representation is also used for the client-side validation.
      */
     public $range;
     /**
@@ -77,15 +82,17 @@ class RangeValidator extends Validator
     {
         $in = false;
 
+        $range = $this->normalizeRange($this->range);
+
         if (
             $this->allowArray
             && ($value instanceof \Traversable || is_array($value))
-            && ArrayHelper::isSubset($value, $this->range, $this->strict)
+            && ArrayHelper::isSubset($value, $range, $this->strict)
         ) {
             $in = true;
         }
 
-        if (!$in && ArrayHelper::isIn($value, $this->range, $this->strict)) {
+        if (!$in && ArrayHelper::isIn($value, $range, $this->strict)) {
             $in = true;
         }
 
@@ -124,16 +131,11 @@ class RangeValidator extends Validator
     public function getClientOptions($model, $attribute)
     {
         $range = [];
+
         foreach ($this->range as $value) {
-            if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
-                if ($value instanceof \BackedEnum) {
-                    $value = $value->value;
-                } elseif ($value instanceof \UnitEnum) {
-                    $value = $value->name;
-                }
-            }            
-            $range[] = (string) $value;
+            $range[] = (string) $this->enumToScalar($value);
         }
+
         $options = [
             'range' => $range,
             'not' => $this->not,
@@ -149,5 +151,57 @@ class RangeValidator extends Validator
         }
 
         return $options;
+    }
+
+    /**
+     * Converts an enum case to its scalar representation.
+     *
+     * The backing value of a backed enum or the case name of a pure enum is returned.
+     * Any other value is returned as is.
+     *
+     * @param mixed $value the value to be converted.
+     * @return mixed the scalar representation of the enum case, or the original value.
+     */
+    private function enumToScalar($value)
+    {
+        if (PHP_VERSION_ID >= 80100) {
+            if ($value instanceof \BackedEnum) {
+                return $value->value;
+            }
+            if ($value instanceof \UnitEnum) {
+                return $value->name;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Adds the scalar representation of each enum case found in the range.
+     *
+     * The enum cases are kept in the range, so that an enum case is only matched by itself (not by a case
+     * of another enum with the same backing value), while its scalar representation matches the value
+     * submitted by a form.
+     *
+     * @param mixed $range the configured range.
+     * @return mixed the range with the scalar representation of the enum cases added, or the original
+     * value when it is neither an array nor traversable.
+     */
+    private function normalizeRange($range)
+    {
+        if (!is_array($range) && !($range instanceof \Traversable)) {
+            return $range;
+        }
+
+        $normalized = [];
+
+        foreach ($range as $value) {
+            $normalized[] = $value;
+            if (PHP_VERSION_ID >= 80100 && $value instanceof \UnitEnum) {
+                $normalized[] = $this->enumToScalar($value);
+            }
+        }
+
+        return $normalized;
     }
 }
