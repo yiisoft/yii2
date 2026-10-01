@@ -82,7 +82,7 @@ class RangeValidator extends Validator
     {
         $in = false;
 
-        $range = $this->normalizeRange($this->range);
+        $range = $this->normalizeRange($this->materializeRange());
 
         if (
             $this->allowArray
@@ -132,7 +132,7 @@ class RangeValidator extends Validator
     {
         $range = [];
 
-        foreach ($this->range as $value) {
+        foreach ($this->materializeRange() as $value) {
             $range[] = (string) $this->enumToScalar($value);
         }
 
@@ -143,7 +143,6 @@ class RangeValidator extends Validator
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
         ];
-
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
@@ -178,19 +177,36 @@ class RangeValidator extends Validator
     }
 
     /**
+     * Materializes a traversable [[range]] into an array and returns the resulting range.
+     *
+     * The array replaces the traversable in [[range]], so that a one-shot traversable such as a generator
+     * can be used for more than one validation and for the client options.
+     *
+     * @return mixed the materialized range, or the original value of [[range]] when it is not traversable.
+     */
+    private function materializeRange()
+    {
+        if ($this->range instanceof \Traversable) {
+            $this->range = iterator_to_array($this->range, false);
+        }
+
+        return $this->range;
+    }
+
+    /**
      * Adds the scalar representation of each enum case found in the range.
      *
      * The enum cases are kept in the range, so that an enum case is only matched by itself (not by a case
      * of another enum with the same backing value), while its scalar representation matches the value
      * submitted by a form.
      *
-     * @param mixed $range the configured range.
+     * @param mixed $range the materialized range, see [[materializeRange()]].
      * @return mixed the range with the scalar representation of the enum cases added, or the original
-     * value when it is neither an array nor traversable.
+     * value when it is not an array.
      */
     private function normalizeRange($range)
     {
-        if (!is_array($range) && !($range instanceof \Traversable)) {
+        if (!is_array($range)) {
             return $range;
         }
 

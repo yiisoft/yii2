@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use ArrayObject;
+use yii\base\DynamicModel;
 use yii\validators\RangeValidator;
 use yii\validators\Validator;
 use yiiunit\data\enums\ColorEnum;
@@ -201,6 +202,85 @@ class RangeValidatorTest extends TestCase
             $val->getClientOptions($m, 'attr_range')['range'],
             'The client options must be built from the materialized range.',
         );
+    }
+
+    public function testClientValidateAttributeWithGeneratorRange(): void
+    {
+        $val = new RangeValidator([
+            'range' => (static function (): \Generator {
+                yield 1;
+                yield 2;
+            })(),
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
+
+        $this->assertSame(
+            'yii.validation.range(value, messages, {"range":["1","2"],"not":false,"message":"attr_range is invalid.","skipOnEmpty":1});',
+            $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
+            'The client options must consume the generator.',
+        );
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_range'),
+            'A validation after the client options must reuse the materialized range instead of the consumed generator.',
+        );
+    }
+
+    public function testValidateAttributeWithClosureRangeReturningGenerator(): void
+    {
+        $val = new RangeValidator([
+            'range' => static function ($model, $attribute): \Generator {
+                yield 1;
+                yield 2;
+            },
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 2]);
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_range'),
+            'The generator returned by the closure must accept one of its members.',
+        );
+
+        $m->attr_range = 1;
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_range'),
+            'A second validation must reuse the materialized range instead of the consumed generator.',
+        );
+
+        $m->attr_range = 3;
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertTrue(
+            $m->hasErrors('attr_range'),
+            'The materialized range must reject an outsider.',
+        );
+    }
+
+    public function testValidateValueWithConsumedGeneratorRange(): void
+    {
+        $range = (static function (): \Generator {
+            yield 1;
+            yield 2;
+        })();
+
+        iterator_to_array($range, false);
+
+        $val = new RangeValidator(['range' => $range]);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Cannot traverse an already closed generator');
+
+        $val->validate(1);
     }
 
     public function testValidateAttributeWithClosureRange(): void
@@ -438,6 +518,35 @@ class RangeValidatorTest extends TestCase
             'yii.validation.range(value, messages, {"range":["BLUE","GREEN","RED"],"not":false,"message":"attr_range is invalid.","skipOnEmpty":1});',
             $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
             'The client options must contain the names of the cases of a pure enum.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testValidateDataWithEnumRange(): void
+    {
+        $rules = [['status', 'in', 'range' => StatusEnum::cases()]];
+
+        $model = DynamicModel::validateData(['status' => '2'], $rules);
+
+        $this->assertFalse(
+            $model->hasErrors('status'),
+            'The backing value submitted by a form must pass the same rule that accepts the enum case.',
+        );
+
+        $model = DynamicModel::validateData(['status' => StatusEnum::DELETED], $rules);
+
+        $this->assertFalse(
+            $model->hasErrors('status'),
+            'An enum case assigned to the attribute must pass the rule.',
+        );
+
+        $model = DynamicModel::validateData(['status' => '9'], $rules);
+
+        $this->assertTrue(
+            $model->hasErrors('status'),
+            'A submitted value outside the range must fail the rule.',
         );
     }
 }

@@ -201,7 +201,7 @@ parameters:
 		-
 			message: '#^Access to constant INACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
 			identifier: class.notFound
-			count: 1
+			count: 3
 			path: tests/framework/helpers/HtmlTest.php
 
 		-
@@ -214,6 +214,12 @@ parameters:
 			message: '#^Access to constant ACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
 			identifier: class.notFound
 			count: 7
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant DELETED on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 1
 			path: tests/framework/validators/RangeValidatorTest.php
 
 		-
@@ -249,5 +255,5 @@ parameters:
 		-
 			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
 			identifier: class.notFound
-			count: 6
+			count: 7
 			path: tests/framework/validators/RangeValidatorTest.php

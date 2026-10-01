@@ -2339,6 +2339,38 @@ HTML;
     /**
      * @requires PHP >= 8.1
      */
+    public function testDropDownListWithFalsyEnumSelection(): void
+    {
+        $items = [0 => 'Inactive', 1 => 'Active'];
+        $options = ['prompt' => 'Any'];
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="status">
+            <option value="">Any</option>
+            <option value="0" selected>Inactive</option>
+            <option value="1">Active</option>
+            </select>
+            HTML,
+            Html::dropDownList('status', StatusEnum::INACTIVE, $items, $options),
+            'A backed enum with a falsy backing value must select its option, not the prompt.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="status">
+            <option value="">Any</option>
+            <option value="0" selected>Inactive</option>
+            <option value="1">Active</option>
+            </select>
+            HTML,
+            Html::dropDownList('status', StatusEnum::INACTIVE, $items, $options + ['strict' => true]),
+            'A backed enum with a falsy backing value must select its option in strict mode.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
     public function testBooleanInputsWithEnum(): void
     {
         $model = new HtmlTestModel();
