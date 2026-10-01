@@ -154,7 +154,7 @@ class ConsoleTest extends TestCase
         }
     }*/
 
-    public function ansiFormats()
+    public static function ansiFormats(): array
     {
         return [
             ['test', 'test'],
@@ -443,9 +443,9 @@ class ConsoleTest extends TestCase
 }
 
 /**
- * @property string name
- * @property array types
- * @property string description
+ * @property string $name
+ * @property array $types
+ * @property string $description
  */
 class TestConsoleModel extends DynamicModel
 {

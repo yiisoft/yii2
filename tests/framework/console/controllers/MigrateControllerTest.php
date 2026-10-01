@@ -14,6 +14,7 @@ use yii\console\controllers\MigrateController;
 use yii\console\ExitCode;
 use yii\db\Migration;
 use yii\db\Query;
+use yii\db\Schema;
 use yii\helpers\Inflector;
 use yiiunit\TestCase;
 
@@ -26,6 +27,7 @@ use yiiunit\TestCase;
  */
 class MigrateControllerTest extends TestCase
 {
+    /** @use MigrateControllerTestTrait<EchoMigrateController> */
     use MigrateControllerTestTrait;
 
     protected function setUp(): void
@@ -159,7 +161,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateMigrationDataProvider()
+    public static function generateMigrationDataProvider(): array
     {
         $params = [
             'create_fields' => [
@@ -359,7 +361,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateJunctionMigrationDataProvider()
+    public static function generateJunctionMigrationDataProvider(): array
     {
         return [
             ['create_junction_post_and_tag_tables', 'post_tag', 'post', 'tag'],
@@ -441,6 +443,40 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('Migrated up successfully.', $result);
     }
 
+    public function testMigrationHistoryTableApplyTimeIsBigInt(): void
+    {
+        $this->runMigrateControllerAction('history');
+
+        $column = Yii::$app->db->getTableSchema('migration', true)->getColumn('apply_time');
+
+        $this->assertSame(Schema::TYPE_BIGINT, $column->type);
+    }
+
+    public function testExistingIntegerMigrationHistoryTableRemainsSupported(): void
+    {
+        Yii::$app->db->createCommand()->createTable(
+            'migration',
+            [
+                'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+                'apply_time' => 'integer',
+            ],
+        )->execute();
+        Yii::$app->db->createCommand()->insert(
+            'migration',
+            [
+                'version' => 'm000000_000000_base',
+                'apply_time' => time(),
+            ],
+        )->execute();
+
+        $this->runMigrateControllerAction('history');
+
+        $column = Yii::$app->db->getTableSchema('migration', true)->getColumn('apply_time');
+
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertSame(Schema::TYPE_INTEGER, $column->type);
+    }
+
     public function testCreateLongNamedMigration(): void
     {
         $this->setOutputCallback(function ($output) {
@@ -487,7 +523,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
     }
 
-    public function refreshMigrationDataProvider()
+    public static function refreshMigrationDataProvider(): array
     {
         return [
             ['default'],

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use PHPUnit\Framework\TestCase;
@@ -28,7 +34,7 @@ class BaseUrlTest extends TestCase
         $this->assertEquals($expected, BaseUrl::ensureScheme($url, $scheme));
     }
 
-    public function ensureSchemeUrlProvider()
+    public static function ensureSchemeUrlProvider(): array
     {
         return [
             'relative url and https scheme will return input url' => [
@@ -69,7 +75,7 @@ class BaseUrlTest extends TestCase
         ];
     }
 
-    public function relativeTrueUrlProvider()
+    public static function relativeTrueUrlProvider(): array
     {
         return [
             'url url without protocol' => [
@@ -87,7 +93,7 @@ class BaseUrlTest extends TestCase
         ];
     }
 
-    public function relativeFalseUrlProvider()
+    public static function relativeFalseUrlProvider(): array
     {
         return [
             'url with https protocol' => [

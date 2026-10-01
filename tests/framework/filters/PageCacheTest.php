@@ -39,7 +39,7 @@ class PageCacheTest extends TestCase
         CacheTestCase::$microtime = null;
     }
 
-    public function cacheTestCaseProvider()
+    public static function cacheTestCaseProvider(): array
     {
         return [
             // Basic
@@ -221,7 +221,7 @@ class PageCacheTest extends TestCase
         $filter = new PageCache(array_merge([
             'cache' => $cache,
             'view' => new View(),
-        ]), $testCase['properties']);
+        ], $testCase['properties']));
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertFalse($filter->beforeAction($action), $testCase['name']);
         // Content

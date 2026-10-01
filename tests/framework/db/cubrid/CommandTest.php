@@ -85,7 +85,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';

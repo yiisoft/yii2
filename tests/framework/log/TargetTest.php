@@ -20,7 +20,7 @@ class TargetTest extends TestCase
 {
     public static $messages;
 
-    public function filters()
+    public static function filters(): array
     {
         return [
             [[], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
@@ -149,7 +149,7 @@ class TargetTest extends TestCase
      */
     public function testSetupLevelsThroughArray(): void
     {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->setLevels(['info', 'error']);
         $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
@@ -168,7 +168,7 @@ class TargetTest extends TestCase
      */
     public function testSetupLevelsThroughBitmap(): void
     {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
         $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
@@ -183,8 +183,7 @@ class TargetTest extends TestCase
 
     public function testGetEnabled(): void
     {
-        /** @var Target $target */
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->enabled = true;
         $this->assertTrue($target->enabled);
@@ -200,8 +199,7 @@ class TargetTest extends TestCase
 
     public function testFormatMessage(): void
     {
-        /** @var Target $target */
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         date_default_timezone_set('UTC');
 
@@ -265,25 +263,36 @@ class TargetTest extends TestCase
 
     public function testNotBreakProfilingWithFlushWithProfilingEnabled(): void
     {
-        $dispatcher = $this->createPartialMock('yii\log\Dispatcher', ['dispatch']);
-        $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
-            [
-                $this->callback(function ($messages) {
-                    return count($messages) === 1 && $messages[0][0] === 'info';
-                }),
-                false
-            ],
-            [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.a'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
-                        && $messages[1][0] === 'token.a'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
-                }),
-                false
-            ]
-        );
+        $dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
+
+        /**
+         * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+         */
+        $matcher = $this->exactly(2);
+        $dispatcher
+            ->expects($matcher)
+            ->method('dispatch')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher): void {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $callback = fn ($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
+
+                        $this->assertTrue($callback($parameters[0]));
+                        $this->assertFalse($parameters[1]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 2) {
+                        $callback = fn ($messages): bool => count($messages) === 2
+                            && $messages[0][0] === 'token.a'
+                            && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
+                            && $messages[1][0] === 'token.a'
+                            && $messages[1][1] === Logger::LEVEL_PROFILE_END;
+
+                        $this->assertTrue($callback($parameters[0]));
+                        $this->assertFalse($parameters[1]);
+                    }
+                },
+            );
 
         $logger = new Logger([
             'profilingAware' => true,
@@ -298,36 +307,48 @@ class TargetTest extends TestCase
 
     public function testFlushingWithProfilingEnabledAndOverflow(): void
     {
-        $dispatcher = $this->createPartialMock('yii\log\Dispatcher', ['dispatch']);
-        $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
-            [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.a'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
-                        && $messages[1][0] === 'token.b'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN;
-                }),
-                false
-            ],
-            [
-                $this->callback(function ($messages) {
-                    return count($messages) === 1
-                        && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
-                }),
-                false
-            ],
-            [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.b'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_END
-                        && $messages[1][0] === 'token.a'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
-                }),
-                false
-            ]
-        );
+        $dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
+
+        /**
+         * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+         */
+        $matcher = $this->exactly(3);
+        $dispatcher
+            ->expects($matcher)
+            ->method('dispatch')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher): void {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $callback = fn ($messages): bool => count($messages) === 2
+                            && $messages[0][0] === 'token.a'
+                            && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
+                            && $messages[1][0] === 'token.b'
+                            && $messages[1][1] === Logger::LEVEL_PROFILE_BEGIN;
+
+                        $this->assertTrue($callback($parameters[0]));
+                        $this->assertFalse($parameters[1]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 2) {
+                        $callback = fn ($messages): bool => count($messages) === 1
+                            && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
+
+                        $this->assertTrue($callback($parameters[0]));
+                        $this->assertFalse($parameters[1]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 3) {
+                        $callback = fn ($messages): bool => count($messages) === 2
+                            && $messages[0][0] === 'token.b'
+                            && $messages[0][1] === Logger::LEVEL_PROFILE_END
+                            && $messages[1][0] === 'token.a'
+                            && $messages[1][1] === Logger::LEVEL_PROFILE_END;
+
+                        $this->assertTrue($callback($parameters[0]));
+                        $this->assertFalse($parameters[1]);
+                    }
+                },
+            );
 
         $logger = new Logger([
             'profilingAware' => true,
@@ -381,6 +402,9 @@ class TargetTest extends TestCase
     }
 }
 
+/**
+ * @property-read string $contextMessage The context information. If an empty string, it means no context information.
+ */
 class TestTarget extends Target
 {
     public $exportInterval = 1;

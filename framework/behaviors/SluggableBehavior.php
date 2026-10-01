@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -60,6 +61,9 @@ use yii\validators\UniqueValidator;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class SluggableBehavior extends AttributeBehavior
 {

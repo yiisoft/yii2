@@ -16,6 +16,7 @@ use yii\db\conditions\AndCondition;
 use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
+use yii\log\Logger;
 
 abstract class ConnectionTest extends DatabaseTestCase
 {
@@ -304,6 +305,118 @@ abstract class ConnectionTest extends DatabaseTestCase
         });
     }
 
+    public function testNestedTransactionIgnoresIsolationLevel(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        $this->assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'",
+        );
+        $this->assertTrue(
+            $inner->isActive,
+            'Nested transaction should be active',
+        );
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            1,
+            $warnings,
+            'There should be exactly one warning for nested transaction ignoring isolation level',
+        );
+        $this->assertStringContainsString(
+            Transaction::SERIALIZABLE,
+            $warnings[0][0],
+            'Nested transaction should warn about ignoring isolation level',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        Yii::getLogger()->messages = [];
+
+        $outer = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for non-nested transaction',
+        );
+
+        $outer->rollBack();
+
+        $this->assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollback',
+        );
+        $this->assertSame(
+            0,
+            $outer->level,
+            'Outer transaction level should be 0 after rollback',
+        );
+    }
+
+    public function testNestedTransactionWithoutIsolationLevelDoesNotWarn(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction();
+
+        $this->assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'",
+        );
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for nested transaction without isolation level',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        $this->assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollbacks',
+        );
+    }
+
     public function testEnableQueryLog(): void
     {
         $connection = $this->getConnection();
@@ -397,14 +510,21 @@ abstract class ConnectionTest extends DatabaseTestCase
     /**
      * @param Connection $connection
      */
-    private function runExceptionTest($connection): void
+    private function runExceptionTest(Connection $connection): void
     {
         $thrown = false;
+        $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(1);';
+
+        if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
+            $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(:a);';
+        }
+
         try {
             $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
         } catch (\yii\db\Exception $e) {
             $this->assertStringContainsString(
-                'INSERT INTO qlog1(a) VALUES(1);',
+                $sqlAssertLog,
                 $e->getMessage(),
                 'Exception message should contain raw SQL query: ' . (string) $e
             );
@@ -413,11 +533,18 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
 
         $thrown = false;
+        $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;';
+
+        if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
+            $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;';
+        }
+
         try {
             $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
         } catch (\yii\db\Exception $e) {
             $this->assertStringContainsString(
-                'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;',
+                $sqlAssertLog,
                 $e->getMessage(),
                 'Exception message should contain raw SQL query: ' . (string) $e,
             );

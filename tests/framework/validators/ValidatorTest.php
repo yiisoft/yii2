@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
@@ -31,7 +33,13 @@ class ValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -193,12 +201,48 @@ class ValidatorTest extends TestCase
         $this->assertFalse($val->isEmpty('  '));
     }
 
+    public function testIsEmptyWithCustomCallable(): void
+    {
+        $val = new TestValidator();
+        $val->isEmpty = function ($value) {
+            return $value === 'EMPTY';
+        };
+        $this->assertTrue($val->isEmpty('EMPTY'));
+        $this->assertFalse($val->isEmpty('not empty'));
+        $this->assertFalse($val->isEmpty(null));
+    }
+
+    public function testGetClientOptions(): void
+    {
+        $val = new TestValidator();
+        $model = $this->getTestModel();
+        $options = $val->getClientOptions($model, 'attr_runMe1');
+        $this->assertSame([], $options);
+    }
+
     public function testValidateValue(): void
     {
         $this->expectException('yii\base\NotSupportedException');
         $this->expectExceptionMessage(TestValidator::class . ' does not support validateValue().');
         $val = new TestValidator();
         $val->validate('abc');
+    }
+
+    public function testValidateFormatsMessageWithoutApplication(): void
+    {
+        $this->destroyApplication();
+
+        $validator = new BooleanValidator();
+
+        $this->assertFalse(
+            $validator->validate('yes', $error),
+            'Value outside the boolean pair must fail.',
+        );
+        $this->assertSame(
+            'the input value must be either "1" or "0".',
+            $error,
+            'Placeholders must be replaced without I18N.',
+        );
     }
 
     public function testValidateAttribute(): void
@@ -218,6 +262,23 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
+    public function testInlineValidatorResolvesStringMethodOnModel(): void
+    {
+        $model = new FakedValidationModel();
+
+        $model->val_attr_a = 'a';
+
+        $validator = new InlineValidator(['method' => 'inlineVal', 'params' => ['foo' => 'bar']]);
+
+        $validator->validateAttribute($model, 'val_attr_a');
+
+        $this->assertSame(
+            ['val_attr_a', ['foo' => 'bar'], $validator, 'a'],
+            $model->getInlineValArgs(),
+            'Model method must receive attribute, params, validator and current value.',
+        );
+    }
+
     public function testClientValidateAttribute(): void
     {
         $view = new View();
@@ -230,6 +291,8 @@ class ValidatorTest extends TestCase
 
         $model = new FakedValidationModel();
         $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $this->assertInstanceOf(InlineValidator::class, $val);
+
         $val->clientValidate = 'clientInlineVal';
         $args = $val->clientValidateAttribute($model, 'val_attr_a', $view);
 
@@ -329,5 +392,62 @@ class ValidatorTest extends TestCase
 
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
+    }
+
+    public function testInlineValidatorWithClosureMethod(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'method' => function ($attribute, $params, $validator, $current) use (&$boundModel) {
+                $boundModel = $this;
+            },
+        ]);
+
+        $validator->validateAttribute($model, 'attr');
+
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Closure must run bound to the validated model.',
+        );
+    }
+
+    public function testInlineValidatorWithClosureClientValidate(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) use (&$boundModel) {
+                $boundModel = $this;
+
+                return 'js';
+            },
+        ]);
+
+        $this->assertSame(
+            'js',
+            $validator->clientValidateAttribute($model, 'attr', new View()),
+            'Closure result must be returned verbatim.',
+        );
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Client closure must run bound to the validated model.',
+        );
+    }
+
+    public function testInlineValidatorClientValidateAttributeReturnsNullWithoutClientValidate(): void
+    {
+        $validator = new InlineValidator();
+
+        $this->assertNull(
+            $validator->clientValidateAttribute(new DynamicModel(['attr' => 1]), 'attr', new View()),
+            'Missing client callback must yield `null`.',
+        );
     }
 }

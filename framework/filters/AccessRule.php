@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
 use yii\web\Request;
@@ -77,7 +79,7 @@ class AccessRule extends Component
      */
     public $permissions;
     /**
-     * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
+     * @var array|object|Closure parameters to pass to the [[User::can()]] function for evaluating
      * user permissions in [[$roles]].
      *
      * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an

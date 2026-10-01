@@ -8,6 +8,7 @@
 
 namespace yii\build\controllers;
 
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -16,6 +17,8 @@ use yii\helpers\FileHelper;
  * Check files for broken UTF8 and non-printable characters.
  *
  * @author Carsten Brandt <mail@cebe.cc>
+ *
+ * @extends Controller<Application>
  */
 class Utf8Controller extends Controller
 {

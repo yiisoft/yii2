@@ -18,6 +18,7 @@ use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
+use yii\db\pgsql\ColumnSchema as PgsqlColumnSchema;
 use yii\db\Schema;
 use yii\db\TableSchema;
 
@@ -28,7 +29,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     protected $expectedSchemas;
 
-    public function pdoAttributesProvider()
+    public static function pdoAttributesProvider(): array
     {
         return [
             [[PDO::ATTR_EMULATE_PREPARES => true]],
@@ -121,10 +122,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testSchemaCache(): void
     {
-        /** @var Connection $db */
         $db = $this->getConnection();
-
-        /** @var Schema $schema */
         $schema = $db->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -157,7 +155,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
-    public function tableSchemaCachePrefixesProvider()
+    public static function tableSchemaCachePrefixesProvider(): array
     {
         $configs = [
             [
@@ -536,6 +534,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
             if (isset($expected['dimension'])) { // PgSQL only
+                $this->assertInstanceOf(PgsqlColumnSchema::class, $column);
                 $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
             }
         }
@@ -558,7 +557,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertSame($expected, $columnSchema->dbTypecast($value));
     }
 
-    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    public static function columnSchemaDbTypecastBooleanPhpTypeProvider(): array
     {
         return [
             [1, true],
@@ -646,7 +645,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         return [
             '1: primary key' => ['T_constraints_1', 'primaryKey', new Constraint([
@@ -753,14 +752,14 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function lowercaseConstraintsProvider()
+    public static function lowercaseConstraintsProvider(): array
     {
-        return $this->constraintsProvider();
+        return static::constraintsProvider();
     }
 
-    public function uppercaseConstraintsProvider()
+    public static function uppercaseConstraintsProvider(): array
     {
-        return $this->constraintsProvider();
+        return static::constraintsProvider();
     }
 
     /**

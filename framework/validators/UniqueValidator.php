@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -239,8 +240,7 @@ class UniqueValidator extends Validator
      * @param ActiveRecordInterface $targetClass the name of the ActiveRecord class that should be used to validate
      * the uniqueness of the current attribute value.
      * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
-     *
-     * @return ActiveQueryInterface|ActiveQuery
+     * @return ActiveQueryInterface|ActiveQuery<ActiveRecord>
      */
     private function prepareQuery($targetClass, $conditions)
     {
@@ -315,7 +315,7 @@ class UniqueValidator extends Validator
 
     /**
      * Returns conditions with alias.
-     * @param ActiveQuery $query
+     * @param ActiveQuery<ActiveRecord> $query
      * @param array $conditions array of condition, keys to be modified
      * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array

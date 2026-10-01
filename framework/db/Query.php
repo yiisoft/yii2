@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -69,7 +70,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $distinct = false;
     /**
-     * @var array|null the table(s) to be selected from. For example, `['user', 'post']`.
+     * @var array|string|null the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */
@@ -167,7 +168,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
-     * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
+     * @return self a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
     public function prepare($builder)
     {

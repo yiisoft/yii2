@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -77,7 +78,6 @@ class Formatter extends Component
      * @since 2.0.13
      */
     public const UNIT_WEIGHT = 'mass';
-
     /**
      * @var string|null the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
@@ -879,21 +879,23 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d|',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d|',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d H:i:s',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;

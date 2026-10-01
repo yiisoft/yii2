@@ -10,7 +10,6 @@ namespace yiiunit\framework\rbac;
 
 use Yii;
 use InvalidArgumentException;
-use yii\rbac\ManagerInterface;
 use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
@@ -19,16 +18,18 @@ use yiiunit\TestCase;
 
 /**
  * ManagerTestCase.
+ *
+ * @template TManager of BaseManager
  */
 abstract class ManagerTestCase extends TestCase
 {
     /**
-     * @var ManagerInterface|BaseManager
+     * @var TManager
      */
     protected $auth;
 
     /**
-     * @return ManagerInterface
+     * @return TManager
      */
     abstract protected function createManager();
 
@@ -97,6 +98,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->add($rule);
 
         $rule = $this->auth->getRule($ruleName);
+        $this->assertInstanceOf(AuthorRule::class, $rule);
         $this->assertEquals($ruleName, $rule->name);
         $this->assertTrue($rule->reallyReally);
     }
@@ -106,6 +108,7 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
 
         $rule = $this->auth->getRule('isAuthor');
+        $this->assertInstanceOf(AuthorRule::class, $rule);
         $rule->name = 'newName';
         $rule->reallyReally = false;
         $this->auth->update('isAuthor', $rule);
@@ -114,6 +117,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($rule);
 
         $rule = $this->auth->getRule('newName');
+        $this->assertInstanceOf(AuthorRule::class, $rule);
         $this->assertEquals('newName', $rule->name);
         $this->assertFalse($rule->reallyReally);
 
@@ -121,6 +125,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->update('newName', $rule);
 
         $rule = $this->auth->getRule('newName');
+        $this->assertInstanceOf(AuthorRule::class, $rule);
         $this->assertTrue($rule->reallyReally);
 
         $item = $this->auth->getPermission('createPost');
@@ -190,7 +195,6 @@ abstract class ManagerTestCase extends TestCase
                 'updatePost' => false,
                 'updateAnyPost' => true,
                 'blablabla' => false,
-                null => false,
             ],
             'guest' => [
                 // all actions denied for guest (user not exists)
@@ -200,10 +204,13 @@ abstract class ManagerTestCase extends TestCase
                 'deletePost' => false,
                 'updateAnyPost' => false,
                 'blablabla' => false,
-                null => false,
             ],
         ];
 
+        // using null as an array key is deprecated in PHP 8.5
+        $invalidKey = PHP_VERSION_ID >= 80500 ? '' : null;
+        $testSuites['admin C'][$invalidKey] = false;
+        $testSuites['guest'][$invalidKey] = false;
         $params = ['authorID' => 'author B'];
 
         foreach ($testSuites as $user => $tests) {
@@ -414,7 +421,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth = $this->createManager();
 
         $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
-        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'));
         $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
         $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
@@ -466,7 +473,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getRoles());
     }
 
-    public function RBACItemsProvider()
+    public static function RBACItemsProvider(): array
     {
         return [
             [Item::TYPE_ROLE],
@@ -639,6 +646,7 @@ abstract class ManagerTestCase extends TestCase
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessage('Default roles must be either an array or a callable');
+        // @phpstan-ignore assign.propertyType (We intentionally use incorrect data here to test its processing)
         $this->auth->defaultRoles = 'test';
     }
 }

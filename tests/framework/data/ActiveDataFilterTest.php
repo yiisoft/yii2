@@ -23,7 +23,7 @@ class ActiveDataFilterTest extends TestCase
 
     // Tests :
 
-    public function dataProviderBuild()
+    public static function dataProviderBuild(): array
     {
         return [
             [

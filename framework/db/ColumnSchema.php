@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -62,7 +63,7 @@ class ColumnSchema extends BaseObject
      */
     public $scale;
     /**
-     * @var bool whether this column is a primary key
+     * @var bool|null whether this column is a primary key
      */
     public $isPrimaryKey;
     /**

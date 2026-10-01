@@ -172,27 +172,51 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger($logger);
 
-        $logger->expects($this->exactly(6))
+        /**
+         * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+         */
+        $matcher = $this->exactly(6);
+        $logger
+            ->expects($matcher)
             ->method('log')
-            ->withConsecutive(
-                [$this->equalTo('info message'), $this->equalTo(Logger::LEVEL_INFO), $this->equalTo('info category')],
-                [
-                    $this->equalTo('warning message'),
-                    $this->equalTo(Logger::LEVEL_WARNING),
-                    $this->equalTo('warning category'),
-                ],
-                [$this->equalTo('trace message'), $this->equalTo(Logger::LEVEL_TRACE), $this->equalTo('trace category')],
-                [$this->equalTo('error message'), $this->equalTo(Logger::LEVEL_ERROR), $this->equalTo('error category')],
-                [
-                    $this->equalTo('beginProfile message'),
-                    $this->equalTo(Logger::LEVEL_PROFILE_BEGIN),
-                    $this->equalTo('beginProfile category'),
-                ],
-                [
-                    $this->equalTo('endProfile message'),
-                    $this->equalTo(Logger::LEVEL_PROFILE_END),
-                    $this->equalTo('endProfile category'),
-                ]
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher): void {
+                    if ($matcher->getInvocationCount() === 1) {
+                        $this->assertEquals('info message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_INFO, $parameters[1]);
+                        $this->assertEquals('info category', $parameters[2]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 2) {
+                        $this->assertEquals('warning message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_WARNING, $parameters[1]);
+                        $this->assertEquals('warning category', $parameters[2]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 3) {
+                        $this->assertEquals('trace message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_TRACE, $parameters[1]);
+                        $this->assertEquals('trace category', $parameters[2]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 4) {
+                        $this->assertEquals('error message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_ERROR, $parameters[1]);
+                        $this->assertEquals('error category', $parameters[2]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 5) {
+                        $this->assertEquals('beginProfile message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_PROFILE_BEGIN, $parameters[1]);
+                        $this->assertEquals('beginProfile category', $parameters[2]);
+                    }
+
+                    if ($matcher->getInvocationCount() === 6) {
+                        $this->assertEquals('endProfile message', $parameters[0]);
+                        $this->assertEquals(Logger::LEVEL_PROFILE_END, $parameters[1]);
+                        $this->assertEquals('endProfile category', $parameters[2]);
+                    }
+                },
             );
 
         BaseYii::info('info message', 'info category');

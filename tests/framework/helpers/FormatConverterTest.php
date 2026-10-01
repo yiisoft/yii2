@@ -73,7 +73,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('\\o\\\'\\c\\l\\o\\c\\k', FormatConverter::convertDateIcuToPhp('\'o\'\'clock\''));
     }
 
-    public function providerForICU2PHPPatterns()
+    public static function providerForICU2PHPPatterns(): array
     {
         return [
             'two single quotes produce one' => ["''", "\\'"],
@@ -222,7 +222,7 @@ class FormatConverterTest extends TestCase
         );
     }
 
-    public function providerForICU2JUIPatterns()
+    public static function providerForICU2JUIPatterns(): array
     {
         return [
             'era designator like (Anno Domini)' => ['G', ''],
@@ -389,7 +389,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function providerForPHP2ICUPatterns()
+    public static function providerForPHP2ICUPatterns(): array
     {
         return [
             'single \' should be encoded as \'\', which internally should be encoded as \'\'\'\'' => ["'", "''"],
@@ -497,7 +497,7 @@ class FormatConverterTest extends TestCase
         $this->assertEquals('dd-mm-yy', FormatConverter::convertDatePhpToJui('d-m-Y'));
     }
 
-    public function providerForPHP2JUIPatterns()
+    public static function providerForPHP2JUIPatterns(): array
     {
         return [
             'Day of the month, 2 digits with leading zeros 	01 to 31' => ['d', 'dd'],

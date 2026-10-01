@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,7 @@ use yii\base\BaseObject;
 abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * @var UrlRuleInterface[] the URL rules contained in this composite rule.
+     * @var UrlRuleInterface[]|UrlRuleInterface[][]|array[]|string[] the URL rules contained in this composite rule.
      * This property is set in [[init()]] by the return value of [[createRules()]].
      */
     protected $rules = [];

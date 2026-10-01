@@ -106,7 +106,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertFalse($manager->parseRequest($this->getRequest('module/site/index/')));
     }
 
-    public function suffixProvider()
+    public static function suffixProvider(): array
     {
         return [
             ['.html'],

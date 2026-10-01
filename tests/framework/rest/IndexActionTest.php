@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\rest;
 
 use Yii;
@@ -72,9 +78,12 @@ class IndexActionTest extends TestCase
     /**
      * @dataProvider dataProviderTestPrepareDataProviderWithPaginationAndSorting
      *
-     * @param string $sql
-     * @param array $params
-     * @param string $expectedRawSql
+     * @param Pagination|array|false $pagination
+     * @param Sort|array|false $sort
+     * @param int|null $expectedPaginationPageSize
+     * @param int|null $expectedPaginationDefaultPageSize
+     * @param array $expectedSortOrders
+     * @param array|null $expectedSortDefaultOrder
      */
     public function testPrepareDataProviderWithPaginationAndSorting(
         $pagination,
@@ -129,7 +138,7 @@ class IndexActionTest extends TestCase
      * Data provider for [[testPrepareDataProviderWithPaginationAndSorting()]].
      * @return array test data
      */
-    public function dataProviderTestPrepareDataProviderWithPaginationAndSorting()
+    public static function dataProviderTestPrepareDataProviderWithPaginationAndSorting(): array
     {
         return [
             [ // Default config

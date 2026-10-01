@@ -76,7 +76,7 @@ SQL;
         $this->markTestSkipped('Schemas are not supported in MySQL.');
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
 

@@ -62,7 +62,7 @@ class UrlManagerTest extends TestCase
      * $showScriptName and $enableStrictParsing should have no effect in default format.
      * Passing these options ensures that.
      */
-    public function ignoredOptionsProvider()
+    public static function ignoredOptionsProvider(): array
     {
         return [
             [false, false],
@@ -215,7 +215,7 @@ class UrlManagerTest extends TestCase
     /**
      * @return array provides different names for UrlManager::$routeParam
      */
-    public function routeParamProvider()
+    public static function routeParamProvider(): array
     {
         return [
             ['r'], // default value

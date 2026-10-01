@@ -44,7 +44,7 @@ class ResponseTest extends TestCase
         $this->response = new Response();
     }
 
-    public function rightRanges()
+    public static function rightRanges(): array
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -83,7 +83,7 @@ class ResponseTest extends TestCase
         $this->assertEquals((string)$length, $headers->get('Content-Length'));
     }
 
-    public function wrongRanges()
+    public static function wrongRanges(): array
     {
         // TODO test more cases for range requests and check for rfc compatibility
         // https://tools.ietf.org/html/rfc2616
@@ -213,7 +213,7 @@ class ResponseTest extends TestCase
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array
      */
-    public function dataProviderAjaxRedirectInternetExplorer11()
+    public static function dataProviderAjaxRedirectInternetExplorer11(): array
     {
         return [
             ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
@@ -260,7 +260,7 @@ class ResponseTest extends TestCase
         static::assertEquals(200, $this->response->statusCode);
     }
 
-    public function dataProviderSetStatusCodeByException()
+    public static function dataProviderSetStatusCodeByException(): array
     {
         $data = [
             [
@@ -303,7 +303,7 @@ class ResponseTest extends TestCase
         return $data;
     }
 
-    public function formatDataProvider()
+    public static function formatDataProvider(): array
     {
         return [
             [Response::FORMAT_JSON, '{"value":1}'],
@@ -415,7 +415,7 @@ class ResponseTest extends TestCase
         }
     }
 
-    public function cookiesTestProvider()
+    public static function cookiesTestProvider(): array
     {
         $expireInt = time() + 3600;
         $expireString = date('D, d-M-Y H:i:s', $expireInt) . ' GMT';

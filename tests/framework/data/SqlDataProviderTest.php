@@ -48,7 +48,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
 
-    public function providerForOrderByColumn()
+    public static function providerForOrderByColumn(): array
     {
         return [
             'no marks' => ['name'],

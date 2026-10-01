@@ -266,7 +266,7 @@ EOT;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function hintDataProvider()
+    public static function hintDataProvider(): array
     {
         return [
             ['Hint Content', '<div class="hint-block">Hint Content</div>'],
@@ -779,6 +779,10 @@ class ActiveFieldTestModel extends DynamicModel
 
 /**
  * Helper Classes.
+ *
+ * @property ActiveFieldTestModel $model
+ * @property-read mixed[] $clientOptions The JS options.
+ * @property-write mixed $clientOptionsEmpty
  */
 class ActiveFieldExtend extends ActiveField
 {

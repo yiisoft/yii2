@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,6 +28,8 @@ use yii\helpers\VarDumper;
  * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
  * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
+ *
+ * @property-read Rule[] $rules The rules indexed by the rule names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>

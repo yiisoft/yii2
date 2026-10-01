@@ -80,11 +80,11 @@ class AssetBundleTest extends TestCase
         $bundle->publish($am);
 
         $this->assertTrue(is_dir($bundle->basePath));
-        $this->sourcesPublish_VerifyFiles('css', $bundle);
-        $this->sourcesPublish_VerifyFiles('js', $bundle);
+        $this->sourcesPublishVerifyFiles('css', $bundle);
+        $this->sourcesPublishVerifyFiles('js', $bundle);
     }
 
-    private function sourcesPublish_VerifyFiles($type, $bundle): void
+    private function sourcesPublishVerifyFiles($type, $bundle): void
     {
         foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -101,7 +101,7 @@ class AssetBundleTest extends TestCase
         $this->verifySourcesPublishedBySymlink($view);
     }
 
-    public function testSourcesPublishedBySymlink_Issue9333(): void
+    public function testSourcesPublishedBySymlinkIssue9333(): void
     {
         $view = $this->getView([
             'linkAssets' => true,
@@ -113,7 +113,7 @@ class AssetBundleTest extends TestCase
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
-    public function testSourcesPublish_AssetManagerBeforeCopy(): void
+    public function testSourcesPublishAssetManagerBeforeCopy(): void
     {
         $view = $this->getView([
             'beforeCopy' => function ($from, $to) {
@@ -132,7 +132,7 @@ class AssetBundleTest extends TestCase
         }
     }
 
-    public function testSourcesPublish_AssetBeforeCopy(): void
+    public function testSourcesPublishAssetBeforeCopy(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;
@@ -152,7 +152,7 @@ class AssetBundleTest extends TestCase
         }
     }
 
-    public function testSourcesPublish_publishOptions_Only(): void
+    public function testSourcesPublishPublishOptionsOnly(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;
@@ -263,7 +263,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function positionProvider()
+    public static function positionProvider(): array
     {
         return [
             [View::POS_HEAD, true],
@@ -414,7 +414,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public function registerFileDataProvider()
+    public static function registerFileDataProvider(): array
     {
         return [
             // JS files registration
@@ -541,6 +541,58 @@ EOF;
         Yii::setAlias('@web', $originalAlias);
     }
 
+    /**
+     * @dataProvider sourceAssetWithTimestampDataProvider
+     *
+     * @see https://github.com/yiisoft/yii2/issues/20978
+     *
+     * @param string $assetClass Asset bundle class registered to produce timestamped URLs.
+     */
+    public function testSourceAssetWithTimestampDoesNotStatTimestampedUrl(string $assetClass): void
+    {
+        $view = $this->getView(['appendTimestamp' => true]);
+
+        $errors = [];
+
+        set_error_handler(
+            static function ($errno, $errstr) use (&$errors) {
+                if (strpos($errstr, 'filemtime(): stat failed') !== false) {
+                    $errors[] = $errstr;
+
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        try {
+            $assetClass::register($view);
+            $html = $view->renderFile('@yiiunit/data/views/rawlayout.php');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(
+            [],
+            $errors,
+            "No 'filemtime' stat warnings expected.",
+        );
+        $this->assertSame(
+            2,
+            substr_count($html, '?v='),
+            'Both asset URLs must keep their timestamp.',
+        );
+    }
+
+    public static function sourceAssetWithTimestampDataProvider(): array
+    {
+        return [
+            'array assets' => [TestSourceAssetWithPerFileOptions::class],
+            'string assets' => [TestSourceAsset::class],
+        ];
+    }
+
     public function testCustomFilePublishWithTimestamp(): void
     {
         $path = Yii::getAlias('@webroot');
@@ -593,6 +645,17 @@ class TestSourceAsset extends AssetBundle
     ];
     public $css = [
         'css/stub.css',
+    ];
+}
+
+class TestSourceAssetWithPerFileOptions extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        ['js/jquery.js', 'defer' => true],
+    ];
+    public $css = [
+        ['css/stub.css', 'media' => 'print'],
     ];
 }
 

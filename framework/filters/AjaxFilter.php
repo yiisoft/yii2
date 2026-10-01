@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +10,7 @@ namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\web\BadRequestHttpException;
 use yii\web\Request;
 
@@ -29,6 +31,9 @@ use yii\web\Request;
  *
  * @author Dmitry Dorogin <dmirogin@ya.ru>
  * @since 2.0.13
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class AjaxFilter extends ActionFilter
 {

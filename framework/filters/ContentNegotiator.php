@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
+use yii\base\Component;
 use yii\web\BadRequestHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\Request;
@@ -82,6 +84,9 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {

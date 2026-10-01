@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,8 +23,9 @@ use yii\web\View;
  *
  * For more details and usage information on BaseMailer, see the [guide article on mailing](guide:tutorial-mailing).
  *
- * @property View $view View instance. Note that the type of this property differs in getter and setter. See
- * [[getView()]] and [[setView()]] for details.
+ * @property-read View $view View instance.
+ * @property-write array|View $view View instance or its array configuration that will be used to render
+ * message bodies.
  * @property string $viewPath The directory that contains the view files for composing mail messages Defaults
  * to '@app/mail'.
  *
@@ -41,7 +43,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @event MailEvent an event raised right after send.
      */
     public const EVENT_AFTER_SEND = 'afterSend';
-
     /**
      * @var string|bool HTML layout view name. This is the layout used to render HTML mail body.
      * The property can take the following values:

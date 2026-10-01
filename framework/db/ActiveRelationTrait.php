@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ use yii\base\InvalidConfigException;
  *
  * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
- * @property ActiveRecord $modelClass
+ * @property class-string<ActiveRecordInterface> $modelClass
  */
 trait ActiveRelationTrait
 {
@@ -45,7 +46,7 @@ trait ActiveRelationTrait
      */
     public $link;
     /**
-     * @var array|object the query associated with the junction table. Please call [[via()]]
+     * @var array|object|null the query associated with the junction table. Please call [[via()]]
      * to set this property instead of directly setting it.
      * This property is only used in relational context.
      * @see via()
@@ -230,13 +231,13 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via junction table
-            /** @var self $viaQuery */
+            /** @var self<ActiveRecord|array<string, mixed>> $viaQuery */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findJunctionRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /** @var self|ActiveQueryTrait $viaQuery */
+            /** @var self<ActiveRecord|array<string, mixed>>|ActiveQueryTrait $viaQuery */
             list($viaName, $viaQuery) = $this->via;
             if ($viaQuery->asArray === null) {
                 // inherit asArray from primary query
@@ -328,7 +329,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $primaryModels primary models
      * @param ActiveRecordInterface[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
@@ -393,7 +394,7 @@ trait ActiveRelationTrait
      * @param array $models
      * @param array $link
      * @param array|null $viaModels
-     * @param self|null $viaQuery
+     * @param self<ActiveRecord|array<string, mixed>>|null $viaQuery
      * @param bool $checkMultiple
      * @return array
      */

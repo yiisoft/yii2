@@ -68,8 +68,7 @@ EOF,
     {
         $o = ['template' => '{input}'];
 
-        $model = new DynamicModel(['categories']);
-        $model->categories = 1;
+        $model = new DynamicModel(['categories' => 1]);
         ob_start();
         $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
         ActiveForm::end();

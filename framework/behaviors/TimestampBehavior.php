@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -68,16 +69,19 @@ use yii\db\BaseActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class TimestampBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive timestamp value
+     * @var string|false the attribute that will receive timestamp value
      * Set this property to false if you do not want to record the creation time.
      */
     public $createdAtAttribute = 'created_at';
     /**
-     * @var string the attribute that will receive timestamp value.
+     * @var string|false the attribute that will receive timestamp value.
      * Set this property to false if you do not want to record the update time.
      */
     public $updatedAtAttribute = 'updated_at';

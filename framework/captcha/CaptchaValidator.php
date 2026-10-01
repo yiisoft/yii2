@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
+use yii\web\Controller;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -72,9 +74,8 @@ class CaptchaValidator extends Validator
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /** @var \yii\base\Controller $controller */
             list($controller, $actionID) = $ca;
-            /** @var CaptchaAction|null */
+            /** @var CaptchaAction|null $action */
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;

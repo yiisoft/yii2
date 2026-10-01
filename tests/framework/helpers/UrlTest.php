@@ -64,13 +64,13 @@ class UrlTest extends TestCase
      */
     protected function mockAction($controllerId, $actionID, $moduleID = null, $params = [])
     {
-        Yii::$app->controller = $controller = new Controller($controllerId, Yii::$app);
+        Yii::$app->controller = $controller = new Controller(
+            $controllerId,
+            $moduleID !== null ? new Module($moduleID) : Yii::$app
+        );
+
         $controller->actionParams = $params;
         $controller->action = new Action($actionID, $controller);
-
-        if ($moduleID !== null) {
-            $controller->module = new Module($moduleID);
-        }
     }
 
     protected function removeMockedAction()

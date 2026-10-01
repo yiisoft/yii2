@@ -8,8 +8,10 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use Closure;
 use PDO;
 use yii\base\DynamicModel;
+use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
@@ -165,7 +167,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $columns;
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider(): array
     {
         $result = parent::primaryKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_1}} DROP PRIMARY KEY';
@@ -174,14 +176,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider(): array
     {
         $result = parent::foreignKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_3}} DROP FOREIGN KEY [[CN_constraints_3]]';
         return $result;
     }
 
-    public function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['create'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
@@ -191,16 +193,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider(): array
     {
         $result = parent::uniquesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
         return $result;
-    }
-
-    public function defaultValuesProvider(): void
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
     }
 
     public function testResetSequence(): void
@@ -216,7 +213,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -263,62 +260,110 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $newData;
     }
 
-    public function conditionProvider()
+    public static function conditionProvider(): array
     {
-        return array_merge(parent::conditionProvider(), [
-            // json conditions
+        return array_merge(
+            parent::conditionProvider(),
             [
-                ['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])],
-                '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}'],
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        [new Expression('id'), 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
+                    ],
+                    '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
+                    [':qp0' => 1],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
+                    ],
+                    '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
+                    [':qp0' => 1],
+                ],
+                // json conditions
+                [
+                    ['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])],
+                    '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}'],
+                ],
+                [
+                    ['=', 'jsoncol', new JsonExpression([false])],
+                    '[[jsoncol]] = :qp0', [':qp0' => '[false]']
+                ],
+                'object with type. Type is ignored for MySQL' => [
+                    ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
+                    '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}'],
+                ],
+                'nested json' => [
+                    ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
+                    '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
+                ],
+                'null value' => [
+                    ['=', 'jsoncol', new JsonExpression(null)],
+                    '[[jsoncol]] = :qp0', [':qp0' => 'null']
+                ],
+                'null as array value' => [
+                    ['=', 'jsoncol', new JsonExpression([null])],
+                    '[[jsoncol]] = :qp0', [':qp0' => '[null]']
+                ],
+                'null as object value' => [
+                    ['=', 'jsoncol', new JsonExpression(['nil' => null])],
+                    '[[jsoncol]] = :qp0', [':qp0' => '{"nil":null}']
+                ],
+                'with object as value' => [
+                    ['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))],
+                    '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']
+                ],
+                'query' => [
+                    ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
+                    '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
+                ],
+                'query with type, that is ignored in MySQL' => [
+                    ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
+                    '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
+                ],
+                'nested and combined json expression' => [
+                    ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
+                    '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
+                ],
+                'search by property in JSON column (issue #15838)' => [
+                    ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
+                    "(jsoncol->>'$.someKey') = :qp0", [':qp0' => 42]
+                ]
             ],
-            [
-                ['=', 'jsoncol', new JsonExpression([false])],
-                '[[jsoncol]] = :qp0', [':qp0' => '[false]']
-            ],
-            'object with type. Type is ignored for MySQL' => [
-                ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
-                '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}'],
-            ],
-            'nested json' => [
-                ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
-                '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
-            ],
-            'null value' => [
-                ['=', 'jsoncol', new JsonExpression(null)],
-                '[[jsoncol]] = :qp0', [':qp0' => 'null']
-            ],
-            'null as array value' => [
-                ['=', 'jsoncol', new JsonExpression([null])],
-                '[[jsoncol]] = :qp0', [':qp0' => '[null]']
-            ],
-            'null as object value' => [
-                ['=', 'jsoncol', new JsonExpression(['nil' => null])],
-                '[[jsoncol]] = :qp0', [':qp0' => '{"nil":null}']
-            ],
-            'with object as value' => [
-                ['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))],
-                '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']
-            ],
-            'query' => [
-                ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
-                '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
-            ],
-            'query with type, that is ignored in MySQL' => [
-                ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
-                '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
-            ],
-            'nested and combined json expression' => [
-                ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
-                '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
-            ],
-            'search by property in JSON column (issue #15838)' => [
-                ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
-                "(jsoncol->>'$.someKey') = :qp0", [':qp0' => 42]
-            ]
-        ]);
+        );
     }
 
-    public function updateProvider()
+    public static function updateProvider(): array
     {
         $items = parent::updateProvider();
 
@@ -330,7 +375,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            'UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1',
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -404,5 +449,19 @@ MySqlStatement;
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals('INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)', $sql);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
+    public function testAddDropDefaultValue($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^mysql does not support (adding|dropping) default value constraints\.$/',
+        );
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }

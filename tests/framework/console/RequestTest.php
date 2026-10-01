@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function provider()
+    public static function provider(): array
     {
         return [
             [
@@ -123,6 +123,16 @@ class RequestTest extends TestCase
                         '-alias1',
                         '-alias2=testValue',
                     ],
+                ],
+            ],
+            [
+                // Case: Special argument "End of Options" placed instead of route
+                'params' => [
+                    '--', // Special argument "End of Options"
+                ],
+                'expected' => [
+                    'route' => '',
+                    'params' => [],
                 ],
             ],
             // Case: `--<option> <value>` and `-<alias> <value>` syntax

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +9,7 @@
 namespace yii\filters;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
 use yii\web\Controller;
@@ -44,6 +46,8 @@ use yii\web\MethodNotAllowedHttpException;
  * @see https://tools.ietf.org/html/rfc2616#section-14.7
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Behavior<Controller>
  */
 class VerbFilter extends Behavior
 {

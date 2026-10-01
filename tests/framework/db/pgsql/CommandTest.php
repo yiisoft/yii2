@@ -72,15 +72,15 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('public.profile_id_seq'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('public.profile_id_seq'));
 
         $sql = 'INSERT INTO {{schema1.profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
 
-    public function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql(): array
     {
         return array_merge(parent::dataProviderGetRawSql(), [
             [
@@ -117,7 +117,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->execute());
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';

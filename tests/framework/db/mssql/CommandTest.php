@@ -90,7 +90,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider(): array
     {
         return[
             ['SELECT SUBSTRING(name, :len, 6) AS name FROM {{customer}} WHERE [[email]] = :email GROUP BY name'],
@@ -114,15 +114,19 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             'int1' => 'integer',
         ])->execute();
 
-        $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertEmpty($defaultValues);
+
         $db->createCommand()->addDefaultValue($name, $tableName, 'int1', 41)->execute();
-        $this->assertMatchesRegularExpression('/^.*41.*$/', $schema->getTableDefaultValues($tableName, true)[0]->value);
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertMatchesRegularExpression('/^.*41.*$/', $defaultValues[0]->value);
 
         $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
-        $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertEmpty($defaultValues);
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';

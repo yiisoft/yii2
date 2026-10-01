@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +10,7 @@ namespace yii\filters\auth;
 
 use Yii;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
 
@@ -37,19 +39,19 @@ use yii\base\InvalidConfigException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends AuthMethod<T>
  */
 class CompositeAuth extends AuthMethod
 {
     /**
-     * @var array the supported authentication methods. This property should take a list of supported
+     * @var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})> the supported authentication methods. This property should take a list of supported
      * authentication methods, each represented by an authentication class or configuration.
      *
      * If this property is empty, no authentication will be performed.
      *
      * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
-     *
-     * @phpstan-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
-     * @psalm-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
      */
     public $authMethods = [];
 

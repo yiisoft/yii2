@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,8 +33,8 @@ use yii\db\Schema as BaseSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of ColumnSchema
- * @extends BaseSchema<T>
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T, QueryBuilder>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
 {
@@ -309,10 +310,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -490,5 +488,25 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     private function isSystemIdentifier($identifier)
     {
         return strncmp($identifier, 'sqlite_', 7) === 0;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * Since PHP 8.5, `PDO::quote()` throws a ValueError when the string contains null bytes ("\0").
+     *
+     * This method sanitizes such bytes before calling the parent implementation to avoid exceptions while maintaining
+     * backward compatibility.
+     *
+     * @link https://github.com/php/php-src/commit/0a10f6db26875e0f1d0f867307cee591d29a43c7
+     */
+    public function quoteValue($value)
+    {
+        if (PHP_VERSION_ID >= 80500 && is_string($value) && str_contains($value, "\0")) {
+            // Sanitize null bytes to prevent PDO ValueError on PHP 8.5+
+            $value = str_replace("\0", '', $value);
+        }
+
+        return parent::quoteValue($value);
     }
 }

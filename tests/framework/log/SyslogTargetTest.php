@@ -24,7 +24,7 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-    use PHPUnit_Framework_MockObject_MockObject;
+    use PHPUnit\Framework\MockObject\MockObject;
     use yii\helpers\VarDumper;
     use yii\log\Logger;
     use yii\log\SyslogTarget;
@@ -34,6 +34,10 @@ namespace yiiunit\framework\log {
      * Class SyslogTargetTest.
      *
      * @group log
+     *
+     * @method static mixed openlog($arguments)
+     * @method static mixed syslog($arguments)
+     * @method static mixed closelog($arguments)
      */
     class SyslogTargetTest extends TestCase
     {
@@ -45,7 +49,7 @@ namespace yiiunit\framework\log {
         public static $functions = [];
 
         /**
-         * @var PHPUnit_Framework_MockObject_MockObject
+         * @var SyslogTarget&MockObject
          */
         protected $syslogTarget;
 
@@ -54,7 +58,7 @@ namespace yiiunit\framework\log {
          */
         protected function setUp(): void
         {
-            $this->syslogTarget = $this->createPartialMock('yii\\log\\SyslogTarget', ['getMessagePrefix']);
+            $this->syslogTarget = $this->createPartialMock(SyslogTarget::class, ['getMessagePrefix']);
         }
 
         /**
@@ -64,7 +68,7 @@ namespace yiiunit\framework\log {
         {
             $identity = 'identity string';
             $options = LOG_ODELAY | LOG_PID;
-            $facility = 'facility string';
+            $facility = LOG_USER;
             $messages = [
                 ['info message', Logger::LEVEL_INFO],
                 ['error message', Logger::LEVEL_ERROR],
@@ -75,7 +79,6 @@ namespace yiiunit\framework\log {
                 ['profile end message', Logger::LEVEL_PROFILE_END],
             ];
 
-            /** @var SyslogTarget $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->addMethods(['openlog', 'syslog', 'closelog'])
                 ->onlyMethods(['formatMessage'])
@@ -114,16 +117,50 @@ namespace yiiunit\framework\log {
                     [$messages[6], 'formatted message 7'],
                 ]);
 
-            $syslogTarget->expects($this->exactly(7))
+            /**
+             * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+             */
+            $matcher = $this->exactly(7);
+            $syslogTarget
+                ->expects($matcher)
                 ->method('syslog')
-                ->withConsecutive(
-                    [$this->equalTo(LOG_INFO), $this->equalTo('formatted message 1')],
-                    [$this->equalTo(LOG_ERR), $this->equalTo('formatted message 2')],
-                    [$this->equalTo(LOG_WARNING), $this->equalTo('formatted message 3')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 4')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 5')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 6')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 7')]
+                ->willReturnCallback(
+                    function (...$parameters) use ($matcher): void {
+                        if ($matcher->getInvocationCount() === 1) {
+                            $this->assertEquals(LOG_INFO, $parameters[0]);
+                            $this->assertEquals('formatted message 1', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 2) {
+                            $this->assertEquals(LOG_ERR, $parameters[0]);
+                            $this->assertEquals('formatted message 2', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 3) {
+                            $this->assertEquals(LOG_WARNING, $parameters[0]);
+                            $this->assertEquals('formatted message 3', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 4) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 4', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 5) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 5', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 6) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 6', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 7) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 7', $parameters[1]);
+                        }
+                    }
                 );
 
             $syslogTarget->expects($this->once())->method('closelog');
@@ -131,15 +168,18 @@ namespace yiiunit\framework\log {
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
                 list($identity, $option, $facility) = $arguments;
+                // @phpstan-ignore method.notFound (The openlog method is added to the mock using the MockBuilder)
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
                 list($priority, $message) = $arguments;
+                // @phpstan-ignore method.notFound (The syslog method is added to the mock using the MockBuilder)
                 return $syslogTarget->syslog($priority, $message);
             };
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(0, $arguments);
+                // @phpstan-ignore method.notFound (The closelog method is added to the mock using the MockBuilder)
                 return $syslogTarget->closelog();
             };
 
@@ -153,7 +193,6 @@ namespace yiiunit\framework\log {
          */
         public function testFailedExport(): void
         {
-            /** @var SyslogTarget $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->addMethods(['openlog', 'syslog', 'closelog'])
                 ->onlyMethods(['formatMessage'])
@@ -163,7 +202,7 @@ namespace yiiunit\framework\log {
 
             $syslogTarget->identity = 'identity string';
             $syslogTarget->options = LOG_ODELAY | LOG_PID;
-            $syslogTarget->facility = 'facility string';
+            $syslogTarget->facility = LOG_USER;
             $syslogTarget->messages = [
                 ['test', Logger::LEVEL_INFO],
             ];
@@ -171,15 +210,18 @@ namespace yiiunit\framework\log {
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
                 list($identity, $option, $facility) = $arguments;
+                // @phpstan-ignore method.notFound (The openlog method is added to the mock using the MockBuilder)
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
                 list($priority, $message) = $arguments;
+                // @phpstan-ignore method.notFound (The syslog method is added to the mock using the MockBuilder)
                 return $syslogTarget->syslog($priority, $message);
             };
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(0, $arguments);
+                // @phpstan-ignore method.notFound (The closelog method is added to the mock using the MockBuilder)
                 return $syslogTarget->closelog();
             };
 

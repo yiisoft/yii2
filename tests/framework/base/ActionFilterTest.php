@@ -90,7 +90,7 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([1, 3, 2], $controller->result);
     }
 
-    public function actionFilterProvider()
+    public static function actionFilterProvider(): array
     {
         return [
             [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],
@@ -194,6 +194,8 @@ class Filter1 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {
@@ -214,6 +216,8 @@ class Filter2 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {
@@ -234,6 +238,8 @@ class Filter3 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {

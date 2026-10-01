@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\data\Pagination;
@@ -19,7 +20,7 @@ use yii\grid\SerialColumn;
 /**
  * @group grid
  */
-class SerialColumnTest extends \yiiunit\TestCase
+class SerialColumnTest extends TestCase
 {
     /**
      * @dataProvider provideRenderDataCellData

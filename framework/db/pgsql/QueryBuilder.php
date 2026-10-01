@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -47,7 +48,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @since 2.0.6
      */
     public const INDEX_GIN = 'gin';
-
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -208,10 +208,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
+        /** @var Schema $dbSchema */
+        $dbSchema = $this->db->getSchema();
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
-        $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
-        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $schema = $schema ?: $dbSchema->defaultSchema;
+        $tableNames = $table ? [$table] : $dbSchema->getTableNames($schema);
+        $viewNames = $dbSchema->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 

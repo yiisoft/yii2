@@ -14,6 +14,8 @@ use yii\base\Model;
 
 /**
  * Speaker.
+ *
+ * @property-read mixed $checkedValues
  */
 class Speaker extends Model
 {

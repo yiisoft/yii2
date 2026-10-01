@@ -49,7 +49,7 @@ class AuthTest extends TestCase
         $this->mockWebApplication($appConfig);
     }
 
-    public function tokenProvider()
+    public static function tokenProvider(): array
     {
         return [
             ['token1', 'user1'],
@@ -136,7 +136,7 @@ class AuthTest extends TestCase
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
-    public function authMethodProvider()
+    public static function authMethodProvider(): array
     {
         return [
             ['yii\filters\auth\CompositeAuth'],
@@ -204,6 +204,7 @@ class AuthTest extends TestCase
     {
         Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::class];
+        /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {

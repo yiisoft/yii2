@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -280,10 +281,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
+        /** @var Schema $dbSchema */
+        $dbSchema = $this->db->getSchema();
         $enable = $check ? 'CHECK' : 'NOCHECK';
-        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
-        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
-        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $schema = $schema ?: $dbSchema->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $dbSchema->getTableNames($schema);
+        $viewNames = $dbSchema->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
@@ -295,19 +298,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
-     /**
-      * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
-      * already exists. If so, it will be updated, otherwise, it will be added.
-      *
-      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-      * @param string $table the table to be commented or whose column is to be commented. The table name will be
-      * properly quoted by the method.
-      * @param string|null $column optional. The name of the column to be commented. If empty, the command will add the
-      * comment to the table instead. The column name will be properly quoted by the method.
-      * @return string the SQL statement for adding a comment.
-      * @throws InvalidArgumentException if the table does not exist.
-      * @since 2.0.24
-      */
+    /**
+     * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
+     * already exists. If so, it will be updated, otherwise, it will be added.
+     *
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @param string $table the table to be commented or whose column is to be commented. The table name will be
+     * properly quoted by the method.
+     * @param string|null $column optional. The name of the column to be commented. If empty, the command will add the
+     * comment to the table instead. The column name will be properly quoted by the method.
+     * @return string the SQL statement for adding a comment.
+     * @throws InvalidArgumentException if the table does not exist.
+     * @since 2.0.24
+     */
     protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\JsonExpression;
@@ -38,8 +44,8 @@ class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
 
 /**
  * {@inheritdoc}
- * @property array id
- * @property array json_col
+ * @property int $id
+ * @property array $json_col
  */
 class ArrayAndJsonType extends ActiveRecord
 {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -39,7 +40,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * The prefix for automatically generated query binding parameters.
      */
     public const PARAM_PREFIX = ':qp';
-
     /**
      * @var Connection the database connection.
      */
@@ -319,7 +319,9 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
-            return $this;
+            /** @var $this&ExpressionBuilderInterface $result */
+            $result = $this;
+            return $result;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {
@@ -399,7 +401,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * Prepare select-subquery and field names for INSERT INTO ... SELECT SQL statement.
      *
      * @param Query $columns Object, which represents select query.
-     * @param \yii\db\Schema $schema Schema object to quote column name.
+     * @param Schema $schema Schema object to quote column name.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
      * @return array array of column names, values and params.
@@ -539,7 +541,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
-     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return array
      * @since 2.0.14
@@ -567,7 +569,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string[] $columns source column list.
-     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter optionally receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return string[] column list.
      */

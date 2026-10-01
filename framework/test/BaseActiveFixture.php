@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,6 +18,9 @@ use yii\base\InvalidConfigException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \IteratorAggregate<string, array<string, mixed>>
+ * @implements \ArrayAccess<string, array<string, mixed>|null>
  */
 abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
@@ -28,7 +32,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     public $modelClass;
     /**
-     * @var array the data rows. Each array element represents one row of data (column name => column value).
+     * @var array<string, array<string, mixed>> the data rows. Each array element represents one row of data (column name => column value).
      */
     public $data = [];
 
@@ -82,7 +86,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     /**
      * Returns the fixture data.
      *
-     * @return array the data to be put into the database
+     * @return array<string, array<string, mixed>> the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
      * @see loadData()
      */

@@ -230,7 +230,7 @@ class I18NTest extends TestCase
         Event::off(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION);
     }
 
-    public function sourceLanguageDataProvider()
+    public static function sourceLanguageDataProvider(): array
     {
         return [
             ['en-GB'],

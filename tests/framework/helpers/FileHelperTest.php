@@ -1266,7 +1266,7 @@ class FileHelperTest extends TestCase
         FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
     }
 
-    public function changeOwnershipInvalidArgumentsProvider()
+    public static function changeOwnershipInvalidArgumentsProvider(): array
     {
         return [
             [false, '123:123', null],
@@ -1288,7 +1288,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
     }
 
-    public function getExtensionsByMimeTypeProvider()
+    public static function getExtensionsByMimeTypeProvider(): array
     {
         return [
             [
@@ -1308,6 +1308,18 @@ class FileHelperTest extends TestCase
                     'pjpeg',
                 ],
             ],
+            [
+                'application/x-rar-compressed',
+                [
+                    'rar',
+                ],
+            ],
+            [
+                'application/x-rar',
+                [
+                    'rar',
+                ],
+            ],
         ];
     }
 
@@ -1323,13 +1335,17 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
     }
 
-    public function getExtensionByMimeTypeProvider()
+    public static function getExtensionByMimeTypeProvider(): array
     {
         return [
             ['application/json', true, 'json'],
             ['application/json', false, 'json'],
             ['image/jpeg', true, 'jpg'],
             ['image/jpeg', false, 'jpeg'],
+            ['application/x-rar-compressed', true, 'rar'],
+            ['application/x-rar-compressed', false, 'rar'],
+            ['application/x-rar', true, 'rar'],
+            ['application/x-rar', false, 'rar'],
         ];
     }
 }

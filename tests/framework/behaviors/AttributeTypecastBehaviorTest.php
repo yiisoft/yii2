@@ -305,6 +305,36 @@ class AttributeTypecastBehaviorTest extends TestCase
     }
 
     /**
+     * @depends testAutoDetectAttributeTypes
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19865
+     */
+    public function testAutoDetectAttributeTypesSkipsConditionalRules(): void
+    {
+        $condition = function () {
+            return true;
+        };
+
+        $model = (new DynamicModel(['name' => null, 'amount' => null, 'price' => null]))
+            ->addRule('name', 'string')
+            ->addRule('amount', 'integer', ['when' => $condition])
+            ->addRule('amount', 'string', ['when' => $condition])
+            ->addRule('price', 'number', ['when' => $condition])
+            ->addRule('price', 'string');
+
+        $behavior = new AttributeTypecastBehavior();
+
+        $behavior->attach($model);
+
+        $expectedAttributeTypes = [
+            'name' => AttributeTypecastBehavior::TYPE_STRING,
+            // 'amount' is covered by conditional rules only, so its type can not be detected
+            'price' => AttributeTypecastBehavior::TYPE_STRING,
+        ];
+        $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
+    }
+
+    /**
      * @depends testSkipNull
      *
      * @see https://github.com/yiisoft/yii2/issues/12880
@@ -337,13 +367,15 @@ class AttributeTypecastBehaviorTest extends TestCase
  * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached.
  *
  * @property int $id
- * @property string $name
- * @property int $amount
- * @property float $price
- * @property bool $isActive
- * @property string $callback
+ * @property string|int|null $name
+ * @property int|string|null $amount
+ * @property float|string|null $price
+ * @property bool|int|null $isActive
+ * @property string|null $callback
  *
- * @property AttributeTypecastBehavior $attributeTypecastBehavior
+ * @property-read AttributeTypecastBehavior $attributeTypecastBehavior
+ *
+ * @mixin AttributeTypecastBehavior
  */
 class ActiveRecordAttributeTypecast extends ActiveRecord
 {
@@ -391,14 +423,20 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        return $this->getBehavior('attributeTypecast');
+        /** @var AttributeTypecastBehavior $result */
+        $result = $this->getBehavior('attributeTypecast');
+
+        return $result;
     }
 }
 
 /**
  * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached with an enum field.
  *
- * @property StatusTypeString $status
+ * @property StatusTypeString|string $status
+ * @property-read AttributeTypecastBehavior $attributeTypecastBehavior
+ *
+ * @mixin AttributeTypecastBehavior
  */
 class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
 {
@@ -425,6 +463,9 @@ class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        return $this->getBehavior('attributeTypecast');
+        /** @var AttributeTypecastBehavior $result */
+        $result = $this->getBehavior('attributeTypecast');
+
+        return $result;
     }
 }

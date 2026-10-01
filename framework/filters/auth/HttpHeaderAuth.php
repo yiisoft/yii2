@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,6 +7,8 @@
  */
 
 namespace yii\filters\auth;
+
+use yii\base\Component;
 
 /**
  * HttpHeaderAuth is an action filter that supports HTTP authentication through HTTP Headers.
@@ -30,6 +33,9 @@ namespace yii\filters\auth;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Benoît Boure <benoit.boure@gmail.com>
  * @since 2.0.14
+ *
+ * @template T of Component = Component
+ * @extends AuthMethod<T>
  */
 class HttpHeaderAuth extends AuthMethod
 {

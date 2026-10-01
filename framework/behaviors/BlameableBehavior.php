@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -53,16 +54,19 @@ use yii\db\BaseActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class BlameableBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive current user ID value
+     * @var string|false the attribute that will receive current user ID value
      * Set this property to false if you do not want to record the creator ID.
      */
     public $createdByAttribute = 'created_by';
     /**
-     * @var string the attribute that will receive current user ID value
+     * @var string|false the attribute that will receive current user ID value
      * Set this property to false if you do not want to record the updater ID.
      */
     public $updatedByAttribute = 'updated_by';

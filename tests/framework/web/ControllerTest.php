@@ -16,9 +16,14 @@ use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
+use yiiunit\framework\web\stubs\FakeController;
+use yiiunit\framework\web\stubs\FakePhp7Controller;
+use yiiunit\framework\web\stubs\FakePhp71Controller;
+use yiiunit\framework\web\stubs\FakePhp80Controller;
 use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
 
@@ -27,7 +32,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    /** @var FakeController */
+    /** @var Controller */
     private $controller;
 
     protected function setUp(): void

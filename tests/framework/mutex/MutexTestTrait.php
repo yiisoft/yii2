@@ -107,7 +107,7 @@ trait MutexTestTrait
         $this->assertFalse($mutexOne->isAcquired('non existing'));
     }
 
-    public static function mutexDataProvider()
+    public static function mutexDataProvider(): array
     {
         $utf = <<<'UTF'
 𝐘˛𝜄 ӏ𝕤 𝗮 𝔣𝖺𐑈𝝉, 𐑈ℯ𝔠ｕ𝒓𝗲, 𝝰𝞹𝒹 𝖊𝘧𝒇𝗶𝕔𝖎ⅇπτ Ｐ𝘏𝙿 𝖿г𝖺ｍ𝖾ｗσｒ𝐤.

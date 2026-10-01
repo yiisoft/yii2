@@ -66,7 +66,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider(): array
     {
         return [
             [
@@ -121,7 +121,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function orderProvider()
+    public static function orderProvider(): array
     {
         return [
             [
@@ -171,7 +171,9 @@ class AttributesBehaviorTest extends TestCase
  * @property string $name
  * @property string $alias
  *
- * @property AttributesBehavior $attributesBehavior
+ * @property-read AttributesBehavior $attributesBehavior
+ *
+ * @mixin AttributesBehavior
  */
 class ActiveRecordWithAttributesBehavior extends ActiveRecord
 {
@@ -212,6 +214,9 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
      */
     public function getAttributesBehavior()
     {
-        return $this->getBehavior('attributes');
+        /** @var AttributesBehavior $result */
+        $result = $this->getBehavior('attributes');
+
+        return $result;
     }
 }

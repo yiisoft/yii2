@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MIME type extensions.
  *
@@ -12,6 +13,7 @@
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return [
     'application/andrew-inset' => 'ez',
     'application/applixware' => 'aw',
@@ -575,6 +577,10 @@ return [
     ],
     'application/vnd.spotfire.dxp' => 'dxp',
     'application/vnd.spotfire.sfs' => 'sfs',
+    'application/vnd.sqlite3' => [
+        'sqlite',
+        'sqlite3',
+    ],
     'application/vnd.stardivision.calc' => 'sdc',
     'application/vnd.stardivision.draw' => 'sda',
     'application/vnd.stardivision.impress' => 'sdd',
@@ -955,6 +961,10 @@ return [
     'image/cgm' => 'cgm',
     'image/g3fax' => 'g3',
     'image/gif' => 'gif',
+    'image/heic' => 'heic',
+    'image/heic-sequence' => 'heics',
+    'image/heif' => 'heif',
+    'image/heif-sequence' => 'heifs',
     'image/ief' => 'ief',
     'image/jpeg' => [
         'jpeg',

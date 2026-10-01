@@ -11,9 +11,10 @@ namespace yiiunit\framework\db\oci;
 use Closure;
 use Exception;
 use yii\base\NotSupportedException;
+use yii\db\Expression;
 use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
-use yii\helpers\ArrayHelper;
+use yii\db\Query;
 use yiiunit\data\base\TraversableObject;
 
 /**
@@ -46,7 +47,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider(): array
     {
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
@@ -73,20 +74,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ];
     }
 
-    public function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
         return $result;
-    }
-
-    /**
-     * @dataProvider defaultValuesProvider
-     * @param string $sql
-     */
-    public function testAddDropDefaultValue($sql, Closure $builder): void
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in Oracle.');
     }
 
     public function testCommentColumn(): void
@@ -130,20 +122,58 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals(4, $result);
     }
 
-    public function likeConditionProvider()
+    public static function conditionProvider(): array
     {
-        /*
-         * Different pdo_oci8 versions may or may not implement PDO::quote(), so
-         * yii\db\Schema::quoteValue() may or may not quote \.
-         */
-        try {
-            $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
-            $this->likeParameterReplacements[$encodedBackslash] = '\\';
-        } catch (Exception $e) {
-            $this->markTestSkipped('Could not execute Connection::quoteValue() method: ' . $e->getMessage());
-        }
-
-        return parent::likeConditionProvider();
+        return array_merge(
+            parent::conditionProvider(),
+            [
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        [new Expression('id'), 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
+                    ],
+                    '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
+                    [':qp0' => 1],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
+                    ],
+                    '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
+                    [':qp0' => 1],
+                ],
+            ],
+        );
     }
 
     public function conditionProvidertmp()
@@ -198,7 +228,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $items;
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -258,7 +288,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         return $newData;
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
 
@@ -304,17 +334,42 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
      */
     public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams): void
     {
-        $actualParams = [];
-        $actualSQL = $this->getQueryBuilder(true, $this->driverName === 'sqlite')->upsert($table, $insertColumns, $updateColumns, $actualParams);
-        if (is_string($expectedSQL)) {
-            $this->assertEqualsWithoutLE($expectedSQL, $actualSQL);
-        } else {
-            $this->assertStringContainsString($actualSQL, $expectedSQL);
+        parent::testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
+    public function testAddDropDefaultValue($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^oci does not support (adding|dropping) default value constraints\.$/',
+        );
+
+        parent::testAddDropDefaultValue($sql, $builder);
+    }
+
+    /**
+     * @dataProvider likeConditionProvider
+     * @param array $condition
+     * @param string $expected
+     * @param array $expectedParams
+     */
+    public function testBuildLikeCondition($condition, $expected, $expectedParams): void
+    {
+        /**
+         * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+         * yii\db\Schema::quoteValue() may or may not quote \.
+         */
+        try {
+            $encodedBackslash = substr($this->getDb()->quoteValue('\\\\'), 1, -1);
+            $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        } catch (Exception $e) {
+            $this->markTestSkipped('Could not execute Connection::quoteValue() method: ' . $e->getMessage());
         }
-        if (ArrayHelper::isAssociative($expectedParams)) {
-            $this->assertSame($expectedParams, $actualParams);
-        } else {
-            $this->assertIsOneOf($actualParams, $expectedParams);
-        }
+
+        parent::testBuildLikeCondition($condition, $expected, $expectedParams);
     }
 }

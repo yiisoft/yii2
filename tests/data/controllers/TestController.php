@@ -7,6 +7,9 @@ namespace yiiunit\data\controllers;
 use yii\web\Controller;
 use yii\web\ErrorAction;
 
+/**
+ * @property-write mixed $actionConfig
+ */
 class TestController extends Controller
 {
     public $layout = '@yiiunit/data/views/layout.php';

@@ -285,7 +285,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function dataProviderSerializeDataProvider()
+    public static function dataProviderSerializeDataProvider(): array
     {
         return [
             [
@@ -565,6 +565,10 @@ class TestModel4 implements JsonSerializable
     }
 }
 
+/**
+ * @property-read mixed $testModel3
+ * @property-read mixed $testModel4
+ */
 class TestModel5 extends Model
 {
     public static $fields = ['field7', 'field8'];

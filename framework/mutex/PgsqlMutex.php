@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -36,7 +37,6 @@ use yii\base\InvalidConfigException;
 class PgsqlMutex extends DbMutex
 {
     use RetryAcquireTrait;
-
 
     /**
      * Initializes PgSQL specific mutex component implementation.

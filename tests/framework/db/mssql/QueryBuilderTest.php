@@ -253,7 +253,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), []);
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
 
@@ -264,7 +264,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $data;
     }
 
-    public function insertProvider()
+    public static function insertProvider(): array
     {
         return [
             'regular-values' => [
@@ -277,9 +277,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                     'related_id' => null,
                 ],
                 [],
-                $this->replaceQuotes('SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
+                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
                     'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp0, :qp1, :qp2, :qp3, :qp4);' .
-                    'SELECT * FROM @temporary_inserted'),
+                    'SELECT * FROM @temporary_inserted',
                 [
                     ':qp0' => 'test@example.com',
                     ':qp1' => 'silverfire',
@@ -301,6 +301,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 [
                     ':qp0' => null,
                 ],
+                false,
             ],
             'carry passed params' => [
                 'customer',
@@ -313,9 +314,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                     'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
                 ],
                 [':phBar' => 'bar'],
-                $this->replaceQuotes('SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
+                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
                     'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id], [col]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar));' .
-                    'SELECT * FROM @temporary_inserted'),
+                    'SELECT * FROM @temporary_inserted',
                 [
                     ':phBar' => 'bar',
                     ':qp1' => 'test@example.com',
@@ -346,9 +347,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                         'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
                     ]),
                 [':phBar' => 'bar'],
-                $this->replaceQuotes('SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
+                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
                     'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted SELECT [email], [name], [address], [is_active], [related_id] FROM [customer] WHERE ([email]=:qp1) AND ([name]=:qp2) AND ([address]=:qp3) AND ([is_active]=:qp4) AND ([related_id] IS NULL) AND ([col]=CONCAT(:phFoo, :phBar));' .
-                    'SELECT * FROM @temporary_inserted'),
+                    'SELECT * FROM @temporary_inserted',
                 [
                     ':phBar' => 'bar',
                     ':qp1' => 'test@example.com',
@@ -374,7 +375,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -427,24 +428,60 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $newData;
     }
 
-    public function conditionProvider()
+    public static function conditionProvider(): array
     {
-        $data = parent::conditionProvider();
-        $data['composite in'] = [
-            ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
-            '(([id] = :qp0 AND [name] = :qp1))',
-            [':qp0' => 1, ':qp1' => 'oy'],
-        ];
-        $data['composite in using array objects'] = [
-            ['in', new TraversableObject(['id', 'name']), new TraversableObject([
-                ['id' => 1, 'name' => 'oy'],
-                ['id' => 2, 'name' => 'yo'],
-            ])],
-            '(([id] = :qp0 AND [name] = :qp1) OR ([id] = :qp2 AND [name] = :qp3))',
-            [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
-        ];
-
-        return $data;
+        return array_merge(
+            parent::conditionProvider(),
+            [
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'in',
+                        [new Expression('id'), 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id AND a.]]name[[ = ]]name`)', [':qp0' => 1] ],
+                //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id]] AND a.[[name = ]]name`)', [':qp0' => 1] ],
+                'composite in' => [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'oy']],
+                    ],
+                    '(([id] = :qp0 AND [name] = :qp1))',
+                    [':qp0' => 1, ':qp1' => 'oy'],
+                ],
+                'composite in using array objects' => [
+                    [
+                        'in',
+                        new TraversableObject(['id', 'name']),
+                        new TraversableObject([['id' => 1, 'name' => 'oy'], ['id' => 2, 'name' => 'yo']])
+                    ],
+                    '(([id] = :qp0 AND [name] = :qp1) OR ([id] = :qp2 AND [name] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
+                ],
+            ],
+        );
     }
 
     public function testAlterColumn(): void
@@ -806,7 +843,7 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
         $this->assertEquals(null, $schema->getColumn('bar'));
     }
 
-    public function buildFromDataProvider()
+    public static function buildFromDataProvider(): array
     {
         $data = parent::buildFromDataProvider();
         $data[] = ['[test]', '[[test]]'];
@@ -817,5 +854,160 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
         $data[] = ['[table name with spaces]', '[[table name with spaces]]'];
 
         return $data;
+    }
+
+    public function testRenameTable(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->renameTable('old_table', 'new_table');
+        $this->assertSame('sp_rename [old_table], [new_table]', $sql);
+    }
+
+    public function testRenameColumn(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->renameColumn('test_table', 'old_col', 'new_col');
+        $this->assertSame("sp_rename '[test_table].[old_col]', [new_col], 'COLUMN'", $sql);
+    }
+
+    public function testSelectExists(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->selectExists('SELECT 1 FROM [customer]');
+        $this->assertSame('SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer]) THEN 1 ELSE 0 END', $sql);
+    }
+
+    public function testCheckIntegrityEnableForTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(true, '', 'customer');
+        $this->assertSame('ALTER TABLE [dbo].[customer] CHECK CONSTRAINT ALL; ', $sql);
+    }
+
+    public function testCheckIntegrityDisableForTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(false, '', 'customer');
+        $this->assertSame('ALTER TABLE [dbo].[customer] NOCHECK CONSTRAINT ALL; ', $sql);
+    }
+
+    public function testCheckIntegrityFiltersOutViews(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(true);
+        $this->assertStringContainsString('CHECK CONSTRAINT ALL', $sql);
+        $this->assertStringContainsString('[dbo].[customer]', $sql);
+        $this->assertStringNotContainsString('animal_view', $sql);
+    }
+
+    public function testResetSequenceThrowsExceptionForNonExistentTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->resetSequence('non_existent_table');
+    }
+
+    public function testResetSequenceThrowsExceptionForTableWithoutSequence(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage("There is not sequence associated with table 'order_item'.");
+        $qb->resetSequence('order_item');
+    }
+
+    /**
+     * @dataProvider oldBuildOrderByAndLimitProvider
+     */
+    public function testOldBuildOrderByAndLimit(string $sql, array $orderBy, $limit, $offset, string $expected): void
+    {
+        $qb = $this->getQueryBuilder();
+        $method = new \ReflectionMethod($qb, 'oldBuildOrderByAndLimit');
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+        $this->assertSame($expected, $method->invoke($qb, $sql, $orderBy, $limit, $offset));
+    }
+
+    public static function oldBuildOrderByAndLimitProvider(): array
+    {
+        return [
+            'limit and offset' => [
+                'SELECT [id] FROM [example]',
+                [],
+                10,
+                5,
+                'SELECT TOP 10 * FROM (SELECT rowNum = ROW_NUMBER() over (ORDER BY (SELECT NULL)), [id] FROM [example]) sub WHERE rowNum > 5',
+            ],
+            'limit only' => [
+                'SELECT [id] FROM [example]',
+                [],
+                10,
+                null,
+                'SELECT TOP 10 * FROM (SELECT rowNum = ROW_NUMBER() over (ORDER BY (SELECT NULL)), [id] FROM [example]) sub',
+            ],
+            'offset only' => [
+                'SELECT [id] FROM [example]',
+                [],
+                null,
+                5,
+                'SELECT * FROM (SELECT rowNum = ROW_NUMBER() over (ORDER BY (SELECT NULL)), [id] FROM [example]) sub WHERE rowNum > 5',
+            ],
+            'with order by' => [
+                'SELECT [id] FROM [example]',
+                ['id' => SORT_ASC],
+                10,
+                5,
+                'SELECT TOP 10 * FROM (SELECT rowNum = ROW_NUMBER() over (ORDER BY [id]), [id] FROM [example]) sub WHERE rowNum > 5',
+            ],
+            'expression limit' => [
+                'SELECT [id] FROM [example]',
+                [],
+                new Expression('5+5'),
+                null,
+                'SELECT TOP (5+5) * FROM (SELECT rowNum = ROW_NUMBER() over (ORDER BY (SELECT NULL)), [id] FROM [example]) sub',
+            ],
+            'distinct with limit and offset' => [
+                'SELECT DISTINCT [id] FROM [example]',
+                [],
+                10,
+                5,
+                'SELECT TOP 10 * FROM (SELECT DISTINCT rowNum = ROW_NUMBER() over (ORDER BY (SELECT NULL)), [id] FROM [example]) sub WHERE rowNum > 5',
+            ],
+        ];
+    }
+
+    public function testUpdateWithVarbinaryData(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $params = [];
+        $sql = $qb->update('T_upsert_varbinary', ['blob_col' => 'test data'], ['id' => 1], $params);
+        $this->assertStringContainsString('CONVERT(VARBINARY(MAX), 0x' . bin2hex('test data') . ')', $sql);
+        $this->assertSame([':qp0' => 1], $params);
+    }
+
+    public function testCompositeInWithSubqueryThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $params = [];
+        $condition = ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')];
+        $this->expectException('yii\base\NotSupportedException');
+        $qb->buildCondition($condition, $params);
+    }
+
+    public function testAddCommentOnNonExistentTableThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->addCommentOnColumn('non_existent_table', 'col', 'comment');
+    }
+
+    public function testDropCommentFromNonExistentTableThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->dropCommentFromColumn('non_existent_table', 'col');
     }
 }

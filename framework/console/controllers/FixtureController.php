@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -42,6 +44,9 @@ use yii\test\FixtureTrait;
  *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 class FixtureController extends Controller
 {
