@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -56,7 +57,7 @@ class Migration extends Component implements MigrationInterface
      * by the command. If you do not want to use the DB connection provided by the command, you may override
      * the [[init()]] method like the following:
      *
-     * ```php
+     * ```
      * public function init()
      * {
      *     $this->db = 'db2';
@@ -313,7 +314,7 @@ class Migration extends Component implements MigrationInterface
      * put into the generated SQL.
      *
      * Example usage:
-     * ```php
+     * ```
      * class m200000_000000_create_table_fruits extends \yii\db\Migration
      * {
      *     public function safeUp()

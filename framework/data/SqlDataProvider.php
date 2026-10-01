@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,7 @@ use yii\di\Instance;
  *
  * SqlDataProvider may be used in the following way:
  *
- * ```php
+ * ```
  * $count = Yii::$app->db->createCommand('
  *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();

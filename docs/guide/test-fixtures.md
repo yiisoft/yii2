@@ -36,6 +36,10 @@ class UserFixture extends ActiveFixture
 }
 ```
 
+These examples use the `app\tests\fixtures` namespace because the fixture classes are referenced directly
+by application tests. The `yii fixture` command has its own default namespace, `tests\unit\fixtures`.
+If your fixture classes use another namespace, configure the command or pass the `--namespace` option.
+
 > Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
 > by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
 > property. If the latter, the table name will be taken from the `ActiveRecord` class specified by `modelClass`.
@@ -178,7 +182,7 @@ different tests. We thus recommend that you organize the data files in a hierarc
 your class namespaces. For example,
 
 ```
-# under folder tests\unit\fixtures
+# under the folder that matches your fixture namespace, for example tests\unit\fixtures
 
 data\
     components\
@@ -243,7 +247,9 @@ Fixture classes name should not be plural.
 
 ### Loading fixtures
 
-Fixture classes should be suffixed by `Fixture`. By default, fixtures will be searched under `tests\unit\fixtures` namespace, you can
+Fixture classes should be suffixed by `Fixture`. By default, the `yii fixture` command searches for them
+under the `tests\unit\fixtures` namespace. This command default is independent from the fixture namespaces
+used by application tests. You can
 change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
@@ -277,7 +283,7 @@ yii fixture "*"
 yii fixture "*, -DoNotLoadThisOne"
 
 // load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
-yii fixture User --namespace='alias\my\custom\namespace'
+yii fixture User --namespace='app\tests\fixtures'
 
 // load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
 // By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
@@ -310,7 +316,7 @@ Same command options like: `namespace`, `globalFixtures` also can be applied to 
 
 While command line options allow us to configure the fixture command
 on-the-fly, sometimes we may want to configure the command once for all. For example, you can configure
-different fixture path as follows:
+a different fixture namespace as follows:
 
 ```
 'controllerMap' => [

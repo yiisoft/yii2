@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yiiunit\TestCase;
  */
 class LinkTest extends TestCase
 {
-    public function testSerializeLinkInSimpleArrayWillRemoveNotSetValues()
+    public function testSerializeLinkInSimpleArrayWillRemoveNotSetValues(): void
     {
         $managerLink = new Link([
             'href' => 'https://example.com/users/4',
@@ -40,7 +41,7 @@ class LinkTest extends TestCase
         ]));
     }
 
-    public function testSerializeNestedArrayWithLinkWillSerialize()
+    public function testSerializeNestedArrayWithLinkWillSerialize(): void
     {
         $linkData = [
             'self' => new Link([

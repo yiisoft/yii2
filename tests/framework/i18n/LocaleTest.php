@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +17,7 @@ use yiiunit\TestCase;
 class LocaleTest extends TestCase
 {
     /**
-     * @var Locale
+     * @var Locale|null
      */
     protected $locale;
 
@@ -37,7 +38,7 @@ class LocaleTest extends TestCase
         $this->locale = null;
     }
 
-    public function testGetCurrencyCode()
+    public function testGetCurrencyCode(): void
     {
         $this->locale->locale = 'de-DE';
         $this->assertSame('€', $this->locale->getCurrencySymbol('EUR'));

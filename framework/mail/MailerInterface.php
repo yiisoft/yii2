@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,7 +14,7 @@ namespace yii\mail;
  * A mailer should mainly support creating and sending [[MessageInterface|mail messages]]. It should
  * also support composition of the message body through the view rendering mechanism. For example,
  *
- * ```php
+ * ```
  * Yii::$app->mailer->compose('contact/html', ['contactForm' => $form])
  *     ->setFrom('from@domain.com')
  *     ->setTo($form->email)

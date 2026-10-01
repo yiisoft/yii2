@@ -1,4 +1,5 @@
 <?php
 
-function typed_error_test_mock(string $test) {
+function typed_error_test_mock(string $test)
+{
 }

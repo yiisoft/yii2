@@ -68,7 +68,7 @@
         "yiisoft/yii2": "self.version"
     },
     "require": {
-        "php": ">=7.3.0",
+        "php": ">=7.4.0",
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",
@@ -78,15 +78,17 @@
         "bower-asset/jquery": "3.7.*@stable | 3.6.*@stable | 3.5.*@stable | 3.4.*@stable | 3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
         "bower-asset/inputmask": "^5.0.8 ",
         "bower-asset/punycode": "^2.2",
-        "bower-asset/yii2-pjax": "~2.0.1",
-        "paragonie/random_compat": ">=1"
+        "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
         "cebe/indent": "~1.0.2",
-        "dealerdirect/phpcodesniffer-composer-installer": "*",
         "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
-        "yiisoft/yii2-coding-standards": "^3.0"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.6",
+        "mspirkov/yii2-rector": "^0.1",
+        "friendsofphp/php-cs-fixer": "^3.95"
     },
     "repositories": [
         {
@@ -94,9 +96,6 @@
             "url": "https://asset-packagist.org"
         }
     ],
-    "suggest": {
-        "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
-    },
     "autoload": {
         "psr-4": {
             "yii\\": "framework/"
@@ -110,9 +109,7 @@
     },
     "config": {
         "allow-plugins": {
-            "cweagans/composer-patches": true,
-            "yiisoft/yii2-composer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "yiisoft/yii2-composer": true
         }
     },
     "bin": [
@@ -122,5 +119,11 @@
         "branch-alias": {
             "dev-master": "2.0.x-dev"
         }
+    },
+    "scripts": {
+        "cs": "./vendor/bin/php-cs-fixer check",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix",
+        "static": "./vendor/bin/phpstan --memory-limit=-1",
+        "rector": "./vendor/bin/rector"
     }
 }
