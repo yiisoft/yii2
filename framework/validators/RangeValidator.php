@@ -143,6 +143,7 @@ class RangeValidator extends Validator
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
         ];
+
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }

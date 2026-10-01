@@ -167,6 +167,42 @@ class RangeValidatorTest extends TestCase
         $this->assertFalse($val->validate('c'), 'A value missing from the traversable range must fail.');
     }
 
+    public function testValidateValueWithGeneratorRange(): void
+    {
+        $val = new RangeValidator([
+            'range' => (static function (): \Generator {
+                yield 1;
+                yield 2;
+            })(),
+        ]);
+
+        $this->assertTrue(
+            $val->validate(2),
+            'The first validation must consume the generator.',
+        );
+        $this->assertTrue(
+            $val->validate(1),
+            'A second validation must reuse the materialized range instead of the consumed generator.',
+        );
+        $this->assertFalse(
+            $val->validate(3),
+            'A value missing from the materialized range must fail.',
+        );
+        $this->assertSame(
+            [1, 2],
+            $val->range,
+            'The generator must be materialized into an array.',
+        );
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
+
+        $this->assertSame(
+            ['1', '2'],
+            $val->getClientOptions($m, 'attr_range')['range'],
+            'The client options must be built from the materialized range.',
+        );
+    }
+
     public function testValidateAttributeWithClosureRange(): void
     {
         $val = new RangeValidator([

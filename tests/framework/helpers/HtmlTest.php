@@ -2072,6 +2072,7 @@ EOD;
     public function testGetAttributeValueWithBackedEnum(): void
     {
         $model = new HtmlTestModel();
+
         $model->types = StatusEnum::ACTIVE;
 
         $this->assertSame(
@@ -2087,6 +2088,7 @@ EOD;
     public function testGetAttributeValueWithUnitEnum(): void
     {
         $model = new HtmlTestModel();
+
         $model->types = ColorEnum::RED;
 
         $this->assertSame(
@@ -2102,6 +2104,7 @@ EOD;
     public function testGetAttributeValueWithEnumArray(): void
     {
         $model = new HtmlTestModel();
+
         $model->types = [StatusEnum::ACTIVE, ColorEnum::GREEN, 'plain'];
 
         $this->assertSame(
