@@ -34,7 +34,7 @@ produktiver zu sein.
 * Community
     - Forum: <https://forum.yiiframework.com/>
     - IRC-Chat: Der #yii-Channel im Libera-Netzwerk (<ircs://irc.libera.chat:6697/yii>)
-    - Slack-Channel: <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
+    - Slack-Channel: <https://www.yiiframework.com/go/slack>
     - Gitter-Chat: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
