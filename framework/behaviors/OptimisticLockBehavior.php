@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,7 +28,7 @@ use yii\helpers\ArrayHelper;
  * holding the lock version from the [[\yii\base\Model::rules()|rules()]] method of your
  * ActiveRecord class, then add the following code to it:
  *
- * ```php
+ * ```
  * use yii\behaviors\OptimisticLockBehavior;
  *
  * public function behaviors()
@@ -54,13 +55,16 @@ use yii\helpers\ArrayHelper;
  * version by one, that may be useful when you need to mark an entity as stale among connected clients
  * and avoid any change to it until they load it again:
  *
- * ```php
+ * ```
  * $model->upgrade();
  * ```
  *
  * @author Salem Ouerdani <tunecino@gmail.com>
  * @since 2.0.16
  * @see \yii\db\BaseActiveRecord::optimisticLock() for details on how to enable optimistic lock.
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class OptimisticLockBehavior extends AttributeBehavior
 {
@@ -151,7 +155,7 @@ class OptimisticLockBehavior extends AttributeBehavior
     /**
      * Upgrades the version value by one and stores it to database.
      *
-     * ```php
+     * ```
      * $model->upgrade();
      * ```
      * @throws InvalidCallException if owner is a new record.

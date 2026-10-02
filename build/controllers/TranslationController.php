@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +9,7 @@
 namespace yii\build\controllers;
 
 use DirectoryIterator;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Html;
 
@@ -17,6 +19,8 @@ use yii\helpers\Html;
  * build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
+ *
+ * @extends Controller<Application>
  */
 class TranslationController extends Controller
 {
@@ -110,8 +114,13 @@ class TranslationController extends Controller
      */
     protected function getDiff($translatedFilePath, $sourceFilePath)
     {
-        $lastTranslationHash = shell_exec('git log -1 --format=format:"%H" -- ' . $translatedFilePath);
-        return shell_exec('git diff ' . $lastTranslationHash . '..HEAD -- ' . $sourceFilePath);
+        $lastTranslationHash = trim((string) shell_exec(
+            'git log -1 --format=format:%H -- ' . escapeshellarg($translatedFilePath)
+        ));
+
+        return shell_exec(
+            'git diff ' . escapeshellarg($lastTranslationHash . '..HEAD') . ' -- ' . escapeshellarg($sourceFilePath)
+        );
     }
 
     /**

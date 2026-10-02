@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,6 +28,8 @@ use yii\helpers\VarDumper;
  * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
  * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
+ *
+ * @property-read Rule[] $rules The rules indexed by the rule names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -112,7 +115,12 @@ class PhpManager extends BaseManager
      */
     public function getAssignments($userId)
     {
-        return isset($this->assignments[$userId]) ? $this->assignments[$userId] : [];
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($userId !== null && isset($this->assignments[$userId])) {
+            return $this->assignments[$userId];
+        }
+
+        return [];
     }
 
     /**
@@ -320,7 +328,7 @@ class PhpManager extends BaseManager
         $items = [];
 
         foreach ($this->items as $name => $item) {
-            /** @var Item $item */
+            /** @var Role|Permission $item */
             if ($item->type == $type) {
                 $items[$name] = $item;
             }
@@ -396,9 +404,10 @@ class PhpManager extends BaseManager
     {
         $roles = $this->getDefaultRoleInstances();
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $role = $this->items[$assignment->roleName];
-            if ($role->type === Item::TYPE_ROLE) {
-                $roles[$name] = $role;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_ROLE) {
+                /** @var Role $item */
+                $roles[$name] = $item;
             }
         }
 
@@ -485,9 +494,10 @@ class PhpManager extends BaseManager
     {
         $permissions = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $permission = $this->items[$assignment->roleName];
-            if ($permission->type === Item::TYPE_PERMISSION) {
-                $permissions[$name] = $permission;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_PERMISSION) {
+                /** @var Permission $item */
+                $permissions[$name] = $item;
             }
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ use Yii;
  * with user input values automatically according to their names.
  * For example, if the `run()` method is declared as follows:
  *
- * ```php
+ * ```
  * public function run($id, $type = 'book') { ... }
  * ```
  *
@@ -30,13 +31,12 @@ use Yii;
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
  *
- * @template T of Controller
  * @property-read string $uniqueId The unique ID of this action among the whole application.
- * @phpstan-property T $controller
- * @psalm-property T $controller
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller = Controller
  */
 class Action extends Component
 {
@@ -45,10 +45,7 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
-     *
-     * @phpstan-var T
-     * @psalm-var T
+     * @var T the controller that owns this action
      */
     public $controller;
 
@@ -57,11 +54,8 @@ class Action extends Component
      * Constructor.
      *
      * @param string $id the ID of this action
-     * @param Controller $controller the controller that owns this action
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param T $controller the controller that owns this action
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($id, $controller, $config = [])
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -193,7 +194,12 @@ class FileTarget extends Target
      */
     private function rotateByCopy($rotateFile, $newFile)
     {
-        @copy($rotateFile, $newFile);
+        $mtime = @filemtime($rotateFile);
+
+        if (@copy($rotateFile, $newFile) && $mtime !== false) {
+            @touch($newFile, $mtime);
+        }
+
         if ($this->fileMode !== null) {
             @chmod($newFile, $this->fileMode);
         }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +9,7 @@
 namespace yii\build\controllers;
 
 use Yii;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\VarDumper;
@@ -23,13 +25,15 @@ use yii\helpers\VarDumper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class MimeTypeController extends Controller
 {
     /**
      * @var array MIME type aliases
      */
-    private $aliases = [
+    private $_aliases = [
         'text/rtf' => 'application/rtf',
         'text/xml' => 'application/xml',
         'image/svg' => 'image/svg+xml',
@@ -43,12 +47,13 @@ class MimeTypeController extends Controller
         'application/bmp' => 'image/bmp',
         'application/x-bmp' => 'image/bmp',
         'application/x-win-bitmap' => 'image/bmp',
+        'application/x-rar' => 'application/x-rar-compressed',
     ];
 
     /**
      * @var array MIME types to add to the ones parsed from Apache files
      */
-    private $additionalMimeTypes = [
+    private $_additionalMimeTypes = [
         'apng' => 'image/apng',
         'avif' => 'image/avif',
         'jfif' => 'image/jpeg',
@@ -107,12 +112,13 @@ class MimeTypeController extends Controller
                 }
             }
         }
-        $mimeMap = array_replace($mimeMap, $this->additionalMimeTypes);
+        $mimeMap = array_replace($mimeMap, $this->_additionalMimeTypes);
         ksort($mimeMap, SORT_STRING);
         $array = VarDumper::export($mimeMap);
 
         $content = <<<EOD
 <?php
+
 /**
  * MIME types.
  *
@@ -122,14 +128,15 @@ class MimeTypeController extends Controller
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 \$mimeTypes = $array;
 
 # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
 if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
-    \$mimeTypes = array_replace(\$mimeTypes, array('xz' => 'application/octet-stream'));
+    \$mimeTypes = array_replace(\$mimeTypes, ['xz' => 'application/octet-stream']);
 }
 
 return \$mimeTypes;
@@ -145,17 +152,19 @@ EOD;
     private function generateMimeAliasesFile($outFile)
     {
         $this->stdout("generating file $outFile...");
-        $array = VarDumper::export($this->aliases);
+        $array = VarDumper::export($this->_aliases);
         $content = <<<EOD
 <?php
+
 /**
  * MIME aliases.
  *
  * This file contains aliases for MIME types.
  *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return $array;
 
 EOD;
@@ -189,7 +198,7 @@ EOD;
             }
         }
 
-        foreach ($this->additionalMimeTypes as $ext => $mime) {
+        foreach ($this->_additionalMimeTypes as $ext => $mime) {
             if (!array_key_exists($mime, $extensionMap)) {
                 $extensionMap[$mime] = [];
             }
@@ -207,6 +216,7 @@ EOD;
 
         $content = <<<EOD
 <?php
+
 /**
  * MIME type extensions.
  *
@@ -217,9 +227,10 @@ EOD;
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return $array;
 
 EOD;

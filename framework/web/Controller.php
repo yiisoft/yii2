@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,8 @@ use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 use yii\base\Action;
+use yii\base\Controller as BaseController;
+use yii\base\Module;
 
 /**
  * Controller is the base class of web controllers.
@@ -24,8 +27,11 @@ use yii\base\Action;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module = Module
+ * @extends BaseController<T>
  */
-class Controller extends \yii\base\Controller
+class Controller extends BaseController
 {
     /**
      * @var bool whether to enable CSRF validation for the actions in this controller.
@@ -52,7 +58,10 @@ class Controller extends \yii\base\Controller
      */
     public function renderAjax($view, $params = [])
     {
-        return $this->getView()->renderAjax($view, $params, $this);
+        /** @var View $viewComponent */
+        $viewComponent = $this->getView();
+
+        return $viewComponent->renderAjax($view, $params, $this);
     }
 
     /**
@@ -63,7 +72,7 @@ class Controller extends \yii\base\Controller
      * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
      * be formatted. A common usage will be:
      *
-     * ```php
+     * ```
      * return $this->asJson($data);
      * ```
      *
@@ -89,7 +98,7 @@ class Controller extends \yii\base\Controller
      * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
      * be formatted. A common usage will be:
      *
-     * ```php
+     * ```
      * return $this->asXml($data);
      * ```
      *
@@ -113,19 +122,13 @@ class Controller extends \yii\base\Controller
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.
-     * @param Action $action the action to be bound with parameters
-     * @param array $params the parameters to be bound to the action
-     * @return array the valid parameters that the action can run with.
+     * @param Action<static> $action the action to be bound with parameters
+     * @param array<array-key, mixed> $params the parameters to be bound to the action
+     * @return mixed[] the valid parameters that the action can run with.
      * @throws BadRequestHttpException if there are missing or invalid parameters.
      *
      * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
-     *
-     * @phpstan-param array<array-key, mixed> $params
-     * @psalm-param array<array-key, mixed> $params
-     *
-     * @phpstan-return mixed[]
-     * @psalm-return mixed[]
+     * @psalm-param Action<self> $action
      */
     public function bindActionParams($action, $params)
     {
@@ -200,13 +203,17 @@ class Controller extends \yii\base\Controller
      * if the function parameter has a single named type.
      * @param mixed $param The parameter value.
      * @param \ReflectionNamedType $type
-     * @return array{0: mixed, 1: bool} The resulting parameter value and a boolean indicating whether the value is valid.
+     * @return array{mixed, bool} The resulting parameter value and a boolean indicating whether the value is valid.
      */
     private function filterSingleTypeActionParam($param, $type)
     {
         $isArray = $type->getName() === 'array';
         if ($isArray) {
             return [(array)$param, true];
+        }
+        $isMixed = $type->getName() === 'mixed';
+        if ($isMixed) {
+            return [$param, true];
         }
 
         if (is_array($param)) {
@@ -241,7 +248,7 @@ class Controller extends \yii\base\Controller
      * if the function parameter has a union type.
      * @param mixed $param The parameter value.
      * @param \ReflectionUnionType $type
-     * @return array{0: mixed, 1: bool} The resulting parameter value and a boolean indicating whether the value is valid.
+     * @return array{mixed, bool} The resulting parameter value and a boolean indicating whether the value is valid.
      */
     private function filterUnionTypeActionParam($param, $type)
     {
@@ -302,7 +309,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Run the according filter_var logic for teh given type.
+     * Run the according filter_var logic for the given type.
      * @param string $param The value to filter.
      * @param string $typeName The type name.
      * @return mixed|null The resulting value, or null if validation failed or the type can't be validated.
@@ -342,7 +349,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use it in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to login page
      * return $this->redirect(['login']);
      * ```
@@ -373,7 +380,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use this method in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to home page
      * return $this->goHome();
      * ```
@@ -390,7 +397,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use this method in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to last visited page
      * return $this->goBack();
      * ```
@@ -414,7 +421,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use it in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and refresh the current page
      * return $this->refresh();
      * ```

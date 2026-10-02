@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
+use yii\web\User;
 
 /**
  * Target is the base class for all log target classes.
@@ -26,13 +28,24 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
- * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
- * @property int $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning all available levels. Note that the type of this property differs in getter and
- * setter. See [[getLevels()]] and [[setLevels()]] for details.
- *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
+ *
+ * @property-read bool $enabled A value indicating whether this log target is enabled.
+ * @property-write bool|callable $enabled A boolean value or a callable to obtain the value from.
+ * The callable value is available since version 2.0.13.
+ *
+ * A callable may be used to determine whether the log target should be enabled in a dynamic way.
+ * For example, to only enable a log if the current user is logged in you can configure the target
+ * as follows:
+ *
+ * ```
+ * 'enabled' => function() {
+ *     return !Yii::$app->user->isGuest;
+ * }
+ * ```
+ * @property-read int $levels The message levels that this target is interested in. This is a bitmap of
+ * level values. Defaults to 0, meaning all available levels.
+ * @property-write array|int $levels Message levels that this target is interested in.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -211,7 +224,7 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
@@ -344,7 +357,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var \yii\web\User $user */
+        /** @var User $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();
@@ -368,7 +381,7 @@ abstract class Target extends Component
      * For example, to only enable a log if the current user is logged in you can configure the target
      * as follows:
      *
-     * ```php
+     * ```
      * 'enabled' => function() {
      *     return !Yii::$app->user->isGuest;
      * }
@@ -381,7 +394,6 @@ abstract class Target extends Component
 
     /**
      * Check whether the log target is enabled.
-     * @property bool Indicates whether this log target is enabled. Defaults to true.
      * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()

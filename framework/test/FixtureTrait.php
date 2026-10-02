@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -40,7 +41,7 @@ trait FixtureTrait
      *
      * The return value of this method must be an array of fixture configurations. For example,
      *
-     * ```php
+     * ```
      * [
      *     // anonymous fixture
      *     PostFixture::class,

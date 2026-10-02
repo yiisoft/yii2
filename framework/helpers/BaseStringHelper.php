@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -50,6 +51,30 @@ class BaseStringHelper
         }
 
         return mb_substr((string)$string, $start, $length, '8bit');
+    }
+
+    /**
+     * Converts php.ini style size to bytes.
+     *
+     * @param string $string php.ini style size. Examples: `512M`, `1024K`, `1G`, `256`.
+     * @return int the number of bytes equivalent to the specified string.
+     * @since 2.0.54
+     */
+    public static function convertIniSizeToBytes($string)
+    {
+        switch (substr($string, -1)) {
+            case 'M':
+            case 'm':
+                return (int) $string * 1048576;
+            case 'K':
+            case 'k':
+                return (int) $string * 1024;
+            case 'G':
+            case 'g':
+                return (int) $string * 1073741824;
+            default:
+                return (int) $string;
+        }
     }
 
     /**

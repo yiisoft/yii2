@@ -1,26 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace yiiunit\data\controllers;
 
 use yii\web\Controller;
 use yii\web\ErrorAction;
 
+/**
+ * @property-write mixed $actionConfig
+ */
 class TestController extends Controller
 {
     public $layout = '@yiiunit/data/views/layout.php';
 
     private $actionConfig = [];
 
-    public function setActionConfig($config = [])
+    public function setActionConfig($config = []): void
     {
         $this->actionConfig = $config;
     }
 
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => array_merge([
-                'class' => ErrorAction::className(),
+                'class' => ErrorAction::class,
                 'view' => '@yiiunit/data/views/error.php',
             ], $this->actionConfig),
         ];

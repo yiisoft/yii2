@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ namespace yii\mail;
  *
  * Messages are sent by a [[\yii\mail\MailerInterface|mailer]], like the following,
  *
- * ```php
+ * ```
  * Yii::$app->mailer->compose()
  *     ->setFrom('from@domain.com')
  *     ->setTo($form->email)

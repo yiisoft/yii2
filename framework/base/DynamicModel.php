@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +17,7 @@ use yii\validators\Validator;
  *
  * The typical usage of DynamicModel is as follows,
  *
- * ```php
+ * ```
  * public function actionSearch($name, $email)
  * {
  *     $model = DynamicModel::validateData(compact('name', 'email'), [
@@ -41,12 +42,14 @@ use yii\validators\Validator;
  *
  * Alternatively, you may use the following more "classic" syntax to perform ad-hoc data validation:
  *
- * ```php
+ * ```
  * $model = new DynamicModel(compact('name', 'email'));
  * $model->addRule(['name', 'email'], 'string', ['max' => 128])
  *     ->addRule('email', 'email')
  *     ->validate();
  * ```
+ *
+ * @property-write string[] $attributeLabels Attribute labels.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -67,14 +70,8 @@ class DynamicModel extends Model
 
     /**
      * Constructor.
-     * @param array $attributes the attributes (name-value pairs, or names) being defined.
-     * @param array $config the configuration array to be applied to this object.
-     *
-     * @phpstan-param array<string, mixed>|string[] $attributes
-     * @psalm-param array<string, mixed>|string[] $attributes
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param array<string, mixed>|string[] $attributes the attributes (name-value pairs, or names) being defined.
+     * @param array<string, mixed> $config the configuration array to be applied to this object.
      */
     public function __construct(array $attributes = [], $config = [])
     {
@@ -223,7 +220,7 @@ class DynamicModel extends Model
      */
     public static function validateData(array $data, $rules = [])
     {
-        /** @var self $model */
+        /** @var static $model */
         $model = new static($data);
         if (!empty($rules)) {
             $validators = $model->getValidators();

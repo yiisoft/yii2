@@ -29,7 +29,7 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
-### 3. Настройка тестовой среды
+### 3. Настройка тестовой среды <span id="prepare-the-test-environment"></span>
 
 Следующие шаги не обязательны, если вы хотите работать только с переводом или документацией.
 
@@ -73,7 +73,35 @@ git remote add upstream https://github.com/yiisoft/yii2.git
 
 Вы можете запустить модульные тесты JavaScript с помощью команды `npm test` в корневой директории приложения. 
 
-### Расширения
+### Статический анализ
+
+Мы используем [PHPStan](https://phpstan.org) для статического анализа. Он может быть запущен следующими командами:
+`php vendor/bin/phpstan` или `vendor\bin\phpstan.bat` в случае запуска на ОС Windows.
+
+По умолчанию PHPStan будет использовать конфигурацию из `phpstan.dist.neon`. Вы можете создать файл
+`phpstan.neon` с вашей собственной конфигурацией, и PHPStan будет использовать его.
+
+#### Примечание
+
+В аннотациях PHPDoc мы используем типы PHPStan. Если вам нужно указать другой тип для Psalm
+(такое обычно происходит в случае с дженериками), используйте аннотации Psalm в сочетании с
+аннотациями PHPStan.
+
+Пример того, как это должно выглядеть:
+
+```php
+/**
+ * @return Action<covariant static>|null
+ * @phpstan-return Action<covariant static>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
+
+### Расширения <span id="extensions"></span>
 
 Для работы над расширениями вы можете склонировать репозиторий расширения. Мы сделали команду, которая поможет вам
 сделать это:
@@ -112,7 +140,7 @@ php build/build dev/ext <extension-name> <fork>
 ### 2. Получите последний код из основного репозитория Yii
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 Вы должны начинать с этого действия работу над каждым новым предложением. Убедитесь, что вы работаете с самой

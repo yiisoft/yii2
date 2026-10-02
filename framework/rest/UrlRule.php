@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +20,7 @@ use yii\web\UrlRuleInterface;
  *
  * The simplest usage of UrlRule is to declare a rule like the following in the application configuration,
  *
- * ```php
+ * ```
  * [
  *     'class' => 'yii\rest\UrlRule',
  *     'controller' => 'user',
@@ -41,7 +42,7 @@ use yii\web\UrlRuleInterface;
  * You may configure [[controller]] with multiple controller IDs to generate rules for all these controllers.
  * For example, the following code will disable the `delete` rule and generate rules for both `user` and `post` controllers:
  *
- * ```php
+ * ```
  * [
  *     'class' => 'yii\rest\UrlRule',
  *     'controller' => ['user', 'post'],

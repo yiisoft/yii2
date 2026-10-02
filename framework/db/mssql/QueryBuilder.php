@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,8 +10,8 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\TableSchema;
 
 /**
@@ -248,9 +249,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($table !== null && $table->sequenceName !== null) {
             $tableName = $this->db->quoteTableName($tableName);
 
-            if ($value === null) {
+            if ($value === null || $value === 1) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $sql = "SELECT COALESCE(MAX({$key}), 0) + 1 FROM {$tableName}";
+                $subSql = (new Query())
+                    ->select('last_value')
+                    ->from('sys.identity_columns')
+                    ->where(['object_id' => new Expression("OBJECT_ID('{$tableName}')")])
+                    ->andWhere(['IS NOT', 'last_value', null])
+                    ->createCommand($this->db)
+                    ->getRawSql();
+                $sql = "SELECT COALESCE(MAX({$key}), CASE WHEN EXISTS({$subSql}) THEN 0 ELSE 1 END) FROM {$tableName}";
                 $value = $this->db->createCommand($sql)->queryScalar();
             } else {
                 $value = (int) $value;
@@ -273,10 +281,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
+        /** @var Schema $dbSchema */
+        $dbSchema = $this->db->getSchema();
         $enable = $check ? 'CHECK' : 'NOCHECK';
-        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
-        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
-        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $schema = $schema ?: $dbSchema->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $dbSchema->getTableNames($schema);
+        $viewNames = $dbSchema->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
@@ -288,19 +298,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $command;
     }
 
-     /**
-      * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
-      * already exists. If so, it will be updated, otherwise, it will be added.
-      *
-      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-      * @param string $table the table to be commented or whose column is to be commented. The table name will be
-      * properly quoted by the method.
-      * @param string|null $column optional. The name of the column to be commented. If empty, the command will add the
-      * comment to the table instead. The column name will be properly quoted by the method.
-      * @return string the SQL statement for adding a comment.
-      * @throws InvalidArgumentException if the table does not exist.
-      * @since 2.0.24
-      */
+    /**
+     * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
+     * already exists. If so, it will be updated, otherwise, it will be added.
+     *
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @param string $table the table to be commented or whose column is to be commented. The table name will be
+     * properly quoted by the method.
+     * @param string|null $column optional. The name of the column to be commented. If empty, the command will add the
+     * comment to the table instead. The column name will be properly quoted by the method.
+     * @return string the SQL statement for adding a comment.
+     * @throws InvalidArgumentException if the table does not exist.
+     * @since 2.0.24
+     */
     protected function buildAddCommentSql($comment, $table, $column = null)
     {
         $tableSchema = $this->db->schema->getTableSchema($table);
@@ -496,9 +506,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
 
                 $dbType = $column->dbType;
-                if (in_array($dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary'])) {
+                if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'])) {
                     $dbType .= '(MAX)';
+                } elseif (in_array($dbType, ['char',  'nchar'])) {
+                    $dbType .= "($column->size)";
                 }
+
                 if ($column->dbType === Schema::TYPE_TIMESTAMP) {
                     $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
                 }
@@ -533,7 +546,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
 
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

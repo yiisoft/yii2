@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ use yii\helpers\StringHelper;
  * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
  * implement the `tableName` method:
  *
- * ```php
+ * ```
  * <?php
  *
  * class Customer extends \yii\db\ActiveRecord
@@ -56,7 +57,7 @@ use yii\helpers\StringHelper;
  *
  * Below is an example showing some typical usage of ActiveRecord:
  *
- * ```php
+ * ```
  * $user = new User();
  * $user->name = 'Qiang';
  * $user->save();  // a new row is inserted into user table
@@ -79,28 +80,26 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_INSERT = 0x01;
+    public const OP_INSERT = 0x01;
     /**
      * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_UPDATE = 0x02;
+    public const OP_UPDATE = 0x02;
     /**
      * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_DELETE = 0x04;
+    public const OP_DELETE = 0x04;
     /**
      * All three operations: insert, update, delete.
      * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
      */
-    const OP_ALL = 0x07;
-
-
+    public const OP_ALL = 0x07;
     /**
      * Loads default values from database table schema.
      *
      * You may call this method to load default values after creating a new instance:
      *
-     * ```php
+     * ```
      * // class Customer extends \yii\db\ActiveRecord
      * $customer = new Customer();
      * $customer->loadDefaultValues();
@@ -146,16 +145,13 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Below is an example:
      *
-     * ```php
+     * ```
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ```
      *
      * @param string $sql the SQL statement to be executed
      * @param array $params parameters to be bound to the SQL statement during execution.
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance
-     *
-     * @phpstan-return ActiveQuery<static>
-     * @psalm-return ActiveQuery<static>
+     * @return ActiveQuery<static> the newly created [[ActiveQuery]] instance
      */
     public static function findBySql($sql, $params = [])
     {
@@ -302,7 +298,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
@@ -312,7 +308,7 @@ class ActiveRecord extends BaseActiveRecord
      * [[EVENT_AFTER_UPDATE]] to be triggered, you need to [[find()|find]] the models first and then
      * call [[update()]] on each of them. For example an equivalent of the example above would be:
      *
-     * ```php
+     * ```
      * $models = Customer::find()->where('status = 2')->all();
      * foreach ($models as $model) {
      *     $model->status = 1;
@@ -341,7 +337,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to increment all customers' age by 1,
      *
-     * ```php
+     * ```
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
@@ -373,7 +369,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll('status = 3');
      * ```
      *
@@ -383,7 +379,7 @@ class ActiveRecord extends BaseActiveRecord
      * [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first and then
      * call [[delete()]] on each of them. For example an equivalent of the example above would be:
      *
-     * ```php
+     * ```
      * $models = Customer::find()->where('status = 3')->all();
      * foreach ($models as $model) {
      *     $model->delete();
@@ -407,10 +403,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
-     *
-     * @phpstan-return ActiveQuery<static>
-     * @psalm-return ActiveQuery<static>
+     * @return ActiveQuery<static> the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
@@ -486,7 +479,7 @@ class ActiveRecord extends BaseActiveRecord
      * in transactions. You can do so by overriding this method and returning the operations
      * that need to be transactional. For example,
      *
-     * ```php
+     * ```
      * return [
      *     'admin' => self::OP_INSERT,
      *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
@@ -547,7 +540,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to insert a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer;
      * $customer->name = $name;
      * $customer->email = $email;
@@ -595,15 +588,10 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * {@inheritdoc}
      *
-     * @return ActiveQuery
+     * @template T of self
      *
-     * @template T
-     *
-     * @phpstan-param class-string<T> $class
-     * @psalm-param class-string<T> $class
-     *
-     * @phpstan-return ActiveQuery<T>
-     * @psalm-return ActiveQuery<T>
+     * @param class-string<T> $class the class name of the related record.
+     * @return ActiveQuery<T> the relational query object.
      */
     public function hasMany($class, $link)
     {
@@ -613,15 +601,10 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * {@inheritdoc}
      *
-     * @return ActiveQuery
+     * @template T of self
      *
-     * @template T
-     *
-     * @phpstan-param class-string<T> $class
-     * @psalm-param class-string<T> $class
-     *
-     * @phpstan-return ActiveQuery<T>
-     * @psalm-return ActiveQuery<T>
+     * @param class-string<T> $class the class name of the related record.
+     * @return ActiveQuery<T> the relational query object.
      */
     public function hasOne($class, $link)
     {
@@ -678,7 +661,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to update a customer record:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -689,7 +672,7 @@ class ActiveRecord extends BaseActiveRecord
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ```php
+     * ```
      * if ($customer->update() !== false) {
      *     // update successful
      * } else {

@@ -49,3 +49,10 @@ phpunit.phar
 /node_modules
 .env
 package-lock.json
+
+# local phpstan config
+phpstan.neon
+
+# PHP CS Fixer
+.php-cs-fixer.php
+.php-cs-fixer.cache

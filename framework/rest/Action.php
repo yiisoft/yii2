@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,7 @@ namespace yii\rest;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;
+use yii\base\Action as BaseAction;
 
 /**
  * Action is the base class for action classes that implement RESTful API.
@@ -18,8 +20,11 @@ use yii\web\NotFoundHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller = Controller
+ * @extends BaseAction<T>
  */
-class Action extends \yii\base\Action
+class Action extends BaseAction
 {
     /**
      * @var string class name of the model which will be handled by this action.
@@ -32,7 +37,7 @@ class Action extends \yii\base\Action
      * to the specified primary key value. If not set, [[findModel()]] will be used instead.
      * The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($id, $action) {
      *     // $id is the primary key value. If composite primary key, the key values
      *     // will be separated by comma.
@@ -48,7 +53,7 @@ class Action extends \yii\base\Action
      * if the current user has the permission to execute the action. If not set, the access
      * check will not be performed. The signature of the callable should be as follows,
      *
-     * ```php
+     * ```
      * function ($action, $model = null) {
      *     // $model is the requested model instance.
      *     // If null, it means no specific model (e.g. IndexAction)

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,7 +29,7 @@ class RangeValidator extends Validator
      * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
      * such a list. The signature of the anonymous function should be as follows,
      *
-     * ```php
+     * ```
      * function($model, $attribute) {
      *     // compute range
      *     return $range;

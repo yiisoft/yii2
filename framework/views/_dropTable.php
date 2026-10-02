@@ -3,6 +3,7 @@
 /**
  * Creates a call for the method `yii\db\Migration::dropTable()`.
  *
+ * @var \yii\web\View $this
  * @var string $table the name table
  * @var array $foreignKeys the foreign keys
  */

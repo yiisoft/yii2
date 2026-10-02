@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +10,9 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\console\Application;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -21,6 +24,8 @@ use yii\helpers\FileHelper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class DevController extends Controller
 {
@@ -316,6 +321,8 @@ class DevController extends Controller
                 symlink("$base/extensions/$ext", $link);
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**

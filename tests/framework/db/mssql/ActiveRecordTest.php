@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,12 +22,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     public $driverName = 'sqlsrv';
 
-    public function testExplicitPkOnAutoIncrement()
+    public function testExplicitPkOnAutoIncrement(): void
     {
         $this->markTestSkipped('MSSQL does not support explicit value for an IDENTITY column.');
     }
 
-    public function testCastValues()
+    public function testCastValues(): void
     {
         $model = new Type();
         $model->int_col = 123;
@@ -49,16 +50,16 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame('1337', trim((string) $model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-        //$this->assertSame(3.742, $model->float_col);
-        //$this->assertSame(42.1337, $model->float_col2);
-        //$this->assertSame(true, $model->bool_col);
-        //$this->assertSame(false, $model->bool_col2);
+        $this->assertSame('3.742', $model->float_col);
+        $this->assertSame(42.1337, $model->float_col2);
+        $this->assertSame(1, $model->bool_col);
+        $this->assertSame(0, $model->bool_col2);
     }
 
     /**
      * @throws Exception
      */
-    public function testSaveWithTrigger()
+    public function testSaveWithTrigger(): void
     {
         $db = $this->getConnection();
 
@@ -92,7 +93,7 @@ END';
     /**
      * @throws Exception
      */
-    public function testSaveWithComputedColumn()
+    public function testSaveWithComputedColumn(): void
     {
         $db = $this->getConnection();
 
@@ -119,7 +120,7 @@ END';
     /**
      * @throws Exception
      */
-    public function testSaveWithRowVersionColumn()
+    public function testSaveWithRowVersionColumn(): void
     {
         $db = $this->getConnection();
 
@@ -136,7 +137,7 @@ END';
     /**
      * @throws Exception
      */
-    public function testSaveWithRowVersionNullColumn()
+    public function testSaveWithRowVersionNullColumn(): void
     {
         $db = $this->getConnection();
 

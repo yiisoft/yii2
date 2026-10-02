@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\caching;
 
+use ReflectionClass;
 use yii\caching\FileCache;
 
 /**
@@ -29,7 +31,7 @@ class FileCacheTest extends CacheTestCase
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -41,7 +43,7 @@ class FileCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_test'));
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -53,7 +55,7 @@ class FileCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_testa'));
     }
 
-    public function testKeyPrefix()
+    public function testKeyPrefix(): void
     {
         $keyPrefix = 'foobar';
         $key = uniqid('uid-cache_');
@@ -67,10 +69,16 @@ class FileCacheTest extends CacheTestCase
 
         $value = \time();
 
-        $refClass = new \ReflectionClass($cache);
+        $refClass = new ReflectionClass($cache);
 
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
+
         $refMethodGet = $refClass->getMethod('get');
         $refMethodSet = $refClass->getMethod('set');
 
@@ -83,15 +91,21 @@ class FileCacheTest extends CacheTestCase
         $this->assertEquals($value, $refMethodGet->invoke($cache, $key));
     }
 
-    public function testStatCache()
+    public function testStatCache(): void
     {
         $cache = $this->getCacheInstance();
         $cache->set(__FUNCTION__, 'cache1', 2);
 
         $normalizeKey = $cache->buildKey(__FUNCTION__);
-        $refClass = new \ReflectionClass($cache);
+        $refClass = new ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
+
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
         // simulate cache expire 10 seconds ago
