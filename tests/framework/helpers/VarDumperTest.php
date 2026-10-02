@@ -213,19 +213,19 @@ RESULT;
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 
-    public function testDumpAsStringHighlightStripsPhpOpenTag()
+    /**
+     * @dataProvider \yiiunit\framework\helpers\providers\VarDumperProvider::dumpAsStringHighlighted
+     *
+     * @param mixed $var
+     */
+    public function testDumpAsStringHighlighted($var, string $expectedBeforePhp83, string $expectedSincePhp83): void
     {
-        $dumpResult = VarDumper::dumpAsString(['a' => 1], 10, true);
+        $expected = PHP_VERSION_ID >= 80300 ? $expectedSincePhp83 : $expectedBeforePhp83;
 
-        $this->assertStringNotContainsString(
-            '&lt;?php',
-            $dumpResult,
-            'PHP open tag should be stripped',
-        );
-        $this->assertStringContainsString(
-            '=&gt;',
-            $dumpResult,
-            'Arrow should be present',
+        $this->assertSame(
+            $expected,
+            VarDumper::dumpAsString($var, 10, true),
+            'Dumped output does not match expected result',
         );
     }
 }
