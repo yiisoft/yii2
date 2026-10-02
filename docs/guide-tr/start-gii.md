@@ -35,7 +35,7 @@ if (YII_ENV_DEV) {
 Yukarıdaki yapılandırma, [geliştirme ortamında](concept-configurations.md#environment-constants) uygulamanın, sınıfı
 [[yii\gii\Module]] olan `gii` adlı bir modül içermesi gerektiğini belirtir.
 
-Uygulamanızın [giriş komutu](structure-entry-scripts.md) olan `web/index.php` dosyasına bakarsanız, esasen
+Uygulamanızın [giriş betiği](structure-entry-scripts.md) olan `web/index.php` dosyasına bakarsanız, esasen
 `YII_ENV_DEV` değerinin `true` olmasını sağlayan aşağıdaki satırı bulacaksınız.
 
 ```php
