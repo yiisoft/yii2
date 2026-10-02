@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,9 +16,7 @@ namespace yii\db;
  */
 class PdoValueBuilder implements ExpressionBuilderInterface
 {
-    const PARAM_PREFIX = ':pv';
-
-
+    public const PARAM_PREFIX = ':pv';
     /**
      * {@inheritdoc}
      */

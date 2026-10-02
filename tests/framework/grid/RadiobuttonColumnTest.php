@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\grid;
 
+use yii\base\InvalidConfigException;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
@@ -22,9 +24,9 @@ use yiiunit\TestCase;
  */
 class RadiobuttonColumnTest extends TestCase
 {
-    public function testException()
+    public function testException(): void
     {
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('The "name" property must be set.');
 
         new RadioButtonColumn([
@@ -32,7 +34,7 @@ class RadiobuttonColumnTest extends TestCase
         ]);
     }
 
-    public function testOptionsByArray()
+    public function testOptionsByArray(): void
     {
         $column = new RadioButtonColumn([
             'radioOptions' => [
@@ -42,7 +44,7 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="42"></td>', $column->renderDataCell([], 1, 0));
     }
 
-    public function testOptionsByCallback()
+    public function testOptionsByCallback(): void
     {
         $model = [
             'label' => 'label',
@@ -59,7 +61,7 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>', $actual);
     }
 
-    public function testContent()
+    public function testContent(): void
     {
         $column = new RadioButtonColumn([
             'content' => function ($model, $key, $index, $column) {
@@ -76,7 +78,7 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
-    public function testMultipleInGrid()
+    public function testMultipleInGrid(): void
     {
         $this->mockApplication();
         Yii::setAlias('@webroot', '@yiiunit/runtime');
@@ -93,7 +95,7 @@ class RadiobuttonColumnTest extends TestCase
             'options' => ['id' => 'radio-gridview'],
             'columns' => [
                 [
-                    'class' => RadioButtonColumn::className(),
+                    'class' => RadioButtonColumn::class,
                     'radioOptions' => function ($model) {
                         return [
                             'value' => $model['value'],

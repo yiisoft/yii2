@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\di\Instance;
  *
  * The following example will cache the posts widget for an indefinite duration until any post is modified.
  *
- * ```php
+ * ```
  * use yii\behaviors\CacheableWidgetBehavior;
  *
  * public function behaviors()
@@ -43,6 +44,9 @@ use yii\di\Instance;
  *
  * @author Nikolay Oleynikov <oleynikovny@mail.ru>
  * @since 2.0.14
+ *
+ * @template T of Widget = Widget
+ * @extends Behavior<Widget>
  */
 class CacheableWidgetBehavior extends Behavior
 {
@@ -64,7 +68,7 @@ class CacheableWidgetBehavior extends Behavior
      *
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM posts',
@@ -82,7 +86,7 @@ class CacheableWidgetBehavior extends Behavior
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ```php
+     * ```
      * [
      *     Yii::$app->language,
      * ]
@@ -94,7 +98,7 @@ class CacheableWidgetBehavior extends Behavior
      * on and off according to specific conditions.
      * The following configuration will disable caching when a special GET parameter is passed:
      *
-     * ```php
+     * ```
      * empty(Yii::$app->request->get('disable-caching'))
      * ```
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,7 +29,7 @@ use yii\helpers\Url;
  *
  * The following example shows how to use Menu:
  *
- * ```php
+ * ```
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',

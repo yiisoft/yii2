@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,7 +13,7 @@
  * and manipulate the `$config` variable.
  * For example to change MySQL username and password your `config.local.php` should
  * contain the following:
- * ```php
+ * ```
  * <?php
  * $config['databases']['mysql']['username'] = 'yiitest';
  * $config['databases']['mysql']['password'] = 'changeme';
@@ -49,7 +50,7 @@ $config = [
             'fixture' => __DIR__ . '/postgres.sql',
         ],
         'oci' => [
-            'dsn' => 'oci:dbname=localhost/XE;charset=AL32UTF8;',
+            'dsn' => 'oci:dbname=localhost/FREE;charset=AL32UTF8;',
             'username' => 'system',
             'password' => 'oracle',
             'fixture' => __DIR__ . '/oci.sql',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,7 +14,7 @@ use yiiunit\TestCase;
 
 class ActiveDataProviderCloningTest extends TestCase
 {
-    public function testClone()
+    public function testClone(): void
     {
         $queryFirst = new Query();
 

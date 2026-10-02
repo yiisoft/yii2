@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
 use yii\grid\ActionColumn;
 use yii\helpers\Html;
 
@@ -15,9 +17,9 @@ use yii\helpers\Html;
  *
  * @group grid
  */
-class ActionColumnTest extends \yiiunit\TestCase
+class ActionColumnTest extends TestCase
 {
-    public function testInit()
+    public function testInit(): void
     {
         $column = new ActionColumn();
         $this->assertEquals(['view', 'update', 'delete'], array_keys($column->buttons));
@@ -35,7 +37,7 @@ class ActionColumnTest extends \yiiunit\TestCase
         $this->assertEquals(['view'], array_keys($column->buttons));
     }
 
-    public function testRenderDataCell()
+    public function testRenderDataCell(): void
     {
         $column = new ActionColumn();
         $column->urlCreator = function ($model, $key, $index) {
@@ -81,7 +83,9 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] == 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] == 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertStringContainsString('update_button', $columnContents);
@@ -95,7 +99,9 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] != 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] != 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertStringNotContainsString('update_button', $columnContents);
