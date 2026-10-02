@@ -33,7 +33,7 @@ bayon etiladi.
 * Hamjamiyat
     - Forum: <https://forum.yiiframework.com/>
     - IRC chat: Libera tarmog'idagi #yii kanali (<ircs://irc.libera.chat:6697/yii>)
-    - Slack kanali: <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
+    - Slack kanali: <https://www.yiiframework.com/go/slack>
     - Gitter chat: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
