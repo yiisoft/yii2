@@ -306,7 +306,7 @@ class Request extends \yii\base\Request
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
-    /** @var boolean Enable automatically inflate post requests with gzip/deflate Content-Encoding headers */
+    /** @var bool Enable automatically inflate post requests with gzip/deflate Content-Encoding headers */
     public $gzip = false;
 
 
