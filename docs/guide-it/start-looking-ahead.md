@@ -31,7 +31,7 @@ Questa sezione riassume le risorse di Yii disponibili per aiutarti a essere più
 * Community
     - Forum: <https://forum.yiiframework.com/>
     - Chat IRC: il canale #yii su Libera (<ircs://irc.libera.chat:6697/yii>)
-    - Canale Slack: <https://join.slack.com/t/yii/shared_invite/enQtMzQ4MDExMDcyNTk2LTc0NDQ2ZTZhNjkzZDgwYjE4YjZlNGQxZjFmZDBjZTU3NjViMDE4ZTMxNDRkZjVlNmM1ZTA1ODVmZGUwY2U3NDA>
+    - Canale Slack: <https://www.yiiframework.com/go/slack>
     - Chat Gitter: <https://gitter.im/yiisoft/yii2>
     - GitHub: <https://github.com/yiisoft/yii2>
     - Facebook: <https://www.facebook.com/groups/yiitalk/>
