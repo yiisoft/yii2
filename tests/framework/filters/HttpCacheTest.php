@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,13 +8,15 @@
 
 namespace yiiunit\framework\filters;
 
+use yiiunit\TestCase;
+use ReflectionMethod;
 use Yii;
 use yii\filters\HttpCache;
 
 /**
  * @group filters
  */
-class HttpCacheTest extends \yiiunit\TestCase
+class HttpCacheTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -25,7 +28,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
-    public function testDisabled()
+    public function testDisabled(): void
     {
         $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
@@ -33,7 +36,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertTrue($httpCache->beforeAction(null));
     }
 
-    public function testEmptyPragma()
+    public function testEmptyPragma(): void
     {
         $httpCache = new HttpCache();
         $httpCache->etagSeed = function ($action, $params) {
@@ -48,13 +51,17 @@ class HttpCacheTest extends \yiiunit\TestCase
     /**
      * @covers \yii\filters\HttpCache::validateCache
      */
-    public function testValidateCache()
+    public function testValidateCache(): void
     {
         $httpCache = new HttpCache();
         $request = Yii::$app->getRequest();
+        $method = new ReflectionMethod($httpCache, 'validateCache');
 
-        $method = new \ReflectionMethod($httpCache, 'validateCache');
-        $method->setAccessible(true);
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $request->headers->remove('If-Modified-Since');
         $request->headers->remove('If-None-Match');
@@ -81,7 +88,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     /**
      * @covers \yii\filters\HttpCache::generateEtag
      */
-    public function testGenerateEtag()
+    public function testGenerateEtag(): void
     {
         $httpCache = new HttpCache();
         $httpCache->weakEtag = false;

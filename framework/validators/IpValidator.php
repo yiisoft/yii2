@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ use yii\web\JsExpression;
  *
  * The following are examples of validation rules using this validator:
  *
- * ```php
+ * ```
  * ['ip_address', 'ip'], // IPv4 or IPv6 address
  * ['ip_address', 'ip', 'ipv6' => false], // IPv4 address (IPv6 is disabled)
  * ['ip_address', 'ip', 'subnet' => true], // requires a CIDR prefix (like 10.0.0.1/24) for the IP address
@@ -32,8 +33,28 @@ use yii\web\JsExpression;
  * ['ip_address', 'ip', 'expandIPv6' => true], // expands IPv6 address to a full notation format
  * ```
  *
- * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. Note that the type of this
- * property differs in getter and setter. See [[getRanges()]] and [[setRanges()]] for details.
+ * @property-read array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden.
+ * @property-write array|string|null $ranges The IPv4 or IPv6 ranges that are allowed or forbidden.
+ *
+ * When the array is empty, or the option not set, all IP addresses are allowed.
+ *
+ * Otherwise, the rules are checked sequentially until the first match is found.
+ * An IP address is forbidden, when it has not matched any of the rules.
+ *
+ * Example:
+ *
+ * ```
+ * [
+ *      'ranges' => [
+ *          '192.168.10.128'
+ *          '!192.168.10.0/24',
+ *          'any' // allows any other IP addresses
+ *      ]
+ * ]
+ * ```
+ *
+ * In this example, access is allowed for all the IPv4 and IPv6 addresses excluding the `192.168.10.0/24` subnet.
+ * IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
@@ -48,8 +69,7 @@ class IpValidator extends Validator
      * @see networks
      * @see ranges
      */
-    const NEGATION_CHAR = '!';
-
+    public const NEGATION_CHAR = '!';
     /**
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name
@@ -254,7 +274,7 @@ class IpValidator extends Validator
      *
      * Example:
      *
-     * ```php
+     * ```
      * [
      *      'ranges' => [
      *          '192.168.10.128'

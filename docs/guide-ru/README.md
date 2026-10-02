@@ -18,6 +18,7 @@ All Rights Reserved.
 Первое знакомство
 -----------------
 
+* [Что нужно знать](start-prerequisites.md)
 * [Установка Yii](start-installation.md)
 * [Запуск приложения](start-workflow.md)
 * [Говорим «привет»](start-hello.md)
@@ -135,6 +136,7 @@ All Rights Reserved.
 * [Быстрый старт](rest-quick-start.md)
 * [Ресурсы](rest-resources.md)
 * [Контроллеры](rest-controllers.md)
+* [Фильтрация коллекций](rest-filtering-collections.md)
 * [Роутинг](rest-routing.md)
 * [Форматирование ответа](rest-response-formatting.md)
 * [Аутентификация](rest-authentication.md)
@@ -168,6 +170,7 @@ All Rights Reserved.
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
+* [Docker](tutorial-docker.md)
 * [Встроенные валидаторы](tutorial-core-validators.md)
 * [Интернационализация](tutorial-i18n.md)
 * [Отправка почты](tutorial-mailing.md)
@@ -199,4 +202,5 @@ All Rights Reserved.
 * [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
+* [Json](helper-json.md)
 * [Url хелпер](helper-url.md)

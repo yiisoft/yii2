@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\web\session\sqlite;
 
+use yiiunit\framework\web\session\AbstractDbSessionTest;
 use Yii;
 
 /**
@@ -17,7 +19,7 @@ use Yii;
  * @group db
  * @group sqlite
  */
-class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
+class DbSessionTest extends AbstractDbSessionTest
 {
     protected function setUp(): void
     {

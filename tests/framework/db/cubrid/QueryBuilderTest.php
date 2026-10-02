@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,6 +7,10 @@
  */
 
 namespace yiiunit\framework\db\cubrid;
+
+use Closure;
+use PDO;
+use yii\base\NotSupportedException;
 
 /**
  * @group db
@@ -32,17 +37,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), []);
     }
 
-    public function checksProvider()
-    {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in CUBRID.');
-    }
-
-    public function defaultValuesProvider()
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in CUBRID.');
-    }
-
-    public function testResetSequence()
+    public function testResetSequence(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -55,9 +50,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
-        $version = $this->getQueryBuilder(false)->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $version = $this->getQueryBuilder(false)->db->getSlavePdo(true)->getAttribute(PDO::ATTR_SERVER_VERSION);
         if (version_compare($version, '10.0', '<')) {
             $this->markTestSkipped('Comments on columns are supported starting with CUBRID 10.0.');
             return;
@@ -66,7 +61,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         parent::testCommentColumn();
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -112,5 +107,33 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         unset($newData['no columns to update']);
 
         return $newData;
+    }
+
+    /**
+     * @dataProvider checksProvider
+     * @param string $sql
+     */
+    public function testAddDropCheck($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addCheck|dropCheck) is not supported by CUBRID.*$/',
+        );
+
+        parent::testAddDropCheck($sql, $builder);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
+    public function testAddDropDefaultValue($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^cubrid does not support (adding|dropping) default value constraints\.$/',
+        );
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }
