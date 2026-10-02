@@ -212,4 +212,20 @@ RESULT;
         $this->assertStringContainsString('totalPrice', $dumpResult);
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
+
+    public function testDumpAsStringHighlightStripsPhpOpenTag()
+    {
+        $dumpResult = VarDumper::dumpAsString(['a' => 1], 10, true);
+
+        $this->assertStringNotContainsString(
+            '&lt;?php',
+            $dumpResult,
+            'PHP open tag should be stripped',
+        );
+        $this->assertStringContainsString(
+            '=&gt;',
+            $dumpResult,
+            'Arrow should be present',
+        );
+    }
 }
