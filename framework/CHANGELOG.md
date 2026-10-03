@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Bug #20470: Fix `yii\web\Request::getAuthCredentials()` returning malformed credentials for an invalid base64 or non UTF-8 `Authorization: Basic` header (orcnd)
 
 2.0.55 May 09, 2026
 -------------------
