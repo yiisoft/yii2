@@ -1407,9 +1407,16 @@ class Request extends \yii\base\Request
         $auth_token = $this->getHeaders()->get('Authorization');
 
         if ($auth_token !== null && strncasecmp($auth_token, 'basic', 5) === 0) {
+            $decoded = base64_decode(mb_substr($auth_token, 6), true);
+
+            // malformed base64 or non UTF-8 credentials are treated as not given
+            if ($decoded === false || !mb_check_encoding($decoded, 'UTF-8')) {
+                return [null, null];
+            }
+
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
-            }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
+            }, explode(':', $decoded, 2));
 
             if (count($parts) < 2) {
                 return [$parts[0], null];
