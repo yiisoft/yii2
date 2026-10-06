@@ -27,7 +27,7 @@ produktiver zu sein.
       spezifischen Problems mittels Yii. Während die Qualität dieser Artikel unter Umständen die des Handbuchs nicht
       erreicht, sind sie insofern nützlich, als sie ein breiteres Themenspektrum abdecken und oftmals
       "Ready-to-use"-Lösungen anbieten.
-    - [Books](https://www.yiiframework.com/books)
+    - [Bücher](https://www.yiiframework.com/books)
 * [Erweiterungen](https://www.yiiframework.com/extensions/):
   Yii bietet eine Bibliothek mit tausenden Erweiterungen, die von Yii-Benutzern beigesteuert wurden und einfach in Ihre
   Anwendungen integriert werden können. Damit lässt sich Ihr Entwicklungsprozess weiter beschleunigen und vereinfachen.
