@@ -28,7 +28,7 @@ Questa sezione riassume le risorse di Yii disponibili per aiutarti a essere più
 * [Estensioni](https://www.yiiframework.com/extensions/):
   Yii vanta una libreria di migliaia di estensioni create dagli utenti, che possono essere facilmente integrate nelle
   tue applicazioni, rendendo il tuo sviluppo ancora più veloce e semplice.
-* Community
+* Comunità
     - Forum: <https://forum.yiiframework.com/>
     - Chat IRC: il canale #yii su Libera (<ircs://irc.libera.chat:6697/yii>)
     - Canale Slack: <https://www.yiiframework.com/go/slack>
