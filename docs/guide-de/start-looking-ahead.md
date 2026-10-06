@@ -31,7 +31,7 @@ produktiver zu sein.
 * [Extensions](https://www.yiiframework.com/extensions/):
   Yii bietet eine Bibliothek mit tausenden Erweiterungen, die von Yii-Benutzern beigesteuert wurden und einfach in Ihre
   Anwendungen integriert werden können. Damit lässt sich Ihr Entwicklungsprozess weiter beschleunigen und vereinfachen.
-* Community
+* Gemeinschaft
     - Forum: <https://forum.yiiframework.com/>
     - IRC-Chat: Der #yii-Channel im Libera-Netzwerk (<ircs://irc.libera.chat:6697/yii>)
     - Slack-Channel: <https://www.yiiframework.com/go/slack>
