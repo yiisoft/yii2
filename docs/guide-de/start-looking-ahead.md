@@ -12,7 +12,7 @@ Dieser Abschnitt fasst die verfügbaren Yii-Ressourcen zusammen, die Ihnen helfe
 produktiver zu sein.
 
 * Dokumentation
-    - [The Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-README.html):
+    - [Das umfassende Handbuch](https://www.yiiframework.com/doc-2.0/guide-README.html):
       Wie der Name vermuten lässt, definiert dieses Handbuch genau, wie Yii funktionieren soll, und bietet eine
       allgemeine Anleitung zur Verwendung von Yii. Es ist das wichtigste Yii-Tutorial, und Sie sollten es lesen, bevor
       Sie Yii-Code schreiben.
