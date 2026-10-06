@@ -21,7 +21,7 @@ produktiver zu sein.
       zur Anwendung, wenn Sie beim Programmieren die Verwendung bestimmter Klassen, Methoden oder Eigenschaften
       verstehen möchten. Die Verwendung dieser Dokumentation empfiehlt sich erst, wenn Sie ein Kontextverständnis des
       gesamten Frameworks entwickelt haben.
-    - [The Wiki Articles](https://www.yiiframework.com/wiki/?tag=yii2):
+    - [Die Wiki-Artikel](https://www.yiiframework.com/wiki/?tag=yii2):
       Die Wiki-Artikel wurden von Yii-Benutzern auf Basis ihrer eigenen Erfahrungen geschrieben. Die meisten dieser
       Artikel sind im Stile von "Kochrezepten" verfasst und demonstrieren damit exemplarisch die Lösung eines
       spezifischen Problems mittels Yii. Während die Qualität dieser Artikel unter Umständen die des Handbuchs nicht
