@@ -16,7 +16,7 @@ produktiver zu sein.
       Wie der Name vermuten lässt, definiert dieses Handbuch genau, wie Yii funktionieren soll, und bietet eine
       allgemeine Anleitung zur Verwendung von Yii. Es ist das wichtigste Yii-Tutorial, und Sie sollten es lesen, bevor
       Sie Yii-Code schreiben.
-    - [The Class Reference](https://www.yiiframework.com/doc-2.0/index.html):
+    - [Die Klassenreferenz](https://www.yiiframework.com/doc-2.0/index.html):
       Hier finden Sie die Dokumentation aller Klassen, die von Yii bereitgestellt werden. Sie kommt hauptsächlich dann
       zur Anwendung, wenn Sie beim Programmieren die Verwendung bestimmter Klassen, Methoden oder Eigenschaften
       verstehen möchten. Die Verwendung dieser Dokumentation empfiehlt sich erst, wenn Sie ein Kontextverständnis des
