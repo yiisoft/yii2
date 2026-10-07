@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
 - Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
+- Bug #17717: Fix `isset()` and `empty()` with array access on public properties of `yii\db\BaseActiveRecord` by using `yii\base\Model::offsetExists()` (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
