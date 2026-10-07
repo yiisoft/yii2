@@ -2024,6 +2024,54 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/17717
+     */
+    public function testOffsetExistsForPublicProperty(): void
+    {
+        $customer = new Customer();
+        $customer->status2 = 'custom';
+
+        $this->assertSame('custom', $customer['status2']);
+        $this->assertTrue(isset($customer['status2']));
+        $this->assertFalse(empty($customer['status2']));
+
+        $customer->status2 = null;
+
+        $this->assertFalse(isset($customer['status2']));
+        $this->assertTrue(empty($customer['status2']));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17717
+     */
+    public function testOffsetExistsForAttributesRelationsAndVirtualProperties(): void
+    {
+        $customer = new class() extends Customer {
+            public function setWriteOnly($value): void
+            {
+            }
+
+            public function getBrokenRelation()
+            {
+                return $this->hasOne('yiiunit\data\ar\NonExistingClass', ['id' => 'customer_id']);
+            }
+        };
+
+        $this->assertFalse(isset($customer['name']));
+        $customer->name = 'user1';
+        $this->assertTrue(isset($customer['name']));
+
+        $this->assertFalse(isset($customer['nonExisting']));
+        $this->assertFalse(isset($customer['writeOnly']));
+        $this->assertFalse(isset($customer['brokenRelation']));
+        $this->assertFalse(isset($customer['_attributes']));
+
+        $customer = Customer::findOne(1);
+        $this->assertTrue(isset($customer['orders']));
+        $this->assertTrue(isset($customer['profile']));
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/15482
      */
     public function testEagerLoadingUsingStringIdentifiers(): void
