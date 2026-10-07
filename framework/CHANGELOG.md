@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Bug #21124: Separate the `@property` annotations for `$request` and `$response` in `yii\web\Controller` and `yii\console\Controller` (mspirkov)
 - Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
 - Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
+- Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
