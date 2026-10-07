@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Enh #21135: Add `@throws` annotation for `InvalidConfigException` in `yii\db\Connection::open()` (mspirkov)
 - Enh #21135: Add `@phpstan-impure` annotations for `yii\db\Connection::open()`, `save()` and `link()` in `yii\db\BaseActiveRecord`, `yii\web\AssetBundle::register()`, `yii\test\ArrayFixture::load()`, `yii\filters\RateLimiter::beforeAction()`, `validateAttribute()` and `validateAttributes()` in `yii\validators\Validator` (mspirkov)
 
+- Bug #17717: Fix `isset()` and `empty()` with array access on public properties of `yii\db\BaseActiveRecord` by using `yii\base\Model::offsetExists()` (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
