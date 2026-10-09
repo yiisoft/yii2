@@ -98,7 +98,7 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($this->buildKey($key));
 
-        return @filemtime($cacheFile) > time();
+        return is_file($cacheFile) && @filemtime($cacheFile) > time();
     }
 
     /**
@@ -111,7 +111,7 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($key);
 
-        if (@filemtime($cacheFile) > time()) {
+        if (is_file($cacheFile) && @filemtime($cacheFile) > time()) {
             $fp = @fopen($cacheFile, 'r');
             if ($fp !== false) {
                 @flock($fp, LOCK_SH);
@@ -188,7 +188,8 @@ class FileCache extends Cache
     protected function addValue($key, $value, $duration)
     {
         $cacheFile = $this->getCacheFile($key);
-        if (@filemtime($cacheFile) > time()) {
+
+        if (is_file($cacheFile) && @filemtime($cacheFile) > time()) {
             return false;
         }
 
