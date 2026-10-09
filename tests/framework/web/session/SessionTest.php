@@ -9,6 +9,7 @@
 namespace yiiunit\framework\web\session;
 
 use yii\web\Session;
+use yii\web\SessionHandler;
 use yiiunit\TestCase;
 
 /**
@@ -117,5 +118,49 @@ class SessionTest extends TestCase
         }
 
         $this->useStrictModeTest(Session::class);
+    }
+
+    public function testSessionHandlerCreatesSessionIdsInConfiguredFormat(): void
+    {
+        $session = new Session();
+
+        // session ini directives can not be changed while a session is active
+        $session->close();
+
+        $length = ini_get('session.sid_length');
+        $bitsPerCharacter = ini_get('session.sid_bits_per_character');
+
+        // both directives are deprecated since PHP 8.4, but still honored
+        @ini_set('session.sid_length', '26');
+        @ini_set('session.sid_bits_per_character', '5');
+
+        $handler = new SessionHandler($session);
+
+        $id = $handler->create_sid();
+        $nextId = $handler->create_sid();
+
+        @ini_set('session.sid_length', (string) $length);
+        @ini_set('session.sid_bits_per_character', (string) $bitsPerCharacter);
+
+        $this->assertMatchesRegularExpression(
+            '/^[0-9a-v]{26}$/',
+            $id,
+            'Length and alphabet must follow the ini directives.',
+        );
+        $this->assertNotSame(
+            $id,
+            $nextId,
+            'Each call must yield a new ID.',
+        );
+    }
+
+    public function testSessionHandlerAcceptsEveryIdWithoutCustomValidation(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $this->assertTrue(
+            $handler->validateId('unknown-id'),
+            'Base storage must not reject any ID.',
+        );
     }
 }

@@ -78,15 +78,19 @@ class CacheSession extends Session
      */
     public function openSession($savePath, $sessionName)
     {
-        if ($this->getUseStrictMode()) {
-            $id = $this->getId();
-            if (!$this->cache->exists($this->calculateKey($id))) {
-                //This session id does not exist, mark it for forced regeneration
-                $this->_forceRegenerateId = $id;
-            }
-        }
-
         return parent::openSession($savePath, $sessionName);
+    }
+
+    /**
+     * Session ID existence check handler.
+     * @internal Do not call this method directly.
+     * @param string $id session ID
+     * @return bool whether a session with the given ID exists in [[cache]]
+     * @since 2.0.56
+     */
+    public function sessionIdExists($id)
+    {
+        return $this->cache->exists($this->calculateKey($id));
     }
 
     /**
@@ -111,11 +115,6 @@ class CacheSession extends Session
      */
     public function writeSession($id, $data)
     {
-        if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
-            //Ignore write when forceRegenerate is active for this id
-            return true;
-        }
-
         return $this->cache->set($this->calculateKey($id), $data, $this->getTimeout());
     }
 
