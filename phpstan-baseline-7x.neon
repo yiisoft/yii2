@@ -55,6 +55,36 @@ parameters:
 			path: framework/db/QueryBuilder.php
 
 		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Access to property \$value on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
 			count: 2
@@ -113,6 +143,66 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/db/CommandTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\data\\helpers\\enums\\IntBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\data\\helpers\\enums\\Status\.$#'
+			identifier: class.notFound
+			count: 4
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\data\\helpers\\enums\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 8
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Inactive on an unknown class yiiunit\\data\\helpers\\enums\\IntBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Inactive on an unknown class yiiunit\\data\\helpers\\enums\\Status\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Inactive on an unknown class yiiunit\\data\\helpers\\enums\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Call to method label\(\) on an unknown class yiiunit\\data\\helpers\\enums\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\data\\helpers\\enums\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Class yiiunit\\data\\helpers\\enums\\StringBackedStatus not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Parameter \$status of anonymous function has invalid type yiiunit\\data\\helpers\\enums\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
 
 		-
 			message: '#^Function str_contains not found\.$#'
