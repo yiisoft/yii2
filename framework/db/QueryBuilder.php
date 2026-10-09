@@ -24,6 +24,7 @@ use yii\helpers\StringHelper;
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
  * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
+ *
  * ```
  * ['LIKE' => yii\db\condition\LikeCondition::class]
  * ```
@@ -540,7 +541,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
-     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return array
      * @since 2.0.14
@@ -568,7 +569,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string[] $columns source column list.
-     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter optionally receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return string[] column list.
      */
@@ -591,14 +592,15 @@ class QueryBuilder extends \yii\base\BaseObject
         }
         $constraints = array_merge($constraints, $schema->getTableUniques($name));
         // Remove duplicates
-        $constraints = array_combine(array_map(function (Constraint $constraint) {
-            $columns = $constraint->columnNames;
-            sort($columns, SORT_STRING);
-            return json_encode($columns);
-        }, $constraints), $constraints);
+        $uniqueConstraints = [];
+        foreach ($constraints as $constraint) {
+            $sortedColumnNames = $constraint->columnNames;
+            sort($sortedColumnNames, SORT_STRING);
+            $uniqueConstraints[json_encode($sortedColumnNames)] = $constraint;
+        }
         $columnNames = [];
         // Remove all constraints which do not cover the specified column list
-        $constraints = array_values(array_filter($constraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
+        $constraints = array_values(array_filter($uniqueConstraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
             $constraintColumnNames = array_map([$schema, 'quoteColumnName'], $constraint->columnNames);
             $result = !array_diff($constraintColumnNames, $columns);
             if ($result) {

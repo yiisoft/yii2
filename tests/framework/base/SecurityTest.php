@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use yii\base\InvalidArgumentException;
-use yii\base\InvalidConfigException;
 use yii\base\Security;
 use yiiunit\TestCase;
 

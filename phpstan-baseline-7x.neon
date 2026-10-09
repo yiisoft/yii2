@@ -113,3 +113,15 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/db/CommandTest.php
+
+		-
+			message: '#^Function str_contains not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: framework/db/sqlite/Schema.php
+
+		-
+			message: '#^Class ValueError not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php

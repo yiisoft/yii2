@@ -12,6 +12,7 @@ use yiiunit\data\ar\ActiveRecord;
 
 /**
  * @property int $id
+ * @property-read ValidatorTestRefModel[] $references
  */
 class ValidatorTestMainModel extends ActiveRecord
 {

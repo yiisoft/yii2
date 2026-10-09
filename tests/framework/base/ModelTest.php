@@ -701,6 +701,9 @@ class ComplexModel2 extends Model
     }
 }
 
+/**
+ * @property-write mixed $password
+ */
 class WriteOnlyModel extends Model
 {
     public $passwordHash;

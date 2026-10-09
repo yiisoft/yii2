@@ -214,7 +214,7 @@ class NewObject extends BaseObject
         return $this->_items;
     }
 
-    public function setWriteOnly()
+    public function setWriteOnly($value)
     {
     }
 }

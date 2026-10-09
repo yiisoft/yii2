@@ -9,6 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\validators\ExistValidator;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
@@ -48,6 +49,19 @@ abstract class ExistValidatorTest extends DatabaseTestCase
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
             $this->assertEquals('The "targetAttribute" property must be configured as a string.', $e->getMessage());
         }
+    }
+
+    public function testThrowInvalidConfigExceptionWhenAllowArrayWithArrayTargetAttribute(): void
+    {
+        $val = new ExistValidator(['allowArray' => true, 'targetAttribute' => ['id', 'field1']]);
+        $model = new ValidatorTestMainModel();
+
+        $model->id = 1;
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('The "targetAttribute" property must be configured as a string.');
+
+        $val->validateAttribute($model, 'id');
     }
 
     public function testValidateValue(): void
@@ -245,6 +259,131 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $this->assertTrue($m->hasErrors('id'));
     }
 
+    public function testTargetRelationWithArrayFilter(): void
+    {
+        $val = new ExistValidator(['targetRelation' => 'references', 'filter' => ['a_field' => 'ref_to_2']]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertFalse(
+            $model->hasErrors('id'),
+            'Matching array filter must keep the relation non-empty.'
+        );
+
+        $val = new ExistValidator(['targetRelation' => 'references', 'filter' => ['a_field' => 'non-existing']]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertTrue(
+            $model->hasErrors('id'),
+            'Non-matching array filter must empty the relation.'
+        );
+    }
+
+    public function testTargetAttributeWithClosureFilter(): void
+    {
+        $val = new ExistValidator([
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+            'filter' => function ($query) {
+                $query->andWhere(['a_field' => 'ref_to_2']);
+            },
+        ]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertFalse(
+            $model->hasErrors('id'),
+            'Matching closure filter must keep a referencing row.'
+        );
+
+        $val = new ExistValidator([
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+            'filter' => function ($query) {
+                $query->andWhere(['a_field' => 'ref_to_3']);
+            },
+        ]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertTrue(
+            $model->hasErrors('id'),
+            'Non-matching closure filter must discard every row.'
+        );
+    }
+
+    public function testTargetAttributeWithArrayFilter(): void
+    {
+        $val = new ExistValidator([
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+            'filter' => ['a_field' => 'ref_to_2'],
+        ]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertFalse(
+            $model->hasErrors('id'),
+            'Matching array filter must keep a referencing row.'
+        );
+
+        $val = new ExistValidator([
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+            'filter' => ['a_field' => 'ref_to_3'],
+        ]);
+
+        $model = ValidatorTestMainModel::findOne(2);
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $val->validateAttribute($model, 'id');
+
+        $this->assertTrue(
+            $model->hasErrors('id'),
+            'Non-matching array filter must discard every row.'
+        );
+    }
+
     public function testForceMaster(): void
     {
         $connection = $this->getConnectionWithInvalidSlave();
@@ -266,6 +405,49 @@ abstract class ExistValidatorTest extends DatabaseTestCase
             'forceMasterDb' => false,
             'targetRelation' => 'references',
         ]);
+        $validator->validateAttribute($model, 'id');
+
+        ActiveRecord::$db = $this->getConnection();
+    }
+
+    public function testForceMasterWithTargetAttribute(): void
+    {
+        $connection = $this->getConnectionWithInvalidSlave();
+
+        ActiveRecord::$db = $connection;
+
+        $model = null;
+
+        $connection->useMaster(function () use (&$model) {
+            $model = ValidatorTestMainModel::findOne(2);
+        });
+
+        $this->assertNotNull(
+            $model,
+            'Fixture row must exist.'
+        );
+
+        $validator = new ExistValidator([
+            'forceMasterDb' => true,
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+        ]);
+
+        $validator->validateAttribute($model, 'id');
+
+        $this->assertFalse(
+            $model->hasErrors('id'),
+            'Master connection must resolve the referencing rows.'
+        );
+
+        $this->expectException(InvalidConfigException::class);
+
+        $validator = new ExistValidator([
+            'forceMasterDb' => false,
+            'targetClass' => ValidatorTestRefModel::class,
+            'targetAttribute' => ['id' => 'ref'],
+        ]);
+
         $validator->validateAttribute($model, 'id');
 
         ActiveRecord::$db = $this->getConnection();

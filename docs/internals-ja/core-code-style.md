@@ -367,28 +367,6 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - 全てのクラス・ファイルは、ファイル・レベルの doc ブロックを各ファイルの先頭に持ち、
   クラス・レベルの doc ブロックを各クラスの直前に持たなければなりません。
 - メソッドが実際に何も返さないときは `@return` を使う必要はありません。
-- `yii\base\BaseObject` から派生するクラスのすべての仮想プロパティは、クラスの doc ブロックで
-  `@property` タグでドキュメントされます。
-  これらの注釈は、`build` ディレクトリで `./build php-doc` コマンドを走らせることにより、
-  対応する getter や setter の `@return` や `@param` タグから自動的に生成されます。
-  getter や setter に `@property` タグを追加することによって、これらのメソッドによって導入されるプロパティに対して
-  ドキュメントのメッセージを明示的に与えることが出来ます。
-  これは `@return` で記述されているのとは違う説明を与えたい場合に有用です。
-  下記が一例です。
-
-  ```php
-    <?php
-    /**
-     * Returns the errors for all attribute or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-     * ...
-     */
-    public function getErrors($attribute = null)
-  ```
 
 #### ファイル
 

@@ -339,25 +339,6 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - Код без документации недопустим;
 - Все файлы классов должны содержать блок документации в начале файла и блок документации непосредственно перед каждым классом;
 - Нет необходимости использовать тег `@return` если метод не возвращает значение;
-- Все виртуальные свойства классов, наследованных от `yii\base\BaseObject`, документируются тегом `@property` в блоке документации класса;
-  Аннотации геттеров и сеттеров автоматически генерируются из соответствующих тегов `@return` or `@param`
-  посредством выполнения команды `./build php-doc` в соответствующем каталоге;
-  Вы можете добавить дополнительный тег `@property` для геттера или сеттера для пояснения назначения переменной метода, если это необходимо.
-  Например:
-
-```php
-<?php
-/**
- * Returns the errors for all attribute or a single attribute.
- * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
- * @property array An array of errors for all attributes. Empty array is returned if no error.
- * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
- * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
- * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
- * ...
- */
-public function getErrors($attribute = null)
-```
 
 #### Файл
 

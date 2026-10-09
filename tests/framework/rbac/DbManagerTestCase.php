@@ -11,7 +11,6 @@ namespace yiiunit\framework\rbac;
 use yii\base\InvalidParamException;
 use yii\db\Exception;
 use yii\base\InvalidConfigException;
-use yii\rbac\ManagerInterface;
 use Yii;
 use yii\caching\ArrayCache;
 use yii\console\Application;

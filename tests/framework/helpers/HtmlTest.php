@@ -11,7 +11,6 @@ namespace yiiunit\framework\helpers;
 use ArrayObject;
 use yii\base\InvalidArgumentException;
 use Closure;
-use yii\base\Model;
 use Yii;
 use yii\base\DynamicModel;
 use yii\db\ArrayExpression;

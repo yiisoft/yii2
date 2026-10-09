@@ -105,7 +105,7 @@ class ActiveRecordBlameableConsoleWithDefaultValueClosure extends ActiveRecordBl
  * @property int $created_by
  * @property int $updated_by
  *
- * @property BlameableBehavior $blameable
+ * @property-read BlameableBehavior $blameable
  *
  * @mixin BlameableBehavior
  */

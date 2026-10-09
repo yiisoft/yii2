@@ -165,7 +165,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Note, in order to inherit rules defined in the parent class, a child class needs to
      * merge the parent rules with child rules using functions such as `array_merge()`.
      *
-     * @return array<int, array<array-key, mixed>|Validator> validation rules
+     * @return array<array-key, array<array-key, mixed>|Validator> validation rules
      * @see scenarios()
      */
     public function rules()

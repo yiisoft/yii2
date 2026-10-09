@@ -21,6 +21,8 @@ use yii\base\InvalidValueException;
  * @property-read Role[] $defaultRoleInstances Default roles. The array is indexed by the role names.
  * @property-read string[] $defaultRoles Default roles.
  * @property-write string[]|\Closure $defaultRoles Either array of roles or a callable returning it.
+ * @property-read Role[] $roles All roles in the system. The array is indexed by the role names.
+ * @property-read Permission[] $permissions All permissions in the system. The array is indexed by the permission names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -79,7 +79,6 @@ class ColumnSchemaBuilder extends BaseObject
      */
     protected $isFirst;
 
-
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.43

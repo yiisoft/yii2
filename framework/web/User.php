@@ -56,10 +56,11 @@ use yii\rbac\CheckAccessInterface;
  * returned if the user is not logged in (not authenticated).
  * @property-read bool $isGuest Whether the current user is a guest.
  * @property-read string $returnUrl The URL that the user should be redirected to after login.
- * @property-write string|array $returnUrl The URL that the user should be redirected to after login. If an
- * array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL. The first element
- * of the array should be the route, and the rest of the name-value pairs are GET parameters used to construct
- * the URL. For example,
+ * @property-write string|array $returnUrl The URL that the user should be redirected to after login.
+ * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
+ * The first element of the array should be the route, and the rest of
+ * the name-value pairs are GET parameters used to construct the URL. For example,
+ *
  * ```
  * ['admin/index', 'ref' => 1]
  * ```

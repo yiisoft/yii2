@@ -45,7 +45,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     private $_oldMysql;
 
-
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
