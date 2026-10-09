@@ -2387,15 +2387,30 @@ class BaseHtml
 
     /**
      * Escapes regular expression to use in JavaScript.
-     * @param string $regexp the regular expression to be escaped.
+     * @param string $regexp the regular expression to be escaped. It is expected to be a valid PCRE pattern,
+     * that is, wrapped in delimiters and optionally followed by modifiers. Bracket style delimiters
+     * (`()`, `{}`, `[]` and `<>`) are supported as well.
      * @return string the escaped result.
      * @since 2.0.6
      */
     public static function escapeJsRegularExpression($regexp)
     {
-        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
+        // JavaScript expects exactly four hex digits after `\u`, while PCRE takes at most two without braces
+        // and any amount within them. Code points above the BMP have to use the `\u{...}` form, which in turn
+        // requires the `u` modifier, kept below among the supported ones.
+        $pattern = preg_replace_callback(
+            '/\\\\x(?:\{([0-9a-fA-F]+)\}|([0-9a-fA-F]{1,2}))/',
+            function ($matches) {
+                $code = hexdec($matches[1] !== '' ? $matches[1] : $matches[2]);
+
+                return $code > 0xFFFF ? sprintf('\u{%X}', $code) : sprintf('\u%04X', $code);
+            },
+            $regexp
+        );
         $deliminator = substr($pattern, 0, 1);
-        $pos = strrpos($pattern, $deliminator, 1);
+        // for bracket style delimiters the pattern is closed by the matching bracket, not by the opening one
+        $closingDeliminator = strtr($deliminator, '({[<', ')}]>');
+        $pos = strrpos($pattern, $closingDeliminator, 1);
         $flag = substr($pattern, $pos + 1);
         if ($deliminator !== '/') {
             $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
