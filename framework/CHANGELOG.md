@@ -42,6 +42,7 @@ Yii Framework 2 Change Log
 - Bug #21098: Fix `yii\caching\Cache::multiGet()` passing `false` for missing keys to the unserializer, which fails with "Error at offset 0 of 0 bytes" on PHP `8.6` (terabytesoftw)
 
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
