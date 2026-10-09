@@ -40,6 +40,7 @@ Yii Framework 2 Change Log
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
+- Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
