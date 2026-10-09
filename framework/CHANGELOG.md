@@ -38,7 +38,6 @@ Yii Framework 2 Change Log
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
 - Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
-
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
