@@ -49,9 +49,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      *
      * @param string $name
      * @param string $tableName
-     * @param array|string $pk
-     *
-     * @phpstan-param list<string> $pk
+     * @param list<string>|string $pk
      */
     public function testAddDropPrimaryKey(string $name, string $tableName, $pk): void
     {
@@ -68,11 +66,8 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      *
      * @param string $name
      * @param string $tableName
-     * @param array|string $fkColumns
-     * @param array|string $refColumns
-     *
-     * @phpstan-param list<string> $fkColumns
-     * @phpstan-param list<string> $refColumns
+     * @param list<string>|string $fkColumns
+     * @param list<string>|string $refColumns
      */
     public function testAddDropForeignKey(string $name, string $tableName, $fkColumns, $refColumns): void
     {
@@ -89,9 +84,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      *
      * @param string $name
      * @param string $tableName
-     * @param array|string $columns
-     *
-     * @phpstan-param list<string> $columns
+     * @param list<string>|string $columns
      */
     public function testAddDropUnique(string $name, string $tableName, $columns): void
     {

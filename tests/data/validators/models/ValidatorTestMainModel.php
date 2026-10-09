@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +10,10 @@ namespace yiiunit\data\validators\models;
 
 use yiiunit\data\ar\ActiveRecord;
 
+/**
+ * @property int $id
+ * @property-read ValidatorTestRefModel[] $references
+ */
 class ValidatorTestMainModel extends ActiveRecord
 {
     public $testMainVal = 1;

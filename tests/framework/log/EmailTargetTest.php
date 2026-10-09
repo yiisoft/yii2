@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\log;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use yii\base\InvalidConfigException;
 use yii\log\EmailTarget;
 use yii\mail\BaseMailer;
@@ -21,7 +22,7 @@ use yiiunit\TestCase;
 class EmailTargetTest extends TestCase
 {
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var BaseMailer&MockObject
      */
     protected $mailer;
 
@@ -76,7 +77,6 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
-        /** @var EmailTarget $mailTarget */
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
@@ -122,7 +122,6 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        /** @var EmailTarget $mailTarget */
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
@@ -158,7 +157,6 @@ class EmailTargetTest extends TestCase
         $message->method('send')->willReturn(false);
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
-        /** @var EmailTarget $mailTarget */
         $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([

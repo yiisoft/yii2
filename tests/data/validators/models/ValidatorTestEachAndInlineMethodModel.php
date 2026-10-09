@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\data\validators\models;
 
@@ -16,11 +19,15 @@ class ValidatorTestEachAndInlineMethodModel extends Model
     public function rules()
     {
         return [
-            ['arrayProperty', 'each', 'rule' => [function ($attribute, $params, $validator) {
-                if (is_array($this->$attribute)) {
-                    $this->addError($attribute, 'Each & Inline validators bug');
-                }
-            }]],
+            [
+                'arrayProperty', 'each', 'rule' => [
+                    function ($attribute, $params, $validator): void {
+                        if (is_array($this->$attribute)) {
+                            $this->addError($attribute, 'Each & Inline validators bug');
+                        }
+                    },
+                ],
+            ],
         ];
     }
 }

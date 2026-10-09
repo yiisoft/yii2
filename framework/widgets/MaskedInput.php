@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -49,7 +50,6 @@ class MaskedInput extends InputWidget
      * The name of the jQuery plugin to use for this widget.
      */
     public const PLUGIN_NAME = 'inputmask';
-
     /**
      * @var string|array|JsExpression the input mask (e.g. '99/99/9999' for date input). The following characters
      * can be used in the mask and are predefined:

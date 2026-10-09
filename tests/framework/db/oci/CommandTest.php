@@ -150,7 +150,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
 
-        $db->cache(function (Connection $db) use ($update) {
+        $db->cache(function (Connection $db) {
             $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
             $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());

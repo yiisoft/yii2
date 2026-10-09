@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -68,7 +69,6 @@ class Table extends Widget
     public const CHAR_RIGHT = 'right';
     public const CHAR_RIGHT_MID = 'right-mid';
     public const CHAR_MIDDLE = 'middle';
-
     /**
      * @var array table headers
      * @since 2.0.19

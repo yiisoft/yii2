@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -64,7 +65,6 @@ class Application extends \yii\base\Application
      * The option name for specifying the application configuration file path.
      */
     public const OPTION_APPCONFIG = 'appconfig';
-
     /**
      * @var string the default route of this application. Defaults to 'help',
      * meaning the `help` command.
@@ -77,9 +77,6 @@ class Application extends \yii\base\Application
     public $enableCoreCommands = true;
     /**
      * @var Controller|null the currently active controller instance
-     *
-     * @phpstan-var Controller<Module>|null
-     * @psalm-var Controller<Module>|null
      */
     public $controller;
 

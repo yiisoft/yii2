@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,6 +14,8 @@ namespace yiiunit\data\ar;
  * @property int $id
  * @property string $name
  * @property int $category_id
+ *
+ * @property-read Category $category
  */
 class Item extends ActiveRecord
 {

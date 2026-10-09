@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +20,6 @@ class Item extends BaseObject
 {
     public const TYPE_ROLE = 1;
     public const TYPE_PERMISSION = 2;
-
     /**
      * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
      */

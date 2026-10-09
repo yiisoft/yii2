@@ -82,11 +82,13 @@
     },
     "require-dev": {
         "cebe/indent": "~1.0.2",
-        "dealerdirect/phpcodesniffer-composer-installer": "*",
         "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
-        "yiisoft/yii2-coding-standards": "^3.0",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.6",
+        "mspirkov/yii2-rector": "^0.1",
+        "friendsofphp/php-cs-fixer": "^3.95"
     },
     "repositories": [
         {
@@ -94,9 +96,6 @@
             "url": "https://asset-packagist.org"
         }
     ],
-    "suggest": {
-        "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
-    },
     "autoload": {
         "psr-4": {
             "yii\\": "framework/"
@@ -110,9 +109,7 @@
     },
     "config": {
         "allow-plugins": {
-            "cweagans/composer-patches": true,
-            "yiisoft/yii2-composer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "yiisoft/yii2-composer": true
         }
     },
     "bin": [
@@ -122,5 +119,11 @@
         "branch-alias": {
             "dev-master": "2.0.x-dev"
         }
+    },
+    "scripts": {
+        "cs": "./vendor/bin/php-cs-fixer check",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix",
+        "static": "./vendor/bin/phpstan --memory-limit=-1",
+        "rector": "./vendor/bin/rector"
     }
 }

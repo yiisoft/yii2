@@ -126,7 +126,9 @@ class AttributeBehaviorTest extends TestCase
  * @property string $name
  * @property string $alias
  *
- * @property AttributeBehavior $attributeBehavior
+ * @property-read AttributeBehavior $attributeBehavior
+ *
+ * @mixin AttributeBehavior
  */
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
@@ -161,6 +163,9 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
      */
     public function getAttributeBehavior()
     {
-        return $this->getBehavior('attribute');
+        /** @var AttributeBehavior $result */
+        $result = $this->getBehavior('attribute');
+
+        return $result;
     }
 }

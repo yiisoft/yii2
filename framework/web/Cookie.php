@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -43,7 +44,6 @@ class Cookie extends \yii\base\BaseObject
      * @since 2.0.43
      */
     public const SAME_SITE_NONE = 'None';
-
     /**
      * @var string name of the cookie
      */

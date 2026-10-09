@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,10 +12,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Component;
-use yii\base\Controller;
-use yii\base\Module;
 use yii\helpers\StringHelper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -26,16 +24,13 @@ use yii\web\User;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
      * @var User|null the user object representing the user authentication status. If not set, the `user` application component will be used.
-     *
-     * @phpstan-var User<IdentityInterface>
-     * @psalm-var User<IdentityInterface>
      */
     public $user;
     /**
@@ -110,9 +105,6 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @return bool whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
-     *
-     * @phpstan-param Action<Controller<Module>> $action
-     * @psalm-param Action<Controller<Module>> $action
      */
     protected function isOptional($action)
     {

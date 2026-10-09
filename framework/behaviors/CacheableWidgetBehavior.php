@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -44,7 +45,7 @@ use yii\di\Instance;
  * @author Nikolay Oleynikov <oleynikovny@mail.ru>
  * @since 2.0.14
  *
- * @template T of Widget
+ * @template T of Widget = Widget
  * @extends Behavior<Widget>
  */
 class CacheableWidgetBehavior extends Behavior

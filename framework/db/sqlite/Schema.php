@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,8 +33,8 @@ use yii\db\Schema as BaseSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of ColumnSchema
- * @extends BaseSchema<T>
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T, QueryBuilder>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
 {
@@ -309,10 +310,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {

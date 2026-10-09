@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,9 +29,6 @@ interface AuthInterface
      * @param Response $response
      * @return IdentityInterface|null the authenticated user identity. If authentication information is not provided, null will be returned.
      * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
-     *
-     * @phpstan-param User<IdentityInterface> $user
-     * @psalm-param User<IdentityInterface> $user
      */
     public function authenticate($user, $request, $response);
 

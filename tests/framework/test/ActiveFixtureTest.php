@@ -43,7 +43,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(CustomerFixture::class, get_class($fixture));
+        $this->assertInstanceOf(CustomerFixture::class, $fixture);
         $this->assertCount(2, $fixture);
         $this->assertEquals(1, $fixture['customer1']['id']);
         $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
@@ -62,13 +62,18 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(Customer::class, get_class($fixture->getModel('customer1')));
-        $this->assertEquals(1, $fixture->getModel('customer1')->id);
-        $this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
+        $this->assertInstanceOf(CustomerFixture::class, $fixture);
+
+        $customer1 = $fixture->getModel('customer1');
+        $this->assertInstanceOf(Customer::class, $customer1);
+        $this->assertEquals(1, $customer1->id);
+        $this->assertEquals('customer1@example.com', $customer1->email);
         $this->assertEquals(1, $fixture['customer1']['profile_id']);
 
-        $this->assertEquals(2, $fixture->getModel('customer2')->id);
-        $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
+        $customer2 = $fixture->getModel('customer2');
+        $this->assertInstanceOf(Customer::class, $customer2);
+        $this->assertEquals(2, $customer2->id);
+        $this->assertEquals('customer2@example.com', $customer2->email);
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
 
         $test->tearDown();
@@ -80,8 +85,10 @@ class ActiveFixtureTest extends DatabaseTestCase
 
         $test->setUp();
         $fixture = $test->getFixture('customers');
-        $directory = $fixture->getModel('directory');
+        $this->assertInstanceOf(CustomDirectoryFixture::class, $fixture);
 
+        $directory = $fixture->getModel('directory');
+        $this->assertInstanceOf(Customer::class, $directory);
         $this->assertEquals(1, $directory->id);
         $this->assertEquals('directory@example.com', $directory['email']);
         $test->tearDown();
@@ -93,8 +100,10 @@ class ActiveFixtureTest extends DatabaseTestCase
 
         $test->setUp();
         $fixture = $test->getFixture('customers');
-        $customer = $fixture->getModel('customer1');
+        $this->assertInstanceOf(CustomDirectoryFixture::class, $fixture);
 
+        $customer = $fixture->getModel('customer1');
+        $this->assertInstanceOf(Customer::class, $customer);
         $this->assertEquals(1, $customer->id);
         $this->assertEquals('customer1@example.com', $customer['email']);
         $test->tearDown();
@@ -106,6 +115,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 
         $test->setUp();
         $fixture = $test->getFixture('animals');
+        $this->assertInstanceOf(AnimalFixture::class, $fixture);
         $this->assertEmpty($fixture->data);
         $test->tearDown();
     }

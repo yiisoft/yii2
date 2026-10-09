@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,8 +26,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property-read array $dirtyAttributes The changed attribute values (name-value pairs).
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
- * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
+ * @property-read array $oldAttributes The old attribute values (name-value pairs).
+ * @property-write array|null $oldAttributes Old attribute values to be set. If set to `null` this record is
+ * considered to be [[isNewRecord|new]].
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is `true`. A string is returned otherwise (null will be
  * returned if the key value is null).
@@ -81,7 +83,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @since 2.0.8
      */
     public const EVENT_AFTER_REFRESH = 'afterRefresh';
-
     /**
      * @var array attribute values indexed by attribute names
      */
@@ -384,17 +385,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Call methods declared in [[ActiveQuery]] to further customize the relation.
      *
-     * @param string $class the class name of the related record
-     * @param array $link the primary-foreign key constraint. The keys of the array refer to
+     * @param class-string $class the class name of the related record
+     * @param array<string, string> $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
-     *
-     * @phpstan-param class-string $class
-     * @psalm-param class-string $class
-     *
-     * @phpstan-param array<string, string> $link
-     * @psalm-param array<string, string> $link
      */
     public function hasOne($class, $link)
     {
@@ -425,17 +420,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Call methods declared in [[ActiveQuery]] to further customize the relation.
      *
-     * @param string $class the class name of the related record
-     * @param array $link the primary-foreign key constraint. The keys of the array refer to
+     * @param class-string $class the class name of the related record
+     * @param array<string, string> $link the primary-foreign key constraint. The keys of the array refer to
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
-     *
-     * @phpstan-param class-string $class
-     * @psalm-param class-string $class
-     *
-     * @phpstan-param array<string, string> $link
-     * @psalm-param array<string, string> $link
      */
     public function hasMany($class, $link)
     {
@@ -456,9 +445,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         /**
          * @var ActiveRecordInterface $class
-         * @var ActiveQuery $query
-         *
-         * @phpstan-var ActiveQuery<ActiveRecord> $query
+         * @var ActiveQuery<ActiveRecord> $query
          */
 
         $query = $class::find();
@@ -1331,10 +1318,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
-                /**
-                 * @var ActiveQuery $viaRelation
-                 * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $viaRelation
-                 */
+                /** @var ActiveQuery $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
@@ -1427,10 +1411,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /**
-                 * @var ActiveQuery $viaRelation
-                 * @phpstan-var ActiveQuery<ActiveRecord> $viaRelation
-                 */
+                /** @var ActiveQuery<ActiveRecord> $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1533,10 +1514,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /**
-                 * @var ActiveQuery $viaRelation
-                 * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $viaRelation
-                 */
+                /** @var ActiveQuery $viaRelation */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1670,7 +1648,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 break;
             }
 
-            list ($relationName, $modelAttribute) = $parts;
+            list($relationName, $modelAttribute) = $parts;
 
             if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
                 $model = $model->$relationName;
@@ -1840,12 +1818,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * }
      * ```
      *
-     * @param array|ActiveRecordInterface[] $models array of primary models. Each model should have the same type and can be:
+     * @template TModels of array
+     *
+     * @param TModels $models array of primary models. Each model should have the same type and can be:
      * - an active record instance;
      * - active record instance represented by array (i.e. active record was loaded using [[ActiveQuery::asArray()]]).
      * @param string|array $relationNames the names of the relations of primary models to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
      * @param bool $asArray whether to load each related model as an array or an object (if the relation itself does not specify that).
      * @since 2.0.50
+     *
+     * @param-out TModels $models
      */
     public static function loadRelationsFor(&$models, $relationNames, $asArray = false)
     {

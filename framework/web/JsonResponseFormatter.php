@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -53,7 +54,6 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @since 2.0.14
      */
     public const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
-
     /**
      * @var string|null custom value of the `Content-Type` header of the response.
      * When equals `null` default content type will be used based on the `useJsonp` property.

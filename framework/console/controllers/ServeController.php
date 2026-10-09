@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,7 @@ use yii\helpers\Console;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0.7
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 class ServeController extends Controller
@@ -31,7 +32,6 @@ class ServeController extends Controller
     public const EXIT_CODE_NO_ROUTING_FILE = 3;
     public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER = 4;
     public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
-
     /**
      * @var int port to serve on.
      */

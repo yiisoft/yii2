@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -39,7 +40,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * The prefix for automatically generated query binding parameters.
      */
     public const PARAM_PREFIX = ':qp';
-
     /**
      * @var Connection the database connection.
      */
@@ -319,8 +319,9 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
-            /** @phpstan-var $this&ExpressionBuilderInterface */
-            return $this;
+            /** @var $this&ExpressionBuilderInterface $result */
+            $result = $this;
+            return $result;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {
@@ -406,9 +407,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return array array of column names, values and params.
      * @throws InvalidArgumentException if query's select does not contain named parameters only.
      * @since 2.0.11
-     *
-     * @phpstan-param Schema<ColumnSchema> $schema
-     * @psalm-param Schema<ColumnSchema> $schema
      */
     protected function prepareInsertSelectSubQuery($columns, $schema, $params = [])
     {
@@ -543,7 +541,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
-     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return array
      * @since 2.0.14
@@ -571,7 +569,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string[] $columns source column list.
-     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter optionally receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return string[] column list.
      */
@@ -594,14 +592,15 @@ class QueryBuilder extends \yii\base\BaseObject
         }
         $constraints = array_merge($constraints, $schema->getTableUniques($name));
         // Remove duplicates
-        $constraints = array_combine(array_map(function (Constraint $constraint) {
-            $columns = $constraint->columnNames;
-            sort($columns, SORT_STRING);
-            return json_encode($columns);
-        }, $constraints), $constraints);
+        $uniqueConstraints = [];
+        foreach ($constraints as $constraint) {
+            $sortedColumnNames = $constraint->columnNames;
+            sort($sortedColumnNames, SORT_STRING);
+            $uniqueConstraints[json_encode($sortedColumnNames)] = $constraint;
+        }
         $columnNames = [];
         // Remove all constraints which do not cover the specified column list
-        $constraints = array_values(array_filter($constraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
+        $constraints = array_values(array_filter($uniqueConstraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
             $constraintColumnNames = array_map([$schema, 'quoteColumnName'], $constraint->columnNames);
             $result = !array_diff($constraintColumnNames, $columns);
             if ($result) {

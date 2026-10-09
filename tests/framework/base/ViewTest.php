@@ -108,6 +108,19 @@ PHP
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 
+    public function testRenderFileDoesNotAllowInternalFileOverride(): void
+    {
+        $view = new View();
+
+        $viewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'safe.php';
+        file_put_contents($viewFile, '<?php echo "safe view";');
+
+        $secretFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'secret.txt';
+        file_put_contents($secretFile, 'secret data');
+
+        $this->assertSame('safe view', $view->renderFile($viewFile, ['_file_' => $secretFile]));
+    }
+
     public function testAfterRender(): void
     {
         $view = new View();

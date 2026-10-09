@@ -29,7 +29,7 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
-### 3. Настройка тестовой среды
+### 3. Настройка тестовой среды <span id="prepare-the-test-environment"></span>
 
 Следующие шаги не обязательны, если вы хотите работать только с переводом или документацией.
 
@@ -83,10 +83,25 @@ git remote add upstream https://github.com/yiisoft/yii2.git
 
 #### Примечание
 
-В аннотациях PHPDoc мы используем стандартные типы PHP. Пожалуйста, используйте аннотации PHPStan/Psalm,
-если хотите добавить условные типы, формы массивов и т.д. Это связано с тем, что не все IDE в настоящее время поддерживают типы PHPStan/Psalm, и это также нарушит автоматическую генерацию документации.
+В аннотациях PHPDoc мы используем типы PHPStan. Если вам нужно указать другой тип для Psalm
+(такое обычно происходит в случае с дженериками), используйте аннотации Psalm в сочетании с
+аннотациями PHPStan.
 
-### Расширения
+Пример того, как это должно выглядеть:
+
+```php
+/**
+ * @return Action<covariant static>|null
+ * @phpstan-return Action<covariant static>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
+
+### Расширения <span id="extensions"></span>
 
 Для работы над расширениями вы можете склонировать репозиторий расширения. Мы сделали команду, которая поможет вам
 сделать это:
@@ -125,7 +140,7 @@ php build/build dev/ext <extension-name> <fork>
 ### 2. Получите последний код из основного репозитория Yii
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 Вы должны начинать с этого действия работу над каждым новым предложением. Убедитесь, что вы работаете с самой

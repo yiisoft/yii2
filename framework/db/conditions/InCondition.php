@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -75,6 +76,7 @@ class InCondition implements ConditionInterface
     {
         return $this->values;
     }
+
     /**
      * {@inheritdoc}
      * @throws InvalidArgumentException if wrong number of operands have been given.

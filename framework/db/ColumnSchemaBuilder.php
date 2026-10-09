@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -30,7 +31,6 @@ class ColumnSchemaBuilder extends BaseObject
     public const CATEGORY_NUMERIC = 'numeric';
     public const CATEGORY_TIME = 'time';
     public const CATEGORY_OTHER = 'other';
-
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
@@ -78,7 +78,6 @@ class ColumnSchemaBuilder extends BaseObject
      * @since 2.0.8
      */
     protected $isFirst;
-
 
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).

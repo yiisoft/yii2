@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,7 @@ namespace yiiunit\data\ar;
  *
  * @author Jan Waś <janek.jan@gmail.com>
  * @property int $id
+ * @property string $type
  */
 class DefaultPk extends ActiveRecord
 {

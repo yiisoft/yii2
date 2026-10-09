@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     /**
      * {@inheritdoc}
      * @param JsonExpression|ExpressionInterface $expression the expression to be built
@@ -35,7 +35,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $value = $expression->getValue();
 
         if ($value instanceof Query) {
-            list ($sql, $params) = $this->queryBuilder->build($value, $params);
+            list($sql, $params) = $this->queryBuilder->build($value, $params);
             return "($sql)" . $this->getTypecast($expression);
         }
         if ($value instanceof ArrayExpression) {

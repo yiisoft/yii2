@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,15 +25,26 @@ use yii\di\ServiceLocator;
  * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
  *
  * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
- * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
- * example.
+ * start with `@`) and the array values are the corresponding paths or aliases. For example,
+ * ```
+ * [
+ *     '@models' => '@app/models', // an existing alias
+ *     '@backend' => __DIR__ . '/../backend',  // a directory
+ * ]
+ * ```
  * @property string $basePath The root directory of the module.
  * @property string $controllerPath The directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property-read string $uniqueId The unique ID of the module.
- * @property string $version The version of this module. Note that the type of this property differs in getter
- * and setter. See [[getVersion()]] and [[setVersion()]] for details.
+ * @property-read string $version The version of this module.
+ * @property-write string|callable|null $version The version of this module. Version can be specified as a PHP
+ * callback, which can accept module instance as an argument and should return the actual version. For example:
+ * ```
+ * function (Module $module) {
+ *     //return string
+ * }
+ * ```
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -49,7 +61,6 @@ class Module extends ServiceLocator
      * @event ActionEvent an event raised after executing a controller action.
      */
     public const EVENT_AFTER_ACTION = 'afterAction';
-
     /**
      * @var array custom module parameters (name => value).
      */
@@ -152,10 +163,7 @@ class Module extends ServiceLocator
      * Constructor.
      * @param string $id the ID of this module.
      * @param Module|null $parent the parent module (if any).
-     * @param array $config name-value pairs that will be used to initialize the object properties.
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -545,10 +553,6 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /**
-             * @var Controller $controller
-             * @phpstan-var Controller<$this> $controller
-             */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
@@ -582,12 +586,12 @@ class Module extends ServiceLocator
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
-     * @return array|false If the controller is created successfully, it will be returned together
+     * @return array{Controller<static>, string}|false If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      *
-     * @phpstan-return array{Controller<$this>, string}|false
-     * @psalm-return array{Controller<$this>, string}|false
+     * @phpstan-return array{Controller<static>, string}|false
+     * @psalm-return array{Controller<self>, string}|false
      */
     public function createController($route)
     {
@@ -641,12 +645,12 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller<static>|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      *
-     * @phpstan-return Controller<$this>|null
-     * @psalm-return Controller<$this>|null
+     * @phpstan-return Controller<static>|null
+     * @psalm-return Controller<self>|null
      */
     public function createControllerByID($id)
     {
@@ -664,7 +668,7 @@ class Module extends ServiceLocator
         }
 
         $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
-                return ucfirst($matches[1]);
+            return ucfirst($matches[1]);
         }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
@@ -724,11 +728,11 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action to be executed.
+     * @param Action<Controller<static>> $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      *
-     * @phpstan-param Action<Controller<$this>> $action
-     * @psalm-param Action<Controller<$this>> $action
+     * @phpstan-param Action<Controller<static>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function beforeAction($action)
     {
@@ -754,12 +758,12 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action just executed.
+     * @param Action<Controller<static>> $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      *
-     * @phpstan-param Action<Controller<$this>> $action
-     * @psalm-param Action<Controller<$this>> $action
+     * @phpstan-param Action<Controller<static>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function afterAction($action, $result)
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -315,6 +316,8 @@ class Validator extends Component
      * @param mixed $value the data value to be validated.
      * @param string|null $error the error message to be returned, if the validation fails.
      * @return bool whether the data is valid.
+     *
+     * @param-out string|null $error
      */
     public function validate($value, &$error = null)
     {

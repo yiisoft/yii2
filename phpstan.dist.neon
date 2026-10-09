@@ -1,12 +1,23 @@
 includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
     - phpstan-baseline.neon
 
 parameters:
     level: 3
 
+    reportIgnoresWithoutComments: true
+
     paths:
         - build
         - framework
+        - tests
+
+    excludePaths:
+        analyse:
+            - tests/data
+            - tests/framework/db/enums
+            - tests/framework/*/stubs/*
+            - tests/framework/*/mocks/*
 
     bootstrapFiles:
         - framework/BaseYii.php

@@ -3,12 +3,10 @@ name: build
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".git-blame-ignore-revs"
@@ -53,11 +51,11 @@ jobs:
       COVERAGE_DRIVER: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
       IGNORE_PLATFORM_REQS: false
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: &memcached-service
       memcached:
-        image: memcached:latest
+        image: memcached:1.6@sha256:e2a8683c7fbb73d12dce8082525adf9df857765970e639bd9f4705acc31dfcba
         ports:
           - 11211:11211
         options: >-
@@ -73,14 +71,17 @@ jobs:
 
     steps: &build-steps
       - name: Checkout.
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
+          composer-root-version: 2.0.x-dev
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
           ignore-platform-reqs: ${{ env.IGNORE_PLATFORM_REQS }}
@@ -88,20 +89,53 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
-  phpunit-dev:
+  phpunit-windows:
+    name: PHP ${{ matrix.php }} Windows
+
+    env:
+      PHP_EXTENSIONS: apcu, curl, dom, fileinfo, gd, intl, mbstring, openssl, pdo_sqlite
+
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP with Composer.
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+        with:
+          composer-root-version: 2.0.x-dev
+          coverage-driver: none
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}
+          php-version: ${{ matrix.php }}
+
+      - name: Run PHPUnit tests.
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+        with:
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
+
+  phpunit-nightly:
     name: PHP ${{ matrix.php }}
 
     env:
       COVERAGE_DRIVER: none
       IGNORE_PLATFORM_REQS: true
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: *memcached-service
 

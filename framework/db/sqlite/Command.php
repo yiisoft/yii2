@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -71,9 +72,7 @@ class Command extends \yii\db\Command
      * or `false` if there's a single statement.
      * @param string $sql
      * @param array $params
-     * @return array[]|false
-     *
-     * @phpstan-return list<array{string, array}>|false
+     * @return list<array{string, array}>|false
      */
     private function splitStatements($sql, $params)
     {

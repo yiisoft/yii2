@@ -15,7 +15,6 @@ use yii\db\Expression;
 use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
 use yii\db\Query;
-use yii\helpers\ArrayHelper;
 use yiiunit\data\base\TraversableObject;
 
 /**

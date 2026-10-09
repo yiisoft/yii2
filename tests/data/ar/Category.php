@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,11 @@ namespace yiiunit\data\ar;
  *
  * @property int $id
  * @property string $name
+ *
+ * @property-read Item[] $items
+ * @property-read Item[] $limitedItems
+ * @property-read OrderItem[] $orderItems
+ * @property-read Order[] $orders
  */
 class Category extends ActiveRecord
 {

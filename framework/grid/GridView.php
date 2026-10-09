@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -51,7 +52,6 @@ class GridView extends BaseListView
     public const FILTER_POS_HEADER = 'header';
     public const FILTER_POS_FOOTER = 'footer';
     public const FILTER_POS_BODY = 'body';
-
     /**
      * @var string the default data column class if the class name is not explicitly specified when configuring a data column.
      * Defaults to 'yii\grid\DataColumn'.
@@ -221,9 +221,17 @@ class GridView extends BaseListView
      */
     public $filterUrl;
     /**
-     * @var string additional jQuery selector for selecting filter input fields
+     * @var string|\Closure(string, string): string jQuery selector for selecting filter input fields.
+     * If this is a Closure, it gets the widget ID and the filter row ID as parameters and is expected to return the selector.
+     *
+     * By default, this selector is added to the default selector '#$id input, #$id select' (where $id is the filter row ID).
+     * If [[overrideFilterSelector]] is set, this selector is used instead of the default selector.
      */
     public $filterSelector;
+    /**
+     * @var bool If set, [[filterSelector]] overrides the default selector of '#$id input, #$id select' (where $id is the filter row ID) rather than being added to it.
+     */
+    public $overrideFilterSelector = false;
     /**
      * @var string whether the filters should be displayed in the grid view. Valid values include:
      *
@@ -337,7 +345,15 @@ class GridView extends BaseListView
         $id = $this->filterRowOptions['id'];
         $filterSelector = "#$id input, #$id select";
         if (isset($this->filterSelector)) {
-            $filterSelector .= ', ' . $this->filterSelector;
+            $additionalFilterSelector = $this->filterSelector;
+            if ($this->filterSelector instanceof \Closure) {
+                $additionalFilterSelector = ($this->filterSelector)($this->getId(), $id);
+            }
+            if ($this->overrideFilterSelector) {
+                $filterSelector = $additionalFilterSelector;
+            } else {
+                $filterSelector .= ', ' . $additionalFilterSelector;
+            }
         }
 
         return [

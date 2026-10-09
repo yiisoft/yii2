@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class FormatterNumberTest extends TestCase
 {
     /**
-     * @var Formatter
+     * @var Formatter|null
      */
     protected $formatter;
 

@@ -29,8 +29,7 @@ class ServeControllerTest extends TestCase
     {
         $docroot = __DIR__ . '/stub';
 
-        /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMocK::class)
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['isAddressTaken', 'runCommand'])
             ->getMock();
@@ -54,7 +53,6 @@ class ServeControllerTest extends TestCase
     {
         $docroot = __DIR__ . '/stub';
 
-        /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
@@ -80,7 +78,6 @@ class ServeControllerTest extends TestCase
     {
         $docroot = '/not/exist/path';
 
-        /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
@@ -104,7 +101,6 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
         $router = '/not/exist/path';
 
-        /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
@@ -130,7 +126,6 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
         $router = __DIR__ . '/stub/index.php';
 
-        /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])

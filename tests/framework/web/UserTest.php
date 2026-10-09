@@ -14,7 +14,7 @@ namespace yii\web;
  */
 function time()
 {
-    return \yiiunit\framework\web\UserTest::$time ?: \time();
+    return \yiiunit\framework\web\UserTest::$time ?? \time();
 }
 
 namespace yiiunit\framework\web;
@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 class UserTest extends TestCase
 {
     /**
-     * @var int virtual time to be returned by mocked time() function.
+     * @var int|null virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -593,9 +593,9 @@ class MockResponse extends \yii\web\Response
 
 class AccessChecker extends BaseObject implements CheckAccessInterface
 {
-    public function checkAccess($userId, $permissionName, $params = []): void
+    public function checkAccess($userId, $permissionName, $params = []): bool
     {
-        // Implement checkAccess() method.
+        return false;
     }
 }
 

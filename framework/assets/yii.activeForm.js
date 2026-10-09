@@ -549,6 +549,14 @@
         findInput($form, attribute).off('.yiiActiveForm');
     };
 
+    /**
+     * Validates the form attributes that are pending validation.
+     * @param $form the form jQuery object
+     * @param attribute the attribute that triggered the validation
+     * @param forceValidate whether to validate even if no value has changed
+     * @param validationDelay number of milliseconds to delay the validation by. Only passed while the user is typing,
+     * every other case is scheduled asynchronously with a zero-millisecond delay.
+     */
     var validateAttribute = function ($form, attribute, forceValidate, validationDelay) {
         var data = $form.data('yiiActiveForm');
 
@@ -588,7 +596,7 @@
                 }
             });
             methods.validate.call($form);
-        }, validationDelay ? validationDelay : 200);
+        }, validationDelay || 0);
     };
 
     /**

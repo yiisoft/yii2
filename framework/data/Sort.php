@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -68,9 +69,10 @@ use yii\web\Request;
  *
  * For more details and usage information on Sort, see the [guide article on sorting](guide:output-sorting).
  *
- * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. Note that the type of this property
- * differs in getter and setter. See [[getAttributeOrders()]] and [[setAttributeOrders()]] for details.
+ * @property-read array $attributeOrders Sort directions indexed by attribute names. Sort direction can be
+ * either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
+ * @property-write array|null $attributeOrders Sort directions indexed by attribute names. Sort direction can
+ * be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
  * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
  * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
  *
@@ -310,7 +312,7 @@ class Sort extends BaseObject
      * ]
      * ```
      *
-     * @param string $param the value of the [[sortParam]].
+     * @param mixed $param the value of the [[sortParam]].
      * @return array the valid sort attributes.
      * @since 2.0.12
      * @see separator for the attribute name separator.

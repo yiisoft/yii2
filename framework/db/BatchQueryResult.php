@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,7 +29,9 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @implements \Iterator<int, mixed>
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
+ * @implements \Iterator<TKey, TValue>
  */
 class BatchQueryResult extends Component implements \Iterator
 {
@@ -48,7 +51,6 @@ class BatchQueryResult extends Component implements \Iterator
      * @see https://github.com/yiisoft/yii2/issues/10023
      */
     public const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
-
     /**
      * @var Connection|null the DB connection to be used when performing batch query.
      * If null, the "db" application component will be used.
@@ -82,7 +84,7 @@ class BatchQueryResult extends Component implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int|null the key for the current iteration
+     * @var TKey|null the key for the current iteration
      */
     private $_key;
 
@@ -199,7 +201,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return int the index of the current row.
+     * @return TKey|null the index of the current row.
      */
     #[\ReturnTypeWillChange]
     public function key()
@@ -210,7 +212,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return mixed the current dataset.
+     * @return TValue the current dataset.
      */
     #[\ReturnTypeWillChange]
     public function current()

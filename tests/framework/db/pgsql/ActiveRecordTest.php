@@ -9,15 +9,12 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecordInterface;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
-use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\TestCase;
 
 /**
  * @group db
@@ -29,9 +26,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testBooleanAttribute(): void
     {
-        /** @var TestCase|ActiveRecordTestTrait $this */
-
-        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
         $customer = new $customerClass();
         $customer->name = 'boolean customer';
@@ -57,7 +51,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testFindAsArray(): void
     {
-        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -308,6 +301,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 }
 
+/**
+ * @property int $id
+ * @property bool|null $bool_col
+ * @property bool|null $default_true
+ * @property bool|null $default_false
+ */
 class BoolAR extends ActiveRecord
 {
     public static function tableName()
@@ -316,6 +315,18 @@ class BoolAR extends ActiveRecord
     }
 }
 
+/**
+ * @property int $id
+ * @property string $username
+ * @property string $auth_key
+ * @property string $password_hash
+ * @property string|null $password_reset_token
+ * @property string $email
+ * @property int $role
+ * @property int $status
+ * @property int $created_at
+ * @property int $updated_at
+ */
 class UserAR extends ActiveRecord
 {
     public const STATUS_DELETED = 0;
@@ -337,12 +348,12 @@ class UserAR extends ActiveRecord
 
 /**
  * {@inheritdoc}
- * @property array id
- * @property array intarray_col
- * @property array textarray2_col
- * @property array json_col
- * @property array jsonb_col
- * @property array jsonarray_col
+ * @property int $id
+ * @property array $intarray_col
+ * @property array $textarray2_col
+ * @property array $json_col
+ * @property array $jsonb_col
+ * @property array $jsonarray_col
  */
 class ArrayAndJsonTypes extends ActiveRecord
 {

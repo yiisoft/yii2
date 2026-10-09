@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -110,17 +111,17 @@ use yii\caching\CacheInterface;
  * ],
  * ```
  *
- * @property string|null $driverName Name of the DB driver. Note that the type of this property differs in
- * getter and setter. See [[getDriverName()]] and [[setDriverName()]] for details.
+ * @property-read string|null $driverName Name of the DB driver.
+ * @property-write string $driverName Name of the DB driver.
  * @property-read bool $isActive Whether the DB connection is established.
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
  * @property-read Connection|null $master The currently active master connection. `null` is returned if there
  * is no master available.
  * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
- * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property-read Schema $schema The schema information for the database opened by this connection.
+ * @property-read TQueryBuilder $queryBuilder The query builder for the current DB connection.
+ * @property-write array $queryBuilder The [[QueryBuilder]] properties to be configured.
+ * @property-read TSchema $schema The schema information for the database opened by this connection.
  * @property-read string $serverVersion Server version as a string.
  * @property-read Connection|null $slave The currently active slave connection. `null` is returned if there is
  * no slave available and `$fallbackToMaster` is false.
@@ -132,8 +133,8 @@ use yii\caching\CacheInterface;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @phpstan-property-read Schema<ColumnSchema> $schema
- * @psalm-property-read Schema<ColumnSchema> $schema
+ * @template TSchema of Schema = Schema
+ * @template TQueryBuilder of QueryBuilder = QueryBuilder
  */
 class Connection extends Component
 {
@@ -153,7 +154,6 @@ class Connection extends Component
      * @event \yii\base\Event an event that is triggered right after a top-level transaction is rolled back
      */
     public const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
-
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) on
@@ -439,8 +439,6 @@ class Connection extends Component
     private $_transaction;
     /**
      * @var Schema|null the database schema
-     *
-     * @phpstan-var Schema<ColumnSchema>|null
      */
     private $_schema;
     /**
@@ -857,11 +855,8 @@ class Connection extends Component
 
     /**
      * Returns the schema information for the database opened by this connection.
-     * @return Schema the schema information for the database opened by this connection.
+     * @return TSchema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
-     *
-     * @phpstan-return Schema<ColumnSchema>
-     * @psalm-return Schema<ColumnSchema>
      */
     public function getSchema()
     {
@@ -885,7 +880,7 @@ class Connection extends Component
 
     /**
      * Returns the query builder for the current DB connection.
-     * @return QueryBuilder the query builder for the current DB connection.
+     * @return TQueryBuilder the query builder for the current DB connection.
      */
     public function getQueryBuilder()
     {

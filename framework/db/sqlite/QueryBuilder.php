@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -558,7 +559,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $schema = null;
         if (count($tableParts) === 2) {
-            list ($schema, $table) = $tableParts;
+            list($schema, $table) = $tableParts;
         }
 
         return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')

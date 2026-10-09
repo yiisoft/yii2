@@ -113,6 +113,43 @@ class FileTargetTest extends TestCase
         $this->assertFileDoesNotExist($logFile . '.4');
     }
 
+    public function testRotatePreservesMtime(): void
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        mkdir(dirname($logFile), 0777, true);
+
+        $logger = new Logger();
+        $dispatcher = new Dispatcher([
+            'logger' => $logger,
+            'targets' => [
+                'file' => [
+                    'class' => 'yii\log\FileTarget',
+                    'logFile' => $logFile,
+                    'levels' => ['warning'],
+                    'maxFileSize' => 1,
+                    'maxLogFiles' => 1,
+                    'logVars' => [],
+                ],
+            ],
+        ]);
+
+        $logger->log(str_repeat('x', 2048), Logger::LEVEL_WARNING);
+        $logger->flush(true);
+
+        $expectedMtime = time() - 7200;
+        touch($logFile, $expectedMtime);
+        clearstatcache();
+
+        $logger->log('y', Logger::LEVEL_WARNING);
+        $logger->flush(true);
+
+        clearstatcache();
+
+        $this->assertFileExists($logFile . '.1');
+        $this->assertSame($expectedMtime, filemtime($logFile . '.1'));
+    }
+
     public function testLogEmptyStrings(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -71,7 +72,6 @@ class Transaction extends \yii\base\BaseObject
      * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     public const SERIALIZABLE = 'SERIALIZABLE';
-
     /**
      * @var Connection the database connection that this transaction is associated with.
      */
@@ -108,6 +108,10 @@ class Transaction extends \yii\base\BaseObject
      * you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
      * At the time of this writing affected DBMS are MSSQL and SQLite.
      *
+     * > Note: The isolation level applies to the outermost transaction only. Nested transactions are implemented with
+     * savepoints and always run at the isolation level of the outer transaction, so an `$isolationLevel` passed to a
+     * nested [[begin()]] call is ignored and a warning is logged (since 2.0.56).
+     *
      * [isolation level]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      *
      * Starting from version 2.0.16, this method throws exception when beginning nested transaction and underlying DBMS
@@ -138,6 +142,13 @@ class Transaction extends \yii\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
+            if ($isolationLevel !== null) {
+                Yii::warning(
+                    "Isolation level \"$isolationLevel\" ignored for nested transaction: a savepoint runs at"
+                    . ' the isolation level of the outer transaction',
+                    __METHOD__
+                );
+            }
             Yii::debug('Set savepoint ' . $this->_level, __METHOD__);
             // make sure the transaction wasn't autocommitted
             if ($this->db->pdo->inTransaction()) {

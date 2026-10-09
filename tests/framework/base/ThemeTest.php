@@ -25,11 +25,11 @@ class ThemeTest extends TestCase
         $this->mockWebApplication($config);
     }
 
-    private function assertPathEquals($expected, $actual, $message = '', $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false): void
+    private function assertPathEquals($expected, $actual, $message = ''): void
     {
         $expected = str_replace('\\', '/', $expected);
         $actual = str_replace('\\', '/', $actual);
-        $this->assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        $this->assertEquals($expected, $actual, $message);
     }
 
     public function testSetBaseUrl(): void
