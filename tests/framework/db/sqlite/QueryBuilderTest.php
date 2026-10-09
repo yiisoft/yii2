@@ -16,6 +16,7 @@ use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
+use yiiunit\data\db\ConnectionWithServerVersion;
 
 /**
  * @group db
@@ -148,6 +149,26 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         }
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
         $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
+    }
+
+    public function testBatchInsertWithoutColumnsOnOlderVersions(): void
+    {
+        $db = $this->prepareDatabase(
+            [
+                'class' => ConnectionWithServerVersion::class,
+                'dsn' => $this->database['dsn'],
+                'serverVersion' => '3.7.10',
+            ],
+            $this->database['fixture']
+        );
+
+        $sql = $db->getQueryBuilder()->batchInsert('customer', [], [['no columns passed']]);
+
+        $this->assertSame(
+            "INSERT INTO `customer` () SELECT 'no columns passed'",
+            $sql,
+            'The SQL generated for batch insert without columns on older SQLite versions is incorrect.',
+        );
     }
 
     public function testRenameTable(): void
