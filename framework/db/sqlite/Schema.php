@@ -75,6 +75,14 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     ];
 
     /**
+     * @var string the default schema name. In SQLite the schema name is the name of an
+     * [attached database](https://www.sqlite.org/lang_attach.html), `main` being the one the connection was
+     * opened with.
+     * @since 2.0.56
+     */
+    public $defaultSchema = 'main';
+
+    /**
      * {@inheritdoc}
      */
     protected $tableQuoteCharacter = '`';
@@ -86,11 +94,68 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * The returned names are the names of the databases attached to the connection, `main` included.
+     * The `temp` database holding temporary tables is skipped as a system schema.
+     *
+     * @since 2.0.56
+     */
+    protected function findSchemaNames()
+    {
+        $databases = $this->db->createCommand('PRAGMA DATABASE_LIST')->queryAll();
+        $databases = $this->normalizePdoRowKeyCase($databases, true);
+
+        $schemaNames = [];
+        foreach ($databases as $database) {
+            if ($database['name'] !== 'temp') {
+                $schemaNames[] = $database['name'];
+            }
+        }
+
+        return $schemaNames;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
-        $sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence' ORDER BY tbl_name";
+        $sql = 'SELECT DISTINCT tbl_name FROM ' . $this->quoteSchemaPrefix($schema) . 'sqlite_master'
+            . " WHERE tbl_name<>'sqlite_sequence' ORDER BY tbl_name";
+
         return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.56
+     */
+    protected function resolveTableName($name)
+    {
+        $resolvedName = new TableSchema();
+        $this->resolveTableNames($resolvedName, $name);
+
+        return $resolvedName;
+    }
+
+    /**
+     * Resolves the table name and schema name (if any) of the given table.
+     * @param TableSchema $table the table metadata object.
+     * @param string $name the table name.
+     * @since 2.0.56
+     */
+    protected function resolveTableNames($table, $name)
+    {
+        $parts = $this->getTableNameParts($name);
+        if (isset($parts[1])) {
+            $table->schemaName = $parts[0];
+            $table->name = $parts[1];
+        } else {
+            $table->schemaName = $this->defaultSchema;
+            $table->name = $parts[0];
+        }
+
+        $table->fullName = $this->composeFullName($table->name, $table->schemaName);
     }
 
     /**
@@ -99,8 +164,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function loadTableSchema($name)
     {
         $table = new TableSchema();
-        $table->name = $name;
-        $table->fullName = $name;
+        $this->resolveTableNames($table, $name);
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
@@ -123,7 +187,10 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function loadTableForeignKeys($tableName)
     {
-        $foreignKeys = $this->db->createCommand('PRAGMA FOREIGN_KEY_LIST (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $resolvedName = $this->resolveTableName($tableName);
+        $foreignKeys = $this->db->createCommand(
+            $this->pragma('FOREIGN_KEY_LIST', $resolvedName->name, $resolvedName->schemaName)
+        )->queryAll();
         $foreignKeys = $this->normalizePdoRowKeyCase($foreignKeys, true);
         $foreignKeys = ArrayHelper::index($foreignKeys, null, 'table');
         ArrayHelper::multisort($foreignKeys, 'seq', SORT_ASC, SORT_NUMERIC);
@@ -131,6 +198,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         foreach ($foreignKeys as $table => $foreignKey) {
             $result[] = new ForeignKeyConstraint([
                 'columnNames' => ArrayHelper::getColumn($foreignKey, 'from'),
+                // SQLite foreign keys never cross databases, so the referenced table lives in the same schema
+                'foreignSchemaName' => $resolvedName->schemaName,
                 'foreignTableName' => $table,
                 'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'to'),
                 'onDelete' => isset($foreignKey[0]['on_delete']) ? $foreignKey[0]['on_delete'] : null,
@@ -162,9 +231,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function loadTableChecks($tableName)
     {
-        $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
-            ':tableName' => $tableName,
-        ])->queryScalar();
+        $resolvedName = $this->resolveTableName($tableName);
+        $sql = $this->db->createCommand(
+            'SELECT `sql` FROM ' . $this->quoteSchemaPrefix($resolvedName->schemaName) . '`sqlite_master`'
+            . ' WHERE name = :tableName',
+            [':tableName' => $resolvedName->name]
+        )->queryScalar();
         /** @var SqlToken[]|SqlToken[][]|SqlToken[][][] $code */
         $code = (new SqlTokenizer($sql))->tokenize();
         $pattern = (new SqlTokenizer('any CREATE any TABLE any()'))->tokenize();
@@ -231,7 +303,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findColumns($table)
     {
-        $sql = 'PRAGMA table_info(' . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = $this->pragma('table_info', $table->name, $table->schemaName);
         $columns = $this->db->createCommand($sql)->queryAll();
         if (empty($columns)) {
             return false;
@@ -258,12 +330,14 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findConstraints($table)
     {
-        $sql = 'PRAGMA foreign_key_list(' . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = $this->pragma('foreign_key_list', $table->name, $table->schemaName);
         $keys = $this->db->createCommand($sql)->queryAll();
         foreach ($keys as $key) {
             $id = (int) $key['id'];
             if (!isset($table->foreignKeys[$id])) {
-                $table->foreignKeys[$id] = [$key['table'], $key['from'] => $key['to']];
+                // SQLite foreign keys never cross databases, so the referenced table lives in the same schema
+                $foreignTableName = $this->composeFullName($key['table'], $table->schemaName);
+                $table->foreignKeys[$id] = [$foreignTableName, $key['from'] => $key['to']];
             } else {
                 // composite FK
                 $table->foreignKeys[$id][$key['from']] = $key['to'];
@@ -288,13 +362,15 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function findUniqueIndexes($table)
     {
-        $sql = 'PRAGMA index_list(' . $this->quoteSimpleTableName($table->name) . ')';
+        $sql = $this->pragma('index_list', $table->name, $table->schemaName);
         $indexes = $this->db->createCommand($sql)->queryAll();
         $uniqueIndexes = [];
 
         foreach ($indexes as $index) {
             $indexName = $index['name'];
-            $indexInfo = $this->db->createCommand('PRAGMA index_info(' . $this->quoteValue($index['name']) . ')')->queryAll();
+            $indexInfo = $this->db->createCommand(
+                $this->pragma('index_info', $index['name'], $table->schemaName)
+            )->queryAll();
 
             if ($index['unique']) {
                 $uniqueIndexes[$indexName] = [];
@@ -387,11 +463,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * Returns table columns info.
      * @param string $tableName table name
+     * @param string|null $schemaName the schema (attached database) the table belongs to.
      * @return array
      */
-    private function loadTableColumnsInfo($tableName)
+    private function loadTableColumnsInfo($tableName, $schemaName = null)
     {
-        $tableColumns = $this->db->createCommand('PRAGMA TABLE_INFO (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $tableColumns = $this->db->createCommand($this->pragma('TABLE_INFO', $tableName, $schemaName))->queryAll();
         $tableColumns = $this->normalizePdoRowKeyCase($tableColumns, true);
 
         return ArrayHelper::index($tableColumns, 'cid');
@@ -408,7 +485,11 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        $indexes = $this->db->createCommand('PRAGMA INDEX_LIST (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $resolvedName = $this->resolveTableName($tableName);
+        $schemaName = $resolvedName->schemaName;
+        $indexes = $this->db->createCommand(
+            $this->pragma('INDEX_LIST', $resolvedName->name, $schemaName)
+        )->queryAll();
         $indexes = $this->normalizePdoRowKeyCase($indexes, true);
         $tableColumns = null;
         if (!empty($indexes) && !isset($indexes[0]['origin'])) {
@@ -416,7 +497,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
              * SQLite may not have an "origin" column in INDEX_LIST
              * See https://www.sqlite.org/src/info/2743846cdba572f6
              */
-            $tableColumns = $this->loadTableColumnsInfo($tableName);
+            $tableColumns = $this->loadTableColumnsInfo($resolvedName->name, $schemaName);
         }
         $result = [
             'primaryKey' => null,
@@ -424,7 +505,9 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
             'uniques' => [],
         ];
         foreach ($indexes as $index) {
-            $columns = $this->db->createCommand('PRAGMA INDEX_INFO (' . $this->quoteValue($index['name']) . ')')->queryAll();
+            $columns = $this->db->createCommand(
+                $this->pragma('INDEX_INFO', $index['name'], $schemaName)
+            )->queryAll();
             $columns = $this->normalizePdoRowKeyCase($columns, true);
             ArrayHelper::multisort($columns, 'seqno', SORT_ASC, SORT_NUMERIC);
             if ($tableColumns !== null) {
@@ -460,7 +543,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
              * See https://www.sqlite.org/lang_createtable.html#primkeyconst
              */
             if ($tableColumns === null) {
-                $tableColumns = $this->loadTableColumnsInfo($tableName);
+                $tableColumns = $this->loadTableColumnsInfo($resolvedName->name, $schemaName);
             }
             foreach ($tableColumns as $tableColumn) {
                 if ($tableColumn['pk'] > 0) {
@@ -477,6 +560,128 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         }
 
         return $result[$returnType];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Only the dots that separate the identifiers are split on, so a schema or a table name that holds a dot keeps
+     * it as long as it is quoted. The quotes are stripped off the parts that are returned, a doubled quote character
+     * standing for a literal one.
+     *
+     * @since 2.0.56
+     */
+    protected function getTableNameParts($name)
+    {
+        $parts = [];
+        $part = '';
+        $quoteCharacter = null;
+        for ($i = 0, $length = strlen($name); $i < $length; $i++) {
+            $character = $name[$i];
+            if ($quoteCharacter !== null) {
+                if ($character !== $quoteCharacter) {
+                    $part .= $character;
+                } elseif (isset($name[$i + 1]) && $name[$i + 1] === $quoteCharacter) {
+                    $part .= $character;
+                    $i++;
+                } else {
+                    $quoteCharacter = null;
+                }
+            } elseif ($character === '`' || $character === '"') {
+                $quoteCharacter = $character;
+            } elseif ($character === '.') {
+                $parts[] = $part;
+                $part = '';
+            } else {
+                $part .= $character;
+            }
+        }
+        $parts[] = $part;
+
+        return $parts;
+    }
+
+    /**
+     * Builds a `PRAGMA` statement, qualifying it with the schema name when it is not the default one.
+     * @param string $name the pragma name, e.g. `TABLE_INFO`.
+     * @param string $argument the pragma argument, e.g. a table or an index name.
+     * @param string|null $schemaName the schema (attached database) name. `null`, an empty string or
+     * [[defaultSchema]] means no qualification is needed.
+     * @return string the `PRAGMA` statement.
+     * @since 2.0.56
+     */
+    private function pragma($name, $argument, $schemaName = null)
+    {
+        return 'PRAGMA ' . $this->quoteSchemaPrefix($schemaName) . $name . ' (' . $this->quoteValue($argument) . ')';
+    }
+
+    /**
+     * Returns the quoted schema name followed by a dot, to be used as a prefix of a table name or a pragma name.
+     * @param string|null $schemaName the schema (attached database) name. `null`, an empty string or
+     * [[defaultSchema]] result in an empty prefix, since those all refer to the default schema.
+     * @return string the prefix, an empty string when no qualification is needed.
+     * @since 2.0.56
+     */
+    private function quoteSchemaPrefix($schemaName)
+    {
+        if ($schemaName === null || $schemaName === '' || $schemaName === $this->defaultSchema) {
+            return '';
+        }
+
+        return $this->quoteIdentifier($schemaName) . '.';
+    }
+
+    /**
+     * Quotes an identifier, doubling the quote characters it holds.
+     *
+     * Unlike [[quoteSimpleTableName()]] this does not leave a name that already holds a quote character alone,
+     * which would let it break out of the quoting.
+     *
+     * @param string $identifier the identifier to quote.
+     * @return string the quoted identifier.
+     * @since 2.0.56
+     */
+    private function quoteIdentifier($identifier)
+    {
+        return '`' . str_replace('`', '``', $identifier) . '`';
+    }
+
+    /**
+     * Composes the full name of a table out of its name and the schema it belongs to, the default schema being
+     * left out.
+     *
+     * A part holding a dot or a quote character is quoted, so that the result can be handed back to
+     * [[getTableSchema()]] and its like without being split at the wrong dot.
+     *
+     * @param string $tableName the table name without a schema prefix.
+     * @param string|null $schemaName the schema (attached database) name.
+     * @return string the full name of the table.
+     * @since 2.0.56
+     */
+    private function composeFullName($tableName, $schemaName)
+    {
+        $fullName = $this->quoteAmbiguousIdentifier($tableName);
+        if ($schemaName !== null && $schemaName !== '' && $schemaName !== $this->defaultSchema) {
+            $fullName = $this->quoteAmbiguousIdentifier($schemaName) . '.' . $fullName;
+        }
+
+        return $fullName;
+    }
+
+    /**
+     * Quotes an identifier that [[getTableNameParts()]] would otherwise not read back as a single part, leaving
+     * the ordinary ones untouched.
+     * @param string $identifier the identifier to quote.
+     * @return string the identifier, quoted only when it holds a dot or a quote character.
+     * @since 2.0.56
+     */
+    private function quoteAmbiguousIdentifier($identifier)
+    {
+        if (strpbrk($identifier, '.`"') === false) {
+            return $identifier;
+        }
+
+        return $this->quoteIdentifier($identifier);
     }
 
     /**
