@@ -36,6 +36,8 @@ Yii Framework 2 Change Log
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
+- Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
+- Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #20766: Fix `@param` annotation for `$offset` in `yii\db\ArrayExpression::offsetSet()` (WarLikeLaux)
 - Bug #20766: Fix `yii\db\ArrayExpression::offsetSet()` to append when `$offset` is `null` (WarLikeLaux, terabytesoftw)
