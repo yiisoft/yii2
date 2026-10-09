@@ -12,6 +12,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
@@ -149,6 +150,18 @@ class View extends \yii\base\View
      */
     public $jsFiles = [];
     /**
+     * @var array the registered `<noscript>` tags, indexed by position.
+     * @see registerNoscriptTag()
+     * @since 2.0.56
+     */
+    public $noscriptTags = [];
+    /**
+     * @var array the registered JSON-LD script tags, indexed by position.
+     * @see registerLdJson()
+     * @since 2.0.56
+     */
+    public $ldJson = [];
+    /**
      * @since 2.0.50
      * @var array the script tag options.
      */
@@ -267,12 +280,14 @@ class View extends \yii\base\View
     }
 
     /**
-     * Clears up the registered meta tags, link tags, css/js scripts and files.
+     * Clears up the registered meta tags, link tags, noscript tags, JSON-LD script tags, css/js scripts and files.
      */
     public function clear()
     {
         $this->metaTags = [];
         $this->linkTags = [];
+        $this->noscriptTags = [];
+        $this->ldJson = [];
         $this->css = [];
         $this->cssFiles = [];
         $this->js = [];
@@ -420,6 +435,91 @@ class View extends \yii\base\View
             $this->linkTags[] = Html::tag('link', '', $options);
         } else {
             $this->linkTags[$key] = Html::tag('link', '', $options);
+        }
+    }
+
+    /**
+     * Registers a `<noscript>` tag.
+     *
+     * For example, a fallback tracking pixel can be registered at the beginning of the body section
+     * like the following:
+     *
+     * ```php
+     * $view->registerNoscriptTag('<img src="https://example.com/pixel.gif" alt="">', [], View::POS_BEGIN);
+     * ```
+     *
+     * which will result in the following HTML right after the opening `<body>` tag:
+     * `<noscript><img src="https://example.com/pixel.gif" alt=""></noscript>`.
+     *
+     * **Note:** The content is rendered as is, without HTML encoding. According to the HTML specification,
+     * a `<noscript>` tag in the head section may only contain `<link>`, `<style>` and `<meta>` tags.
+     *
+     * @param string $content the content of the noscript tag. It will NOT be HTML-encoded.
+     * @param array $options the HTML attributes for the noscript tag.
+     * @param int $position the position at which the noscript tag should be inserted in a page. The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
+     *
+     * @param string|null $key the key that identifies the noscript tag. If two noscript tags are registered
+     * with the same key at the same position, the latter will overwrite the former. If this is null,
+     * the new noscript tag will be appended to the existing ones.
+     * @since 2.0.56
+     */
+    public function registerNoscriptTag($content, $options = [], $position = self::POS_HEAD, $key = null)
+    {
+        if ($key === null) {
+            $this->noscriptTags[$position][] = Html::tag('noscript', $content, $options);
+        } else {
+            $this->noscriptTags[$position][$key] = Html::tag('noscript', $content, $options);
+        }
+    }
+
+    /**
+     * Registers a JSON-LD script tag (`<script type="application/ld+json">`).
+     *
+     * For example, [structured data](https://schema.org/) describing a video can be registered like the following:
+     *
+     * ```php
+     * $view->registerLdJson([
+     *     '@context' => 'https://schema.org',
+     *     '@type' => 'VideoObject',
+     *     'name' => 'Yii tutorial',
+     *     'url' => 'https://example.com/videos/yii-tutorial',
+     * ]);
+     * ```
+     *
+     * which will result in the following HTML in the head section:
+     *
+     * ```html
+     * <script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"VideoObject","name":"Yii tutorial","url":"https:\/\/example.com\/videos\/yii-tutorial"}</script>
+     * ```
+     *
+     * The data is encoded with [[Json::htmlEncode()]], so it is safe to be embedded in HTML even if it
+     * contains user-provided values such as `</script>`. Each call registers a separate script tag.
+     *
+     * @param array|\JsonSerializable $ldJson the data to be encoded as JSON-LD. Please refer to [[Json::encode()]]
+     * for the supported values.
+     * @param int $position the position at which the script tag should be inserted in a page. The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
+     *
+     * @param string|null $key the key that identifies the JSON-LD script tag. If two script tags are registered
+     * with the same key at the same position, the latter will overwrite the former. If this is null,
+     * the new script tag will be appended to the existing ones.
+     * @since 2.0.56
+     */
+    public function registerLdJson($ldJson, $position = self::POS_HEAD, $key = null)
+    {
+        $script = Html::script(Json::htmlEncode($ldJson), ['type' => 'application/ld+json']);
+
+        if ($key === null) {
+            $this->ldJson[$position][] = $script;
+        } else {
+            $this->ldJson[$position][$key] = $script;
         }
     }
 
@@ -618,12 +718,18 @@ class View extends \yii\base\View
     protected function renderHeadHtml()
     {
         $lines = [];
+
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
         }
-
         if (!empty($this->linkTags)) {
             $lines[] = implode("\n", $this->linkTags);
+        }
+        if (!empty($this->noscriptTags[self::POS_HEAD])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_HEAD]);
+        }
+        if (!empty($this->ldJson[self::POS_HEAD])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_HEAD]);
         }
         if (!empty($this->cssFiles)) {
             $lines[] = implode("\n", $this->cssFiles);
@@ -649,6 +755,12 @@ class View extends \yii\base\View
     protected function renderBodyBeginHtml()
     {
         $lines = [];
+        if (!empty($this->noscriptTags[self::POS_BEGIN])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_BEGIN]);
+        }
+        if (!empty($this->ldJson[self::POS_BEGIN])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_BEGIN]);
+        }
         if (!empty($this->jsFiles[self::POS_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
         }
@@ -671,6 +783,12 @@ class View extends \yii\base\View
     {
         $lines = [];
 
+        if (!empty($this->noscriptTags[self::POS_END])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_END]);
+        }
+        if (!empty($this->ldJson[self::POS_END])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_END]);
+        }
         if (!empty($this->jsFiles[self::POS_END])) {
             $lines[] = implode("\n", $this->jsFiles[self::POS_END]);
         }
