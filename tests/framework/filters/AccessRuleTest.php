@@ -465,7 +465,76 @@ class AccessRuleTest extends TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
-    // TODO test match custom callback
+    public function testMatchCallbackReturningTrue(): void
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'matchCallback' => function ($rule, $action) {
+                return true;
+            },
+        ]);
+
+        $this->assertTrue($rule->allows($action, $user, $request));
+    }
+
+    public function testMatchCallbackReturningFalse(): void
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'matchCallback' => function ($rule, $action) {
+                return false;
+            },
+        ]);
+
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+
+    public function testMatchCallbackReceivesRuleAndAction(): void
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $receivedRule = null;
+        $receivedAction = null;
+        $rule = new AccessRule([
+            'allow' => true,
+            'matchCallback' => function ($rule, $action) use (&$receivedRule, &$receivedAction) {
+                $receivedRule = $rule;
+                $receivedAction = $action;
+                return true;
+            },
+        ]);
+
+        $rule->allows($action, $user, $request);
+
+        $this->assertSame($rule, $receivedRule);
+        $this->assertSame($action, $receivedAction);
+    }
+
+    public function testMatchCallbackWithDenyRule(): void
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => false,
+            'matchCallback' => function () {
+                return true;
+            },
+        ]);
+
+        $this->assertFalse($rule->allows($action, $user, $request));
+    }
 
     public function testMatchIP(): void
     {
