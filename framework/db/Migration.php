@@ -162,7 +162,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * @param \Throwable $e
      */
-    private function printException($e)
+    protected function printException($e)
     {
         echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
         echo $e->getTraceAsString() . "\n";
