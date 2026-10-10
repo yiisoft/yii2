@@ -235,8 +235,13 @@ class Menu extends Widget
         if (isset($item['url'])) {
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
+            $url = Url::to($item['url']);
+            if (Html::$neutralizeUnsafeUrlSchemes && Html::hasUnsafeUrlScheme($url)) {
+                $url = '#';
+            }
+
             return strtr($template, [
-                '{url}' => Html::encode(Url::to($item['url'])),
+                '{url}' => Html::encode($url),
                 '{label}' => $item['label'],
             ]);
         }
