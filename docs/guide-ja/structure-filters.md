@@ -142,7 +142,7 @@ public function behaviors()
 ### 認証メソッド・フィルタ <span id="auth-method-filters"></span>
 
 認証メソッド・フィルタは、[HTTP Basic 認証](https://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
-[OAuth 2](https://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
+[OAuth 2](https://oauth.net/2/) などの様々なメソッドを使ってユーザを認証するために使われるものです。
 これらのフィルタ・クラスはすべて `yii\filters\auth` 名前空間の下にあります。
 
 次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセス・トークンを使ってユーザを認証しています。

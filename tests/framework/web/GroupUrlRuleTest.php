@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,13 +19,13 @@ use yiiunit\TestCase;
  */
 class GroupUrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    public function testCreateUrl()
+    public function testCreateUrl(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
@@ -40,7 +41,7 @@ class GroupUrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequest()
+    public function testParseRequest(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
@@ -62,7 +63,7 @@ class GroupUrlRuleTest extends TestCase
         }
     }
 
-    public function testParseVerb()
+    public function testParseVerb(): void
     {
         $config = [
             'prefix' => 'admin',
@@ -71,6 +72,7 @@ class GroupUrlRuleTest extends TestCase
             ],
         ];
         $rules = new GroupUrlRule($config);
+        $this->assertInstanceOf(UrlRule::class, $rules->rules[0]);
         $this->assertNull($rules->rules[0]->verb);
 
         $config = [
@@ -80,6 +82,7 @@ class GroupUrlRuleTest extends TestCase
             ],
         ];
         $rules = new GroupUrlRule($config);
+        $this->assertInstanceOf(UrlRule::class, $rules->rules[0]);
         $this->assertCount(1, $rules->rules[0]->verb);
         $this->assertContains('POST', $rules->rules[0]->verb);
         $this->assertEquals('admin/user/login', $rules->rules[0]->route);
@@ -91,6 +94,7 @@ class GroupUrlRuleTest extends TestCase
             ],
         ];
         $rules = new GroupUrlRule($config);
+        $this->assertInstanceOf(UrlRule::class, $rules->rules[0]);
         $this->assertCount(1, $rules->rules[0]->verb);
         $this->assertContains('POST', $rules->rules[0]->verb);
         $this->assertEquals('admin/user/login', $rules->rules[0]->route);
@@ -102,6 +106,7 @@ class GroupUrlRuleTest extends TestCase
             ],
         ];
         $rules = new GroupUrlRule($config);
+        $this->assertInstanceOf(UrlRule::class, $rules->rules[0]);
         $this->assertCount(2, $rules->rules[0]->verb);
         $this->assertContains('POST', $rules->rules[0]->verb);
         $this->assertContains('GET', $rules->rules[0]->verb);

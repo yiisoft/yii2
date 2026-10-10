@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,6 @@ use yii\db\ExpressionInterface;
 class SimpleConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

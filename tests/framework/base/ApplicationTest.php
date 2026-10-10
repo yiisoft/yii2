@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -19,21 +22,21 @@ use yiiunit\TestCase;
  */
 class ApplicationTest extends TestCase
 {
-    public function testContainerSettingsAffectBootstrap()
+    public function testContainerSettingsAffectBootstrap(): void
     {
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className(),
+                    Dispatcher::class => DispatcherMock::class,
                 ],
             ],
             'bootstrap' => ['log'],
         ]);
 
-        $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
+        $this->assertInstanceOf(DispatcherMock::class, Yii::$app->log);
     }
 
-    public function testBootstrap()
+    public function testBootstrap(): void
     {
         Yii::getLogger()->flush();
 
@@ -41,15 +44,15 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::className(),
+                    'class' => Component::class,
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::className(),
+                    'class' => BootstrapComponentMock::class,
                 ],
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::className(),
+                    'class' => Module::class,
                 ],
             ],
             'bootstrap' => [
@@ -67,7 +70,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
     }
 
-    public function testModuleId()
+    public function testModuleId(): void
     {
         $this->mockApplication(['id' => 'app-basic']);
         $child = new Module('child');

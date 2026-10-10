@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\data\console\controllers\fixtures;
 
@@ -21,7 +24,7 @@ class FixtureStorage
 
     public static $activeFixtureSequence = [];
 
-    public static function clear()
+    public static function clear(): void
     {
         static::$globalFixturesData = [];
         static::$firstFixtureData = [];

@@ -18,7 +18,7 @@ use yii\db\ActiveQuery;
  * @property int $employee_id
  * @property string $summary
  *
- * @property Employee $employee
+ * @property-read Employee $employee
  *
  * @author Kolyunya <OleynikovNY@mail.ru>
  * @since 2.0.12
@@ -41,7 +41,7 @@ class Dossier extends ActiveRecord
     public function getEmployee()
     {
         return $this
-            ->hasOne(Employee::className(), [
+            ->hasOne(Employee::class, [
                 'department_id' => 'department_id',
                 'id' => 'employee_id',
             ])

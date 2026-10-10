@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,6 +13,7 @@ use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
 use yii\log\FileTarget;
 use yii\log\Logger;
+use yiiunit\framework\log\mocks\CustomLogger;
 use yiiunit\TestCase;
 
 /**
@@ -19,7 +21,7 @@ use yiiunit\TestCase;
  */
 class FileTargetTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -29,20 +31,20 @@ class FileTargetTest extends TestCase
      * Tests that log directory isn't created during init process
      * @see https://github.com/yiisoft/yii2/issues/15662
      */
-    public function testInit()
+    public function testInit(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
         new FileTarget([
             'logFile' => Yii::getAlias('@yiiunit/runtime/log/filetargettest.log'),
         ]);
-        $this->assertFileNotExists(
+        $this->assertFileDoesNotExist(
             dirname($logFile),
             'Log directory should not be created during init process'
         );
     }
 
-    public function testRotate()
+    public function testRotate(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
@@ -71,10 +73,10 @@ class FileTargetTest extends TestCase
         clearstatcache();
 
         $this->assertFileExists($logFile);
-        $this->assertFileNotExists($logFile . '.1');
-        $this->assertFileNotExists($logFile . '.2');
-        $this->assertFileNotExists($logFile . '.3');
-        $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileDoesNotExist($logFile . '.1');
+        $this->assertFileDoesNotExist($logFile . '.2');
+        $this->assertFileDoesNotExist($logFile . '.3');
+        $this->assertFileDoesNotExist($logFile . '.4');
 
         // exceed max size
         for ($i = 0; $i < 1024; $i++) {
@@ -91,9 +93,9 @@ class FileTargetTest extends TestCase
 
         $this->assertFileExists($logFile);
         $this->assertFileExists($logFile . '.1');
-        $this->assertFileNotExists($logFile . '.2');
-        $this->assertFileNotExists($logFile . '.3');
-        $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileDoesNotExist($logFile . '.2');
+        $this->assertFileDoesNotExist($logFile . '.3');
+        $this->assertFileDoesNotExist($logFile . '.4');
 
         // second rotate
 
@@ -106,8 +108,94 @@ class FileTargetTest extends TestCase
 
         $this->assertFileExists($logFile);
         $this->assertFileExists($logFile . '.1');
-        $this->assertFileNotExists($logFile . '.2');
-        $this->assertFileNotExists($logFile . '.3');
-        $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileDoesNotExist($logFile . '.2');
+        $this->assertFileDoesNotExist($logFile . '.3');
+        $this->assertFileDoesNotExist($logFile . '.4');
+    }
+
+    public function testRotatePreservesMtime(): void
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        mkdir(dirname($logFile), 0777, true);
+
+        $logger = new Logger();
+        $dispatcher = new Dispatcher([
+            'logger' => $logger,
+            'targets' => [
+                'file' => [
+                    'class' => 'yii\log\FileTarget',
+                    'logFile' => $logFile,
+                    'levels' => ['warning'],
+                    'maxFileSize' => 1,
+                    'maxLogFiles' => 1,
+                    'logVars' => [],
+                ],
+            ],
+        ]);
+
+        $logger->log(str_repeat('x', 2048), Logger::LEVEL_WARNING);
+        $logger->flush(true);
+
+        $expectedMtime = time() - 7200;
+        touch($logFile, $expectedMtime);
+        clearstatcache();
+
+        $logger->log('y', Logger::LEVEL_WARNING);
+        $logger->flush(true);
+
+        clearstatcache();
+
+        $this->assertFileExists($logFile . '.1');
+        $this->assertSame($expectedMtime, filemtime($logFile . '.1'));
+    }
+
+    public function testLogEmptyStrings(): void
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        $this->clearLogFile($logFile);
+
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 1, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx\n", $test[0]);
+
+        $this->clearLogFile($logFile);
+
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 3, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx\n", $test[0]);
+        $this->assertEquals("xxx\n", $test[1]);
+        $this->assertEquals("xxx\n", $test[2]);
+
+        $this->clearLogFile($logFile);
+
+        $logger->messages = array_fill(0, 1, 'yyy');
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+
+        $logger->messages = array_fill(0, 10, '');
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+
+        $logger->messages = array_fill(0, 10, null);
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+    }
+
+    private function clearLogFile($logFile): void
+    {
+        FileHelper::removeDirectory(dirname($logFile));
+        mkdir(dirname($logFile), 0777, true);
     }
 }

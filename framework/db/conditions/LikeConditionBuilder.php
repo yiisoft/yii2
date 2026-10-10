@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -78,7 +79,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             if ($value instanceof ExpressionInterface) {
                 $phName = $this->queryBuilder->buildExpression($value, $params);
             } else {
-                $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
+                $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr((string)$value, $escape) . '%'), $params);
             }
             $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }

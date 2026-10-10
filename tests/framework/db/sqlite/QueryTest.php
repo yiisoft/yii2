@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
 {
     protected $driverName = 'sqlite';
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $connection = $this->getConnection();
         $query = new Query();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -109,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Το «{attribute}» πρέπει να περιέχει τουλάχιστον {min, number} {min, plural, one{χαρακτήρα} few{χαρακτήρες} many{χαρακτήρες} other{χαρακτήρες}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Το «{attribute}» πρέπει να περιέχει το πολύ {max, number} {max, plural, one{χαρακτήρα} few{χαρακτήρες} many{χαρακτήρες} other{χαρακτήρες}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Το «{attribute}» πρέπει να περιέχει {length, number} {length, plural, one{χαρακτήρα} few{χαρακτήρες} many{χαρακτήρες} other{χαρακτήρες}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 ημέρα} other{# ημέρες}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 ώρα} other{# ώρες}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 λεπτό} other{# λεπτά}}',

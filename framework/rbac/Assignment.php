@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,6 @@
 
 namespace yii\rbac;
 
-use Yii;
 use yii\base\BaseObject;
 
 /**

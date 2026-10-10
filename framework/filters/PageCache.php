@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,8 +10,8 @@ namespace yii\filters;
 
 use Closure;
 use Yii;
-use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\DynamicContentAwareInterface;
 use yii\base\DynamicContentAwareTrait;
 use yii\caching\CacheInterface;
@@ -28,7 +29,7 @@ use yii\web\Response;
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
  * It also stores different versions of the page depending on the application language.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -51,6 +52,9 @@ use yii\web\Response;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class PageCache extends ActionFilter implements DynamicContentAwareInterface
 {
@@ -60,8 +64,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * Page cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
      */
-    const PAGE_CACHE_VERSION = 1;
-
+    public const PAGE_CACHE_VERSION = 1;
     /**
      * @var bool whether the content being cached should be differentiated according to the route.
      * A route consists of the requested controller ID and action ID. Defaults to `true`.
@@ -84,7 +87,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
@@ -104,7 +107,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ```php
+     * ```
      * [
      *     Yii::$app->language,
      * ]
@@ -113,7 +116,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * Since version 2.0.48 you can provide an anonymous function to generate variations. This is especially helpful
      * when you need to access the User component, which is resolved before the PageCache behavior:
      *
-     * ```php
+     * ```
      * 'variations' => function() {
      *     return [
      *         Yii::$app->language,
@@ -163,10 +166,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {

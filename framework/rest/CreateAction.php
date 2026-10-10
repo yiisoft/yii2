@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,6 +20,9 @@ use yii\web\ServerErrorHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller = Controller
+ * @extends Action<T>
  */
 class CreateAction extends Action
 {
@@ -43,7 +47,7 @@ class CreateAction extends Action
             call_user_func($this->checkAccess, $this->id);
         }
 
-        /* @var $model \yii\db\ActiveRecord */
+        /** @var \yii\db\ActiveRecord $model */
         $model = new $this->modelClass([
             'scenario' => $this->scenario,
         ]);

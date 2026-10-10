@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web\session;
 
@@ -7,7 +12,7 @@ use yii\web\Session;
 
 trait SessionTestTrait
 {
-    public function initStrictModeTest($class)
+    public function initStrictModeTest($class): void
     {
         /** @var Session $session */
         $session = new $class();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -33,7 +34,7 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ```php
+ * ```
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
@@ -48,7 +49,7 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ```php
+ * ```
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
@@ -65,8 +66,8 @@ use yii\helpers\FileHelper;
  *
  * @property string $basePath The root path of this theme. All resources of this theme are located under this
  * directory.
- * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL.
+ * @property string|null $baseUrl The base URL (without ending slash) for this theme. All resources of this
+ * theme are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -81,11 +82,12 @@ class Theme extends Component
      */
     public $pathMap;
 
+    /** @var string|null */
     private $_baseUrl;
 
 
     /**
-     * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
+     * @return string|null the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function getBaseUrl()
@@ -94,14 +96,15 @@ class Theme extends Component
     }
 
     /**
-     * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
-     * to be under this base URL.
+     * @param string|null $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this
+     * theme are considered to be under this base URL.
      */
     public function setBaseUrl($url)
     {
         $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
 
+    /** @var string */
     private $_basePath;
 
     /**

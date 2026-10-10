@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -160,7 +161,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```php
+     * ```
      * function ($model) {
      *     return $model->country == Country::USA;
      * }
@@ -180,7 +181,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```javascript
+     * ```
      * function (attribute, value) {
      *     return $('#country').val() === 'USA';
      * }
@@ -315,6 +316,8 @@ class Validator extends Component
      * @param mixed $value the data value to be validated.
      * @param string|null $error the error message to be returned, if the validation fails.
      * @return bool whether the data is valid.
+     *
+     * @param-out string|null $error
      */
     public function validate($value, &$error = null)
     {
@@ -342,7 +345,7 @@ class Validator extends Component
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
      * @return array|null the error message and the array of parameters to be inserted into the error message.
-     * ```php
+     * ```
      * if (!$valid) {
      *     return [$this->message, [
      *         'param1' => $this->param1,

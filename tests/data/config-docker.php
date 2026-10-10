@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,7 +14,7 @@
  * For example to change MySQL username and password your `config.local.php` should
  * contain the following:
  *
- * ```php
+ * ```
  * <?php
  * $config['databases']['mysql']['username'] = 'yiitest';
  * $config['databases']['mysql']['password'] = 'changeme';
@@ -30,7 +31,7 @@ $config = [
         'mysql' => [
             'dsn' => 'mysql:host=mysql;dbname=yiitest',
             'username' => 'root',
-            'password' => 'secret',
+            'password' => 'root',
             'fixture' => __DIR__ . '/mysql.sql',
         ],
         'sqlite' => [
@@ -38,9 +39,9 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=mssql;Database=yii2test',
-            'username' => 'sa',
-            'password' => 'Microsoft-12345',
+            'dsn' => 'sqlsrv:Server=mssql;Database=yiitest;TrustServerCertificate=true;',
+            'username' => 'SA',
+            'password' => 'YourStrong!Passw0rd',
             'fixture' => __DIR__ . '/mssql.sql',
         ],
         'pgsql' => [
@@ -50,9 +51,9 @@ $config = [
             'fixture' => __DIR__ . '/postgres.sql',
         ],
         'oci' => [
-            'dsn' => 'oci:dbname=LOCAL_XE;charset=AL32UTF8;',
-            'username' => '',
-            'password' => '',
+            'dsn' => 'oci:dbname=oracle/FREE;charset=AL32UTF8;',
+            'username' => 'system',
+            'password' => 'oracle',
             'fixture' => __DIR__ . '/oci.sql',
         ],
     ],

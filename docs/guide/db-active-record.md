@@ -650,6 +650,17 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
+> Note: DI is not supported by default due to performance concerns. You can add support if needed by overriding
+> the [[yii\db\ActiveRecord::instantiate()|instantiate()]] method to instantiate the class via [[Yii::createObject()]]:
+> 
+> ```php
+> public static function instantiate($row)
+> {
+>     return Yii::createObject(static::class);
+> }
+> ```
+
+
 ### Refreshing Data Life Cycle <span id="refreshing-data-life-cycle"></span>
 
 When calling [[yii\db\ActiveRecord::refresh()|refresh()]] to refresh an Active Record instance, the

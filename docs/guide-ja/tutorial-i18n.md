@@ -156,8 +156,8 @@ return [
 
 #####  他のストレージ・タイプ
 
-翻訳メッセージを格納するのには、PHP ファイル以外に、
-次のメッセージ・ソースを使うことも可能です。
+翻訳メッセージを格納するのには、PHP ファイル以外に、次のメッセージ・ソースを
+使うことも可能です。
 
 - [[yii\i18n\GettextMessageSource]] - 翻訳メッセージを保持するのに GNU Gettext の MO ファイルまたは PO ファイルを使用する
 - [[yii\i18n\DbMessageSource]] - 翻訳メッセージを保存するのにデータベース・テーブルを使用する
@@ -743,7 +743,7 @@ class TranslationEventHandler
 
 翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。追加のオプションについてはそれぞれのクラスを参照してください。
 
-まず最初に、構成情報ファイルを作成する必要があります。
+最初に、構成情報ファイルを作成する必要があります。
 どこに保存したいかを決めて、次のコマンドを発行してください。
 
 ```bash

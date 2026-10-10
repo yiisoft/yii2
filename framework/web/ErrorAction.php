@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ use yii\base\UserException;
  * First, declare an action of ErrorAction type in the `actions()` method of your `SiteController`
  * class (or whatever controller you prefer), like the following:
  *
- * ```php
+ * ```
  * public function actions()
  * {
  *     return [
@@ -38,7 +39,7 @@ use yii\base\UserException;
  *
  * Finally, configure the "errorHandler" application component as follows,
  *
- * ```php
+ * ```
  * 'errorHandler' => [
  *     'errorAction' => 'site/error',
  * ]
@@ -47,6 +48,9 @@ use yii\base\UserException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller = Controller
+ * @extends Action<T>
  */
 class ErrorAction extends Action
 {

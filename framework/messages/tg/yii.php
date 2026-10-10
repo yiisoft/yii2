@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,13 +24,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Powered by {yii}' => 'Дар {yii} кор мекунад',
-    'Unknown alias: -{name}' => 'Тахаллуси номаълум: -{name}',
-    'Yii Framework' => 'Yii Framework',
-    '(not set)' => '(супориш дода нашуд)',
     ' and ' => ' ва ',
+    '"{attribute}" does not support operator "{operator}".' => '',
+    '(not set)' => '(супориш дода нашуд)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Хатои дохилии сервер рух дод.',
     'Are you sure you want to delete this item?' => 'Шумо боварманд ҳастед, ки ҳамин элементро нест кардан мехоҳед?',
+    'Condition for "{attribute}" should be either a value or valid operator specification.' => '',
     'Delete' => 'Нест кардан',
     'Error' => 'Иштибоҳ',
     'File upload failed.' => 'Фарокашии файл муяссар гашт.',
@@ -42,6 +44,9 @@ return [
     'No results found.' => 'Ҳеҷ чиз ёфт нашуд.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Барои фарокашии файлҳо танҳо бо намудҳои зерини MIME иҷозат аст: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Барои фарокашии файлҳо танҳо тавассути зиёдкуни зерин иҷозат аст: {extensions}.',
+    'Operator "{operator}" must be used with a search attribute.' => '',
+    'Operator "{operator}" requires multiple operands.' => '',
+    'Options available: {options}' => '',
     'Page not found.' => 'Саҳифа ёфт нашуд.',
     'Please fix the following errors:' => 'Лутфан, хатогиҳои зеринро ислоҳ намоед:',
     'Please upload a file.' => 'Лутфан, файлро бор кунед.',
@@ -51,6 +56,7 @@ return [
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Ҳаҷми файли "{file}" азҳад зиёд калон аст. Андозаи он набояд аз {formattedLimit} зиёдтар бошад.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Ҳаҷми файли "{file}" аз ҳад зиёд хурд аст. Он бояд аз {formattedLimit} калонтар бошад.',
     'The format of {attribute} is invalid.' => 'Формати нодурусти маънӣ {attribute}.',
+    'The format of {filter} is invalid.' => '',
     'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Ҳаҷми файли "{file}" аз ҳад зиёд калон аст. Баландияш набояд аз {limit, number} {limit, plural, one{пиксел} few{пиксел} many{пиксел} other{пиксел}} зиёд бошад.',
     'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Ҳаҷми файл "{file}" аз ҳад зиёд калон аст. Дарозияш набояд аз {limit, number} {limit, plural, one{пиксел} few{пиксел} many{пиксел} other{пиксел}} зиёд бошад.',
     'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'Ҳаҷми файл "{file}" аз ҳад зиёд хурд аст. Баландияш бояд аз {limit, number} {limit, plural, one{пиксел} few{пиксел} many{пиксел} other{пиксел}} зиёд бошад.',
@@ -59,12 +65,15 @@ return [
     'The verification code is incorrect.' => 'Рамзи нодурусти санҷишӣ.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Ҳамаги <b>{count, number}</b> {count, plural, one{қайд} few{қайд} many{қайдҳо} other{қайд}}.',
     'Unable to verify your data submission.' => 'Санҷидани маълумоти фиристодаи Шумо муяссар нагардид.',
+    'Unknown alias: -{name}' => 'Тахаллуси номаълум: -{name}',
+    'Unknown filter attribute "{attribute}"' => '',
     'Unknown option: --{name}' => 'Гузинаи номаълум: --{name}',
     'Update' => 'Таҳрир намудан',
     'View' => 'Аз назар гузарондан',
     'Yes' => 'Ҳа',
     'You are not allowed to perform this action.' => 'Шумо барои анҷом додани амали мазкур иҷозат надоред.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Шумо наметавонед зиёда аз {limit, number} {limit, plural,one{файлро} few{файлҳоро} many{файлро} other{файлро}} фаро бикашед.',
+    'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => '',
     'in {delta, plural, =1{a day} other{# days}}' => 'баъд аз {delta, plural, =1{рӯз} one{# рӯз} few{# рӯз} many{# рӯз} other{# рӯз}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'баъд аз {delta, plural, =1{дақиқа} one{# дақиқа} few{# дақиқа} many{# дақиқа} other{# дақиқа}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'баъд аз {delta, plural, =1{моҳ} one{# моҳ} few{# моҳ} many{# моҳ} other{# моҳ}}',
@@ -101,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Ҷадвали «{attribute}» бояд хади ақал {min, number} {min, plural, one{аломат} few{аломат} many{аломат} other{аломат}} дошта бошад.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Ҷадвали «{attribute}» бояд ҳади аксар {min, number} {min, plural, one{аломат} few{аломат} many{аломат} other{аломат}} дошта бошад.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Ҷадвали «{attribute}» бояд {length, number} {length, plural, one{аломат} few{аломат} many{аломат} other{аломат}} дошта бошад.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# рӯз} few{# рӯз} many{# рӯз} other{# рӯз}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# соат} few{# соат} many{# соат} other{# соат}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# дақиқа} few{# дақиқа} many{# дақиқа} other{# дақиқа}}',
@@ -116,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} Б',
     '{nFormatted} GB' => '{nFormatted} ГБ',
     '{nFormatted} GiB' => '{nFormatted} ГиБ',
-    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} KiB' => '{nFormatted} КиБ',
     '{nFormatted} MB' => '{nFormatted} МБ',
     '{nFormatted} MiB' => '{nFormatted} МиБ',
@@ -124,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} КБ',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, one{байт} few{байт} many{байт} other{байт}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, one{гибибайт} few{гибибайт} many{гибибайт} other{гибибайт}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, one{гигабайт} few{гигабайт} many{гигабайт} other{гигабайт}}',

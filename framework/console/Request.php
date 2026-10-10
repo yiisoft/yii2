@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -64,7 +65,7 @@ class Request extends \yii\base\Request
 
             if ($route === '--') {
                 $endOfOptionsFound = true;
-                $route = array_shift($rawParams);
+                $route = (string)array_shift($rawParams);
             }
         } else {
             $route = '';

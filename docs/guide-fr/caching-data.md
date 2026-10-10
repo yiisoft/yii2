@@ -100,10 +100,6 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
   (une version de redis égale ou supérieure à 2.6.12 est nécessaire).
 * [[yii\caching\WinCache]]: utilise le [WinCache](https://iis.net/downloads/microsoft/wincache-extension) PHP
   ([voir aussi l'extension](https://www.php.net/manual/fr/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: utilise le 
-  [cache de données Zend](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  en tant que médium de cache sous-jacent.
 
 
 > Tip: vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
@@ -217,6 +213,7 @@ Ci-dessous nous présentons un résumé des dépendances de mise en cache dispon
 - [[yii\caching\ChainedDependency]]: la dépendance est modifiée si l'une des dépendances de la chaîne est modifiée.
 - [[yii\caching\DbDependency]]: la dépendance est modifiée si le résultat de le requête de l'instruction SQL spécifiée est modifié.
 - [[yii\caching\ExpressionDependency]]: la dépendance est modifiée si le résultat de l'expression PHP spécifiée est modifié.
+- [[yii\caching\CallbackDependency]]: la dépendance est modifiée si le résultat du rappel PHP spécifié est modifié.
 - [[yii\caching\FileDependency]]: la dépendance est modifiée si la date de dernière modification du fichier est modifiée.
 - [[yii\caching\TagDependency]]: associe une donnée mise en cache à une ou plusieurs balises. Vous pouvez invalider la donnée mise en cache associée à la balise spécifiée en appelant [[yii\caching\TagDependency::invalidate()]].
 
@@ -342,4 +339,3 @@ $result = $db->cache(function ($db) {
 La mise en cache de requêtes ne fonctionne pas avec des résultats de requêtes qui contiennent des gestionnaires de ressources. Par exemple, lorsque vous utilisez de type de colonne `BLOB` dans certains systèmes de gestion de bases de données (DBMS), la requête retourne un gestionnaire de ressources pour la donnée de la colonne.
 
 Quelques supports de stockage pour cache sont limités en taille. Par exemple, avec memcache, chaque entrée est limitée en taille à 1 MO. En conséquence, si le résultat d'une requête dépasse cette taille, la mise en cache échoue.
-

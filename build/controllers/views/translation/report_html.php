@@ -2,6 +2,17 @@
 
 use yii\helpers\Html;
 
+/**
+ * @var \yii\web\View $this
+ * @var string $title
+ * @var string $sourcePath
+ * @var string $translationPath
+ * @var array $results
+ */
+
+/** @var \yii\build\controllers\TranslationController $translationController */
+$translationController = $this->context;
+
 ?><!doctype html>
 <html>
     <head>
@@ -37,12 +48,12 @@ use yii\helpers\Html;
         </ul>
 
         <?php foreach ($results as $name => $result): ?>
-            <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= $name ?></h2>
+            <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= Html::encode($name) ?></h2>
             <?php foreach ($result['errors'] as $error): ?>
                 <p><?= Html::encode($error) ?></p>
             <?php endforeach ?>
             <?php if (!empty($result['diff'])): ?>
-                <code class="diff"><pre><?= $this->context->highlightDiff($result['diff']) ?></pre></code>
+                <code class="diff"><pre><?= $translationController->highlightDiff($result['diff']) ?></pre></code>
             <?php endif ?>
         <?php endforeach ?>
     </body>

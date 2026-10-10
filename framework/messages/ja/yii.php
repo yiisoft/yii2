@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 /**
  * Message translations.
  *
@@ -20,6 +27,8 @@ return [
     ' and ' => ' および ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" は演算子 "{operator}" をサポートしていません。',
     '(not set)' => '(未設定)',
+    'Action not found.' => 'アクションがありません。',
+    'Aliases available: {aliases}' => '利用可能なエイリアス: {aliases}',
     'An internal server error occurred.' => '内部サーバーエラーが発生しました。',
     'Are you sure you want to delete this item?' => 'このアイテムを削除したいというのは本当ですか?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => '"{attribute}" のための条件は値であるか有効な演算子の定義でなければなりません。',
@@ -37,6 +46,7 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => '次の拡張子を持つファイルだけが許可されています : {extensions}',
     'Operator "{operator}" must be used with a search attribute.' => '演算子 "{operator}" はサーチ属性とともに使用されなければなりません。',
     'Operator "{operator}" requires multiple operands.' => '演算子 "{operator}" は複数の被演算子を要求します。',
+    'Options available: {options}' => '利用可能なオプション: {options}',
     'Page not found.' => 'ページが見つかりません。',
     'Please fix the following errors:' => '次のエラーを修正してください :',
     'Please upload a file.' => 'ファイルをアップロードしてください。',
@@ -100,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} は {min} 文字以上でなければいけません。',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} は {max} 文字以下でなければいけません。',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} は {length} 文字でなければいけません。',
+    '{compareAttribute} is invalid.' => '{compareAttribute} は無効です。',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta} 日間',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta} 時間',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta} 分間',
@@ -115,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -123,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} バイト',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} ギビバイト',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} ギガバイト',

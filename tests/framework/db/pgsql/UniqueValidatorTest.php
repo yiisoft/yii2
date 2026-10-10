@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,12 +20,12 @@ class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorT
 {
     public $driverName = 'pgsql';
 
-    public function testPrepareParams()
+    public function testPrepareParams(): void
     {
         parent::testPrepareParams();
 
         // Add table prefix for column name
-        $model = new Type;
+        $model = new Type();
         $model->name = 'Angela';
 
         $attribute = 'name';

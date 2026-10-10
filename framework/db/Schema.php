@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\caching\TagDependency;
  *
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
- * @property-read QueryBuilder $queryBuilder The query builder for this connection.
+ * @property-read TQueryBuilder $queryBuilder The query builder for this connection.
  * @property-read string[] $schemaNames All schema names in the database, except system schemas.
  * @property-read string $serverVersion Server version as a string.
  * @property-read string[] $tableNames All table names in the database.
@@ -37,38 +38,40 @@ use yii\caching\TagDependency;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @template TQueryBuilder of QueryBuilder = QueryBuilder
  */
 abstract class Schema extends BaseObject
 {
     // The following are the supported abstract column data types.
-    const TYPE_PK = 'pk';
-    const TYPE_UPK = 'upk';
-    const TYPE_BIGPK = 'bigpk';
-    const TYPE_UBIGPK = 'ubigpk';
-    const TYPE_CHAR = 'char';
-    const TYPE_STRING = 'string';
-    const TYPE_TEXT = 'text';
-    const TYPE_TINYINT = 'tinyint';
-    const TYPE_SMALLINT = 'smallint';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_BIGINT = 'bigint';
-    const TYPE_FLOAT = 'float';
-    const TYPE_DOUBLE = 'double';
-    const TYPE_DECIMAL = 'decimal';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_TIMESTAMP = 'timestamp';
-    const TYPE_TIME = 'time';
-    const TYPE_DATE = 'date';
-    const TYPE_BINARY = 'binary';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_MONEY = 'money';
-    const TYPE_JSON = 'json';
+    public const TYPE_PK = 'pk';
+    public const TYPE_UPK = 'upk';
+    public const TYPE_BIGPK = 'bigpk';
+    public const TYPE_UBIGPK = 'ubigpk';
+    public const TYPE_CHAR = 'char';
+    public const TYPE_STRING = 'string';
+    public const TYPE_TEXT = 'text';
+    public const TYPE_TINYINT = 'tinyint';
+    public const TYPE_SMALLINT = 'smallint';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_BIGINT = 'bigint';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_DOUBLE = 'double';
+    public const TYPE_DECIMAL = 'decimal';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_TIMESTAMP = 'timestamp';
+    public const TYPE_TIME = 'time';
+    public const TYPE_DATE = 'date';
+    public const TYPE_BINARY = 'binary';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_MONEY = 'money';
+    public const TYPE_JSON = 'json';
     /**
      * Schema cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
      */
-    const SCHEMA_CACHE_VERSION = 1;
-
+    public const SCHEMA_CACHE_VERSION = 1;
     /**
      * @var Connection the database connection
      */
@@ -85,7 +88,7 @@ abstract class Schema extends BaseObject
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
     /**
-     * @var string|array column schema class or class config
+     * @var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...} column schema class or class config
      * @since 2.0.11
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
@@ -116,7 +119,7 @@ abstract class Schema extends BaseObject
      */
     private $_tableMetadata = [];
     /**
-     * @var QueryBuilder the query builder for this database
+     * @var TQueryBuilder|null the query builder for this database
      */
     private $_builder;
     /**
@@ -173,7 +176,7 @@ abstract class Schema extends BaseObject
     /**
      * Creates a column schema for the database.
      * This method may be overridden by child classes to create a DBMS-specific column schema.
-     * @return ColumnSchema column schema instance.
+     * @return T column schema instance.
      * @throws InvalidConfigException if a column schema class cannot be created.
      */
     protected function createColumnSchema()
@@ -239,7 +242,7 @@ abstract class Schema extends BaseObject
     }
 
     /**
-     * @return QueryBuilder the query builder for this connection.
+     * @return TQueryBuilder the query builder for this connection.
      */
     public function getQueryBuilder()
     {
@@ -278,7 +281,7 @@ abstract class Schema extends BaseObject
      */
     public function refresh()
     {
-        /* @var $cache CacheInterface */
+        /** @var CacheInterface $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             TagDependency::invalidate($cache, $this->getCacheTag());
@@ -299,7 +302,7 @@ abstract class Schema extends BaseObject
         $rawName = $this->getRawTableName($name);
         unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
-        /* @var $cache CacheInterface */
+        /** @var CacheInterface $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             $cache->delete($this->getCacheKey($rawName));
@@ -309,7 +312,7 @@ abstract class Schema extends BaseObject
     /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
-     * @return QueryBuilder query builder instance
+     * @return TQueryBuilder query builder instance
      */
     public function createQueryBuilder()
     {
@@ -336,7 +339,7 @@ abstract class Schema extends BaseObject
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *  'IndexName1' => ['col1' [, ...]],
      *  'IndexName2' => ['col2' [, ...]],
@@ -458,7 +461,7 @@ abstract class Schema extends BaseObject
             return $str;
         }
 
-        if (mb_stripos($this->db->dsn, 'odbc:') === false && ($value = $this->db->getSlavePdo()->quote($str)) !== false) {
+        if (mb_stripos((string)$this->db->dsn, 'odbc:') === false && ($value = $this->db->getSlavePdo(true)->quote($str)) !== false) {
             return $value;
         }
 
@@ -695,7 +698,7 @@ abstract class Schema extends BaseObject
     public function getServerVersion()
     {
         if ($this->_serverVersion === null) {
-            $this->_serverVersion = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $this->_serverVersion = $this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
         }
         return $this->_serverVersion;
     }
@@ -809,7 +812,7 @@ abstract class Schema extends BaseObject
      */
     protected function normalizePdoRowKeyCase(array $row, $multiple)
     {
-        if ($this->db->getSlavePdo()->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
+        if ($this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_UPPER) {
             return $row;
         }
 

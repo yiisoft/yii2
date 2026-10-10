@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,6 +21,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
+ * @property-read DynamicContentAwareInterface[] $dynamicContents Class instances supporting dynamic contents.
  * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered.
  *
@@ -31,20 +33,19 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * @event Event an event that is triggered by [[beginPage()]].
      */
-    const EVENT_BEGIN_PAGE = 'beginPage';
+    public const EVENT_BEGIN_PAGE = 'beginPage';
     /**
      * @event Event an event that is triggered by [[endPage()]].
      */
-    const EVENT_END_PAGE = 'endPage';
+    public const EVENT_END_PAGE = 'endPage';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
      */
-    const EVENT_BEFORE_RENDER = 'beforeRender';
+    public const EVENT_BEFORE_RENDER = 'beforeRender';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
      */
-    const EVENT_AFTER_RENDER = 'afterRender';
-
+    public const EVENT_AFTER_RENDER = 'afterRender';
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
      */
@@ -58,7 +59,7 @@ class View extends Component implements DynamicContentAwareInterface
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
      *
-     * ```php
+     * ```
      * [
      *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
      *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
@@ -86,7 +87,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $blocks;
     /**
-     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     * @var array a list of currently active dynamic content class instances.
      * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
      * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
@@ -250,7 +251,7 @@ class View extends Component implements DynamicContentAwareInterface
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /* @var $renderer ViewRenderer */
+                /** @var ViewRenderer $renderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -340,11 +341,14 @@ class View extends Component implements DynamicContentAwareInterface
     public function renderPhpFile($_file_, $_params_ = [])
     {
         $_obInitialLevel_ = ob_get_level();
+        $_renderer_ = function () {
+            extract(func_get_arg(1), EXTR_OVERWRITE);
+            require func_get_arg(0);
+        };
         ob_start();
         ob_implicit_flush(false);
-        extract($_params_, EXTR_OVERWRITE);
         try {
-            require $_file_;
+            call_user_func_array($_renderer_, [$_file_, $_params_]);
             return ob_get_clean();
         } catch (\Exception $e) {
             while (ob_get_level() > $_obInitialLevel_) {
@@ -420,7 +424,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.
@@ -496,7 +500,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
-     * ```php
+     * ```
      * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
      * //...layout content here...
      * <?php $this->endContent(); ?>
@@ -533,7 +537,7 @@ class View extends Component implements DynamicContentAwareInterface
      * call to end the cache and save the content into cache.
      * A typical usage of fragment caching is as follows,
      *
-     * ```php
+     * ```
      * if ($this->beginCache($id)) {
      *     // ...generate content here
      *     $this->endCache();
@@ -549,7 +553,7 @@ class View extends Component implements DynamicContentAwareInterface
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /* @var $cache FragmentCache */
+        /** @var FragmentCache $cache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

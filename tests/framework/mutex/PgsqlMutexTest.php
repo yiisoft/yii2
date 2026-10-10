@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,8 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\mutex\PgsqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
 
@@ -25,12 +28,12 @@ class PgsqlMutexTest extends DatabaseTestCase
 
     /**
      * @return PgsqlMutex
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function createMutex()
     {
-        return \Yii::createObject([
-            'class' => PgsqlMutex::className(),
+        return Yii::createObject([
+            'class' => PgsqlMutex::class,
             'db' => $this->getConnection(),
         ]);
     }

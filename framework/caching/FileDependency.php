@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -44,6 +45,7 @@ class FileDependency extends Dependency
         }
 
         $fileName = Yii::getAlias($this->fileName);
+
         clearstatcache(false, $fileName);
         return @filemtime($fileName);
     }

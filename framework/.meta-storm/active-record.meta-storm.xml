@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\db\BaseActiveRecord" method="canGetProperty" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="canSetProperty" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="__get" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="__set" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="__isset" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="__unset" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+
+        <classMethod class="\yii\db\BaseActiveRecord" method="hasAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="getAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="setAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="getOldAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="setOldAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="canSetOldAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="markAttributeDirty" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="isAttributeChanged" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="markAttributeDirty" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="resetDependentRelations" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\BaseActiveRecord" method="setRelationDependencies" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+
+        <classMethod class="\yii\db\ActiveRecord" method="hasOne" argument="1" targetValue="false" targetInArray="key">
+            <properties protected="false" private="false" xpath="$argument[0]"/>
+        </classMethod>
+        <classMethod class="\yii\db\ActiveRecord" method="hasOne" argument="1" targetValue="false" targetInArray="value">
+            <properties protected="false" private="false" xpath="$containingClass"/>
+        </classMethod>
+        <classMethod class="\yii\db\ActiveRecord" method="hasMany" argument="1" targetValue="false" targetInArray="key">
+            <properties protected="false" private="false" xpath="$argument[0]"/>
+        </classMethod>
+        <classMethod class="\yii\db\ActiveRecord" method="hasMany" argument="1" targetValue="false" targetInArray="value">
+            <properties protected="false" private="false" xpath="$containingClass"/>
+        </classMethod>
+    </definitions>
+</meta-storm>

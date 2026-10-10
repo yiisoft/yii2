@@ -49,7 +49,7 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 > A quantidade de solicitações depende do número de dependências que sua aplicação possui e pode extrapolar a
 > **taxa limite da API do Github**. Se você atingir esse limite, o Composer pode pedir a você suas credenciais de login para obter um
 > token de acesso à API Github. Em conexões rápidas você pode atingir esse limite antes que o Composer consiga lidar com a situação, então, recomendamos
-> configurar um toke de acesso antes de instalar o Yii.
+> configurar um token de acesso antes de instalar o Yii.
 > Por favor, consulte a [documentação do Composer sobre tokens da API Github](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > para instruções de como fazer isso.
 

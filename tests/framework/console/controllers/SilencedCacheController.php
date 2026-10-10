@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,6 +20,6 @@ class SilencedCacheController extends CacheController
      */
     public function stdout($string)
     {
-        // do nothing
+        return 0;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +17,7 @@ use yii\base\Component;
  * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
  * you can iterate it to obtain a batch of data in each iteration. For example,
  *
- * ```php
+ * ```
  * $query = (new Query)->from('user');
  * foreach ($query->batch() as $i => $users) {
  *     // $users represents the rows in the $i-th batch
@@ -27,6 +28,10 @@ use yii\base\Component;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
+ * @implements \Iterator<TKey, TValue>
  */
 class BatchQueryResult extends Component implements \Iterator
 {
@@ -35,13 +40,17 @@ class BatchQueryResult extends Component implements \Iterator
      * @see reset()
      * @since 2.0.41
      */
-    const EVENT_RESET = 'reset';
+    public const EVENT_RESET = 'reset';
     /**
      * @event Event an event that is triggered when the last batch has been fetched.
      * @since 2.0.41
      */
-    const EVENT_FINISH = 'finish';
-
+    public const EVENT_FINISH = 'finish';
+    /**
+     * MSSQL error code for exception that is thrown when last batch is size less than specified batch size
+     * @see https://github.com/yiisoft/yii2/issues/10023
+     */
+    public const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
     /**
      * @var Connection|null the DB connection to be used when performing batch query.
      * If null, the "db" application component will be used.
@@ -63,11 +72,11 @@ class BatchQueryResult extends Component implements \Iterator
     public $each = false;
 
     /**
-     * @var DataReader the data reader associated with this batch query.
+     * @var DataReader|null the data reader associated with this batch query.
      */
     private $_dataReader;
     /**
-     * @var array the data retrieved in the current batch
+     * @var array|null the data retrieved in the current batch
      */
     private $_batch;
     /**
@@ -75,14 +84,9 @@ class BatchQueryResult extends Component implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int the key for the current iteration
+     * @var TKey|null the key for the current iteration
      */
     private $_key;
-    /**
-     * @var int MSSQL error code for exception that is thrown when last batch is size less than specified batch size
-     * @see https://github.com/yiisoft/yii2/issues/10023
-     */
-    private $mssqlNoMoreRowsErrorCode = -13;
 
 
     /**
@@ -186,7 +190,7 @@ class BatchQueryResult extends Component implements \Iterator
             }
         } catch (\PDOException $e) {
             $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
-            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
+            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== self::MSSQL_NO_MORE_ROWS_ERROR_CODE) {
                 throw $e;
             }
         }
@@ -197,7 +201,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return int the index of the current row.
+     * @return TKey|null the index of the current row.
      */
     #[\ReturnTypeWillChange]
     public function key()
@@ -208,7 +212,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return mixed the current dataset.
+     * @return TValue the current dataset.
      */
     #[\ReturnTypeWillChange]
     public function current()

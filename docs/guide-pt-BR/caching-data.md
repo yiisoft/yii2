@@ -96,10 +96,6 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
   [Redis](https://redis.io/) (requer redis versão 2.6.12 ou mais recente).
 * [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([veja também](https://www.php.net/manual/pt_BR/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: usa
-  [Cache de Dados Zend](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  como o meio de cache subjacente.
 
 
 > Dica: Você pode usar vários tipos de cache na mesma aplicação. Uma estratégia comum é usar caches baseados 
@@ -229,6 +225,7 @@ Abaixo um sumário das dependências de cache disponíveis:
 - [[yii\caching\DbDependency]]: a dependência muda caso o resultado da consulta especificada pela instrução SQL seja
   alterado.
 - [[yii\caching\ExpressionDependency]]: a dependência muda se o resultado da expressão PHP especificada for alterado.
+- [[yii\caching\CallbackDependency]]: a dependência é alterada se o resultado do callback PHP especificado for alterado..
 - [[yii\caching\FileDependency]]: A dependência muda se a data da última alteração do arquivo for alterada.
 - [[yii\caching\TagDependency]]: associa um registro em cache com uma ou múltiplas tags. Você pode invalidar os
   registros em cache com a tag especificada ao chamar [[yii\caching\TagDependency::invalidate()]].
@@ -352,4 +349,3 @@ O cache de consulta não funciona com resultados de consulta que contêm <i>mani
 Por exemplo, ao usar o tipo de coluna `BLOB` em alguns SGBDs, o resultado da consulta retornará um <i>manipulador de recurso</i> (resource handler) para o registro na coluna.
 
 Alguns armazenamentos em cache têm limitações de tamanho. Por exemplo, memcache limita o uso máximo de espaço de 1MB para cada registro. Então, se o tamanho do resultado de uma consulta exceder este limite, o cache falhará. 
-

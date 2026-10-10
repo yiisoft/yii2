@@ -16,7 +16,7 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property string $title
  *
- * @property Employee[] $employees
+ * @property-read Employee[] $employees
  *
  * @author Kolyunya <OleynikovNY@mail.ru>
  * @since 2.0.12
@@ -39,7 +39,7 @@ class Department extends ActiveRecord
     public function getEmployees()
     {
         return $this
-            ->hasMany(Employee::className(), [
+            ->hasMany(Employee::class, [
                 'department_id' => 'id',
             ])
             ->inverseOf('department')

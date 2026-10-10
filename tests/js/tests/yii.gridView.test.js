@@ -51,7 +51,8 @@ describe('yii.gridView', function () {
 
     jsdom({
         html: html,
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {
@@ -787,7 +788,7 @@ describe('yii.gridView', function () {
 
             assert.throws(function () {
                 $gridView1.yiiGridView('applyFilter');
-            }, "Cannot read property 'settings' of undefined");
+            }, "Cannot read properties of undefined (reading \'settings\')");
             $gridView1.yiiGridView(settings); // Reinitialize without "beforeFilter" and "afterFilter" event handlers
 
             $gridView1.yiiGridView('applyFilter');

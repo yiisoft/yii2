@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,13 +21,13 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    public function testInitControllerNamePluralization()
+    public function testInitControllerNamePluralization(): void
     {
         $suites = $this->getTestsForControllerNamePluralization();
         foreach ($suites as $i => $suite) {
@@ -39,7 +40,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequest()
+    public function testParseRequest(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD']);
@@ -223,7 +224,7 @@ class UrlRuleTest extends TestCase
      *   - first element is the route to create
      *   - second element is the expected URL
      */
-    public function createUrlDataProvider()
+    public static function createUrlDataProvider(): array
     {
         return [
             // with pluralize
@@ -358,7 +359,7 @@ class UrlRuleTest extends TestCase
      * @param array $ruleConfig
      * @param array $tests
      */
-    public function testCreateUrl($ruleConfig, $tests)
+    public function testCreateUrl($ruleConfig, $tests): void
     {
         foreach ($tests as $test) {
             list($params, $expected) = $test;
@@ -376,11 +377,12 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
+     * @dataProvider getCreateUrlStatusProvider
+     *
      * @param array $ruleConfig
      * @param array $tests
      */
-    public function testGetCreateUrlStatus($ruleConfig, $tests)
+    public function testGetCreateUrlStatus($ruleConfig, $tests): void
     {
         foreach ($tests as $test) {
             list($params, $expected, $status) = $test;
@@ -413,7 +415,7 @@ class UrlRuleTest extends TestCase
      *   - second element is the expected URL
      *   - third element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
         return [
             'single controller' => [

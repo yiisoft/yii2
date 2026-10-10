@@ -24,6 +24,11 @@ if ($this->beginCache($id)) {
 
 [データ・キャッシュ](caching-data.md) と同様に、キャッシュされるコンテントを識別するためにユニークな `$id` が必要になります。
 
+次のようにすると、フラグメント・キャッシュを削除することが出来ます。
+```php
+Yii::$app->cache->delete(['yii\widgets\FragmentCache', $id]);
+```
+
 
 ## キャッシュのオプション <span id="caching-options"></span>
 

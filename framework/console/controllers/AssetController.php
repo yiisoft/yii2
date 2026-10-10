@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +9,7 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -38,12 +40,16 @@ use yii\web\AssetBundle;
  * Note: by default this command relies on an external tools to perform actual files compression,
  * check [[jsCompressor]] and [[cssCompressor]] for more details.
  *
- * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
- * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
+ * @property-read \yii\web\AssetManager $assetManager Asset manager instance.
+ * @property-write \yii\web\AssetManager|array $assetManager Asset manager instance or its array
+ * configuration.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 class AssetController extends Controller
 {
@@ -60,7 +66,7 @@ class AssetController extends Controller
      * You can specify the name of the output compressed file using 'css' and 'js' keys:
      * For example:
      *
-     * ```php
+     * ```
      * 'app\config\AllAsset' => [
      *     'js' => 'js/all-{hash}.js',
      *     'css' => 'css/all-{hash}.css',
@@ -76,7 +82,7 @@ class AssetController extends Controller
      * bundles in this case.
      * For example:
      *
-     * ```php
+     * ```
      * 'allShared' => [
      *     'js' => 'js/all-shared-{hash}.js',
      *     'css' => 'css/all-shared-{hash}.css',

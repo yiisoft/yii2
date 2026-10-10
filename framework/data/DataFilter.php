@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,7 @@ use yii\validators\Validator;
  *
  * Filter example:
  *
- * ```json
+ * ```
  * {
  *     "or": [
  *         {
@@ -51,7 +52,7 @@ use yii\validators\Validator;
  * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
  * will look like following:
  *
- * ```json
+ * ```
  * {
  *     "filter": {"or": {...}},
  *     "page": 2,
@@ -62,7 +63,7 @@ use yii\validators\Validator;
  * Raw filter value should be assigned to [[filter]] property of the model.
  * You may populate it from request data via [[load()]] method:
  *
- * ```php
+ * ```
  * use yii\data\DataFilter;
  *
  * $dataFilter = new DataFilter();
@@ -72,7 +73,7 @@ use yii\validators\Validator;
  * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare
  * all available search attributes and their validation rules. For example:
  *
- * ```php
+ * ```
  * class SearchModel extends \yii\base\Model
  * {
  *     public $id;
@@ -92,7 +93,7 @@ use yii\validators\Validator;
  * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as a [[searchModel]].
  * In this case you should specify [[searchModel]] using a PHP callable:
  *
- * ```php
+ * ```
  * function () {
  *     return (new \yii\base\DynamicModel(['id' => null, 'name' => null]))
  *         ->addRule(['id', 'name'], 'trim')
@@ -112,28 +113,28 @@ use yii\validators\Validator;
  *
  * @see ActiveDataFilter
  *
- * @property array $errorMessages Error messages in format `[errorKey => message]`. Note that the type of this
- * property differs in getter and setter. See [[getErrorMessages()]] and [[setErrorMessages()]] for details.
+ * @property-read array $errorMessages Error messages in format `[errorKey => message]`.
+ * @property-write array|\Closure $errorMessages Error messages in `[errorKey => message]` format, or a PHP
+ * callback returning them.
  * @property mixed $filter Raw filter value.
- * @property array $searchAttributeTypes Search attribute type map. Note that the type of this property
- * differs in getter and setter. See [[getSearchAttributeTypes()]] and [[setSearchAttributeTypes()]] for details.
- * @property Model $searchModel Model instance. Note that the type of this property differs in getter and
- * setter. See [[getSearchModel()]] and [[setSearchModel()]] for details.
+ * @property-read array $searchAttributeTypes Search attribute type map.
+ * @property-write array|null $searchAttributeTypes Search attribute type map.
+ * @property-read Model $searchModel Model instance.
+ * @property-write Model|array|string|callable $searchModel Model instance or its DI compatible configuration.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
  */
 class DataFilter extends Model
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
-    const TYPE_ARRAY = 'array';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_DATE = 'date';
-    const TYPE_TIME = 'time';
-
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_DATE = 'date';
+    public const TYPE_TIME = 'time';
     /**
      * @var string name of the attribute that handles filter value.
      * The name is used to load data via [[load()]] method.
@@ -156,7 +157,7 @@ class DataFilter extends Model
      *
      * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
      *
-     * ```php
+     * ```
      * [
      *     'eq' => '=',
      *     '=' => '=',
@@ -230,7 +231,7 @@ class DataFilter extends Model
      * @var array actual attribute names to be used in searched condition, in format: [filterAttribute => actualAttribute].
      * For example, in case of using table joins in the search query, attribute map may look like the following:
      *
-     * ```php
+     * ```
      * [
      *     'authorName' => '{{author}}.[[name]]'
      * ]
@@ -387,6 +388,8 @@ class DataFilter extends Model
             }
             return self::TYPE_DATE;
         }
+
+        return null;
     }
 
     /**

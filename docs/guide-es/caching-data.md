@@ -79,8 +79,6 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](https://www.php.net/manual/es/book.memcache.php) y [memcached](https://www.php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](https://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension) ([ver también](https://www.php.net/manual/es/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
 > Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
@@ -191,6 +189,7 @@ Aquí abajo se muestra un sumario de las dependencias disponibles:
 - [[yii\caching\ChainedDependency]]: la dependencia cambia si cualquiera de las dependencias en la cadena cambia.
 - [[yii\caching\DbDependency]]: la dependencia cambia si el resultado de la consulta de la sentencia SQL especificada cambia.
 - [[yii\caching\ExpressionDependency]]: la dependencia cambia si el resultado de la expresión de PHP especificada cambia.
+- [[yii\caching\CallbackDependency]]: la dipendenza viene modificata se il risultato della callback PHP specificata cambia.
 - [[yii\caching\FileDependency]]:  la dependencia cambia si se modifica la última fecha de modificación del archivo.
 - [[yii\caching\TagDependency]]: marca un elemento de datos en caché con un nombre de grupo. Puedes invalidar los elementos de datos almacenados en caché
   con el mismo nombre del grupo a la vez llamando a [[yii\caching\TagDependency::invalidate()]].

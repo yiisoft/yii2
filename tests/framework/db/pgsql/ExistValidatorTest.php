@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTes
     /**
      * @see https://github.com/yiisoft/yii2/issues/14274
      */
-    public function testWithCameCasedTableName()
+    public function testWithCameCasedTableName(): void
     {
         // The same target table
         $validator = new ExistValidator(['targetAttribute' => 'ref']);
@@ -30,7 +31,7 @@ class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTes
         $this->assertFalse($model->hasErrors());
 
         // Different target table
-        $validator = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
+        $validator = new ExistValidator(['targetClass' => ValidatorTestMainModel::class, 'targetAttribute' => 'id']);
         $model = ValidatorTestRefModel::findOne(['id' => 1]);
         $validator->validateAttribute($model, 'ref');
         $this->assertFalse($model->hasErrors());

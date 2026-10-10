@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -31,7 +32,7 @@ use yii\web\Response;
  * The following example shows how to use Pjax with the [[\yii\grid\GridView]] widget so that the grid pagination,
  * sorting and filtering can be done via pjax:
  *
- * ```php
+ * ```
  * use yii\widgets\Pjax;
  *
  * Pjax::begin();

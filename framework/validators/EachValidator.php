@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yii\base\Model;
 /**
  * EachValidator validates an array by checking each of its elements against an embedded validation rule.
  *
- * ```php
+ * ```
  * class MyModel extends Model
  * {
  *     public $categoryIDs = [];
@@ -47,7 +48,7 @@ class EachValidator extends Validator
      * contain attribute list as the first element.
      * For example:
      *
-     * ```php
+     * ```
      * ['integer']
      * ['match', 'pattern' => '/[a-z]/is']
      * ```

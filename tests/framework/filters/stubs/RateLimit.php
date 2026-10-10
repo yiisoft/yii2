@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,10 @@ namespace yiiunit\framework\filters\stubs;
 use yii\base\BaseObject;
 use yii\filters\RateLimitInterface;
 
+/**
+ * @property-write mixed $rateLimit
+ * @property-write mixed $allowance
+ */
 class RateLimit extends BaseObject implements RateLimitInterface
 {
     private $_rateLimit;
@@ -39,7 +44,6 @@ class RateLimit extends BaseObject implements RateLimitInterface
 
         return $this;
     }
-
 
     public function saveAllowance($request, $action, $allowance, $timestamp)
     {

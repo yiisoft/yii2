@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -29,7 +30,7 @@ class ArrayCacheTest extends CacheTestCase
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -41,7 +42,7 @@ class ArrayCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_test'));
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -56,18 +57,18 @@ class ArrayCacheTest extends CacheTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/16028
      */
-    public function testSerializationOfComplexKeysThatContainNonUTFSequences()
+    public function testSerializationOfComplexKeysThatContainNonUTFSequences(): void
     {
         $cache = $this->getCacheInstance();
 
         $firstCacheKey = $cache->buildKey([
             "First example of invalid UTF-8 sequence: \xF5",
-            "Valid UTF-8 string",
+            'Valid UTF-8 string',
         ]);
 
         $secondCacheKey = $cache->buildKey([
             "Second example of invalid UTF-8 sequence: \xF6",
-            "Valid UTF-8 string",
+            'Valid UTF-8 string',
         ]);
 
         $this->assertNotEquals($firstCacheKey, $secondCacheKey);

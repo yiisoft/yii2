@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\web\Request;
  *
  * A typical usage example is as follows,
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $sort = new Sort([
@@ -52,7 +53,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * // display links leading to sort actions
  * echo $sort->link('name') . ' | ' . $sort->link('age');
  *
@@ -68,9 +69,10 @@ use yii\web\Request;
  *
  * For more details and usage information on Sort, see the [guide article on sorting](guide:output-sorting).
  *
- * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. Note that the type of this property
- * differs in getter and setter. See [[getAttributeOrders()]] and [[setAttributeOrders()]] for details.
+ * @property-read array $attributeOrders Sort directions indexed by attribute names. Sort direction can be
+ * either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
+ * @property-write array|null $attributeOrders Sort directions indexed by attribute names. Sort direction can
+ * be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
  * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
  * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
  *
@@ -88,7 +90,7 @@ class Sort extends BaseObject
      * @var array list of attributes that are allowed to be sorted. Its syntax can be
      * described using the following example:
      *
-     * ```php
+     * ```
      * [
      *     'age',
      *     'name' => [
@@ -103,7 +105,7 @@ class Sort extends BaseObject
      * In the above, two attributes are declared: `age` and `name`. The `age` attribute is
      * a simple attribute which is equivalent to the following:
      *
-     * ```php
+     * ```
      * 'age' => [
      *     'asc' => ['age' => SORT_ASC],
      *     'desc' => ['age' => SORT_DESC],
@@ -114,7 +116,7 @@ class Sort extends BaseObject
      *
      * Since 2.0.12 particular sort direction can be also specified as direct sort expression, like following:
      *
-     * ```php
+     * ```
      * 'name' => [
      *     'asc' => '[[last_name]] ASC NULLS FIRST', // PostgreSQL specific feature
      *     'desc' => '[[last_name]] DESC NULLS LAST',
@@ -148,7 +150,7 @@ class Sort extends BaseObject
      * @var array|null the order that should be used when the current request does not specify any order.
      * The array keys are attribute names and the array values are the corresponding sort directions. For example,
      *
-     * ```php
+     * ```
      * [
      *     'name' => SORT_ASC,
      *     'created_at' => SORT_DESC,
@@ -191,6 +193,12 @@ class Sort extends BaseObject
      * @since 2.0.33
      */
     public $sortFlags = SORT_REGULAR;
+    /**
+     * @var string|null the name of the [[\yii\base\Model]]-based class used by the [[link()]] method to retrieve
+     * attributes' labels. See [[link]] method for details.
+     * @since 2.0.49
+     */
+    public $modelClass;
 
 
     /**
@@ -297,14 +305,14 @@ class Sort extends BaseObject
      * For example the following return value will result in ascending sort by
      * `category` and descending sort by `created_at`:
      *
-     * ```php
+     * ```
      * [
      *     'category',
      *     '-created_at'
      * ]
      * ```
      *
-     * @param string $param the value of the [[sortParam]].
+     * @param mixed $param the value of the [[sortParam]].
      * @return array the valid sort attributes.
      * @since 2.0.12
      * @see separator for the attribute name separator.
@@ -363,7 +371,8 @@ class Sort extends BaseObject
      * @param array $options additional HTML attributes for the hyperlink tag.
      * There is one special attribute `label` which will be used as the label of the hyperlink.
      * If this is not set, the label defined in [[attributes]] will be used.
-     * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
+     * If no label is defined, it will be retrieved from the instance of [[modelClass]] (if [[modelClass]] is not null)
+     * or generated from attribute name using [[\yii\helpers\Inflector::camel2words()]].
      * Note that it will not be HTML-encoded.
      * @return string the generated hyperlink
      * @throws InvalidConfigException if the attribute is unknown
@@ -388,6 +397,11 @@ class Sort extends BaseObject
         } else {
             if (isset($this->attributes[$attribute]['label'])) {
                 $label = $this->attributes[$attribute]['label'];
+            } elseif ($this->modelClass !== null) {
+                $modelClass = $this->modelClass;
+                /** @var \yii\base\Model $model */
+                $model = $modelClass::instance();
+                $label = $model->getAttributeLabel($attribute);
             } else {
                 $label = Inflector::camel2words($attribute);
             }

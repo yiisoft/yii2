@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +10,7 @@ namespace yii\db\cubrid;
 
 use Yii;
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
@@ -18,14 +20,18 @@ use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T, QueryBuilder>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -92,7 +98,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function findTableNames($schema = '')
     {
-        $pdo = $this->db->getSlavePdo();
+        $pdo = $this->db->getSlavePdo(true);
         $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
         $tableNames = [];
         foreach ($tables as $table) {
@@ -110,7 +116,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function loadTableSchema($name)
     {
-        $pdo = $this->db->getSlavePdo();
+        $pdo = $this->db->getSlavePdo(true);
 
         $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
 
@@ -159,7 +165,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected function loadTablePrimaryKey($tableName)
     {
-        $primaryKey = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
+        $primaryKey = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
         if (empty($primaryKey)) {
             return null;
         }
@@ -183,7 +189,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             3 => 'SET NULL',
         ];
 
-        $foreignKeys = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
+        $foreignKeys = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
         $foreignKeys = ArrayHelper::index($foreignKeys, null, 'FK_NAME');
         ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
         $result = [];
@@ -255,7 +261,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return \yii\db\ColumnSchema the column schema object
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -308,7 +314,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             return $column;
         }
 
-        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
+        if (
+            $column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
             $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
             $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
             $column->type === 'time' && $info['Default'] === 'SYS_TIME'
@@ -386,7 +393,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
+        $constraints = $this->db->getSlavePdo(true)->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
         $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
         ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
         $result = [

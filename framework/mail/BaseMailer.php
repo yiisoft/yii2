@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,8 +23,9 @@ use yii\web\View;
  *
  * For more details and usage information on BaseMailer, see the [guide article on mailing](guide:tutorial-mailing).
  *
- * @property View $view View instance. Note that the type of this property differs in getter and setter. See
- * [[getView()]] and [[setView()]] for details.
+ * @property-read View $view View instance.
+ * @property-write array|View $view View instance or its array configuration that will be used to render
+ * message bodies.
  * @property string $viewPath The directory that contains the view files for composing mail messages Defaults
  * to '@app/mail'.
  *
@@ -36,12 +38,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @event MailEvent an event raised right before send.
      * You may set [[MailEvent::isValid]] to be false to cancel the send.
      */
-    const EVENT_BEFORE_SEND = 'beforeSend';
+    public const EVENT_BEFORE_SEND = 'beforeSend';
     /**
      * @event MailEvent an event raised right after send.
      */
-    const EVENT_AFTER_SEND = 'afterSend';
-
+    public const EVENT_AFTER_SEND = 'afterSend';
     /**
      * @var string|bool HTML layout view name. This is the layout used to render HTML mail body.
      * The property can take the following values:
@@ -63,7 +64,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      *
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'charset' => 'UTF-8',
      *     'from' => 'noreply@mydomain.com',
@@ -93,14 +94,14 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      *
      * The signature of the callback is:
      *
-     * ```php
+     * ```
      * function ($mailer, $message)
      * ```
      */
     public $fileTransportCallback;
 
     /**
-     * @var \yii\base\View|array view instance or its array configuration.
+     * @var View|array view instance or its array configuration.
      */
     private $_view = [];
     /**

@@ -650,6 +650,16 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
+> Note: パフォーマンスを考慮して、DI(依存注入) はデフォルトではサポートされていません。必要であれば、
+> [[Yii::createObject()]] によってクラスのインスタンス生成をするように [[yii\db\ActiveRecord::instantiate()|instantiate()]] メソッドをオーバーライドして、サポートを追加することが出来ます。
+> 
+> ```php
+> public static function instantiate($row)
+> {
+>     return Yii::createObject(static::class);
+> }
+> ```
+
 ### データをリフレッシュする際のライフサイクル <span id="refreshing-data-life-cycle"></span>
 
 [[yii\db\ActiveRecord::refresh()|refresh()]] を呼んでアクティブ・レコード・インスタンスをリフレッシュする際は、リフレッシュが成功してメソッドが `true` を返すと

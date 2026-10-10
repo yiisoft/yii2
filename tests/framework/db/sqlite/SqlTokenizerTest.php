@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,7 @@ use yiiunit\TestCase;
  */
 class SqlTokenizerTest extends TestCase
 {
-    public function sqlProvider()
+    public static function sqlProvider(): array
     {
         return [
             'complex' => [
@@ -1121,7 +1122,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
      * @dataProvider sqlProvider
      * @param string $sql
      */
-    public function testTokenizer($sql, SqlToken $expectedToken)
+    public function testTokenizer($sql, SqlToken $expectedToken): void
     {
         $actualToken = (new SqlTokenizer($sql))->tokenize();
         $this->assertEquals($expectedToken, $actualToken);
