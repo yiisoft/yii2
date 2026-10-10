@@ -181,6 +181,18 @@ class TargetTest extends TestCase
         $target->setLevels(128);
     }
 
+    /**
+     * @covers \yii\log\Target::setLevels()
+     */
+    public function testSetupLevelsThroughBitmapWithInvalidBits(): void
+    {
+        $target = $this->getMockForAbstractClass(Target::class);
+
+        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->expectExceptionMessage('Incorrect 17 value');
+        $target->setLevels(Logger::LEVEL_ERROR | 0x10);
+    }
+
     public function testGetEnabled(): void
     {
         $target = $this->getMockForAbstractClass(Target::class);
