@@ -16,6 +16,8 @@ use yii\base\DynamicModel;
 use yii\db\ArrayExpression;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yiiunit\data\enums\ColorEnum;
+use yiiunit\data\enums\StatusEnum;
 use yiiunit\framework\helpers\stubs\HtmlTestModel;
 use yiiunit\framework\helpers\stubs\MyHtml;
 use yiiunit\TestCase;
@@ -2064,6 +2066,54 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testGetAttributeValueWithBackedEnum(): void
+    {
+        $model = new HtmlTestModel();
+
+        $model->types = StatusEnum::ACTIVE;
+
+        $this->assertSame(
+            1,
+            Html::getAttributeValue($model, 'types'),
+            "Backed enum value should be returned by 'getAttributeValue()' method.",
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testGetAttributeValueWithUnitEnum(): void
+    {
+        $model = new HtmlTestModel();
+
+        $model->types = ColorEnum::RED;
+
+        $this->assertSame(
+            'RED',
+            Html::getAttributeValue($model, 'types'),
+            "Unit enum name should be returned by 'getAttributeValue()' method.",
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testGetAttributeValueWithEnumArray(): void
+    {
+        $model = new HtmlTestModel();
+
+        $model->types = [StatusEnum::ACTIVE, ColorEnum::GREEN, 'plain'];
+
+        $this->assertSame(
+            [1, 'GREEN', 'plain'],
+            Html::getAttributeValue($model, 'types'),
+            "Enum cases inside an array attribute should be converted by 'getAttributeValue()' method.",
+        );
+    }
+
     public function testGetInputNameInvalidArgumentExceptionAttribute(): void
     {
         $model = new HtmlTestModel();
@@ -2228,6 +2278,201 @@ HTML;
 HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo'], ['name' => 'foo', 'value' => 0]);
         $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testActiveListInputsWithEnum(): void
+    {
+        $items = [1 => 'Active', 2 => 'Deleted', 0 => 'Inactive'];
+
+        $model = new HtmlTestModel();
+
+        $model->types = StatusEnum::DELETED;
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select id="htmltestmodel-types" name="HtmlTestModel[types]">
+            <option value="1">Active</option>
+            <option value="2" selected>Deleted</option>
+            <option value="0">Inactive</option>
+            </select>
+            HTML,
+            Html::activeDropDownList($model, 'types', $items),
+            'Enum value must select the matching option.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="radio" name="HtmlTestModel[types]" value="1"> Active</label>
+            <label><input type="radio" name="HtmlTestModel[types]" value="2" checked> Deleted</label>
+            <label><input type="radio" name="HtmlTestModel[types]" value="0"> Inactive</label></div>
+            HTML,
+            Html::activeRadioList($model, 'types', $items),
+            'Enum value must check the matching radio.',
+        );
+
+        $model->types = [StatusEnum::ACTIVE, StatusEnum::INACTIVE];
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="HtmlTestModel[types][]" value="1" checked> Active</label>
+            <label><input type="checkbox" name="HtmlTestModel[types][]" value="2"> Deleted</label>
+            <label><input type="checkbox" name="HtmlTestModel[types][]" value="0" checked> Inactive</label></div>
+            HTML,
+            Html::activeCheckboxList($model, 'types', $items),
+            'Enum array must check all matching checkboxes.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="HtmlTestModel[types]" value=""><select id="htmltestmodel-types" name="HtmlTestModel[types][]" multiple size="4">
+            <option value="1" selected>Active</option>
+            <option value="2">Deleted</option>
+            <option value="0" selected>Inactive</option>
+            </select>
+            HTML,
+            Html::activeListBox($model, 'types', $items, ['multiple' => true]),
+            'Enum array must select all matching options.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testListInputsWithEnumSelection(): void
+    {
+        $items = ['BLUE' => 'Blue', 'GREEN' => 'Green', 'RED' => 'Red'];
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="color">
+            <option value="BLUE">Blue</option>
+            <option value="GREEN">Green</option>
+            <option value="RED" selected>Red</option>
+            </select>
+            HTML,
+            Html::dropDownList('color', ColorEnum::RED, $items),
+            'Enum selection must mark the matching option.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="color[]" multiple size="4">
+            <option value="BLUE" selected>Blue</option>
+            <option value="GREEN">Green</option>
+            <option value="RED" selected>Red</option>
+            </select>
+            HTML,
+            Html::listBox('color', [ColorEnum::BLUE, ColorEnum::RED], $items, ['multiple' => true]),
+            'Enum array must mark all matching options.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div><label><input type="radio" name="color" value="BLUE"> Blue</label>
+            <label><input type="radio" name="color" value="GREEN" checked> Green</label>
+            <label><input type="radio" name="color" value="RED"> Red</label></div>
+            HTML,
+            Html::radioList('color', ColorEnum::GREEN, $items),
+            'Enum selection must check the matching radio.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div><label><input type="checkbox" name="color[]" value="BLUE" checked> Blue</label>
+            <label><input type="checkbox" name="color[]" value="GREEN"> Green</label>
+            <label><input type="checkbox" name="color[]" value="RED" checked> Red</label></div>
+            HTML,
+            Html::checkboxList('color', new ArrayObject([ColorEnum::BLUE, ColorEnum::RED]), $items),
+            'Enum collection must check all matching checkboxes.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testDropDownListWithFalsyEnumSelection(): void
+    {
+        $items = [0 => 'Inactive', 1 => 'Active'];
+        $options = ['prompt' => 'Any'];
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="status">
+            <option value="">Any</option>
+            <option value="0" selected>Inactive</option>
+            <option value="1">Active</option>
+            </select>
+            HTML,
+            Html::dropDownList('status', StatusEnum::INACTIVE, $items, $options),
+            'A backed enum with a falsy backing value must select its option, not the prompt.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <select name="status">
+            <option value="">Any</option>
+            <option value="0" selected>Inactive</option>
+            <option value="1">Active</option>
+            </select>
+            HTML,
+            Html::dropDownList('status', StatusEnum::INACTIVE, $items, $options + ['strict' => true]),
+            'A backed enum with a falsy backing value must select its option in strict mode.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testBooleanInputsWithEnum(): void
+    {
+        $model = new HtmlTestModel();
+
+        $model->types = StatusEnum::ACTIVE;
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="HtmlTestModel[types]" value="0"><label><input type="checkbox" id="htmltestmodel-types" name="HtmlTestModel[types]" value="1" checked> Types</label>
+            HTML,
+            Html::activeCheckbox($model, 'types', ['value' => StatusEnum::ACTIVE]),
+            'Enum value must be rendered as the checkbox value.',
+        );
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="HtmlTestModel[types]" value="0"><label><input type="radio" id="htmltestmodel-types" name="HtmlTestModel[types]" value="2"> Types</label>
+            HTML,
+            Html::activeRadio($model, 'types', ['value' => StatusEnum::DELETED]),
+            'Enum value must be rendered as the radio value.',
+        );
+        $this->assertSame(
+            <<<HTML
+            <input type="checkbox" name="color" value="RED" checked>
+            HTML,
+            Html::checkbox('color', true, ['value' => ColorEnum::RED]),
+            'Backed string enum must be rendered as the checkbox value.',
+        );
+    }
+
+    /**
+     * @requires PHP >= 8.1
+     */
+    public function testRenderTagAttributesWithEnum(): void
+    {
+        $this->assertSame(
+            ' value="1" data-color="RED"',
+            Html::renderTagAttributes(['value' => StatusEnum::ACTIVE, 'data-color' => ColorEnum::RED]),
+            'Enum attributes must be rendered as their backing values.',
+        );
+        $this->assertSame(
+            <<<HTML
+            <input type="text" name="status" value="2">
+            HTML,
+            Html::textInput('status', StatusEnum::DELETED),
+            'Enum must be rendered as the input value.',
+        );
+        $this->assertSame(
+            <<<HTML
+            <input type="hidden" name="color" value="GREEN">
+            HTML,
+            Html::hiddenInput('color', ColorEnum::GREEN),
+            'Enum must be rendered as the hidden input value.',
+        );
     }
 
     public function testActiveTextInputPlaceholderFillFromModel(): void

@@ -577,7 +577,7 @@ class BaseHtml
             $options['type'] = $type;
         }
         $options['name'] = $name;
-        $options['value'] = $value === null ? null : (string) $value;
+        $options['value'] = $value === null ? null : (string) self::enumToScalar($value);
         return static::tag('input', '', $options);
     }
 
@@ -979,9 +979,8 @@ class BaseHtml
         if (substr($name, -2) !== '[]') {
             $name .= '[]';
         }
-        if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', ArrayHelper::toArray($selection));
-        }
+
+        $selection = self::normalizeSelection($selection);
 
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
@@ -1069,9 +1068,7 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
-        if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', ArrayHelper::toArray($selection));
-        }
+        $selection = self::normalizeSelection($selection);
 
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
@@ -1631,6 +1628,8 @@ class BaseHtml
 
         if (!array_key_exists('value', $options)) {
             $options['value'] = '1';
+        } else {
+            $options['value'] = self::enumToScalar($options['value']);
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
@@ -1893,16 +1892,20 @@ class BaseHtml
     {
         if (ArrayHelper::isTraversable($selection)) {
             $normalizedSelection = [];
-            foreach (ArrayHelper::toArray($selection) as $selectionItem) {
+
+            foreach ($selection as $selectionItem) {
                 if (is_bool($selectionItem)) {
                     $normalizedSelection[] = $selectionItem ? '1' : '0';
                 } else {
-                    $normalizedSelection[] = (string)$selectionItem;
+                    $normalizedSelection[] = (string) self::enumToScalar($selectionItem);
                 }
             }
+
             $selection = $normalizedSelection;
         } elseif (is_bool($selection)) {
             $selection = $selection ? '1' : '0';
+        } else {
+            $selection = self::enumToScalar($selection);
         }
 
         $lines = [];
@@ -2044,7 +2047,7 @@ class BaseHtml
                     $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
             } elseif ($value !== null) {
-                $html .= " $name=\"" . static::encode($value) . '"';
+                $html .= " $name=\"" . static::encode(self::enumToScalar($value)) . '"';
             }
         }
 
@@ -2283,6 +2286,9 @@ class BaseHtml
      * If an attribute value is an instance of [[ActiveRecordInterface]] or an array of such instances,
      * the primary value(s) of the AR instance(s) will be returned instead.
      *
+     * If an attribute value is an enum case or an array of enum cases (PHP 8.1+), the backing value
+     * of a backed enum or the case name of a pure enum will be returned instead.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
      * @return string|array|null the corresponding attribute value
@@ -2311,6 +2317,8 @@ class BaseHtml
                 if ($v instanceof ActiveRecordInterface) {
                     $v = $v->getPrimaryKey(false);
                     $value[$i] = is_array($v) ? json_encode($v) : $v;
+                } else {
+                    $value[$i] = self::enumToScalar($v);
                 }
             }
         } elseif ($value instanceof ActiveRecordInterface) {
@@ -2319,7 +2327,7 @@ class BaseHtml
             return is_array($value) ? json_encode($value) : $value;
         }
 
-        return $value;
+        return self::enumToScalar($value);
     }
 
     /**
@@ -2422,5 +2430,52 @@ class BaseHtml
         }
 
         return $pattern;
+    }
+
+    /**
+     * Converts an enum case to its scalar representation.
+     *
+     * The backing value of a backed enum or the case name of a pure enum is returned.
+     * Any other value is returned as is.
+     *
+     * @param mixed $value the value to be converted.
+     * @return mixed the scalar representation of the enum case, or the original value.
+     */
+    private static function enumToScalar($value)
+    {
+        if (PHP_VERSION_ID >= 80100) {
+            if ($value instanceof \BackedEnum) {
+                return $value->value;
+            }
+            if ($value instanceof \UnitEnum) {
+                return $value->name;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Normalizes the selection of a list input so that it can be compared with the item values.
+     *
+     * A traversable selection is converted to an array of strings. Enum cases, either as the whole
+     * selection or as items of a traversable selection, are converted to their scalar representation.
+     *
+     * @param mixed $selection the selected value(s).
+     * @return mixed the normalized selection.
+     */
+    private static function normalizeSelection($selection)
+    {
+        if (ArrayHelper::isTraversable($selection)) {
+            $normalizedSelection = [];
+
+            foreach ($selection as $selectionItem) {
+                $normalizedSelection[] = (string) self::enumToScalar($selectionItem);
+            }
+
+            return $normalizedSelection;
+        }
+
+        return self::enumToScalar($selection);
     }
 }
