@@ -40,7 +40,7 @@ Here is a short description of the packages installed:
 
 - `codeception/module-yii2`: This is the Codeception module that provides the integration with the Yii framework.
   It boots your Yii application in the test environment, lets functional tests send requests to it without a web server,
-  and provides Yii specific actions for working with Active Record, fixtures, emails and routes.
+  and provides Yii-specific actions for working with Active Record, fixtures, emails and routes.
 - `codeception/module-asserts`: This is a Codeception module that provides the common PHPUnit assertion methods,
   such as `assertEquals`, `assertContains` or `assertGreaterThan`, as actions, so that they can be used as `$I->assertEquals()`
   in Cest tests and as `$this->tester->assertEquals()` in unit tests.
@@ -131,9 +131,10 @@ This can be based on the application configuration used in your development and 
 In the following we assume that your application's test configuration is located in `config/test.php`.
 Adjust the paths as necessary to match your configuration file location.
 
-The Yii2 module needs the `Yii` class to be available, but it does not load it itself, and the Composer autoloader only
-knows about classes in the `yii\` namespace. Create a bootstrap file at `tests/_bootstrap.php` that includes it, so it
-is loaded once before any test suite is run:
+The Yii2 module needs the global `Yii` class, which is defined in `vendor/yiisoft/yii2/Yii.php`. This file is not
+autoloaded by Composer (the `yiisoft/yii2` package only registers the `yii\` namespace for autoloading) and the module
+does not include it itself. Create a bootstrap file at `tests/_bootstrap.php` that includes it, so it is loaded once
+before any test suite is run:
 
 ```php
 <?php
@@ -155,7 +156,7 @@ modules:
             configFile: config/test.php
 ```
 
-> Note: The value of `bootstrap` is relative to the `tests` directory. If you need suite specific bootstrap code, you can
+> Note: The value of `bootstrap` is relative to the `tests` directory. If you need suite-specific bootstrap code, you can
 > add a `bootstrap` setting to the `*.suite.yml` file of a suite as well; in that case the path is relative to the suite's
 > directory, for example `tests/Unit/_bootstrap.php`.
 
@@ -174,7 +175,7 @@ modules:
 step_decorators: ~
 ```
 
-The `part` setting limits the module to the Yii specific actions for Active Record, emails and fixtures, since unit tests
+The `part` setting limits the module to the Yii-specific actions for Active Record, emails and fixtures, since unit tests
 do not send requests to the application. The Yii2 module creates a fresh application instance in `Yii::$app` for every
 test and, by default, wraps every test in a database transaction that is rolled back afterwards. The actions of the
 enabled modules are available in unit tests via the `$this->tester` property.
@@ -268,15 +269,16 @@ $config = require __DIR__ . '/../config/test.php';
 (new yii\web\Application($config))->run();
 ```
 
-The acceptance test suite has the `PhpBrowser` module enabled by default. Adjust the `url` to the address your test web server
-will be reachable at, and add the Yii2 module so that you can prepare and verify the data in the database:
+The acceptance test suite has the `PhpBrowser` module enabled by default. Set its `url` to the address your test web
+server will be reachable at, including the test entry script, and add the Yii2 module so that you can prepare and verify
+the data in the database:
 
 ```yaml
 actor: AcceptanceTester
 modules:
     enabled:
         - PhpBrowser:
-            url: http://localhost:8080
+            url: http://localhost:8080/index-test.php
         - Yii2:
             part: orm
             entryScript: index-test.php
@@ -287,11 +289,16 @@ step_decorators:
     - Codeception\Step\Retry
 ```
 
-Note the differences to the other suites: the `entryScript` setting makes URLs created with [[yii\helpers\Url]] inside the
-tests point to the test entry script, and the database transaction the module wraps each test in has to be disabled,
-because the application being tested runs in the web server process and would not see data created inside a transaction
-of the test process. As a result, changes made during a test are not rolled back automatically, so the test database has
-to be reset by other means, for example by loading [fixtures](test-fixtures.md) before the tests.
+Note the differences to the other suites:
+
+- The test entry script is part of the `url`, so that every request made by the tests, such as `$I->amOnPage('/')`, is
+  handled by `index-test.php` and thus uses the test configuration. A request to `http://localhost:8080/` would be
+  answered by your regular `web/index.php` instead. The `entryScript` setting makes URLs created with [[yii\helpers\Url]]
+  inside the tests point to the test entry script as well.
+- The database transaction the module wraps each test in has to be disabled, because the application being tested runs
+  in the web server process and would not see data created inside a transaction of the test process. As a result,
+  changes made during a test are not rolled back automatically, so the test database has to be reset by other means,
+  for example by loading [fixtures](test-fixtures.md) before the tests.
 
 The web server can be started manually before running the tests using PHP's built-in web server:
 
@@ -318,7 +325,7 @@ vendor/bin/codecept g:cest Acceptance First
 vendor/bin/codecept run Acceptance
 ```
 
-If you need to test JavaScript powered pages, replace the `PhpBrowser` module with the `WebDriver` module, which drives
+If you need to test JavaScript-powered pages, replace the `PhpBrowser` module with the `WebDriver` module, which drives
 a real browser via Selenium Server or a browser driver such as ChromeDriver or GeckoDriver. Install it with
 `composer require --dev codeception/module-webdriver` and configure it in place of `PhpBrowser`:
 
@@ -326,7 +333,7 @@ a real browser via Selenium Server or a browser driver such as ChromeDriver or G
 modules:
     enabled:
         - WebDriver:
-            url: http://localhost:8080
+            url: http://localhost:8080/index-test.php
             browser: chrome
         - Yii2:
             # same settings as above
