@@ -36,11 +36,15 @@ Yii Framework 2 Change Log
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
+- Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
+- Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
 - Enh #20318: Add support for PHP enums as attribute values and list selections in `yii\helpers\Html` and as range items in `yii\validators\RangeValidator` (glpzzz, terabytesoftw)
+- Bug #20344: Fix `yii\helpers\VarDumper::dumpAsString()` leaving the `<?php` open tag in highlighted output on PHP 8.3+ (mixxael, terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
+- Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
 
 2.0.55 May 09, 2026
 -------------------
