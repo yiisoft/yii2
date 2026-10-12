@@ -4,6 +4,16 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
+- Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
+- Enh #20434: Added PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (max-s-lab)
+- Enh #20433: Added PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (max-s-lab)
+- Enh #20442: Add PHPStan/Psalm annotations for `yii\base\Controller` methods: `runAction`, `run`, `render`, `renderPartial` and `renderFile` (max-s-lab)
+- Bug #20453: Fix PHPStan/Psalm types in `yii\web\View` (max-s-lab)
+- Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
+- Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
+- Enh #20477: Added Content-Encoding(aka gzip) support to request body (lucaswitch)
+
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
