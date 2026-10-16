@@ -9,11 +9,14 @@
 namespace yiiunit\framework\grid;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\ArrayDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
+use yii\web\Request;
+use yii\web\View;
 use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;
 
@@ -52,6 +55,10 @@ class CheckboxColumnTest extends TestCase
 
         $column = new CheckboxColumn(['name' => 'MyForm[grid1][key][]', 'grid' => $this->getGrid()]);
         $this->assertStringContainsString('name="MyForm[grid1][key_all]"', $column->renderHeaderCell());
+
+        $column = new CheckboxColumn(['name' => 'selection', 'grid' => $this->getGrid()]);
+        $this->assertStringNotContainsString('checked', $column->renderHeaderCell());
+        $this->assertStringContainsString('select-on-check-all', $column->renderHeaderCell());
     }
 
     public function testInputValue(): void
@@ -83,6 +90,59 @@ class CheckboxColumnTest extends TestCase
         ]);
         $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
+
+        $column = new CheckboxColumn(['checkboxOptions' => ['checked' => false], 'grid' => $this->getGrid()]);
+        $this->assertStringNotContainsString('checked', $column->renderDataCell([], 1, 0));
+
+        $column = new CheckboxColumn(['checkboxOptions' => ['checked' => true], 'grid' => $this->getGrid()]);
+        $this->assertStringContainsString('checked', $column->renderDataCell([], 1, 0));
+    }
+
+    public function testEmptyNameThrowsException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('The "name" property must be set.');
+
+        new CheckboxColumn(['name' => '', 'grid' => $this->getGrid()]);
+    }
+
+    public function testNonMultipleHeaderRendersEmptyCell(): void
+    {
+        $column = new CheckboxColumn(['multiple' => false, 'grid' => $this->getGrid()]);
+
+        $this->assertSame('<th>&nbsp;</th>', $column->renderHeaderCell());
+    }
+
+    public function testCssClass(): void
+    {
+        $column = new CheckboxColumn(['cssClass' => 'custom-check', 'grid' => $this->getGrid()]);
+        $result = $column->renderDataCell([], 1, 0);
+
+        $this->assertStringContainsString('class="custom-check"', $result);
+    }
+
+    public function testRegisterClientScript(): void
+    {
+        Yii::$app->set('request', new Request(['url' => '/abc']));
+
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => [['id' => 1]]]),
+            'options' => ['id' => 'checkbox-grid'],
+            'columns' => [
+                [
+                    'class' => CheckboxColumn::class,
+                    'name' => 'items',
+                    'cssClass' => 'custom-check',
+                ],
+            ],
+        ]);
+
+        ob_start();
+        $grid->run();
+        ob_end_clean();
+
+        $js = implode("\n", Yii::$app->getView()->js[View::POS_READY] ?? []);
+        $this->assertStringContainsString("jQuery('#checkbox-grid').yiiGridView('setSelectionColumn', {\"name\":\"items[]\",\"class\":\"custom-check\",\"multiple\":true,\"checkAll\":\"items_all\"});", $js);
     }
 
     public function testContent(): void

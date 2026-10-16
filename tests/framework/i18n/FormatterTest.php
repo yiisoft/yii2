@@ -42,6 +42,7 @@ class FormatterTest extends TestCase
         ]);
         if (!isset($this->formatter)) {
             $this->formatter = new Formatter(['locale' => 'en-US']);
+            IntlTestHelper::applyIntlStatusToFormatter($this->formatter);
         }
     }
 
