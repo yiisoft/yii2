@@ -459,6 +459,263 @@ class DataFilterTest extends TestCase
         $this->assertEquals(['name' => null], $builder->normalize(false));
     }
 
+    public function testSetSearchAttributeTypes(): void
+    {
+        $builder = new DataFilter();
+        $types = ['name' => DataFilter::TYPE_STRING, 'number' => DataFilter::TYPE_INTEGER];
+        $builder->setSearchAttributeTypes($types);
+        $this->assertSame($types, $builder->getSearchAttributeTypes());
+    }
+
+    public function testDetectSearchAttributeTypesBoolean(): void
+    {
+        $builder = new DataFilter();
+        $model = (new DynamicModel(['active' => null]))
+            ->addRule('active', 'boolean');
+        $builder->setSearchModel($model);
+        $types = $builder->getSearchAttributeTypes();
+        $this->assertSame(DataFilter::TYPE_BOOLEAN, $types['active']);
+    }
+
+    public function testDetectSearchAttributeTypeFallsBackToString(): void
+    {
+        $builder = new DataFilter();
+        $model = (new DynamicModel(['name' => null]))
+            ->addRule('name', 'required');
+        $builder->setSearchModel($model);
+        $types = $builder->getSearchAttributeTypes();
+        $this->assertSame(DataFilter::TYPE_STRING, $types['name']);
+    }
+
+    public function testGetSearchModelThrowsExceptionForNonModel(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(function () {
+            return new stdClass();
+        });
+        $this->expectException('yii\base\InvalidConfigException');
+        $builder->getSearchModel();
+    }
+
+    public function testParseErrorMessageFallback(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel((new DynamicModel(['name' => null]))->addRule('name', 'string'));
+        $builder->setErrorMessages([]);
+        $builder->filter = 'invalid';
+        $builder->validate();
+        $this->assertSame('The format of Filter is invalid.', $builder->getFirstError('filter'));
+    }
+
+    public function testValidateMixedOperatorAndValue(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['number' => null]))
+                ->addRule('number', 'integer')
+        );
+        $builder->filter = [
+            'number' => [
+                'gt' => 10,
+                'invalid_key' => 20,
+            ],
+        ];
+        $this->assertFalse($builder->validate());
+        $this->assertSame(
+            ['Condition for "number" should be either a value or valid operator specification.'],
+            $builder->getErrors('filter')
+        );
+    }
+
+    public function testValidateUnsupportedOperatorType(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['name' => null]))
+                ->addRule('name', 'string')
+        );
+        $builder->filter = [
+            'name' => [
+                'gt' => 'foo',
+            ],
+        ];
+        $this->assertFalse($builder->validate());
+        $this->assertSame(
+            ['"name" does not support operator "gt".'],
+            $builder->getErrors('filter')
+        );
+    }
+
+    public function testValidateMultiValueOperatorRequiresArray(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['number' => null]))
+                ->addRule('number', 'integer')
+        );
+        $builder->filter = [
+            'number' => [
+                'in' => 'not-array',
+            ],
+        ];
+        $this->assertFalse($builder->validate());
+        $this->assertSame(
+            ['Operator "in" requires multiple operands.'],
+            $builder->getErrors('filter')
+        );
+    }
+
+    public function testBuildWithValidation(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['name' => null]))
+                ->addRule('name', 'string')
+        );
+        $builder->filter = 'invalid';
+        $this->assertFalse($builder->build());
+    }
+
+    public function testBuildSuccess(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['name' => null]))
+                ->addRule('name', 'string')
+        );
+        $builder->filter = ['name' => 'test'];
+        $result = $builder->build();
+        $this->assertSame(['name' => 'test'], $result);
+    }
+
+    public function testNormalizeWithValidationFailure(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['name' => null]))
+                ->addRule('name', 'string')
+        );
+        $builder->filter = 'invalid';
+        $this->assertFalse($builder->normalize());
+    }
+
+    public function testMagicPropertyAccess(): void
+    {
+        $builder = new DataFilter();
+        $this->assertTrue($builder->canGetProperty('filter'));
+        $this->assertTrue($builder->canSetProperty('filter'));
+        $builder->filter = ['name' => 'test'];
+        $this->assertSame(['name' => 'test'], $builder->filter);
+        $this->assertTrue(isset($builder->filter));
+        unset($builder->filter);
+        $this->assertFalse(isset($builder->filter));
+    }
+
+    public function testMagicPropertyAccessNonFilter(): void
+    {
+        $builder = new DataFilter();
+        $this->assertTrue($builder->canGetProperty('filterAttributeName'));
+        $this->assertTrue($builder->canSetProperty('filterAttributeName'));
+    }
+
+    public function testMagicGetNonFilterThrows(): void
+    {
+        $builder = new DataFilter();
+        $this->expectException('yii\base\UnknownPropertyException');
+        $builder->__get('nonExistent');
+    }
+
+    public function testMagicSetNonFilterThrows(): void
+    {
+        $builder = new DataFilter();
+        $this->expectException('yii\base\UnknownPropertyException');
+        $builder->__set('nonExistent', 'value');
+    }
+
+    public function testMagicIssetNonFilter(): void
+    {
+        $builder = new DataFilter();
+        $this->assertFalse(isset($builder->nonExistent));
+    }
+
+    public function testMagicUnsetNonFilterThrows(): void
+    {
+        $builder = new DataFilter();
+        $this->expectException('yii\base\InvalidCallException');
+        unset($builder->nonExistent);
+    }
+
+    public function testDetectSearchAttributeTypeDateAndTime(): void
+    {
+        $builder = new DataFilter();
+        $model = (new DynamicModel(['date' => null, 'time' => null]))
+            ->addRule('date', 'date', ['format' => 'php:Y-m-d'])
+            ->addRule('time', 'time', ['format' => 'php:H:i:s']);
+        $builder->setSearchModel($model);
+        $types = $builder->getSearchAttributeTypes();
+        $this->assertSame(DataFilter::TYPE_DATE, $types['date']);
+        $this->assertSame(DataFilter::TYPE_TIME, $types['time']);
+    }
+
+    public function testParseErrorMessageUnknownKey(): void
+    {
+        $builder = new DataFilter();
+        $builder->setSearchModel(
+            (new DynamicModel(['name' => null]))
+                ->addRule('name', 'string')
+        );
+        $ref = new \ReflectionProperty($builder, '_errorMessages');
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
+        $ref->setValue($builder, ['someKey' => 'some message']);
+        $builder->filter = 'invalid';
+        $builder->validate();
+        $this->assertSame('The format of Filter is invalid.', $builder->getFirstError('filter'));
+    }
+
+    public function testGetErrorMessagesCallback(): void
+    {
+        $builder = new DataFilter();
+        $ref = new \ReflectionProperty($builder, '_errorMessages');
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
+        $ref->setValue($builder, function () {
+            return ['unsupportedOperatorType' => 'Callback message'];
+        });
+        $messages = $builder->getErrorMessages();
+        $this->assertSame('Callback message', $messages['unsupportedOperatorType']);
+        $this->assertArrayHasKey('unknownAttribute', $messages);
+    }
+
+    public function testValidateAttributeValueUnsafe(): void
+    {
+        $builder = new DataFilter();
+        $model = (new DynamicModel(['name' => null]))
+            ->addRule('name', 'string');
+        $builder->setSearchModel($model);
+        $builder->setSearchAttributeTypes(['name' => DataFilter::TYPE_STRING, 'fake' => DataFilter::TYPE_STRING]);
+        $builder->filter = ['fake' => 'value'];
+        $this->assertFalse($builder->validate());
+        $this->assertStringContainsString('fake', (string) $builder->getFirstError('filter'));
+    }
+
+    public function testAttributes(): void
+    {
+        $builder = new DataFilter();
+        $this->assertSame(['filter'], $builder->attributes());
+
+        $builder->filterAttributeName = 'search';
+        $this->assertSame(['search'], $builder->attributes());
+    }
+
+    public function testFormName(): void
+    {
+        $builder = new DataFilter();
+        $this->assertSame('', $builder->formName());
+    }
+
     public function testSetupErrorMessages(): void
     {
         $builder = new DataFilter();
