@@ -54,6 +54,18 @@ for both A and B.
 Upgrade from Yii 2.0.55
 -----------------------
 
+* `yii\db\sqlite\Schema` now understands schema names, which in SQLite are the names of the
+  [attached databases](https://www.sqlite.org/lang_attach.html). As a consequence `yii\db\sqlite\Schema::$defaultSchema`
+  is set to `main` and the `schemaName` of a `yii\db\TableSchema` read from a SQLite connection is now `main` instead of
+  `null` for tables of the database the connection was opened with. `TableSchema::$fullName` is unchanged: the default
+  schema is never included in it, so `getTableSchema('main.customer')` and `getTableSchema('customer')` both give a
+  `fullName` of `customer`. `Schema::getTableNames()` and `Schema::getTableSchemas()` used to ignore the schema they
+  were given and always report on `main`; they now read the schema that was asked for, and passing the name of a
+  database that is not attached raises a `yii\db\Exception` instead of silently returning the tables of `main`.
+  `Schema::getSchemaNames()` leaves out the `temp` schema holding the temporary tables, since it is a system one,
+  but that schema can still be read by naming it.
+  `yii\db\sqlite\QueryBuilder::resetSequence()` follows suit and updates the `sqlite_sequence` table of the schema the
+  given table belongs to, every attached database having one of its own.
 * When using multiple `\yii\db\Expression`s with the same parameter names in a query, the parameters are renamed to avoid clashes.
   If your code relies on inspecting the SQL created by the query builder, you might need to change it.
 * Client-side validation in `ActiveForm` triggered by a change, by the input losing focus, or by a manual
