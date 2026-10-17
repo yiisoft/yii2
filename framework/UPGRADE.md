@@ -65,6 +65,10 @@ Upgrade from Yii 2.0.55
   The detection result is composed once per owner class, so such a condition can not be resolved there, and an
   attribute covered by conditional rules only is now left out of the map instead of being type-casted according
   to the first matching rule. Set `attributeTypes` explicitly if you rely on those attributes being type-casted.
+* `yii\helpers\ArrayHelper::toArray()` now treats enum cases as scalar values: a backed enum case is converted to
+  its value and a pure enum case to its name, instead of an array with the `name` and `value` keys. This also affects
+  `yii\base\Arrayable::toArray()` of models with enum attributes and therefore the REST output of such models.
+  Specify a mapping for the enum class in `$properties` if you rely on the previous representation.
 
 Upgrade from Yii 2.0.53
 -----------------------
