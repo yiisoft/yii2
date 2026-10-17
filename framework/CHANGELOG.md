@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Bug #20344: Fix `yii\helpers\VarDumper::dumpAsString()` leaving the `<?php` open tag in highlighted output on PHP 8.3+ (mixxael, terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
 - Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
+- Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
