@@ -386,4 +386,60 @@ describe('yii.activeForm', function () {
             assert.deepEqual([0], delays);
         });
     });
+
+    // https://github.com/yiisoft/yii2/issues/16884
+
+    describe('updateMessages method', function () {
+        var $summary;
+
+        function getSummaryItems() {
+            return $summary.find('li').map(function () {
+                return $(this).html();
+            }).get();
+        }
+
+        before(function () {
+            $activeForm = $('#w5');
+            $activeForm.yiiActiveForm([
+                {
+                    id: 'test-text5',
+                    input: '#test-text5',
+                    container: '.field-test-text5'
+                },
+                {
+                    id: 'test-text6',
+                    input: '#test-text6',
+                    container: '.field-test-text6'
+                },
+                {
+                    id: 'test-text7',
+                    input: '#test-text7',
+                    container: '.field-test-text7'
+                }
+            ]);
+            $summary = $activeForm.find('.error-summary');
+        });
+
+        afterEach(function () {
+            $activeForm.data('yiiActiveForm').settings.encodeErrorSummary = true;
+        });
+
+        it('should list each distinct error message once in the error summary', function () {
+            $activeForm.yiiActiveForm('updateMessages', {
+                'test-text5': ['Required.'],
+                'test-text6': ['Too long.'],
+                'test-text7': ['Required.']
+            }, true);
+            assert.deepEqual(getSummaryItems(), ['Required.', 'Too long.'], 'Duplicates must be dropped in first-occurrence order.');
+        });
+
+        it('should render each distinct error message as HTML when encodeErrorSummary is disabled', function () {
+            $activeForm.data('yiiActiveForm').settings.encodeErrorSummary = false;
+            $activeForm.yiiActiveForm('updateMessages', {
+                'test-text5': ['<b>Required.</b>'],
+                'test-text6': ['<b>Required.</b>']
+            }, true);
+            assert.deepEqual(getSummaryItems(), ['<b>Required.</b>'], 'Unique message must be rendered as HTML.');
+        });
+    });
 });
