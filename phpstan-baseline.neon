@@ -457,18 +457,6 @@ parameters:
 			path: framework/db/sqlite/SqlTokenizer.php
 
 		-
-			message: '#^Comparison operation "\>\=" between \*NEVER\* and 70000 results in an error\.$#'
-			identifier: greaterOrEqual.invalid
-			count: 1
-			path: framework/di/Container.php
-
-		-
-			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: framework/di/Container.php
-
-		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
 			identifier: property.notFound
 			count: 1
