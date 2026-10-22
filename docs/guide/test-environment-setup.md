@@ -31,12 +31,8 @@ Here is a short description of the packages installed:
 - `codeception/codeception:^5.0`: This is the package for the main Codeception framework. The `^5.0` in the version constraint
   means that the package can be any version within the `5.x` series, but not version 6 or higher.
 
-  > Note: Codeception 5 requires PHP 8.0 or higher. Newer releases of Codeception and its modules require newer PHP versions
-  > (for example, Codeception 5.3 requires PHP 8.2 and `codeception/module-yii2` 2.0 requires PHP 8.3), but Composer
-  > automatically selects the newest releases that are compatible with your PHP version. If your application is still running
-  > on PHP 7.4, change the version constraint of Codeception to `^4.0`. This guide assumes Codeception 5 is installed; the
-  > directory structure of Codeception 4 differs significantly, check the
-  > [Codeception 5 release notes](https://codeception.com/07-28-2022/codeception-5.html) for details.
+  > Note: This guide assumes Codeception 5 is installed. The directory structure of Codeception 4 differs significantly,
+  > check the [Codeception 5 release notes](https://codeception.com/07-28-2022/codeception-5.html) for details.
 
 - `codeception/module-yii2`: This is the Codeception module that provides the integration with the Yii framework.
   It boots your Yii application in the test environment, lets functional tests send requests to it without a web server,

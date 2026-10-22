@@ -40,7 +40,7 @@ jobs:
     with:
       composer-root-version: 2.0.x-dev
       concurrency-group: mariadb-${{ github.ref }}
-      coverage-driver: xdebug
+      coverage-driver: pcov
       database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
       database-health-cmd: mariadb-admin ping
       database-image: mariadb
@@ -49,7 +49,7 @@ jobs:
       database-versions: '["10.4","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-22.04"]'
-      php-version: '["7.4","8.5"]'
+      php-version: '["8.3","8.5"]'
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -69,5 +69,5 @@ jobs:
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-22.04"]'
-      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      php-version: '["8.4"]'
       phpunit-group: mysql

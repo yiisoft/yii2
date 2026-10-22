@@ -33,7 +33,6 @@ on:
   push: *ignore-paths
 
 env:
-  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
   COMPOSER_ROOT_VERSION: 2.0.x-dev
 
 concurrency:
@@ -53,8 +52,12 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install dependencies.
-        run: composer update $DEFAULT_COMPOSER_FLAGS
+      - name: Setup PHP with Composer.
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+        with:
+          composer-root-version: 2.0.x-dev
+          coverage-driver: none
+          php-version: 8.3
 
       - name: Install JQuery `3.6.*@stable` for tests.
         run: composer require "bower-asset/jquery:3.6.*@stable"

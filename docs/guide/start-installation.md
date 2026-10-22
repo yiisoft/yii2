@@ -173,7 +173,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php)
+should have PHP 8.3 or above. Ideally the latest PHP release. You should also install the [PDO PHP Extension](https://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -185,7 +185,7 @@ Configuring Web Servers <span id="configuring-web-servers"></span>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](https://httpd.apache.org/) or an [Nginx HTTP server](https://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
+Windows, Mac OS X, or Linux running PHP 8.3 or higher. Yii 2.0 is also compatible with facebook's
 [HHVM](https://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
 PHP, so you have to take some extra care when using HHVM.
 
