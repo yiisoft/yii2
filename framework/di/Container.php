@@ -9,7 +9,6 @@
 namespace yii\di;
 
 use ReflectionClass;
-use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 use Yii;
