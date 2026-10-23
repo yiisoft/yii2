@@ -41,6 +41,11 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Migration, see the [guide article on Migration](guide:db-migrations).
  *
+ * @property-read Connection $db the DB connection object.
+ * @property-write Connection|array|string $db the DB connection object or the application component ID of the DB connection
+ * that this migration should work with. Starting from version 2.0.2, this can also be a configuration array
+ * for creating the object.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

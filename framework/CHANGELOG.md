@@ -47,6 +47,8 @@ Yii Framework 2 Change Log
 - Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
 - Bug #21124: Fix `@var` annotation for `yii\db\ActiveRelationTrait::$inverseOf` (mspirkov)
 - Bug #21124: Fix `@param` annotations for `$type` in `addColumn()` and `alterColumn()` of `yii\db\Migration`, `yii\db\Command` and `yii\db\QueryBuilder` (mspirkov)
+- Enh #21124: Add `@property-read` and `@property-write` annotations for `yii\db\Migration::$db` (mspirkov)
+- Bug #21124: Fix `@var` annotations for `yii\db\ColumnSchema` properties (mspirkov)
 - Enh #21124: Clarify the type of the `yii\log\Logger::$messages` (mspirkov)
 - Bug #21124: Separate the `@property` annotations for `$request` and `$response` in `yii\web\Controller` and `yii\console\Controller` (mspirkov)
 - Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
