@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #20344: Fix `yii\helpers\VarDumper::dumpAsString()` leaving the `<?php` open tag in highlighted output on PHP 8.3+ (mixxael, terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
 - Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
+- Chg #21119: Raise minimum required PHP version from `7.4` to `8.3` (terabytesoftw)
 - Bug #21124: Fix `@var` annotation for `yii\db\ActiveRelationTrait::$inverseOf` (mspirkov)
 - Bug #21124: Fix `@param` annotations for `$type` in `addColumn()` and `alterColumn()` of `yii\db\Migration`, `yii\db\Command` and `yii\db\QueryBuilder` (mspirkov)
 - Enh #21124: Add `@property-read` and `@property-write` annotations for `yii\db\Migration::$db` (mspirkov)

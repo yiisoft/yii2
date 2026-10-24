@@ -56,7 +56,7 @@ In case of nginx you should not need any extra config files.
 
 ### Check requirements
 
-In order to run Yii, your webserver must meet its requirements. The very minimum requirement is PHP 5.4. In order to
+In order to run Yii, your webserver must meet its requirements. The very minimum requirement is PHP 8.3. In order to
 check the requirements copy `requirements.php` from your root directory into the webroot directory and run it via
 browser using `https://example.com/requirements.php` URL. Don't forget to delete the file afterwards.
 

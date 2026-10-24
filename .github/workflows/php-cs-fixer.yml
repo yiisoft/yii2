@@ -39,4 +39,4 @@ jobs:
     with:
       composer-root-version: 2.0.x-dev
       configuration: .php-cs-fixer.dist.php
-      php-version: '["7.4"]'
+      php-version: '["8.3"]'

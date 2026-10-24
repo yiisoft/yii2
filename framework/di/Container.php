@@ -9,7 +9,6 @@
 namespace yii\di;
 
 use ReflectionClass;
-use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
 use Yii;
@@ -532,35 +531,8 @@ class Container extends Component
                     break;
                 }
 
-                if (PHP_VERSION_ID >= 80000) {
-                    $c = $param->getType();
-                    $isClass = false;
-                    if ($c instanceof ReflectionNamedType) {
-                        $isClass = !$c->isBuiltin();
-                    }
-                } else {
-                    try {
-                        $c = $param->getClass();
-                    } catch (ReflectionException $e) {
-                        if (!$this->isNulledParam($param)) {
-                            $notInstantiableClass = null;
-                            if (PHP_VERSION_ID >= 70000) {
-                                $type = $param->getType();
-                                if ($type instanceof ReflectionNamedType) {
-                                    $notInstantiableClass = $type->getName();
-                                }
-                            }
-                            throw new NotInstantiableException(
-                                $notInstantiableClass,
-                                $notInstantiableClass === null ? 'Can not instantiate unknown class.' : null
-                            );
-                        } else {
-                            $c = null;
-                        }
-                    }
-                    $isClass = $c !== null;
-                }
-                $className = $isClass ? $c->getName() : null;
+                $type = $param->getType();
+                $className = $type instanceof ReflectionNamedType && !$type->isBuiltin() ? $type->getName() : null;
 
                 if ($className !== null) {
                     $dependencies[$param->getName()] = Instance::of($className, $this->isNulledParam($param));

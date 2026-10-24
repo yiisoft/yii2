@@ -55,7 +55,7 @@ In diesem Handbuch geht es hauptsächlich um die Version 2.0.
 Anforderungen und Voraussetzungen
 ---------------------------------
 
-Yii 2.0 erfordert PHP 7.4.0 oder höher und läuft am besten mit der neuesten Version von PHP. Detailliertere
+Yii 2.0 erfordert PHP 8.3.0 oder höher und läuft am besten mit der neuesten Version von PHP. Detailliertere
 Informationen über die Anforderungen einzelner Funktionen erhalten Sie, indem Sie den "Requirement Checker" ausführen,
 der in jedem Yii-Release enthalten ist.
 

@@ -54,6 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.55
 -----------------------
 
+* Raised minimum supported PHP version to `8.3`. PHP `7.4`, `8.0`, `8.1` and `8.2` are no longer supported.
 * When using multiple `\yii\db\Expression`s with the same parameter names in a query, the parameters are renamed to avoid clashes.
   If your code relies on inspecting the SQL created by the query builder, you might need to change it.
 * Client-side validation in `ActiveForm` triggered by a change, by the input losing focus, or by a manual
