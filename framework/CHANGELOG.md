@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #21124: Clarify the type of the `yii\log\Logger::$messages` (mspirkov)
 - Bug #21124: Separate the `@property` annotations for `$request` and `$response` in `yii\web\Controller` and `yii\console\Controller` (mspirkov)
 - Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
+- Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
 
 2.0.55 May 09, 2026
 -------------------
