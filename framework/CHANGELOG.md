@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #21121: Fix `yii\validators\DateValidator` rejecting non-ASCII dates on PHP 8.4.27 and 8.5.12 (eluhr)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
