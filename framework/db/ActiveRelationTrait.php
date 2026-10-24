@@ -53,7 +53,7 @@ trait ActiveRelationTrait
      */
     public $via;
     /**
-     * @var string the name of the relation that is the inverse of this relation.
+     * @var string|null the name of the relation that is the inverse of this relation.
      * For example, an order has a customer, which means the inverse of the "customer" relation
      * is the "orders", and the inverse of the "orders" relation is the "customer".
      * If this property is set, the primary record(s) will be referenced through the specified relation.
