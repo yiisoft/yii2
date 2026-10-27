@@ -56,6 +56,9 @@ class BaseArrayHelper
      * ]
      * ```
      *
+     * Enum cases are treated as scalar values: a backed enum case is converted to its value and a pure enum case
+     * to its name, unless a mapping for the enum class is specified in `$properties`.
+     *
      * @param bool $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
      */
@@ -64,7 +67,9 @@ class BaseArrayHelper
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
-                    if (is_array($value) || is_object($value)) {
+                    if ($value instanceof \UnitEnum && empty($properties[get_class($value)])) {
+                        $object[$key] = $value instanceof \BackedEnum ? $value->value : $value->name;
+                    } elseif (is_array($value) || is_object($value)) {
                         $object[$key] = static::toArray($value, $properties, true);
                     }
                 }
@@ -88,6 +93,9 @@ class BaseArrayHelper
 
                     return $recursive ? static::toArray($result, $properties) : $result;
                 }
+            }
+            if ($object instanceof \UnitEnum) {
+                return [$object instanceof \BackedEnum ? $object->value : $object->name];
             }
             if ($object instanceof Arrayable) {
                 $result = $object->toArray([], [], $recursive);
