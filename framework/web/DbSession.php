@@ -70,9 +70,7 @@ class DbSession extends MultiFieldSession
      * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
      * column in the session table to improve the performance.
      *
-     * Note that according to the php.ini setting of `session.hash_function`, you may need to adjust
-     * the length of the `id` column. For example, if `session.hash_function=sha256`, you should use
-     * length 64 instead of 40.
+     * Session IDs have `session.sid_length` characters (32 by default), so the `id` column must be at least that long.
      */
     public $sessionTable = '{{%session}}';
 
@@ -103,15 +101,19 @@ class DbSession extends MultiFieldSession
      */
     public function openSession($savePath, $sessionName)
     {
-        if ($this->getUseStrictMode()) {
-            $id = $this->getId();
-            if (!$this->getReadQuery($id)->exists($this->db)) {
-                //This session id does not exist, mark it for forced regeneration
-                $this->_forceRegenerateId = $id;
-            }
-        }
-
         return parent::openSession($savePath, $sessionName);
+    }
+
+    /**
+     * Session ID existence check handler.
+     * @internal Do not call this method directly.
+     * @param string $id session ID
+     * @return bool whether a non-expired session with the given ID exists in [[sessionTable]]
+     * @since 2.0.56
+     */
+    public function sessionIdExists($id)
+    {
+        return $this->getReadQuery($id)->exists($this->db);
     }
 
     /**
@@ -196,11 +198,6 @@ class DbSession extends MultiFieldSession
      */
     public function writeSession($id, $data)
     {
-        if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
-            //Ignore write when forceRegenerate is active for this id
-            return true;
-        }
-
         // exception must be caught in session write handler
         // https://www.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
