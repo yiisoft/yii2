@@ -236,6 +236,65 @@ class CacheSessionTest extends TestCase
         );
     }
 
+    public function testSessionCreateIdReturnsNewIdWhileSessionIsOpen(): void
+    {
+        $session = new CacheSession(['useStrictMode' => false]);
+
+        $session->open();
+
+        $id = $session->getId();
+        $createdId = session_create_id();
+
+        $session->close();
+
+        $this->assertIsString(
+            $createdId,
+            'A new ID must be created.',
+        );
+        $this->assertNotSame(
+            $id,
+            $createdId,
+            'Created ID must differ from the active one.',
+        );
+    }
+
+    public function testSessionCreateIdReturnsNewIdWhenStorageAcceptsEveryId(): void
+    {
+        $session = new LegacyStrictModeSession(['useStrictMode' => true]);
+
+        $session->open();
+
+        $createdId = session_create_id();
+
+        $session->close();
+
+        $this->assertIsString(
+            $createdId,
+            'Storage accepting every ID must not count as a collision.',
+        );
+    }
+
+    public function testSessionResetKeepsIdCreatedOnStart(): void
+    {
+        $session = new LegacyStrictModeSession(['useStrictMode' => true]);
+
+        $session->open();
+
+        $id = $session->getId();
+
+        session_reset();
+
+        $resetId = $session->getId();
+
+        $session->close();
+
+        $this->assertSame(
+            $id,
+            $resetId,
+            'Created ID must survive a reset.',
+        );
+    }
+
     private function closeNativeSession(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {

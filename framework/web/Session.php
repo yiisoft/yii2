@@ -661,6 +661,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * PHP calls this method through [[SessionHandler::create_sid()]] when [[useCustomStorage]] is `true`.
      * The ID has the format of the PHP native generator: `session.sid_length` characters from the alphabet selected by
      * `session.sid_bits_per_character`, or 32 hexadecimal characters when those directives are not available.
+     * An override must return IDs that can not collide with stored sessions, since [[SessionHandler::validateId()]]
+     * reports the returned ID as missing without checking the storage.
      * @internal Do not call this method directly.
      * @return string a new random session ID
      * @see https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
@@ -686,9 +688,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Session ID existence check handler.
-     * PHP calls this method through [[SessionHandler::validateId()]] only when [[useStrictMode]] is enabled:
-     * `session_start()` replaces an ID reported as missing with [[createSessionId()]], and `session_regenerate_id()`
-     * retries a new ID reported as existing.
+     * PHP calls this method through [[SessionHandler::validateId()]] when [[useStrictMode]] is enabled, so that
+     * `session_start()` replaces an ID reported as missing with [[createSessionId()]]. IDs returned by
+     * [[createSessionId()]], which PHP checks for collisions in `session_regenerate_id()` when [[useStrictMode]] is
+     * enabled and in `session_create_id()` regardless of it, are reported as missing by
+     * [[SessionHandler::validateId()]] without calling this method.
      * The default implementation accepts every ID. Override it if [[useCustomStorage]] returns `true`, so that strict
      * mode rejects session IDs not present in the storage.
      * @internal Do not call this method directly.

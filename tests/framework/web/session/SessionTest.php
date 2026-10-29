@@ -154,6 +154,35 @@ class SessionTest extends TestCase
         );
     }
 
+    public function testStrictModeReplacesUnknownIdWithoutCustomStorage(): void
+    {
+        $session = new Session(['useStrictMode' => true]);
+
+        $session->close();
+        $session->setId('unknown-id');
+        $session->open();
+
+        $id = $session->getId();
+        $module = session_module_name();
+
+        $session->close();
+
+        $this->assertTrue(
+            $session->sessionIdExists('unknown-id'),
+            'Default check must accept every ID.',
+        );
+        $this->assertNotSame(
+            'user',
+            $module,
+            'PHP native module must validate the ID.',
+        );
+        $this->assertNotSame(
+            'unknown-id',
+            $id,
+            'Unknown ID must be replaced.',
+        );
+    }
+
     public function testSessionHandlerAcceptsEveryIdWithoutCustomValidation(): void
     {
         $handler = new SessionHandler(new Session());
@@ -161,6 +190,29 @@ class SessionTest extends TestCase
         $this->assertTrue(
             $handler->validateId('unknown-id'),
             'Base storage must not reject any ID.',
+        );
+    }
+
+    public function testSessionHandlerReportsCreatedIdAsMissingUntilSessionOpens(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $id = $handler->create_sid();
+
+        $this->assertFalse(
+            $handler->validateId($id),
+            'Created ID must not count as a collision.',
+        );
+        $this->assertTrue(
+            $handler->validateId('unknown-id'),
+            'Other IDs must follow the storage answer.',
+        );
+
+        $handler->open('', 'sid');
+
+        $this->assertTrue(
+            $handler->validateId($id),
+            'Created ID must be forgotten when the session opens.',
         );
     }
 }

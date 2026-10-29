@@ -27,6 +27,10 @@ class SessionHandler implements SessionHandlerInterface
      * @var Session
      */
     private $_session;
+    /**
+     * @var string|null the ID returned by the last [[create_sid()]] call, forgotten by [[open()]]
+     */
+    private $_createdId;
 
 
     public function __construct(Session $session)
@@ -44,12 +48,16 @@ class SessionHandler implements SessionHandlerInterface
 
     /**
      * Returns a new session ID created by [[Session::createSessionId()]].
+     * The ID is remembered until [[open()]], so that [[validateId()]] reports it as missing when PHP checks it for
+     * collisions.
      * @return string the new session ID
      * @since 2.0.56
      */
     public function create_sid(): string
     {
-        return $this->_session->createSessionId();
+        $this->_createdId = $this->_session->createSessionId();
+
+        return $this->_createdId;
     }
 
     /**
@@ -74,6 +82,8 @@ class SessionHandler implements SessionHandlerInterface
      */
     public function open($path, $name): bool
     {
+        $this->_createdId = null;
+
         return $this->_session->openSession($path, $name);
     }
 
@@ -87,14 +97,22 @@ class SessionHandler implements SessionHandlerInterface
     }
 
     /**
-     * Returns whether a session with the given ID exists, as reported by [[Session::sessionIdExists()]].
-     * PHP calls this method only when `session.use_strict_mode` is enabled.
+     * Returns whether a session with the given ID exists.
+     * PHP calls this method for the ID supplied by the client when `session.use_strict_mode` is enabled, and for the
+     * ID returned by [[create_sid()]] to detect collisions: in `session_regenerate_id()` when strict mode is enabled,
+     * and in `session_create_id()` regardless of it. The ID returned by the last [[create_sid()]] call is reported as
+     * missing without consulting the storage, as [[Session::createSessionId()]] must return IDs that do not collide;
+     * any other ID is checked through [[Session::sessionIdExists()]].
      * @param string $id the session ID
      * @return bool whether the session exists
      * @since 2.0.56
      */
     public function validateId($id): bool
     {
+        if ($id === $this->_createdId) {
+            return false;
+        }
+
         return $this->_session->sessionIdExists($id);
     }
 
