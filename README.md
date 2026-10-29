@@ -107,9 +107,9 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
 ```
 
-### Supply-Chain Security
+### Security
 
-[![Security](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/zizmor.yml?style=for-the-badge&label=Security&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/zizmor.yml)
+[![Zizmor](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/zizmor.yml?style=for-the-badge&label=Zizmor&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/zizmor.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/yiisoft/yii2/badge?style=for-the-badge)](https://scorecard.dev/viewer/?uri=github.com/yiisoft/yii2)
 
 GitHub Actions workflows are analyzed by [zizmor](https://github.com/yiisoft/yii2/actions/workflows/zizmor.yml) for supply-chain vulnerabilities and workflow misconfigurations.
