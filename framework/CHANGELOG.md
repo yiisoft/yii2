@@ -38,7 +38,6 @@ Yii Framework 2 Change Log
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Bug #21072: Use the full 64-bit keyspace for PostgreSQL advisory lock keys in `PgsqlMutex` (iliaal)
-
 - Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
 - Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
