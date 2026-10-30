@@ -11,6 +11,7 @@ DROP SEQUENCE IF EXISTS "item_id_seq_2" CASCADE;
 DROP TABLE IF EXISTS "order_item_with_null_fk" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_with_null_fk" CASCADE;
+DROP TABLE IF EXISTS "order_with_item_ids" CASCADE;
 DROP TABLE IF EXISTS "category" CASCADE;
 DROP TABLE IF EXISTS "customer" CASCADE;
 DROP TABLE IF EXISTS "profile" CASCADE;
@@ -248,6 +249,16 @@ INSERT INTO "item" (name, category_id) VALUES ('Yii 1.1 Application Development 
 INSERT INTO "item" (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Cars', 2);
+
+CREATE TABLE "order_with_item_ids" (
+  id serial not null primary key,
+  item_ids integer[]
+);
+
+INSERT INTO "order_with_item_ids" (item_ids) VALUES ('{1,2}');
+INSERT INTO "order_with_item_ids" (item_ids) VALUES ('{2,3,5}');
+INSERT INTO "order_with_item_ids" (item_ids) VALUES ('{}');
+INSERT INTO "order_with_item_ids" (item_ids) VALUES (NULL);
 
 INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
