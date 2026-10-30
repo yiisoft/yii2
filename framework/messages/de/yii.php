@@ -123,6 +123,7 @@ return [
     '{delta, plural, =1{a second} other{# seconds}} ago' => 'vor {delta, plural, =1{einer Sekunde} other{# Sekunden}}',
     '{delta, plural, =1{a year} other{# years}} ago' => 'vor {delta, plural, =1{einem Jahr} other{# Jahren}}',
     '{delta, plural, =1{an hour} other{# hours}} ago' => 'vor {delta, plural, =1{einer Stunde} other{# Stunden}}',
+    '{file} appears to be corrupted. Please check if the file extension is correct.' => '{file} scheint beschädigt zu sein. Bitte prüfen Sie, ob die Dateiendung stimmt.',
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
