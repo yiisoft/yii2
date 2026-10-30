@@ -28,6 +28,11 @@ abstract class AbstractDbSessionTest extends TestCase
     use SessionTestTrait;
 
     /**
+     * @var string|false `session.use_strict_mode` value captured by {@see setUp()}.
+     */
+    private $useStrictModeBackup;
+
+    /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
     abstract protected function getDriverNames();
@@ -35,6 +40,12 @@ abstract class AbstractDbSessionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->closeNativeSession();
+
+        $this->useStrictModeBackup = ini_get('session.use_strict_mode');
+
+        session_id('');
 
         $this->mockApplication();
         Yii::$app->set('db', $this->getDbConfig());
@@ -44,6 +55,14 @@ abstract class AbstractDbSessionTest extends TestCase
 
     protected function tearDown(): void
     {
+        $this->closeNativeSession();
+
+        session_id('');
+
+        if ($this->useStrictModeBackup !== false) {
+            ini_set('session.use_strict_mode', $this->useStrictModeBackup);
+        }
+
         $this->dropTableSession();
         parent::tearDown();
     }
@@ -306,5 +325,12 @@ abstract class AbstractDbSessionTest extends TestCase
         );
 
         $session->close();
+    }
+
+    private function closeNativeSession(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
     }
 }
