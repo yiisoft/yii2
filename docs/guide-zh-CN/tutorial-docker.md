@@ -92,7 +92,7 @@ Docker的基本命令是：
 
 ```
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin
         ports:
             - '8888:80'
         environment:

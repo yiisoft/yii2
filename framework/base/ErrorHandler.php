@@ -188,13 +188,29 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            echo 'An internal server error occurred.';
+            echo $this->fallbackExceptionMessage($exception, $previousException);
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {
             flush();
         }
         exit(1);
+    }
+
+    /**
+     * Returns the message displayed when an exception is thrown while handling another exception
+     * and `YII_DEBUG` is disabled.
+     *
+     * @param \Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Throwable $previousException Main exception processed in [[handleException()]].
+     *
+     * @return string the message to be displayed.
+     *
+     * @since 2.0.56
+     */
+    protected function fallbackExceptionMessage($exception, $previousException)
+    {
+        return 'An internal server error occurred.';
     }
 
     /**

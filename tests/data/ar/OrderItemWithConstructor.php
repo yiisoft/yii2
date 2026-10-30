@@ -19,6 +19,7 @@ use ReflectionClass;
  * @property int $item_id
  * @property int $quantity
  * @property string $subtotal
+ * @property-read OrderWithConstructor|null $order
  */
 class OrderItemWithConstructor extends ActiveRecord
 {

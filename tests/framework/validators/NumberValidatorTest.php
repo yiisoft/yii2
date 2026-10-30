@@ -6,11 +6,15 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
 use yii\validators\NumberValidator;
+use yii\validators\Validator;
 use yii\web\View;
+use yiiunit\data\validators\StringableValue;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -19,9 +23,34 @@ use yiiunit\TestCase;
  */
 class NumberValidatorTest extends TestCase
 {
-    private $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
-    private $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
+    private array $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
+    private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private $oldLocale;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, '0');
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new NumberValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if ($this->oldLocale !== false) {
+            setlocale(LC_NUMERIC, $this->oldLocale);
+        }
+
+        $this->destroyApplication();
+    }
 
     private function setCommaDecimalLocale(): void
     {
@@ -48,16 +77,6 @@ class NumberValidatorTest extends TestCase
     private function restoreLocale(): void
     {
         setlocale(LC_NUMERIC, $this->oldLocale);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->oldLocale = setlocale(LC_NUMERIC, 0);
-
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit(): void
@@ -602,8 +621,6 @@ class NumberValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
 
-        // the check is here for HHVM that
-        // was losing handler for unknown reason
         if (is_resource($fp)) {
             fclose($fp);
         }
@@ -612,7 +629,7 @@ class NumberValidatorTest extends TestCase
     public function testValidateToString(): void
     {
         $val = new NumberValidator();
-        $object = new TestClass('10');
+        $object = new StringableValue('10');
         $this->assertTrue($val->validate($object));
 
         $model = new FakedValidationModel();
@@ -649,19 +666,56 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->allowArray);
         $this->assertFalse($val->validate([1, 2, 3]));
     }
-}
 
-class TestClass
-{
-    public $foo;
-
-    public function __construct($foo)
+    public function testValidateValueWithAllowArrayChecksEveryElement(): void
     {
-        $this->foo = $foo;
+        $val = new NumberValidator(['min' => 10, 'max' => 20, 'allowArray' => true]);
+
+        $this->assertTrue(
+            $val->validate([10, 15, 20]),
+            'In-range elements must pass.'
+        );
+        $this->assertFalse(
+            $val->validate([10, 5], $error),
+            'Element below `min` must fail.'
+        );
+        $this->assertSame(
+            'the input value must be no less than 10.',
+            $error,
+            'Error must come from `tooSmall`.'
+        );
+        $this->assertFalse(
+            $val->validate([10, 25], $error),
+            'Element above `max` must fail.'
+        );
+        $this->assertSame(
+            'the input value must be no greater than 20.',
+            $error,
+            'Error must come from `tooBig`.'
+        );
     }
 
-    public function __toString()
+    public function testValidateAttributeWithAllowArrayChecksEveryElement(): void
     {
-        return $this->foo;
+        $val = new NumberValidator(['min' => 10, 'allowArray' => true]);
+
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => [10, 15]]);
+
+        $val->validateAttribute($model, 'attr_num');
+
+        $this->assertFalse(
+            $model->hasErrors('attr_num'),
+            'In-range elements must pass.'
+        );
+
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => [10, 5]]);
+
+        $val->validateAttribute($model, 'attr_num');
+
+        $this->assertSame(
+            ['attr_num must be no less than 10.'],
+            $model->getErrors('attr_num'),
+            'Only the element below `min` must be reported.',
+        );
     }
 }

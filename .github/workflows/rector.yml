@@ -1,4 +1,5 @@
-name: linter
+---
+name: rector
 
 permissions:
   contents: read
@@ -6,7 +7,6 @@ permissions:
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".git-blame-ignore-revs"
@@ -34,7 +34,8 @@ on:
   push: *ignore-paths
 
 jobs:
-  phpcs:
-    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
+  rector:
+    uses: yiisoft/yii2-actions/.github/workflows/rector.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
     with:
-      php-version: '["7.4", "8.5"]'
+      composer-root-version: 2.0.x-dev
+      php-version: '["8.5"]'

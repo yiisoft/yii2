@@ -30,8 +30,8 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property-read Order[] $orders
  * @property-read Order[] $expensiveOrders
  * @property-read Order[] $ordersWithItems
- * @property-read Order[] $expensiveOrdersWithNullFK
- * @property-read Order[] $ordersWithNullFK
+ * @property-read OrderWithNullFK[] $expensiveOrdersWithNullFK
+ * @property-read OrderWithNullFK[] $ordersWithNullFK
  * @property-read Order[] $orders2
  * @property-read Item[] $orderItems
  * @property-read OrderItem[] $orderItems2

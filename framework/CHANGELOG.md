@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #21121: Fix `yii\validators\DateValidator` rejecting non-ASCII dates on PHP 8.4.27 and 8.5.12 (eluhr)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
@@ -38,6 +39,27 @@ Yii Framework 2 Change Log
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Bug #21074: Fix Gettext PO file escaping of backslashes and parsing of escaped quotes (iliaal)
 
+- Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
+- Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
+- Enh #21079: Add the missing `@property` tags (mspirkov)
+- Bug #20766: Fix `@param` annotation for `$offset` in `yii\db\ArrayExpression::offsetSet()` (WarLikeLaux)
+- Bug #20766: Fix `yii\db\ArrayExpression::offsetSet()` to append when `$offset` is `null` (WarLikeLaux, terabytesoftw)
+- Bug #21094: Log a warning instead of silently ignoring `$isolationLevel` when `yii\db\Transaction::begin()` is called for a nested transaction (terabytesoftw)
+- Bug #21068: Add `create_sid()` and `validateId()` to `yii\web\SessionHandler` for PHP `8.6`, so custom storage sessions validate IDs natively in strict mode through the new `yii\web\Session::sessionIdExists()`; deprecate `yii\web\Session::$_forceRegenerateId` (terabytesoftw)
+- Bug #21098: Fix `yii\caching\Cache::multiGet()` passing `false` for missing keys to the unserializer, which fails with "Error at offset 0 of 0 bytes" on PHP `8.6` (terabytesoftw)
+- Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Bug #20344: Fix `yii\helpers\VarDumper::dumpAsString()` leaving the `<?php` open tag in highlighted output on PHP 8.3+ (mixxael, terabytesoftw)
+- Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
+- Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
+- Bug #21124: Fix `@var` annotation for `yii\db\ActiveRelationTrait::$inverseOf` (mspirkov)
+- Bug #21124: Fix `@param` annotations for `$type` in `addColumn()` and `alterColumn()` of `yii\db\Migration`, `yii\db\Command` and `yii\db\QueryBuilder` (mspirkov)
+- Enh #21124: Add `@property-read` and `@property-write` annotations for `yii\db\Migration::$db` (mspirkov)
+- Bug #21124: Fix `@var` annotations for `yii\db\ColumnSchema` properties (mspirkov)
+- Enh #21124: Clarify the type of the `yii\log\Logger::$messages` (mspirkov)
+- Bug #21124: Separate the `@property` annotations for `$request` and `$response` in `yii\web\Controller` and `yii\console\Controller` (mspirkov)
+- Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
+- Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
+- Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
