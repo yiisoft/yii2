@@ -205,7 +205,7 @@ abstract class Cache extends Component implements CacheInterface
         $results = [];
         foreach ($keyMap as $key => $newKey) {
             $results[$key] = false;
-            if (isset($values[$newKey])) {
+            if (isset($values[$newKey]) && $values[$newKey] !== false) {
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
