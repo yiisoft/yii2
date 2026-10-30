@@ -285,8 +285,8 @@ class OptimisticLockBehaviorTest extends TestCase
  * @property int $created_at
  * @property int $updated_at
  *
- * We use `mixin` here to avoid PHPStan errors.
  * @mixin OptimisticLockBehavior
+ * We use `mixin` here to avoid PHPStan errors.
  */
 class ActiveRecordLockVersion extends ActiveRecord
 {

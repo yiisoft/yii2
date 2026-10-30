@@ -31,9 +31,6 @@ class BarSetter extends BaseObject
         return $this->qux;
     }
 
-    /**
-     * @param mixed $qux
-     */
     public function setQux(QuxInterface $qux): void
     {
         $this->qux = $qux;

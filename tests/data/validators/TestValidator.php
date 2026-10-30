@@ -14,8 +14,8 @@ use yii\validators\Validator;
 
 class TestValidator extends Validator
 {
-    private $_validatedAttributes = [];
-    private $_setErrorOnValidateAttribute = false;
+    private array $_validatedAttributes = [];
+    private bool $_setErrorOnValidateAttribute = false;
 
     public function validateAttribute($object, $attribute): void
     {
@@ -36,7 +36,7 @@ class TestValidator extends Validator
 
     public function countAttributeValidations($attr)
     {
-        return isset($this->_validatedAttributes[$attr]) ? $this->_validatedAttributes[$attr] : 0;
+        return $this->_validatedAttributes[$attr] ?? 0;
     }
 
     public function isAttributeValidated($attr)

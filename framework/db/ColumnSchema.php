@@ -47,19 +47,19 @@ class ColumnSchema extends BaseObject
      */
     public $defaultValue;
     /**
-     * @var array enumerable values. This is set only if the column is declared to be an enumerable type.
+     * @var string[]|null enumerable values. This is set only if the column is declared to be an enumerable type.
      */
     public $enumValues;
     /**
-     * @var int display size of the column.
+     * @var int|null display size of the column.
      */
     public $size;
     /**
-     * @var int precision of the column data, if it is numeric.
+     * @var int|null precision of the column data, if it is numeric.
      */
     public $precision;
     /**
-     * @var int scale of the column data, if it is numeric.
+     * @var int|null scale of the column data, if it is numeric.
      */
     public $scale;
     /**
@@ -71,12 +71,12 @@ class ColumnSchema extends BaseObject
      */
     public $autoIncrement = false;
     /**
-     * @var bool whether this column is unsigned. This is only meaningful
+     * @var bool|null whether this column is unsigned. This is only meaningful
      * when [[type]] is `smallint`, `integer` or `bigint`.
      */
     public $unsigned;
     /**
-     * @var string comment of this column. Not all DBMS support this.
+     * @var string|null comment of this column. Not all DBMS support this.
      */
     public $comment;
 

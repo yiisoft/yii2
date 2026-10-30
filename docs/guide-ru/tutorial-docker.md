@@ -92,7 +92,7 @@ OpenSSL version: OpenSSL 1.1.0g  2 Nov 2017
 
 ```
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin
         ports:
             - '8888:80'
         environment:

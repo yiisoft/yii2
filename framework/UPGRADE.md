@@ -70,6 +70,18 @@ Upgrade from Yii 2.0.55
   If you acquire a `PgsqlMutex` lock across a rolling deployment, drain workers that still run 2.0.55 or
   earlier before starting workers on 2.0.56. An old worker and a new worker can otherwise hold different
   advisory locks for the same lock name at the same time.
+* `yii\web\SessionHandler` now implements `create_sid()` and `validateId()`, which PHP 8.6 expects from every
+  `SessionHandlerInterface` implementation. PHP calls them by name, so sessions with custom storage (`DbSession`,
+  `CacheSession` and any class whose `getUseCustomStorage()` returns `true`) change on every supported PHP version:
+  * New session IDs are created by `yii\web\Session::createSessionId()`, which keeps the length and alphabet set by
+    the `session.sid_length` and `session.sid_bits_per_character` ini directives; override it for a different format.
+  * When `useStrictMode` is enabled, PHP replaces an unknown session ID during `session_start()` according to
+    `yii\web\Session::sessionIdExists()`. `DbSession` and `CacheSession` implement it, and no longer check the ID
+    in `openSession()` nor skip it in `writeSession()`.
+  * The strict mode code described in the 2.0.38 notes below (setting `$this->_forceRegenerateId` in `openSession()`
+    and skipping that ID in `writeSession()`) keeps working, but `Session::$_forceRegenerateId` is deprecated.
+    Custom storage classes should override `sessionIdExists()` instead and drop that code. The default
+    implementation accepts every ID, so a class that does neither is not protected by strict mode.
 
 Upgrade from Yii 2.0.53
 -----------------------

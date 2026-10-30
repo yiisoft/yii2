@@ -76,8 +76,8 @@ class Logger extends Component
      */
     public const LEVEL_PROFILE_END = 0x60;
     /**
-     * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
-     * Each log message is of the following structure:
+     * @var array<array{mixed, int, string, float, array, int}> logged messages. This property is managed
+     * by [[log()]] and [[flush()]]. Each log message is of the following structure:
      *
      * ```
      * [

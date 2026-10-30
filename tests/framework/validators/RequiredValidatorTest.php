@@ -6,9 +6,12 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\RequiredValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ModelForReqValidator;
 use yiiunit\framework\validators\stubs\ViewStub;
@@ -23,7 +26,18 @@ class RequiredValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new RequiredValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -58,12 +72,12 @@ class RequiredValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_val' => null]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'blank'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_val')), 'blank'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 56]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'must be'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_val')), 'must be'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 55]);
         $val->validateAttribute($m, 'attr_val');

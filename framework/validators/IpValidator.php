@@ -34,10 +34,15 @@ use yii\web\JsExpression;
  * ```
  *
  * @property-read array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden.
- * @property-write array|string|null $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. When the
- * array is empty, or the option not set, all IP addresses are allowed. Otherwise, the rules are checked
- * sequentially until the first match is found. An IP address is forbidden, when it has not matched any of the
- * rules. Example:
+ * @property-write array|string|null $ranges The IPv4 or IPv6 ranges that are allowed or forbidden.
+ *
+ * When the array is empty, or the option not set, all IP addresses are allowed.
+ *
+ * Otherwise, the rules are checked sequentially until the first match is found.
+ * An IP address is forbidden, when it has not matched any of the rules.
+ *
+ * Example:
+ *
  * ```
  * [
  *      'ranges' => [
@@ -47,6 +52,7 @@ use yii\web\JsExpression;
  *      ]
  * ]
  * ```
+ *
  * In this example, access is allowed for all the IPv4 and IPv6 addresses excluding the `192.168.10.0/24` subnet.
  * IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
  *
