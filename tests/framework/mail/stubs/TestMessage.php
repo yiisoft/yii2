@@ -12,6 +12,16 @@ use yii\mail\BaseMessage;
 
 /**
  * Test Message class.
+ *
+ * @property string $charset The character set of this message.
+ * @property string|mixed[] $from The sender.
+ * @property string|mixed[] $to The message recipients.
+ * @property string|mixed[] $cc The Cc (additional copy receiver) addresses of this message.
+ * @property string|mixed[] $bcc The Bcc (hidden copy receiver) addresses of this message.
+ * @property string $subject The message subject.
+ * @property string|mixed[] $replyTo The reply-to address of this message.
+ * @property-write string $textBody Message plain text content.
+ * @property-write string $htmlBody Message HTML content.
  */
 class TestMessage extends BaseMessage
 {

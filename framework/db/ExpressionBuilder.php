@@ -18,7 +18,6 @@ class ExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     /**
      * {@inheritdoc}
      * @param Expression|ExpressionInterface $expression the expression to be built

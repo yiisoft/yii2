@@ -879,21 +879,23 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d|',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d|',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d H:i:s',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;

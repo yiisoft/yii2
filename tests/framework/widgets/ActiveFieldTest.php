@@ -781,6 +781,8 @@ class ActiveFieldTestModel extends DynamicModel
  * Helper Classes.
  *
  * @property ActiveFieldTestModel $model
+ * @property-read mixed[] $clientOptions The JS options.
+ * @property-write mixed $clientOptionsEmpty
  */
 class ActiveFieldExtend extends ActiveField
 {
