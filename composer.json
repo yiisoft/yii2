@@ -82,7 +82,7 @@
         "xepozz/internal-mocker": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "rector/rector": "^2.6",
+        "rector/rector": "2.8.3",
         "friendsofphp/php-cs-fixer": "^3.95"
     },
     "provide": {

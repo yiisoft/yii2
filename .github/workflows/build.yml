@@ -79,7 +79,7 @@ jobs:
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           extensions: ${{ env.PHP_EXTENSIONS }}
@@ -88,7 +88,7 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
@@ -114,14 +114,15 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
+          coverage-driver: none
           extensions: ${{ env.PHP_EXTENSIONS }}
           ini-values: ${{ env.PHP_INI_VALUES }}
           php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
@@ -151,7 +152,7 @@ jobs:
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           extensions: ${{ env.PHP_EXTENSIONS }}
@@ -161,7 +162,7 @@ jobs:
 
       - name: Run PHPUnit tests.
         continue-on-error: true
-        uses: ./.github/actions/phpunit
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
@@ -191,7 +192,7 @@ jobs:
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
+        uses: yiisoft/yii2-actions/actions/php-setup@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           composer-command: install
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
@@ -204,7 +205,7 @@ jobs:
         run: composer audit --locked --no-interaction
 
       - name: Run PHPUnit tests with production-mode bootstrap.
-        uses: ./.github/actions/phpunit
+        uses: yiisoft/yii2-actions/actions/phpunit@d90cdb5bb58df697c808bb66928864f574c6d07b # master
         with:
           additional-args: "--bootstrap tests/bootstrap-prod.php --log-junit junit.xml"
           coverage-driver: ${{ env.COVERAGE_DRIVER }}

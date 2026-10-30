@@ -36,8 +36,10 @@ use yii\base\Module;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property Request $request The request object.
- * @property Response $response The response object.
+ * @property-read Request $request The request object.
+ * @property-read Response $response The response object.
+ * @property-write Request|array|string $request The request object.
+ * @property-write Response|array|string $response The response object.
  * @property-read string $help The help information for this controller.
  * @property-write bool $help Whether to display help information about current command.
  * @property-read string $helpSummary The one-line short summary describing this controller.
