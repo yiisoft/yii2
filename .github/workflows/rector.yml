@@ -35,7 +35,7 @@ on:
 
 jobs:
   rector:
-    uses: yiisoft/yii2-actions/.github/workflows/rector.yml@6f8dc7a0de4cbcc0fffb6a20881f32bba0e13f44 # master
+    uses: yiisoft/yii2-actions/.github/workflows/rector.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
     with:
       composer-root-version: 2.0.x-dev
       php-version: '["8.5"]'

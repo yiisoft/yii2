@@ -592,14 +592,15 @@ class QueryBuilder extends \yii\base\BaseObject
         }
         $constraints = array_merge($constraints, $schema->getTableUniques($name));
         // Remove duplicates
-        $constraints = array_combine(array_map(function (Constraint $constraint) {
-            $columns = $constraint->columnNames;
-            sort($columns, SORT_STRING);
-            return json_encode($columns);
-        }, $constraints), $constraints);
+        $uniqueConstraints = [];
+        foreach ($constraints as $constraint) {
+            $sortedColumnNames = $constraint->columnNames;
+            sort($sortedColumnNames, SORT_STRING);
+            $uniqueConstraints[json_encode($sortedColumnNames)] = $constraint;
+        }
         $columnNames = [];
         // Remove all constraints which do not cover the specified column list
-        $constraints = array_values(array_filter($constraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
+        $constraints = array_values(array_filter($uniqueConstraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
             $constraintColumnNames = array_map([$schema, 'quoteColumnName'], $constraint->columnNames);
             $result = !array_diff($constraintColumnNames, $columns);
             if ($result) {
@@ -802,7 +803,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * Builds a SQL statement for adding a new DB column.
      * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
      * @param string $column the name of the new column. The name will be properly quoted by the method.
-     * @param string $type the column type. The [[getColumnType()]] method will be invoked to convert abstract column type (if any)
+     * @param string|ColumnSchemaBuilder $type the column type. The [[getColumnType()]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for adding a new column.
@@ -844,7 +845,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * Builds a SQL statement for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     * @param string|ColumnSchemaBuilder $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
      * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
      * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
      * will become 'varchar(255) not null'.
