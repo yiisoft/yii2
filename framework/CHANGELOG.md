@@ -57,6 +57,8 @@ Yii Framework 2 Change Log
 - Bug #21124: Separate the `@property` annotations for `$request` and `$response` in `yii\web\Controller` and `yii\console\Controller` (mspirkov)
 - Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
 - Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
+- Enh #21131: Reject non-string tokens in `yii\web\User::loginByAccessToken()` before the identity lookup, hardening against type-juggling (took)
+
 
 2.0.55 May 09, 2026
 -------------------
