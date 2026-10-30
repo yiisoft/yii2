@@ -142,11 +142,10 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             return [];
         }
 
-        if (!preg_match('/boundary="?(.*)"?$/is', $contentType, $matches)) {
+        $boundary = $this->getMimeParameter($contentType, 'boundary');
+        if ($boundary === null || $boundary === '') {
             return [];
         }
-
-        $boundary = trim($matches[1], '"');
 
         $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary, '/') . '/s', $rawBody);
         array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`
@@ -209,6 +208,95 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         }
 
         return $bodyParams;
+    }
+
+    /**
+     * Returns a MIME header parameter (RFC 2045), or `null` if it is absent.
+     *
+     * `;` and `name=value` inside quoted-strings are not treated as delimiters.
+     *
+     * @param string $header Content-Type (or similar) header value
+     * @param string $name parameter name (matched case-insensitively)
+     * @return string|null
+     */
+    private function getMimeParameter($header, $name)
+    {
+        $name = strtolower($name);
+        $length = strlen($header);
+        $i = 0;
+
+        while ($i < $length) {
+            if ($header[$i] === '"') {
+                $i++;
+                while ($i < $length) {
+                    if ($header[$i] === '\\') {
+                        $i += ($i + 1 < $length) ? 2 : 1;
+                        continue;
+                    }
+                    if ($header[$i] === '"') {
+                        $i++;
+                        break;
+                    }
+                    $i++;
+                }
+                continue;
+            }
+
+            if ($header[$i] !== ';') {
+                $i++;
+                continue;
+            }
+
+            $i++;
+            while ($i < $length && ($header[$i] === ' ' || $header[$i] === "\t")) {
+                $i++;
+            }
+
+            $attrStart = $i;
+            while ($i < $length && $header[$i] !== '=' && $header[$i] !== ';') {
+                $i++;
+            }
+            $attr = strtolower(trim(substr($header, $attrStart, $i - $attrStart)));
+
+            if ($attr === '' || $i >= $length || $header[$i] !== '=') {
+                continue;
+            }
+
+            $i++;
+            while ($i < $length && ($header[$i] === ' ' || $header[$i] === "\t")) {
+                $i++;
+            }
+
+            if ($i < $length && $header[$i] === '"') {
+                $i++;
+                $value = '';
+                while ($i < $length) {
+                    if ($header[$i] === '\\' && $i + 1 < $length) {
+                        $value .= $header[$i + 1];
+                        $i += 2;
+                        continue;
+                    }
+                    if ($header[$i] === '"') {
+                        $i++;
+                        break;
+                    }
+                    $value .= $header[$i];
+                    $i++;
+                }
+            } else {
+                $valueStart = $i;
+                while ($i < $length && $header[$i] !== ';' && $header[$i] !== ' ' && $header[$i] !== "\t") {
+                    $i++;
+                }
+                $value = substr($header, $valueStart, $i - $valueStart);
+            }
+
+            if ($attr === $name) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 
     /**
