@@ -9,6 +9,7 @@
 namespace yiiunit\framework\i18n;
 
 use yii\i18n\GettextPoFile;
+use yii\base\Exception;
 use yiiunit\TestCase;
 use Yii;
 
@@ -134,6 +135,107 @@ class GettextPoFileTest extends TestCase
         $this->assertSame($rawMessages, $loaded);
 
         unlink($filePath);
+    }
+
+    /**
+     * @dataProvider longStringsProvider
+     */
+    public function testSaveLoadRoundTripWithLongStrings($context, $id, $translation): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-long-' . getmypid() . '.po';
+        $expected = [
+            'before' => 'First translation',
+            $id => $translation,
+            'after' => 'Last translation',
+        ];
+        $messages = [];
+        foreach ($expected as $source => $message) {
+            $messages[$context . chr(4) . $source] = $message;
+        }
+
+        try {
+            $poFile->save($filePath, $messages);
+            $loaded = $poFile->load($filePath, $context);
+
+            $this->assertSame(array_keys($expected), array_keys($loaded));
+            $this->assertSame($expected, $loaded);
+        } finally {
+            unlink($filePath);
+        }
+    }
+
+    public function longStringsProvider(): array
+    {
+        $plain = str_repeat('a', 10000);
+        $escaped = str_repeat("a\\\"\n\r\t", 2000);
+
+        return [
+            'long translation' => ['context', 'source', $plain],
+            'long ID' => ['context', $plain, 'translation'],
+            'long context' => [$plain, 'source', 'translation'],
+            'escaped translation' => ['context', 'source', $escaped],
+            'escaped ID' => ['context', $escaped, 'translation'],
+            'escaped context' => [$escaped, 'source', 'translation'],
+        ];
+    }
+
+    public function testLoadWithManyContinuationLines(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-fragments-' . getmypid() . '.po';
+        $fragments = str_repeat('"a\n"' . "\n", 10000);
+        $content = 'msgid "before"' . "\n" . 'msgstr "First translation"' . "\n\n"
+            . 'msgid "source"' . "\n" . 'msgstr ""' . "\n" . $fragments . "\n"
+            . 'msgid "after"' . "\n" . 'msgstr "Last translation"' . "\n";
+        $expected = [
+            'before' => 'First translation',
+            'source' => str_repeat("a\n", 10000),
+            'after' => 'Last translation',
+        ];
+
+        try {
+            file_put_contents($filePath, $content);
+            $loaded = $poFile->load($filePath, '');
+
+            $this->assertSame(array_keys($expected), array_keys($loaded));
+            $this->assertSame($expected, $loaded);
+        } finally {
+            unlink($filePath);
+        }
+    }
+
+    public function testLoadReportsRegexErrors(): void
+    {
+        $poFile = new GettextPoFile();
+        $limit = ini_set('pcre.backtrack_limit', '0');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('PCRE error ' . PREG_BACKTRACK_LIMIT_ERROR);
+
+        try {
+            $poFile->load(__DIR__ . '/../../data/i18n/test.po', 'context1');
+        } finally {
+            ini_set('pcre.backtrack_limit', $limit);
+        }
+    }
+
+    public function testDecodeReportsRegexErrors(): void
+    {
+        $poFile = new class extends GettextPoFile {
+            public function decode($string)
+            {
+                return parent::decode($string);
+            }
+        };
+        $limit = ini_set('pcre.backtrack_limit', '0');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('PCRE error ' . PREG_BACKTRACK_LIMIT_ERROR);
+
+        try {
+            $poFile->decode('"translation"');
+        } finally {
+            ini_set('pcre.backtrack_limit', $limit);
+        }
     }
 
     public function testLoadDoesNotLoseFollowingEntryAfterMalformedQuotedString(): void

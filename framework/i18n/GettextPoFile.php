@@ -9,6 +9,7 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * GettextPoFile represents a PO Gettext message file.
@@ -23,7 +24,7 @@ class GettextPoFile extends GettextFile
      * Excluding CR/LF prevents a legacy entry that ends with a single backslash from consuming
      * the next entry's closing quote.
      */
-    private const QUOTED_STRING_PATTERN = '"(?:[^"\\\\\r\n]|\\\\[^\r\n])*"';
+    private const QUOTED_STRING_PATTERN = '"(?:[^"\\\\\r\n]|\\\\[^\r\n])*+"';
 
     /**
      * Loads messages from a PO file.
@@ -31,14 +32,18 @@ class GettextPoFile extends GettextFile
      * @param string $context message context
      * @return array message translations. Array keys are source messages and array values are translated messages:
      * source message => translated message.
+     * @throws Exception if a regular expression fails
      */
     public function load($filePath, $context)
     {
         $quoted = self::QUOTED_STRING_PATTERN;
-        $pattern = '/(msgctxt\s+((?:' . $quoted . '\s*)+))?\s*msgid\s*((?:' . $quoted . '\s*)+)\s*msgstr\s*((?:' . $quoted . '\s*)+)/';
+        $pattern = '/(msgctxt\s+((?:' . $quoted . '\s*)++))?\s*msgid\s*((?:' . $quoted . '\s*)++)\s*msgstr\s*((?:' . $quoted . '\s*)++)/';
         $content = file_get_contents($filePath);
         $matches = [];
         $matchCount = preg_match_all($pattern, $content, $matches);
+        if ($matchCount === false) {
+            throw new Exception('Unable to parse PO file "' . $filePath . '" (PCRE error ' . preg_last_error() . ').');
+        }
 
         $messages = [];
         for ($i = 0; $i < $matchCount; ++$i) {
@@ -106,31 +111,23 @@ class GettextPoFile extends GettextFile
      * Decodes special characters in a message.
      * @param string $string message to be decoded
      * @return string the decoded message
+     * @throws Exception if a regular expression fails
      */
     protected function decode($string)
     {
-        if (!preg_match_all('/' . self::QUOTED_STRING_PATTERN . '/', $string, $matches)) {
-            return '';
+        if (preg_match_all('/' . self::QUOTED_STRING_PATTERN . '/', $string, $matches) === false) {
+            throw new Exception('Unable to decode PO string (PCRE error ' . preg_last_error() . ').');
         }
 
         $decoded = '';
         foreach ($matches[0] as $fragment) {
-            $decoded .= preg_replace_callback('/\\\\(.)/', static function ($escapeMatches) {
-                switch ($escapeMatches[1]) {
-                    case 'n':
-                        return "\n";
-                    case 'r':
-                        return "\r";
-                    case 't':
-                        return "\t";
-                    case '"':
-                        return '"';
-                    case '\\':
-                        return '\\';
-                }
-
-                return $escapeMatches[0];
-            }, substr($fragment, 1, -1));
+            $decoded .= strtr(substr($fragment, 1, -1), [
+                '\n' => "\n",
+                '\r' => "\r",
+                '\t' => "\t",
+                '\"' => '"',
+                '\\\\' => '\\',
+            ]);
         }
 
         return $decoded;
