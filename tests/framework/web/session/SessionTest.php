@@ -28,12 +28,18 @@ class SessionTest extends TestCase
     {
         parent::setUp();
 
+        $this->closeNativeSession();
+
         $this->useStrictModeBackup = ini_get('session.use_strict_mode');
+
+        session_id('');
     }
 
     protected function tearDown(): void
     {
         $this->closeNativeSession();
+
+        session_id('');
 
         if ($this->useStrictModeBackup !== false) {
             ini_set('session.use_strict_mode', $this->useStrictModeBackup);
