@@ -47,7 +47,7 @@ class ColumnSchema extends BaseObject
      */
     public $defaultValue = null;
     /**
-     * @var array|null enumerable values. This is set only if the column is declared to be an enumerable type.
+     * @var string[]|null enumerable values. This is set only if the column is declared to be an enumerable type.
      */
     public $enumValues = null;
     /**

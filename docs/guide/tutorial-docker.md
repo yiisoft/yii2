@@ -93,7 +93,7 @@ When running MySQL as (`mysql`), you can add phpMyAdmin container to your stack 
 
 ```
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin
         ports:
             - '8888:80'
         environment:

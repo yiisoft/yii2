@@ -12,6 +12,7 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\InCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
@@ -190,10 +191,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $table The table whose column is to be changed. The table name will be properly quoted by the
      * method.
      * @param string $column The name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type The new column type. The {@see getColumnType} method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept in the
-     * generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become
-     * 'varchar(255) not null'.
+     * @param ColumnSchemaBuilder|string $type The new column type. The {@see getColumnType} method will be invoked to
+     * convert abstract column type (if any) into the physical one. Anything that is not recognized as abstract type will
+     * be kept in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+     * will become 'varchar(255) not null'.
      *
      * @throws NotSupportedException if this is not supported by the underlying DBMS.
      *
@@ -210,7 +211,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $constraintBase = preg_replace('/[^a-z0-9_]/i', '', "{$table}_{$column}");
 
-        if ($type instanceof ColumnSchemaBuilder) {
+        if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
             $type->setAlterColumnFormat();
             $defaultValue = $type->getDefaultValue();
 

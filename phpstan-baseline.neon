@@ -393,7 +393,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
-			count: 2
+			count: 1
 			path: framework/di/Container.php
 
 		-
