@@ -230,12 +230,21 @@ abstract class ConnectionTest extends DatabaseTestCase
     {
         $connection = $this->getConnection(true);
 
-        $this->expectException(Exception::class);
+        // Captured rather than asserted inside the catch: this file imports the
+        // global Exception, so catching it would swallow PHPUnit's own failure.
+        $thrown = null;
 
-        $connection->transaction(function () use ($connection) {
-            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
-            throw new Exception('Exception in transaction shortcut');
-        });
+        try {
+            $connection->transaction(function () use ($connection) {
+                $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+                throw new Exception('Exception in transaction shortcut');
+            });
+        } catch (Exception $e) {
+            $thrown = $e;
+        }
+
+        $this->assertNotNull($thrown, 'transaction() should rethrow the exception from the callback');
+        $this->assertSame('Exception in transaction shortcut', $thrown->getMessage());
 
         $profilesCount = $connection
             ->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")
