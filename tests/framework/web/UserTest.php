@@ -567,6 +567,24 @@ class UserTest extends TestCase
         $this->assertNull(Yii::$app->user->getIdentity());
         $this->assertNotSame($id, Yii::$app->session->id);
     }
+
+    public function testLoginByAccessTokenRejectsNonString(): void
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::class,
+                ],
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        // Hardening: non-string tokens are rejected without authenticating.
+        $this->assertNull(Yii::$app->user->loginByAccessToken(['token1']));
+        $this->assertTrue(Yii::$app->user->isGuest);
+        $this->assertNull(Yii::$app->user->loginByAccessToken(0));
+        $this->assertTrue(Yii::$app->user->isGuest);
+    }
 }
 
 static $cookiesMock;
