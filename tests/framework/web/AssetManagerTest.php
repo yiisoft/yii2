@@ -310,6 +310,171 @@ class AssetManagerTest extends TestCase
         $this->assertStringStartsWith('/assets/', $result[1]);
     }
 
+    public function testPublishDirectoryKeepsExistingCopyByDefault(): void
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-source-', true);
+
+        FileHelper::createDirectory($sourcePath . '/nested');
+
+        $sourceFile = "{$sourcePath}/nested/example.css";
+
+        file_put_contents($sourceFile, 'first');
+
+        try {
+            $firstManager = $this->createManager();
+
+            $this->assertFalse(
+                $firstManager->hashSourceContents,
+                "The property should be 'false' by default.",
+            );
+
+            $first = $firstManager->publish($sourcePath);
+
+            file_put_contents($sourceFile, 'second');
+
+            $second = $this->createManager()->publish($sourcePath);
+
+            $this->assertSame(
+                $first,
+                $second,
+                'The existing published directory should be reused.',
+            );
+            $this->assertSame(
+                'first',
+                file_get_contents("{$second[0]}/nested/example.css"),
+                'The published CSS file does not match the source CSS file.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    public function testPublishDirectoryHashesChangedSourceContentsAcrossRequests(): void
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-source-', true);
+
+        FileHelper::createDirectory($sourcePath . '/nested');
+
+        $sourceFile = "{$sourcePath}/nested/example.css";
+
+        file_put_contents($sourceFile, 'first');
+        touch($sourceFile, 1600000000);
+
+        try {
+            $firstManager = $this->createManager(['hashSourceContents' => true]);
+
+            $first = $firstManager->publish($sourcePath);
+
+            file_put_contents($sourceFile, 'other');
+            touch($sourceFile, 1600000000);
+
+            $cached = $firstManager->publish($sourcePath);
+
+            $this->assertSame(
+                $first,
+                $cached,
+                'The cached published directories should be the same as the first ones.',
+            );
+            $this->assertSame(
+                'first',
+                file_get_contents($cached[0] . '/nested/example.css'),
+                'The published CSS file does not match the source CSS file.',
+            );
+
+            $second = $this->createManager(['hashSourceContents' => true])->publish($sourcePath);
+
+            $this->assertNotSame(
+                $first[0],
+                $second[0],
+                'The published directories should not be the same when source contents have changed.',
+            );
+            $this->assertSame(
+                'other',
+                file_get_contents($second[0] . '/nested/example.css'),
+                'The published CSS file does not match the source CSS file.',
+            );
+
+            touch($sourceFile, 1700000000);
+
+            $third = $this->createManager(['hashSourceContents' => true])->publish($sourcePath);
+
+            $this->assertSame(
+                $second,
+                $third,
+                'The cached published directories should be the same as the second ones.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    public function testHashSourceContentsDoesNotOverrideCustomHashCallback(): void
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-source-', true);
+
+        FileHelper::createDirectory($sourcePath);
+
+        $sourceFile = "{$sourcePath}/example.css";
+
+        file_put_contents($sourceFile, 'first');
+
+        $config = [
+            'hashSourceContents' => true,
+            'hashCallback' => function ($path) {
+                return 'custom';
+            },
+        ];
+
+        try {
+            $first = $this->createManager($config)->publish($sourcePath);
+
+            file_put_contents($sourceFile, 'other');
+
+            $second = $this->createManager($config)->publish($sourcePath);
+
+            $this->assertSame(
+                $first,
+                $second,
+                'The cached published directories should be the same as the first ones.',
+            );
+            $this->assertSame(
+                'first',
+                file_get_contents("{$second[0]}/example.css"),
+                'The published CSS file does not match the source CSS file.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    /**
+     * @requires OSFAMILY Linux
+     */
+    public function testGetPublishedPathHashesSourceContentsIgnoringSymlinkedDirectoryCycle(): void
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-asset-source-', true);
+
+        FileHelper::createDirectory($sourcePath);
+
+        try {
+            file_put_contents("{$sourcePath}/example.css", 'first');
+
+            $first = $this->createManager(['hashSourceContents' => true])->getPublishedPath($sourcePath);
+
+            symlink($sourcePath, "{$sourcePath}/loop");
+
+            $second = $this->createManager(['hashSourceContents' => true])->getPublishedPath($sourcePath);
+
+            $this->assertSame(
+                $first,
+                $second,
+                'Directory symlinks should not be followed.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
     public function testPublishReturnsCachedResult(): void
     {
         $am = $this->createManager();
