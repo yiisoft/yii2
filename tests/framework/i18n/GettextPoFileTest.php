@@ -9,7 +9,9 @@
 namespace yiiunit\framework\i18n;
 
 use yii\i18n\GettextPoFile;
+use yii\base\Exception;
 use yiiunit\TestCase;
+use Yii;
 
 /**
  * @group i18n
@@ -40,7 +42,7 @@ class GettextPoFileTest extends TestCase
         $this->assertArrayHasKey("Nunc vel sapien nunc, a pretium nulla.\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.", $context1);
 
         $this->assertArrayHasKey("The other\n\ncontext.\n", $context2);
-        $this->assertArrayHasKey("test1\\\ntest2\n\\\\\ntest3", $context2);
+        $this->assertArrayHasKey("test1\\ntest2\n\\\ntest3", $context2);
 
         // translated messages
         $this->assertTrue(in_array('', $context1));
@@ -49,7 +51,7 @@ class GettextPoFileTest extends TestCase
         $this->assertTrue(in_array('Короткий перевод.', $context1));
 
         $this->assertTrue(in_array("Другой\n\nконтекст.\n", $context2));
-        $this->assertTrue(in_array("тест1\\\nтест2\n\\\\\nтест3", $context2));
+        $this->assertTrue(in_array("тест1\\nтест2\n\\\nтест3", $context2));
     }
 
     public function testSave(): void
@@ -106,5 +108,154 @@ class GettextPoFileTest extends TestCase
 
         $this->assertArrayHasKey("\rCarriage returns\r", $context2);
         $this->assertTrue(in_array("\rВозвраты кареток\r", $context2));
+    }
+
+    public function testSaveLoadRoundTripWithSpecialCharacters(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-roundtrip-' . getmypid() . '.po';
+
+        $context = 'round\\trip"ctx';
+        $rawMessages = [
+            'msg1' => 'back\\slash',
+            'msg2' => 'trailing\\',
+            'msg3' => 'quote"inside',
+            'msg4' => "new\nline",
+            'msg5' => 'C:\\temp\\file "q"\nend',
+            'msg6' => 'quote" ',
+        ];
+        $messages = [];
+        foreach ($rawMessages as $id => $message) {
+            $messages[$context . chr(4) . $id] = $message;
+        }
+
+        $poFile->save($filePath, $messages);
+        $loaded = $poFile->load($filePath, $context);
+
+        $this->assertSame($rawMessages, $loaded);
+
+        unlink($filePath);
+    }
+
+    /**
+     * @dataProvider longStringsProvider
+     */
+    public function testSaveLoadRoundTripWithLongStrings($context, $id, $translation): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-long-' . getmypid() . '.po';
+        $expected = [
+            'before' => 'First translation',
+            $id => $translation,
+            'after' => 'Last translation',
+        ];
+        $messages = [];
+        foreach ($expected as $source => $message) {
+            $messages[$context . chr(4) . $source] = $message;
+        }
+
+        try {
+            $poFile->save($filePath, $messages);
+            $loaded = $poFile->load($filePath, $context);
+
+            $this->assertSame(array_keys($expected), array_keys($loaded));
+            $this->assertSame($expected, $loaded);
+        } finally {
+            unlink($filePath);
+        }
+    }
+
+    public function longStringsProvider(): array
+    {
+        $plain = str_repeat('a', 10000);
+        $escaped = str_repeat("a\\\"\n\r\t", 2000);
+
+        return [
+            'long translation' => ['context', 'source', $plain],
+            'long ID' => ['context', $plain, 'translation'],
+            'long context' => [$plain, 'source', 'translation'],
+            'escaped translation' => ['context', 'source', $escaped],
+            'escaped ID' => ['context', $escaped, 'translation'],
+            'escaped context' => [$escaped, 'source', 'translation'],
+        ];
+    }
+
+    public function testLoadWithManyContinuationLines(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-fragments-' . getmypid() . '.po';
+        $fragments = str_repeat('"a\n"' . "\n", 10000);
+        $content = 'msgid "before"' . "\n" . 'msgstr "First translation"' . "\n\n"
+            . 'msgid "source"' . "\n" . 'msgstr ""' . "\n" . $fragments . "\n"
+            . 'msgid "after"' . "\n" . 'msgstr "Last translation"' . "\n";
+        $expected = [
+            'before' => 'First translation',
+            'source' => str_repeat("a\n", 10000),
+            'after' => 'Last translation',
+        ];
+
+        try {
+            file_put_contents($filePath, $content);
+            $loaded = $poFile->load($filePath, '');
+
+            $this->assertSame(array_keys($expected), array_keys($loaded));
+            $this->assertSame($expected, $loaded);
+        } finally {
+            unlink($filePath);
+        }
+    }
+
+    public function testLoadReportsRegexErrors(): void
+    {
+        $poFile = new GettextPoFile();
+        $limit = ini_set('pcre.backtrack_limit', '0');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('PCRE error ' . PREG_BACKTRACK_LIMIT_ERROR);
+
+        try {
+            $poFile->load(__DIR__ . '/../../data/i18n/test.po', 'context1');
+        } finally {
+            ini_set('pcre.backtrack_limit', $limit);
+        }
+    }
+
+    public function testDecodeReportsRegexErrors(): void
+    {
+        $poFile = new class extends GettextPoFile {
+            public function decode($string)
+            {
+                return parent::decode($string);
+            }
+        };
+        $limit = ini_set('pcre.backtrack_limit', '0');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('PCRE error ' . PREG_BACKTRACK_LIMIT_ERROR);
+
+        try {
+            $poFile->decode('"translation"');
+        } finally {
+            ini_set('pcre.backtrack_limit', $limit);
+        }
+    }
+
+    public function testLoadDoesNotLoseFollowingEntryAfterMalformedQuotedString(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-malformed-' . getmypid() . '.po';
+
+        $content = <<<'PO'
+msgid "first"
+msgstr "broken\"
+
+msgid "valid"
+msgstr "ok"
+PO;
+        file_put_contents($filePath, $content . "\n");
+
+        $loaded = $poFile->load($filePath, '');
+
+        $this->assertSame(['valid' => 'ok'], $loaded);
+
+        unlink($filePath);
     }
 }
