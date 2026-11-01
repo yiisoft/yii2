@@ -246,9 +246,13 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($thrown, 'transaction() should rethrow the exception from the callback');
         $this->assertSame('Exception in transaction shortcut', $thrown->getMessage());
 
-        $profilesCount = $connection
-            ->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")
-            ->queryScalar();
+        // Quoted the way testTransactionShortcutCorrect below already does it:
+        // the Oracle fixture creates "profile" quoted, so an unquoted name folds
+        // to PROFILE and the query raises ORA-00942. Unreachable until now, so
+        // the raw form never had to run.
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
         $this->assertEquals(0, $profilesCount, 'profile should not be inserted in transaction shortcut');
     }
 
