@@ -237,6 +237,9 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
         $this->assertSame('callback: update', $model->callback);
         $this->assertTrue($beforeUpdateHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($beforeInsertHappened);
     }
 
@@ -279,7 +282,13 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('callback: callback: update', $model->callback);
         $this->assertTrue($beforeUpdateHappened);
         $this->assertTrue($afterUpdateHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($beforeInsertHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($afterInsertHappened);
     }
 

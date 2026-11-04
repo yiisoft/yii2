@@ -12,7 +12,7 @@ namespace yiiunit\data\ar;
  * Class Order.
  *
  * @property int $id
- * @property int $customer_id
+ * @property int|null $customer_id
  * @property int $created_at
  * @property string $total
  */

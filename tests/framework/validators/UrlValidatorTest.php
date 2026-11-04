@@ -104,8 +104,6 @@ class UrlValidatorTest extends TestCase
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('intl package required');
-
-            return;
         }
         $val = new UrlValidator([
             'enableIDN' => true,

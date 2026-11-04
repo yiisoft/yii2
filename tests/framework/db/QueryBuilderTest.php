@@ -2157,7 +2157,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      */
     public function testInitFixtures(): void
     {
-        $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
+        $this->expectNotToPerformAssertions();
+
+        $this->getQueryBuilder(true, true);
     }
 
     public static function upsertProvider(): array

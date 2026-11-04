@@ -18,10 +18,10 @@ use yii\db\ActiveQuery;
  * @property int $created_at
  * @property string $total
  *
- * @property-read Customer $customer
+ * @property-read Customer|null $customer
  * @property-read Customer $customer2
- * @property-read Customer $virtualCustomer
- * @property-read Customer $customerJoinedWithProfile
+ * @property-read Customer|null $virtualCustomer
+ * @property-read Customer|null $customerJoinedWithProfile
  * @property-read Customer[] $customerJoinedWithProfileIndexOrdered
  * @property-read Item[] $books
  * @property-read Item[] $books2

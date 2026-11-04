@@ -111,7 +111,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     /**
      * @param array|object|string $object
      * @param bool $isProperty
-     * @return array|object|string
+     * @return array|object
      */
     private static function convertPropertiesToAnycase($object, $isProperty = false)
     {
@@ -128,7 +128,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             foreach (array_keys((array) $object) as $name) {
                 $object->$name = self::convertPropertiesToAnycase($object->$name, true);
             }
-        } elseif (\is_array($object) || \is_string($object)) {
+        } else {
             $object = new AnyCaseValue($object);
         }
 

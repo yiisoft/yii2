@@ -50,7 +50,7 @@ use yii\base\NotSupportedException;
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]].
- * @property string $sql The SQL statement to be executed.
+ * @property string|null $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -142,7 +142,7 @@ class Command extends Component
 
     /**
      * Returns the SQL statement for this command.
-     * @return string the SQL statement to be executed
+     * @return string|null the SQL statement to be executed
      */
     public function getSql()
     {

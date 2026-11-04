@@ -40,8 +40,7 @@ class WidgetTest extends TestCase
         ob_start();
         ob_implicit_flush(false);
 
-        $widget = TestWidget::begin(['id' => 'test']);
-        $this->assertTrue($widget instanceof TestWidget);
+        TestWidget::begin(['id' => 'test']);
         TestWidget::end();
 
         $output = ob_get_clean();
@@ -65,7 +64,10 @@ class WidgetTest extends TestCase
         ob_implicit_flush(false);
 
         $widget = TestWidgetB::begin(['id' => 'test']);
-        $this->assertTrue($widget instanceof TestWidget);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The DI container creates TestWidget instead of TestWidgetB)
+        $this->assertInstanceOf(TestWidget::class, $widget);
         TestWidgetB::end();
 
         $output = ob_get_clean();
@@ -86,7 +88,10 @@ class WidgetTest extends TestCase
         ob_implicit_flush(false);
 
         $widget = TestWidgetB::begin(['id' => 'test']);
-        $this->assertTrue($widget instanceof TestWidget);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The DI container creates TestWidget instead of TestWidgetB)
+        $this->assertInstanceOf(TestWidget::class, $widget);
         TestWidgetB::end();
 
         $output = ob_get_clean();

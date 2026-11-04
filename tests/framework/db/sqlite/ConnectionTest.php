@@ -41,6 +41,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testTransactionIsolation(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $connection = $this->getConnection(true);
 
         $transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
@@ -48,8 +50,6 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->rollBack();
-
-        $this->assertTrue(true); // No exceptions means test is passed.
     }
 
     public function testMasterSlave(): void

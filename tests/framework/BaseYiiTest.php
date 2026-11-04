@@ -75,7 +75,7 @@ class BaseYiiTest extends TestCase
 
     public function testPowered(): void
     {
-        $this->assertIsString(Yii::powered());
+        $this->assertStringContainsString('https://www.yiiframework.com/', Yii::powered());
     }
 
     public function testCreateObjectArray(): void
@@ -87,7 +87,6 @@ class BaseYiiTest extends TestCase
             'a' => 42,
         ]);
 
-        $this->assertInstanceOf(Qux::class, $qux);
         $this->assertSame(42, $qux->a);
     }
 
@@ -109,7 +108,7 @@ class BaseYiiTest extends TestCase
 
 
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
-            return true;
+            return $a === 3;
         }));
 
         $this->assertTrue(Yii::createObject(new CallableClass()));
@@ -138,7 +137,6 @@ class BaseYiiTest extends TestCase
             'fooDependent' => ['__class' => FooDependentSubclass::class],
         ]);
 
-        $this->assertInstanceOf(FooBaz::class, $object);
         $this->assertInstanceOf(FooDependentSubclass::class, $object->fooDependent);
     }
 
@@ -155,7 +153,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertInstanceOf(Logger::class, $defaultLogger);
+        $this->assertNotSame($logger, $defaultLogger);
     }
 
     /**

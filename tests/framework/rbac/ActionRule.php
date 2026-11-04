@@ -26,6 +26,8 @@ class ActionRule extends Rule
      * @see https://github.com/yiisoft/yii2/issues/10176
      * @see https://github.com/yiisoft/yii2/issues/12681
      */
+    // TODO: fix the ignore after switching to level 4.
+    // phpstan-ignore property.unused (The property is only needed to test serialization of the rule)
     private $somePrivateProperty;
     protected $someProtectedProperty;
 

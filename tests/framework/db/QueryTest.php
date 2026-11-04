@@ -477,7 +477,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
 
         $result = $query->andFilterCompare('name', null);
-        $this->assertInstanceOf('yii\db\Query', $result);
+        $this->assertSame($query, $result);
         $this->assertNull($query->where);
 
         $query->andFilterCompare('name', '');

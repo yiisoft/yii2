@@ -473,7 +473,7 @@ class Formatter extends Component
      * This method simply returns back the parameter without any format.
      * The only exception is a `null` value which will be formatted using [[nullDisplay]].
      * @param mixed $value the value to be formatted.
-     * @return string the formatted result.
+     * @return mixed the formatted result.
      */
     public function asRaw($value)
     {
