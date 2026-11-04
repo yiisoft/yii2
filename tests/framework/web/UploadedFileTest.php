@@ -50,14 +50,14 @@ class UploadedFileTest extends TestCase
     private function generateFakeFiles(): void
     {
         $_FILES['ModelStub[prod_image]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][0]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][1]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[prod_images][2]'] = $this->generateFakeFileData();
 
         $_FILES['ModelStub[vendor_image]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
-        $_FILES['ModelStub[vendor_images][]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][0]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][1]'] = $this->generateFakeFileData();
+        $_FILES['ModelStub[vendor_images][2]'] = $this->generateFakeFileData();
 
         $_FILES['ModelStub[temp_image]'] = $this->generateTempFileData();
     }
@@ -78,13 +78,8 @@ class UploadedFileTest extends TestCase
         $productImages = UploadedFile::getInstances(new ModelStub(), 'prod_images');
         $vendorImages = VendorImage::getInstances(new ModelStub(), 'vendor_images');
 
-        foreach ($productImages as $productImage) {
-            $this->assertInstanceOf(UploadedFile::class, $productImage);
-        }
-
-        foreach ($vendorImages as $vendorImage) {
-            $this->assertInstanceOf(VendorImage::class, $vendorImage);
-        }
+        $this->assertCount(3, $productImages);
+        $this->assertCount(3, $vendorImages);
     }
 
     public function testSaveAs(): void
@@ -93,9 +88,9 @@ class UploadedFileTest extends TestCase
         $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
         $this->assertEquals(true, $tmpImage->saveAs($targetFile, $deleteTempFile = false));
-        $this->markTestIncomplete("`$deleteTempFile` flag simply uses php's move_uploaded_file() method, so this not work in test");
-
         @unlink($targetFile);
+
+        $this->markTestIncomplete("`$deleteTempFile` flag simply uses php's move_uploaded_file() method, so this not work in test");
     }
 
     public function testSaveFileFromMultipartFormDataParser(): void

@@ -20,9 +20,9 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property-read Order $order
  * @property-read Item $item
- * @property-read self $orderItemCompositeWithJoin
- * @property-read self $orderItemCompositeNoJoin
- * @property-read Order $custom
+ * @property-read self|null $orderItemCompositeWithJoin
+ * @property-read self|null $orderItemCompositeNoJoin
+ * @property-read Order|null $custom
  */
 class OrderItem extends ActiveRecord
 {

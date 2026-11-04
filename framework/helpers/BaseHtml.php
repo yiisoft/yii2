@@ -2207,7 +2207,7 @@ class BaseHtml
      *
      * @param array $style the CSS style array. The array keys are the CSS property names,
      * and the array values are the corresponding CSS property values.
-     * @return string the CSS style string. If the CSS style is empty, a null will be returned.
+     * @return string|null the CSS style string. If the CSS style is empty, a null will be returned.
      */
     public static function cssStyleFromArray(array $style)
     {
@@ -2285,7 +2285,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array|null the corresponding attribute value
+     * @return mixed the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)

@@ -12,9 +12,7 @@ use yiiunit\framework\db\CommandTest;
  * @var CommandTest $this
  */
 $rows = call_user_func(function () {
-    if (false) {
-        yield [];
-    }
+    yield from [];
 });
 
 $command = $this->getConnection()->createCommand();

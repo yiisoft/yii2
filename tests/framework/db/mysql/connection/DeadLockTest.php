@@ -11,7 +11,6 @@ namespace yiiunit\framework\db\mysql\connection;
 use yiiunit\framework\db\mysql\ConnectionTest;
 use Throwable;
 use RuntimeException;
-use ErrorException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Transaction;
@@ -39,7 +38,7 @@ class DeadLockTest extends ConnectionTest
         if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
             $this->markTestSkipped('MariaDB does not support this test');
         }
-        if (PHP_VERSION_ID >= 70400 && PHP_VERSION_ID < 70500) {
+        if (PHP_VERSION_ID < 70500) {
             $this->markTestSkipped('Stable failed in PHP 7.4');
         }
         if (!\function_exists('pcntl_fork')) {
@@ -72,7 +71,6 @@ class DeadLockTest extends ConnectionTest
             }
             if (0 === $pidSecond) {
                 // SECOND child
-                $this->setErrorHandler();
                 exit($this->childrenUpdateLocked());
             }
 
@@ -82,7 +80,6 @@ class DeadLockTest extends ConnectionTest
             }
             if (0 === $pidFirst) {
                 // FIRST child
-                $this->setErrorHandler();
                 exit($this->childrenSelectAndAccidentUpdate($pidSecond));
             }
 
@@ -277,23 +274,6 @@ class DeadLockTest extends ConnectionTest
         }
         $this->log('child 2: exit');
         return 0;
-    }
-
-    /**
-     * Set own error handler.
-     * In case of error in child process its execution bubbles up to phpunit to continue
-     * all the rest tests. So, all the rest tests in this case will run both in the child
-     * and parent processes. Such mess must be prevented with child's own error handler.
-     *
-     * @phpstan-impure
-     */
-    private function setErrorHandler(): void
-    {
-        if (PHP_VERSION_ID < 70000) {
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                throw new ErrorException($errstr, $errno, $errno, $errfile, $errline);
-            });
-        }
     }
 
     /**

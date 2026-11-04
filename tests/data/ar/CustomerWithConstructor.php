@@ -21,7 +21,7 @@ use ReflectionClass;
  * @property string $address
  * @property int $status
  *
- * @property-read ProfileWithConstructor $profile
+ * @property-read ProfileWithConstructor|null $profile
  */
 class CustomerWithConstructor extends ActiveRecord
 {

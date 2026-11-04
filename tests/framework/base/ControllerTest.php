@@ -61,7 +61,7 @@ class ControllerTest extends TestCase
         /** @var Controller $controller */
         $controller = new $controllerClass('test-controller', Yii::$app);
 
-        /** @var InlineAction $action */
+        /** @var InlineAction|null $action */
         $action = $controller->createAction($actionId);
         $actionMethod = $action !== null ? $action->actionMethod : null;
 

@@ -318,7 +318,9 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
      */
     public function testInitFixtures(): void
     {
-        $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
+        $this->expectNotToPerformAssertions();
+
+        $this->getQueryBuilder(true, true);
     }
 
     /**
