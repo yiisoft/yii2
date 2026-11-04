@@ -121,14 +121,19 @@ class EventTest extends TestCase
         $this->assertFalse($triggered);
         $someClass = new SomeClass();
         $someClass->emitEvent();
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertTrue($triggered);
 
         // reset
         $triggered = false;
 
         // class-level
-        $this->assertFalse($triggered);
         Event::trigger(SomeClass::class, 'super.test');
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertTrue($triggered);
     }
 

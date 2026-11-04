@@ -193,8 +193,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             $this->assertEquals($expected, $value, 'In column ' . $attribute);
 
             if ($value instanceof ArrayExpression) {
-                $this->assertInstanceOf('\ArrayAccess', $value);
-                $this->assertInstanceOf('\Traversable', $value);
                 foreach ($type->$attribute as $key => $v) { // testing arrayaccess
                     $this->assertSame($expected[$key], $value[$key]);
                 }

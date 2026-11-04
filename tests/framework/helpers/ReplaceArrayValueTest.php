@@ -28,7 +28,6 @@ class ReplaceArrayValueTest extends TestCase
     {
         $object = new ReplaceArrayValue('test');
         $result = $object::__set_state(['value' => 'test2']);
-        $this->assertInstanceOf('yii\helpers\ReplaceArrayValue', $result);
         $this->assertSame('test2', $result->value);
     }
 }

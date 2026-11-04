@@ -62,6 +62,14 @@ Yii Framework 2 Change Log
 - Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
 - Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
 - Enh #21131: Reject non-string tokens in `yii\web\User::loginByAccessToken()` before the identity lookup, hardening against type-juggling (took)
+- Bug #21135: Fix `@return` annotation for `yii\db\Command::getSql()` (mspirkov)
+- Bug #21135: Fix `@property` annotation for `yii\db\Command::$sql` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `cssStyleFromArray()` and `getAttributeValue()` in `yii\helpers\BaseHtml` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `format()` and `asRaw()` in `yii\i18n\Formatter` (mspirkov)
+- Bug #21135: Fix `@return` annotation for `yii\web\HeaderCollection::get()` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `getInstance()`, `getInstanceByName()`, `getInstances()` and `getInstancesByName()` in `yii\web\UploadedFile` (mspirkov)
+- Enh #21135: Add `@throws` annotation for `InvalidConfigException` in `yii\db\Connection::open()` (mspirkov)
+- Enh #21135: Add `@phpstan-impure` annotations for `yii\db\Connection::open()`, `save()` and `link()` in `yii\db\BaseActiveRecord`, `yii\web\AssetBundle::register()`, `yii\test\ArrayFixture::load()`, `yii\filters\RateLimiter::beforeAction()`, `validateAttribute()` and `validateAttributes()` in `yii\validators\Validator` (mspirkov)
 
 
 2.0.55 May 09, 2026

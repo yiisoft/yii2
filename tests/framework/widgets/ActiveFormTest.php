@@ -121,6 +121,8 @@ HTML,
 
     public function testRegisterClientScript(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $this->mockWebApplication();
         $_SERVER['REQUEST_URI'] = 'http://example.com/';
 
@@ -144,8 +146,6 @@ HTML,
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
-
-        $this->assertTrue(true);
     }
 
     /**

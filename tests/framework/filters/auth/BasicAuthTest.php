@@ -139,9 +139,10 @@ class BasicAuthTest extends AuthTest
         $triggered = false;
         Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered) {
             $triggered = true;
-            $this->assertTrue($triggered);
         });
         $this->testHttpBasicAuthCustom($token, $login);
         Event::off('\yii\web\User', User::EVENT_AFTER_LOGIN); // required because this method runs in foreach loop. See @dataProvider tokenProvider
+
+        $this->assertSame($login !== null, $triggered);
     }
 }

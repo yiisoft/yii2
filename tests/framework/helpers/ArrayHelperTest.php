@@ -1882,6 +1882,8 @@ class MagicModel extends Model
         return 42;
     }
 
+    // TODO: fix the ignore after switching to level 4.
+    // phpstan-ignore property.unused (The property is intentionally inaccessible from outside to test that the getter is used)
     private $moreMagic;
 
     public function getMoreMagic()
