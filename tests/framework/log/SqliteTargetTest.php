@@ -21,7 +21,6 @@ class SqliteTargetTest extends DbTargetTest
     {
         if (self::getConnection()->dsn === 'sqlite::memory:') {
             $this->markTestSkipped('It is not possible to test logging during transaction when the DB is in memory');
-            return;
         }
 
         parent::testTransactionRollBack();

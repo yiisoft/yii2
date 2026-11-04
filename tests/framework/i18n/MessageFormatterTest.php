@@ -111,8 +111,6 @@ _MSG_
                     'host' => 'ralph',
                     'guest' => 'beep',
                 ],
-                defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
-                'select format is available in ICU > 4.4 and plural format with =X selector is avilable since 4.8',
             ],
 
             [
@@ -122,8 +120,6 @@ _MSG_
                     'name' => 'Alexander',
                     'gender' => 'male',
                 ],
-                defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4',
             ],
 
             // verify pattern in select does not get replaced
@@ -138,8 +134,6 @@ _MSG_
                     'she' => 'wtf',
                     'it' => 'wtf',
                 ],
-                defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4',
             ],
 
             // verify pattern in select message gets replaced
@@ -152,8 +146,6 @@ _MSG_
                     'he' => 'wtf',
                     'she' => 'wtf',
                 ],
-                defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
-                'parameters in select format do not seem to work in ICU < 4.8',
             ],
 
             // some parser specific verifications
@@ -166,8 +158,6 @@ _MSG_
                     'he' => 'wtf',
                     'she' => 'wtf',
                 ],
-                defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4',
             ],
 
             // formatting a message that contains params but they are not provided.
@@ -354,14 +344,9 @@ _MSG_
      * @param string $pattern
      * @param string $expected
      * @param array $args
-     * @param bool $skip
-     * @param string $skipMessage
      */
-    public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = ''): void
+    public function testNamedArguments($pattern, $expected, $args): void
     {
-        if ($skip) {
-            $this->markTestSkipped($skipMessage);
-        }
         $formatter = new MessageFormatter();
         $result = $formatter->format($pattern, $args, 'en-US');
         $this->assertEquals($expected, $result, $formatter->getErrorMessage());
