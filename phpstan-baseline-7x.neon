@@ -125,3 +125,135 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Access to constant ACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 6
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant BLUE on an unknown class yiiunit\\data\\enums\\ColorEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant DELETED on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant GREEN on an unknown class yiiunit\\data\\enums\\ColorEnum\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant INACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant RED on an unknown class yiiunit\\data\\enums\\ColorEnum\.$#'
+			identifier: class.notFound
+			count: 6
+			path: tests/framework/helpers/HtmlTest.php
+
+		-
+			message: '#^Access to constant ACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 7
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant DELETED on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant HIGH on an unknown class yiiunit\\data\\enums\\PriorityEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant INACTIVE on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant LOW on an unknown class yiiunit\\data\\enums\\PriorityEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to constant RED on an unknown class yiiunit\\data\\enums\\ColorEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\data\\enums\\ColorEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\data\\enums\\StatusEnum\.$#'
+			identifier: class.notFound
+			count: 7
+			path: tests/framework/validators/RangeValidatorTest.php
