@@ -230,16 +230,31 @@ abstract class ConnectionTest extends DatabaseTestCase
     {
         $connection = $this->getConnection(true);
 
-        $this->expectException(Exception::class);
+        // Captured rather than asserted inside the catch: this file imports the
+        // global Exception, so catching it would swallow PHPUnit's own failure.
+        $thrown = null;
+        $original = new Exception('Exception in transaction shortcut');
 
-        $connection->transaction(function () use ($connection) {
-            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
-            throw new Exception('Exception in transaction shortcut');
-        });
+        try {
+            $connection->transaction(function () use ($connection, $original) {
+                $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+                throw $original;
+            });
+        } catch (Exception $e) {
+            $thrown = $e;
+        }
 
-        $profilesCount = $connection
-            ->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")
-            ->queryScalar();
+        $this->assertNotNull($thrown, 'transaction() should rethrow the exception from the callback');
+        $this->assertSame('Exception in transaction shortcut', $thrown->getMessage());
+        $this->assertSame($original, $thrown, 'transaction() should rethrow the same exception object');
+
+        // Quoted the way testTransactionShortcutCorrect below already does it:
+        // the Oracle fixture creates "profile" quoted, so an unquoted name folds
+        // to PROFILE and the query raises ORA-00942. Unreachable until now, so
+        // the raw form never had to run.
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
         $this->assertEquals(0, $profilesCount, 'profile should not be inserted in transaction shortcut');
     }
 
