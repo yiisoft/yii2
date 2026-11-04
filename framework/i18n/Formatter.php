@@ -439,7 +439,7 @@ class Formatter extends Component
      * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
      * which can be used to call other formatting functions.
      * The possibility to use an anonymous function is available since version 2.0.13.
-     * @return string the formatting result.
+     * @return mixed the formatting result.
      * @throws InvalidArgumentException if the format type is not supported by this class.
      */
     public function format($value, $format)

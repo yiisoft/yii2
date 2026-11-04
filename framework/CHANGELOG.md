@@ -64,7 +64,7 @@ Yii Framework 2 Change Log
 - Bug #21135: Fix `@return` annotation for `yii\db\Command::getSql()` (mspirkov)
 - Bug #21135: Fix `@property` annotation for `yii\db\Command::$sql` (mspirkov)
 - Bug #21135: Fix `@return` annotations for `cssStyleFromArray()` and `getAttributeValue()` in `yii\helpers\BaseHtml` (mspirkov)
-- Bug #21135: Fix `@return` annotation for `yii\i18n\Formatter::asRaw()` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `format()` and `asRaw()` in `yii\i18n\Formatter` (mspirkov)
 - Bug #21135: Fix `@return` annotation for `yii\web\HeaderCollection::get()` (mspirkov)
 - Bug #21135: Fix `@return` annotations for `getInstance()`, `getInstanceByName()`, `getInstances()` and `getInstancesByName()` in `yii\web\UploadedFile` (mspirkov)
 - Enh #21135: Add `@throws` annotation for `InvalidConfigException` in `yii\db\Connection::open()` (mspirkov)
