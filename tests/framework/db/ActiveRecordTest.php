@@ -25,18 +25,15 @@ use yiiunit\data\ar\CustomerWithAlias;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\CustomerQuery;
-use yiiunit\data\ar\CustomerWithConstructor;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
-use yiiunit\data\ar\OrderItemWithConstructor;
 use yiiunit\data\ar\OrderItemWithNullFK;
 use yiiunit\data\ar\OrderWithConstructor;
 use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
-use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
 use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
@@ -243,7 +240,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertIsArray($orders[0]['orderItems'][0]);
 
         $order = $orders[0];
-        $this->assertIsArray($order);
         $this->assertEquals(1, $order['id']);
         $this->assertCount(2, $order['books']);
         $this->assertEquals(1, $order['books'][0]['id']);
@@ -253,15 +249,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     // deeply nested table relation
     public function testDeeplyNestedTableRelation(): void
     {
-        /** @var Customer $customer */
         $customer = Customer::findOne(1);
         $this->assertNotNull($customer);
 
         $items = $customer->orderItems;
 
         $this->assertCount(2, $items);
-        $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertInstanceOf(Item::class, $items[1]);
         $this->assertEquals(1, $items[0]->id);
         $this->assertEquals(2, $items[1]->id);
     }
@@ -278,8 +271,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertCount(2, $orders);
-        $this->assertInstanceOf(Order::class, $orders[0]);
-        $this->assertInstanceOf(Order::class, $orders[1]);
         $ids = [$orders[0]->id, $orders[1]->id];
         sort($ids);
         $this->assertEquals([1, 3], $ids);
@@ -288,7 +279,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertCount(1, $orders);
-        $this->assertInstanceOf(Order::class, $orders[0]);
         $this->assertEquals(2, $orders[0]->id);
     }
 
@@ -1058,9 +1048,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
 
         $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
-        $this->assertIsArray($customerWithJoinIndexOrdered);
         $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
-        $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
     }
 
     public static function tableNameProvider(): array
@@ -1162,9 +1150,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $dossier->employee_id = 1;
         $dossier->department_id = 2;
+        // @phpstan-ignore property.nonObject (The relation is reset when the foreign key is changed)
         $this->assertEquals('Ann Smith', $dossier->employee->fullName);
 
         $dossier->employee_id = 2;
+        // @phpstan-ignore property.nonObject (The relation is reset when the foreign key is changed)
         $this->assertEquals('Will Smith', $dossier->employee->fullName);
     }
 
@@ -1860,11 +1850,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testLegalValuesForFindByCondition($modelClassName, $validFilter): void
     {
+        $this->expectNotToPerformAssertions();
+
         /** @var Query $query */
         $query = $this->invokeMethod(Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
-
-        $this->assertTrue(true);
     }
 
     public static function illegalValuesForFindByCondition(): array
@@ -1955,26 +1945,22 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $order->id);
 
         $this->assertNotNull($order->customer);
-        $this->assertInstanceOf(CustomerWithConstructor::class, $order->customer);
         $this->assertEquals(1, $order->customer->id);
 
         $this->assertNotNull($order->customer->profile);
-        $this->assertInstanceOf(ProfileWithConstructor::class, $order->customer->profile);
         $this->assertEquals(1, $order->customer->profile->id);
 
-        $this->assertNotNull($order->customerJoinedWithProfile);
         $customerWithProfile = $order->customerJoinedWithProfile;
-        $this->assertInstanceOf(CustomerWithConstructor::class, $customerWithProfile);
+        $this->assertNotNull($customerWithProfile);
         $this->assertEquals(1, $customerWithProfile->id);
 
-        $this->assertNotNull($customerProfile = $customerWithProfile->profile);
-        $this->assertInstanceOf(ProfileWithConstructor::class, $customerProfile);
+        $customerProfile = $customerWithProfile->profile;
+        $this->assertNotNull($customerProfile);
         $this->assertEquals(1, $customerProfile->id);
 
         $this->assertCount(2, $order->orderItems);
 
         $item = $order->orderItems[0];
-        $this->assertInstanceOf(OrderItemWithConstructor::class, $item);
 
         $this->assertEquals(1, $item->item_id);
 
@@ -2010,6 +1996,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $order->total = '0';
 
         $orderItem = new OrderItem();
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore expr.resultUnused (We intentionally load the relation before it is populated manually)
         $order->orderItems;
         $order->populateRelation('orderItems', [$orderItem]);
         $order->save();

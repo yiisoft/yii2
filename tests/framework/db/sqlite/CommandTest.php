@@ -38,7 +38,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
             $this->markTestSkipped('SQLite < 3.8.3 does not support "WITH" keyword.');
-            return;
         }
 
         parent::testUpsert($firstData, $secondData);

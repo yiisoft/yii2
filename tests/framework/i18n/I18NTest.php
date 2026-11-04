@@ -257,20 +257,20 @@ class I18NTest extends TestCase
         };
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-GB'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertEquals([], array_filter($this->getLoggerMessages(), $filter));
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertEquals([], array_filter($this->getLoggerMessages(), $filter));
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-CA'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertEquals([], array_filter($this->getLoggerMessages(), $filter));
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz-HZ'));
-        $this->assertCount(1, array_filter($logger->messages, $filter));
+        $this->assertCount(1, array_filter($this->getLoggerMessages(), $filter));
         $logger->messages = [];
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz'));
-        $this->assertCount(1, array_filter($logger->messages, $filter));
+        $this->assertCount(1, array_filter($this->getLoggerMessages(), $filter));
         $logger->messages = [];
     }
 
@@ -291,5 +291,13 @@ class I18NTest extends TestCase
 
         $message = 'date: {dt.test,date}';
         $this->assertEquals('date: Nov 8, 2017', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
+    }
+
+    /**
+     * @return array the messages logged by the logger.
+     */
+    private function getLoggerMessages(): array
+    {
+        return Yii::getLogger()->messages;
     }
 }

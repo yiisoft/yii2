@@ -38,7 +38,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAssureMessageSetOnInit(): void
     {
         $val = new UniqueValidator();
-        $this->assertIsString($val->message);
+        $this->assertNotEmpty($val->message);
     }
 
     public function testCustomMessage(): void
@@ -512,7 +512,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = CustomerWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         } catch (Exception $exception) {
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
@@ -530,7 +530,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = CustomerJoinWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         } catch (Exception $exception) {
             $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
         }

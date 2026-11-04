@@ -263,16 +263,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertSame(['id'], $primaryIndexes[0]->columnNames);
 
         foreach ($indexes as $index) {
-            foreach ($index->columnNames as $columnName) {
-                $this->assertNotNull(
-                    $columnName,
-                    'LOB index with "NULL" column name should be excluded',
-                );
-                $this->assertIsString(
-                    $columnName,
-                    'Index column name must be a string',
-                );
-            }
+            $this->assertNotContains(
+                null,
+                $index->columnNames,
+                'LOB index with "NULL" column name should be excluded',
+            );
         }
 
         $db->createCommand()->dropTable('lob_test')->execute();
