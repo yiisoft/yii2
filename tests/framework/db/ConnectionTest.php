@@ -233,11 +233,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         // Captured rather than asserted inside the catch: this file imports the
         // global Exception, so catching it would swallow PHPUnit's own failure.
         $thrown = null;
+        $original = new Exception('Exception in transaction shortcut');
 
         try {
-            $connection->transaction(function () use ($connection) {
+            $connection->transaction(function () use ($connection, $original) {
                 $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
-                throw new Exception('Exception in transaction shortcut');
+                throw $original;
             });
         } catch (Exception $e) {
             $thrown = $e;
@@ -245,6 +246,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $this->assertNotNull($thrown, 'transaction() should rethrow the exception from the callback');
         $this->assertSame('Exception in transaction shortcut', $thrown->getMessage());
+        $this->assertSame($original, $thrown, 'transaction() should rethrow the same exception object');
 
         // Quoted the way testTransactionShortcutCorrect below already does it:
         // the Oracle fixture creates "profile" quoted, so an unquoted name folds
