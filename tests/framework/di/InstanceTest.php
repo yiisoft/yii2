@@ -34,9 +34,9 @@ class InstanceTest extends TestCase
         $className = Component::class;
         $instance = Instance::of($className);
 
-        $this->assertInstanceOf('\\yii\\di\\Instance', $instance);
-        $this->assertInstanceOf(Component::class, $instance->get($container));
-        $this->assertInstanceOf(Component::class, Instance::ensure($instance, $className, $container));
+        $this->assertSame($className, $instance->id);
+        $this->assertSame(Component::class, get_class($instance->get($container)));
+        $this->assertSame(Component::class, get_class(Instance::ensure($instance, $className, $container)));
         $this->assertNotSame($instance->get($container), Instance::ensure($instance, $className, $container));
     }
 
@@ -48,10 +48,11 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::class, Instance::ensure('db', 'yii\db\Connection', $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), 'yii\db\Connection', $container));
-        $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
-        $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
+        $this->assertSame('test', Instance::ensure('db', 'yii\db\Connection', $container)->dsn);
+        $connection = new Connection();
+        $this->assertSame($connection, Instance::ensure($connection, 'yii\db\Connection', $container));
+        $this->assertSame('test', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container)->dsn);
+        $this->assertSame('test', Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container)->dsn);
     }
 
     /**

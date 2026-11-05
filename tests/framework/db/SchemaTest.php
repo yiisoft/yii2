@@ -100,9 +100,6 @@ abstract class SchemaTest extends DatabaseTestCase
 
         $tables = $schema->getTableSchemas();
         $this->assertEquals(\count($schema->getTableNames()), \count($tables));
-        foreach ($tables as $table) {
-            $this->assertInstanceOf('yii\db\TableSchema', $table);
-        }
     }
 
     public function testGetTableSchemasWithAttrCase(): void

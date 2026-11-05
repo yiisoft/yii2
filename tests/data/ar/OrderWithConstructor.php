@@ -21,8 +21,8 @@ use ReflectionClass;
  * @property string $total
  *
  * @property-read OrderItemWithConstructor[] $orderItems
- * @property-read CustomerWithConstructor $customer
- * @property-read CustomerWithConstructor $customerJoinedWithProfile
+ * @property-read CustomerWithConstructor|null $customer
+ * @property-read CustomerWithConstructor|null $customerJoinedWithProfile
  */
 class OrderWithConstructor extends ActiveRecord
 {

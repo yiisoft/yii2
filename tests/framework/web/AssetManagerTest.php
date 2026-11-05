@@ -14,9 +14,7 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
-use yii\web\AssetBundle;
 use yii\web\AssetConverter;
-use yii\web\AssetConverterInterface;
 use yii\web\AssetManager;
 use yiiunit\data\web\AssetManagerTestSimpleBundle;
 use yiiunit\data\web\AssetManagerTestSourceBundle;
@@ -144,7 +142,7 @@ class AssetManagerTest extends TestCase
 
         $bundle = $am->getBundle(AssetManagerTestSimpleBundle::class);
 
-        $this->assertInstanceOf(AssetBundle::class, $bundle);
+        $this->assertInstanceOf(AssetManagerTestSimpleBundle::class, $bundle);
         $this->assertNull($bundle->sourcePath);
         $this->assertSame([], $bundle->js);
         $this->assertSame([], $bundle->css);
@@ -240,7 +238,6 @@ class AssetManagerTest extends TestCase
 
         $converter = $am->getConverter();
 
-        $this->assertInstanceOf(AssetConverterInterface::class, $converter);
         $this->assertInstanceOf(AssetConverter::class, $converter);
     }
 
@@ -720,6 +717,8 @@ class AssetManagerTest extends TestCase
         $this->setInaccessibleProperty($am, '_published', []);
         $am->publish($dirPath, ['forceCopy' => false]);
 
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the callback)
         $this->assertSame(0, $copyCount);
         $this->assertGreaterThan(0, $firstCopyCount);
     }

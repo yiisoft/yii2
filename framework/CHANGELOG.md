@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #21073: Fix `MultipartFormDataParser` boundary extraction when `Content-Type` has additional parameters (iliaal)
 - Bug #21121: Fix `yii\validators\DateValidator` rejecting non-ASCII dates on PHP 8.4.27 and 8.5.12 (eluhr)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
@@ -37,6 +38,8 @@ Yii Framework 2 Change Log
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
+- Bug #21074: Fix Gettext PO file escaping of backslashes and parsing of escaped quotes (iliaal)
+- Bug #21072: Use the full 64-bit keyspace for PostgreSQL advisory lock keys in `PgsqlMutex` (iliaal)
 - Bug #20322: Pad hex escapes to four digits in `yii\helpers\Html::escapeJsRegularExpression()` so that they stay valid in JavaScript (veksa)
 - Bug #20456: Fix `yii\helpers\Html::escapeJsRegularExpression()` truncating patterns that use bracket style delimiters (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
@@ -59,6 +62,16 @@ Yii Framework 2 Change Log
 - Bug #21124: Fix `@return` annotations for `parseRequest()` in `yii\web\UrlManager`, `yii\web\UrlRuleInterface` and `yii\web\UrlRule` (mspirkov)
 - Bug #21124: Fix `@var` annotation for `yii\widgets\Pjax::$scrollTo` (mspirkov)
 - Bug #14402: Fix `yii\i18n\GettextMoFile::load()` returning messages of another context whose name is a prefix of the requested one (theluckystrike)
+- Enh #21131: Reject non-string tokens in `yii\web\User::loginByAccessToken()` before the identity lookup, hardening against type-juggling (took)
+- Bug #21135: Fix `@return` annotation for `yii\db\Command::getSql()` (mspirkov)
+- Bug #21135: Fix `@property` annotation for `yii\db\Command::$sql` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `cssStyleFromArray()` and `getAttributeValue()` in `yii\helpers\BaseHtml` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `format()` and `asRaw()` in `yii\i18n\Formatter` (mspirkov)
+- Bug #21135: Fix `@return` annotation for `yii\web\HeaderCollection::get()` (mspirkov)
+- Bug #21135: Fix `@return` annotations for `getInstance()`, `getInstanceByName()`, `getInstances()` and `getInstancesByName()` in `yii\web\UploadedFile` (mspirkov)
+- Enh #21135: Add `@throws` annotation for `InvalidConfigException` in `yii\db\Connection::open()` (mspirkov)
+- Enh #21135: Add `@phpstan-impure` annotations for `yii\db\Connection::open()`, `save()` and `link()` in `yii\db\BaseActiveRecord`, `yii\web\AssetBundle::register()`, `yii\test\ArrayFixture::load()`, `yii\filters\RateLimiter::beforeAction()`, `validateAttribute()` and `validateAttributes()` in `yii\validators\Validator` (mspirkov)
+
 
 2.0.55 May 09, 2026
 -------------------

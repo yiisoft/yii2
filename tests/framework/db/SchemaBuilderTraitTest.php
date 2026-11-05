@@ -123,7 +123,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->decimal(10, 2);
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $result = (string) $column;
         $this->assertStringContainsString('decimal', $result);
         $this->assertStringContainsString('10', $result);
@@ -135,7 +134,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->decimal(10);
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $result = (string) $column;
         $this->assertStringContainsString('decimal', $result);
         $this->assertStringContainsString('10', $result);
@@ -146,7 +144,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->decimal();
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $this->assertStringContainsString('decimal', (string) $column);
     }
 
@@ -155,7 +152,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->money(19, 4);
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $result = (string) $column;
         $this->assertStringContainsString('money', $result);
         $this->assertStringContainsString('19', $result);
@@ -167,7 +163,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->money(19);
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $result = (string) $column;
         $this->assertStringContainsString('money', $result);
         $this->assertStringContainsString('19', $result);
@@ -178,7 +173,6 @@ class SchemaBuilderTraitTest extends TestCase
         $builder = $this->createBuilder();
         $column = $builder->money();
 
-        $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $this->assertStringContainsString('money', (string) $column);
     }
 }

@@ -56,7 +56,6 @@ class ValidatorTest extends TestCase
     public function testCreateValidator(): void
     {
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
-        /** @var NumberValidator $numberVal */
         $numberVal = TestValidator::createValidator('number', $model, ['attr_test1']);
         $this->assertInstanceOf(NumberValidator::class, $numberVal);
         $numberVal = TestValidator::createValidator('integer', $model, ['attr_test2']);
@@ -294,7 +293,8 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::class, $val);
 
         $val->clientValidate = 'clientInlineVal';
-        $args = $val->clientValidateAttribute($model, 'val_attr_a', $view);
+        $this->assertSame('clientInlineVal();', $val->clientValidateAttribute($model, 'val_attr_a', $view));
+        $args = $model->getClientInlineValArgs();
 
         $this->assertCount(5, $args);
         $this->assertEquals('val_attr_a', $args[0]);
@@ -408,6 +408,8 @@ class ValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'attr');
 
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
         $this->assertSame(
             $model,
             $boundModel,
@@ -434,6 +436,9 @@ class ValidatorTest extends TestCase
             $validator->clientValidateAttribute($model, 'attr', new View()),
             'Closure result must be returned verbatim.',
         );
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
         $this->assertSame(
             $model,
             $boundModel,

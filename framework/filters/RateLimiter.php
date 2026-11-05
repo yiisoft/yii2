@@ -93,6 +93,8 @@ class RateLimiter extends ActionFilter
 
     /**
      * {@inheritdoc}
+     *
+     * @phpstan-impure
      */
     public function beforeAction($action)
     {

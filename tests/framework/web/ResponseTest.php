@@ -435,18 +435,16 @@ class ResponseTest extends TestCase
             ],
         ];
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $testCases = array_merge($testCases, [
-                'expire-as-date_time' => [
-                    ['expire' => new DateTime('@' . $expireInt)],
-                    ['expires' => $expireString],
-                ],
-                'expire-as-date_time_immutable' => [
-                    ['expire' => new DateTimeImmutable('@' . $expireInt)],
-                    ['expires' => $expireString],
-                ],
-            ]);
-        }
+        $testCases = array_merge($testCases, [
+            'expire-as-date_time' => [
+                ['expire' => new DateTime('@' . $expireInt)],
+                ['expires' => $expireString],
+            ],
+            'expire-as-date_time_immutable' => [
+                ['expire' => new DateTimeImmutable('@' . $expireInt)],
+                ['expires' => $expireString],
+            ],
+        ]);
 
         return $testCases;
     }
@@ -515,7 +513,7 @@ class ResponseTest extends TestCase
         $content = ob_get_clean();
         $this->assertSame($content, '');
 
-        if ($callback && is_callable($callback)) {
+        if ($callback !== null) {
             $callback($response);
         }
     }

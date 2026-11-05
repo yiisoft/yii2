@@ -359,7 +359,7 @@ class AccessRuleTest extends TestCase
         $rule = new AccessRule();
         $rule->allow = true;
         $rule->roleParams = function () {
-            $this->assertTrue(false, 'Should not be executed');
+            $this->fail('Should not be executed');
         };
 
         $rule->roles = ['@'];

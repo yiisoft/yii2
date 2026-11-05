@@ -9,6 +9,7 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * GettextPoFile represents a PO Gettext message file.
@@ -19,24 +20,34 @@ use Yii;
 class GettextPoFile extends GettextFile
 {
     /**
+     * Quoted PO string that stays on one physical line, including the surrounding quotes.
+     * Excluding CR/LF prevents a legacy entry that ends with a single backslash from consuming
+     * the next entry's closing quote.
+     */
+    private const QUOTED_STRING_PATTERN = '"(?:[^"\\\\\r\n]|\\\\[^\r\n])*+"';
+
+    /**
      * Loads messages from a PO file.
      * @param string $filePath file path
      * @param string $context message context
      * @return array message translations. Array keys are source messages and array values are translated messages:
      * source message => translated message.
+     * @throws Exception if a regular expression fails
      */
     public function load($filePath, $context)
     {
-        $pattern = '/(msgctxt\s+"(.*?(?<!\\\\))")?\s+' // context
-            . 'msgid\s+((?:".*(?<!\\\\)"\s*)+)\s+' // message ID, i.e. original string
-            . 'msgstr\s+((?:".*(?<!\\\\)"\s*)+)/'; // translated string
+        $quoted = self::QUOTED_STRING_PATTERN;
+        $pattern = '/(msgctxt\s+((?:' . $quoted . '\s*)++))?\s*msgid\s*((?:' . $quoted . '\s*)++)\s*msgstr\s*((?:' . $quoted . '\s*)++)/';
         $content = file_get_contents($filePath);
         $matches = [];
         $matchCount = preg_match_all($pattern, $content, $matches);
+        if ($matchCount === false) {
+            throw new Exception('Unable to parse PO file "' . $filePath . '" (PCRE error ' . preg_last_error() . ').');
+        }
 
         $messages = [];
         for ($i = 0; $i < $matchCount; ++$i) {
-            if ($matches[2][$i] === $context) {
+            if ($this->decode($matches[2][$i]) === $context) {
                 $id = $this->decode($matches[3][$i]);
                 $message = $this->decode($matches[4][$i]);
                 $messages[$id] = $message;
@@ -73,7 +84,7 @@ class GettextPoFile extends GettextFile
         foreach ($messages as $id => $message) {
             $separatorPosition = strpos($id, chr(4));
             if ($separatorPosition !== false) {
-                $content .= 'msgctxt "' . substr($id, 0, $separatorPosition) . "\"\n";
+                $content .= 'msgctxt "' . $this->encode(substr($id, 0, $separatorPosition)) . "\"\n";
                 $id = substr($id, $separatorPosition + 1);
             }
             $content .= 'msgid "' . $this->encode($id) . "\"\n";
@@ -90,8 +101,8 @@ class GettextPoFile extends GettextFile
     protected function encode($string)
     {
         return str_replace(
-            ['"', "\n", "\t", "\r"],
-            ['\\"', '\\n', '\\t', '\\r'],
+            ['\\', '"', "\n", "\t", "\r"],
+            ['\\\\', '\\"', '\\n', '\\t', '\\r'],
             $string
         );
     }
@@ -100,15 +111,25 @@ class GettextPoFile extends GettextFile
      * Decodes special characters in a message.
      * @param string $string message to be decoded
      * @return string the decoded message
+     * @throws Exception if a regular expression fails
      */
     protected function decode($string)
     {
-        $string = preg_replace(
-            ['/"\s+"/', '/\\\\n/', '/\\\\r/', '/\\\\t/', '/\\\\"/'],
-            ['', "\n", "\r", "\t", '"'],
-            $string
-        );
+        if (preg_match_all('/' . self::QUOTED_STRING_PATTERN . '/', $string, $matches) === false) {
+            throw new Exception('Unable to decode PO string (PCRE error ' . preg_last_error() . ').');
+        }
 
-        return substr(rtrim($string), 1, -1);
+        $decoded = '';
+        foreach ($matches[0] as $fragment) {
+            $decoded .= strtr(substr($fragment, 1, -1), [
+                '\n' => "\n",
+                '\r' => "\r",
+                '\t' => "\t",
+                '\"' => '"',
+                '\\\\' => '\\',
+            ]);
+        }
+
+        return $decoded;
     }
 }

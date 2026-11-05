@@ -31,7 +31,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     protected static $database;
 
     /**
-     * @var Connection
+     * @var Connection|null
      */
     protected static $db;
 
