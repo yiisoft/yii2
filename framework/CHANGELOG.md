@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Bug #21068: Add `create_sid()` and `validateId()` to `yii\web\SessionHandler` for PHP `8.6`, so custom storage sessions validate IDs natively in strict mode through the new `yii\web\Session::sessionIdExists()`; deprecate `yii\web\Session::$_forceRegenerateId` (terabytesoftw)
 - Bug #21098: Fix `yii\caching\Cache::multiGet()` passing `false` for missing keys to the unserializer, which fails with "Error at offset 0 of 0 bytes" on PHP `8.6` (terabytesoftw)
 - Bug #21086: Allow integer and string keys in the `yii\base\Model::rules()` return annotation (terabytesoftw)
+- Enh #17620: Add `yii\web\AssetManager::$hashSourceContents` to publish asset directories under a new hash and convert their assets again when any source file changes (terabytesoftw)
 - Bug #20344: Fix `yii\helpers\VarDumper::dumpAsString()` leaving the `<?php` open tag in highlighted output on PHP 8.3+ (mixxael, terabytesoftw)
 - Bug #21115: Fix PHPStan 2.3.0 `parameterByRef.type` error in `yii\db\QueryBuilder::getTableUniqueColumnNames()` (theluckystrike)
 - Enh #20681: Add `yii\base\ErrorHandler::fallbackExceptionMessage()` to customize the message shown by `handleFallbackExceptionMessage()` when `YII_DEBUG` is disabled (ZhandosKz, terabytesoftw)
