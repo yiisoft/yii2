@@ -171,6 +171,8 @@ class AssetManager extends Component
      * You may want to set this to be `true` during the development stage to make sure the published
      * directory is always up-to-date. Do not set this to true on production servers as it will
      * significantly degrade the performance.
+     * Consider [[hashSourceContents]] instead, which copies the directory again only when the contents of
+     * its source files change.
      */
     public $forceCopy = false;
     /**
@@ -460,8 +462,10 @@ class AssetManager extends Component
      * unnecessary file copying.
      *
      * If the asset is a directory, all files and subdirectories under it will be published recursively.
-     * Note, in case $forceCopy and $hashSourceContents are false the method only checks the
-     * existence of the target directory to avoid repetitive copying (which is very expensive).
+     * Note, in case $forceCopy is false the method only checks the existence of the target directory
+     * to avoid repetitive copying (which is very expensive). When [[hashSourceContents]] is enabled, the
+     * name of the target directory depends on the contents of the source files, so changed sources are
+     * published to a new directory.
      *
      * By default, when publishing a directory, subdirectories and files whose name starts with a dot "."
      * will NOT be published. If you want to change this behavior, you may specify the "beforeCopy" option
