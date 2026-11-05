@@ -209,8 +209,8 @@ class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
  * Test Active Record class with [[BlameableBehavior]] behavior attached.
  *
  * @property string $name
- * @property int $created_by
- * @property int $updated_by
+ * @property int|null $created_by
+ * @property int|null $updated_by
  *
  * @property-read BlameableBehavior $blameable
  *

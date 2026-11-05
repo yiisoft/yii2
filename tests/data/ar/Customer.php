@@ -16,8 +16,8 @@ use yiiunit\framework\db\ActiveRecordTest;
 /**
  * Class Customer.
  *
- * @property int $id
- * @property string $name
+ * @property int|null $id
+ * @property string|null $name
  * @property string $email
  * @property string $address
  * @property int $status

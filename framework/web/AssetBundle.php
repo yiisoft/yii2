@@ -124,6 +124,8 @@ class AssetBundle extends BaseObject
      * Registers this asset bundle with a view.
      * @param View $view the view to be registered with
      * @return static the registered asset bundle instance
+     *
+     * @phpstan-impure
      */
     public static function register($view)
     {

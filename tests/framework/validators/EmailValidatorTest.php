@@ -304,7 +304,6 @@ class EmailValidatorTest extends TestCase
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
-            return;
         }
 
         $this->mockApplication();

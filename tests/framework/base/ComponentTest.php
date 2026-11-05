@@ -470,6 +470,9 @@ class ComponentTest extends TestCase
     {
         $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore expr.resultUnused (We intentionally read a write-only property to test that an exception is thrown)
         $this->component->writeOnly;
     }
 

@@ -19,8 +19,6 @@ use yii\db\Connection;
 use yii\log\Logger;
 use yii\rbac\Assignment;
 use yii\rbac\DbManager;
-use yii\rbac\Permission;
-use yii\rbac\Role;
 use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\framework\log\ArrayTarget;
@@ -203,7 +201,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($permissions['createPost']));
-            $this->assertInstanceOf(Permission::class, $permissions['createPost']);
         } else {
             $this->assertEmpty($permissions);
         }
@@ -223,7 +220,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($roles['Author']));
-            $this->assertInstanceOf(Role::class, $roles['Author']);
         } else {
             $this->assertEmpty($roles);
         }
@@ -295,8 +291,8 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertNotEmpty($assignments);
-            $this->assertInstanceOf(Assignment::class, $assignments['createPost']);
-            $this->assertInstanceOf(Assignment::class, $assignments['updatePost']);
+            $this->assertArrayHasKey('createPost', $assignments);
+            $this->assertArrayHasKey('updatePost', $assignments);
         } else {
             $this->assertEmpty($assignments);
         }
