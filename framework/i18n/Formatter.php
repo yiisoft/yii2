@@ -439,7 +439,7 @@ class Formatter extends Component
      * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
      * which can be used to call other formatting functions.
      * The possibility to use an anonymous function is available since version 2.0.13.
-     * @return string the formatting result.
+     * @return mixed the formatting result.
      * @throws InvalidArgumentException if the format type is not supported by this class.
      */
     public function format($value, $format)
@@ -473,7 +473,7 @@ class Formatter extends Component
      * This method simply returns back the parameter without any format.
      * The only exception is a `null` value which will be formatted using [[nullDisplay]].
      * @param mixed $value the value to be formatted.
-     * @return string the formatted result.
+     * @return mixed the formatted result.
      */
     public function asRaw($value)
     {
@@ -879,21 +879,23 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d|',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d|',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             }
             if (
-                ($timestamp = DateTime::createFromFormat(
-                    'Y-m-d H:i:s',
-                    $value,
-                    new DateTimeZone($this->defaultTimeZone)
-                )
+                (
+                    $timestamp = DateTime::createFromFormat(
+                        'Y-m-d H:i:s',
+                        $value,
+                        new DateTimeZone($this->defaultTimeZone)
+                    )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;

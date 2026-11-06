@@ -470,6 +470,9 @@ class ComponentTest extends TestCase
     {
         $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore expr.resultUnused (We intentionally read a write-only property to test that an exception is thrown)
         $this->component->writeOnly;
     }
 
@@ -595,8 +598,8 @@ class ComponentTest extends TestCase
  * @property-read array<array-key, mixed> $items
  * @property-write mixed $writeOnly
  *
- * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
  * @mixin NewBehavior
+ * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
  */
 class NewComponent extends Component
 {
@@ -652,13 +655,14 @@ class NewComponent extends Component
         $this->trigger('click', new Event());
     }
 
-    public function setWriteOnly()
+    public function setWriteOnly($value)
     {
     }
 }
 
 /**
  * @extends Behavior<NewComponent>
+ * @property mixed $p2
  */
 class NewBehavior extends Behavior
 {

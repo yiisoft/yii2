@@ -54,7 +54,7 @@ containing the translations. The following shows an example for German:
   - Refer to classes using the full namespace: `yii\base\Model`
   - Refer to class properties using the static syntax even if they are not static: `yii\base\Model::$validators`
   - Refer to class methods using the static syntax even if they are not static and include parenthesis to make it clear, that it is a method: `yii\base\Model::validate()`
-  - references to code objects should be writting in `[[]]` to generate links to the API documentation. E.g. `[[yii\base\Model]]`, `[[yii\base\Model::$validators]]`, or `[[yii\base\Model::validate()]]`.
+  - references to code objects should be written in `[[]]` to generate links to the API documentation. E.g. `[[yii\base\Model]]`, `[[yii\base\Model::$validators]]`, or `[[yii\base\Model::validate()]]`.
 
 ## Capitalizations
 

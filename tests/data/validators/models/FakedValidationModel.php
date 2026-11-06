@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
@@ -36,6 +38,8 @@ use yii\base\Model;
  * @property mixed $attrD
  * @property mixed $attr_image
  * @property mixed $attr_images
+ * @property mixed $attr_range
+ * @property mixed $attr_compare
  */
 class FakedValidationModel extends Model
 {
@@ -44,8 +48,9 @@ class FakedValidationModel extends Model
     public $val_attr_c;
     public $val_attr_d;
     public $safe_attr;
-    private $attr = [];
-    private $inlineValArgs;
+    private array $attr = [];
+    private ?array $inlineValArgs = null;
+    private ?array $clientInlineValArgs = null;
 
     /**
      * @param  array $attributes
@@ -81,13 +86,15 @@ class FakedValidationModel extends Model
 
     public function clientInlineVal($attribute, $params, $validator, $current, $view = null)
     {
-        return \func_get_args();
+        $this->clientInlineValArgs = \func_get_args();
+
+        return 'clientInlineVal();';
     }
 
     public function __get($name)
     {
         if (strncasecmp($name, 'attr', 4) === 0) {
-            return isset($this->attr[$name]) ? $this->attr[$name] : null;
+            return $this->attr[$name] ?? null;
         }
 
         return parent::__get($name);
@@ -115,6 +122,16 @@ class FakedValidationModel extends Model
     public function getInlineValArgs()
     {
         return $this->inlineValArgs;
+    }
+
+    /**
+     * Returns the arguments of the clientInlineVal method in the last call.
+     * @return array|null an array of arguments in the last call or null if method never been called.
+     * @see clientInlineVal
+     */
+    public function getClientInlineValArgs()
+    {
+        return $this->clientInlineValArgs;
     }
 
     public function attributes()

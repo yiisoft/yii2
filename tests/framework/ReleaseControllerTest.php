@@ -38,7 +38,9 @@ class ReleaseControllerTest extends TestCase
     {
         $controller = $this->createController();
         $method = new ReflectionMethod($controller, 'resortChangelog');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $this->assertSame(
             [
@@ -86,7 +88,9 @@ class ReleaseControllerTest extends TestCase
         $controller = $this->createController();
         $controller->basePath = $basePath;
         $method = new ReflectionMethod($controller, 'resortChangelogs');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $method->invoke($controller, ['apidoc'], '3.0.9');
 
         $this->assertSame(
@@ -116,7 +120,9 @@ class ReleaseControllerTest extends TestCase
         $controller = $this->createController();
         $controller->basePath = $basePath;
         $method = new ReflectionMethod($controller, 'resortChangelogs');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         try {
             $method->invoke($controller, ['apidoc'], '3.0.9');
@@ -145,7 +151,9 @@ class ReleaseControllerTest extends TestCase
 
         $controller = $this->createController();
         $method = new ReflectionMethod($controller, 'splitChangelog');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('2.0.5');

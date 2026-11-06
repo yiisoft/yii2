@@ -19,10 +19,10 @@ class StaticInstanceTraitTest extends TestCase
     public function testInstance(): void
     {
         $speakerModel = Speaker::instance();
-        $this->assertTrue($speakerModel instanceof Speaker);
+        $this->assertSame(Speaker::class, get_class($speakerModel));
 
         $singerModel = Singer::instance();
-        $this->assertTrue($singerModel instanceof Singer);
+        $this->assertSame(Singer::class, get_class($singerModel));
 
         $this->assertSame($speakerModel, Speaker::instance());
         $this->assertNotSame($speakerModel, Speaker::instance(true));

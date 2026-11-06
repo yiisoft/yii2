@@ -208,8 +208,6 @@ class GridViewTest extends TestCase
         ]);
         $grid->renderTableHeader();
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
-
-        $this->assertTrue(true);
     }
 
     public function testFilterSelector(): void
@@ -281,7 +279,7 @@ class GridViewTest extends TestCase
                 'options' => [
                     'dataProvider'   => new ArrayDataProvider(['allModels' => []]),
                     'id'             => 'test_grid_view',
-                    'filterSelector' => static fn($widgetId, $filterId) => "$widgetId foo $filterId bar",
+                    'filterSelector' => static fn ($widgetId, $filterId) => "$widgetId foo $filterId bar",
                 ]
             ]
         );
@@ -295,7 +293,7 @@ class GridViewTest extends TestCase
                 'options' => [
                     'dataProvider'           => new ArrayDataProvider(['allModels' => []]),
                     'id'                     => 'test_grid_view',
-                    'filterSelector'         => static fn($widgetId, $filterId) => "$widgetId foo $filterId bar",
+                    'filterSelector'         => static fn ($widgetId, $filterId) => "$widgetId foo $filterId bar",
                     'overrideFilterSelector' => true
                 ]
             ]

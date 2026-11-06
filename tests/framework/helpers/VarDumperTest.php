@@ -212,4 +212,20 @@ RESULT;
         $this->assertStringContainsString('totalPrice', $dumpResult);
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
+
+    /**
+     * @dataProvider \yiiunit\framework\helpers\providers\VarDumperProvider::dumpAsStringHighlighted
+     *
+     * @param mixed $var
+     */
+    public function testDumpAsStringHighlighted($var, string $expectedBeforePhp83, string $expectedSincePhp83): void
+    {
+        $expected = PHP_VERSION_ID >= 80300 ? $expectedSincePhp83 : $expectedBeforePhp83;
+
+        $this->assertSame(
+            $expected,
+            VarDumper::dumpAsString($var, 10, true),
+            'Dumped output does not match expected result',
+        );
+    }
 }

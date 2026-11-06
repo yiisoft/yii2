@@ -1754,6 +1754,9 @@ class Post1
     public $title = 'tt';
 }
 
+/**
+ * @property-read mixed $secret
+ */
 class Post2 extends BaseObject
 {
     public $id = 123;
@@ -1866,6 +1869,10 @@ class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements 
     }
 }
 
+/**
+ * @property-read mixed $magic
+ * @property-read mixed $moreMagic
+ */
 class MagicModel extends Model
 {
     protected $magic;
@@ -1875,6 +1882,8 @@ class MagicModel extends Model
         return 42;
     }
 
+    // TODO: fix the ignore after switching to level 4.
+    // phpstan-ignore property.unused (The property is intentionally inaccessible from outside to test that the getter is used)
     private $moreMagic;
 
     public function getMoreMagic()

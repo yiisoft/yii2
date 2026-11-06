@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use PHPUnit\Framework\TestCase;
@@ -15,7 +21,7 @@ class CallbackDependencyTest extends TestCase
 
         $dependency = new CallbackDependency();
         $dependency->callback = function () use (&$dependencyValue) {
-            return $dependencyValue === true;
+            return $dependencyValue;
         };
 
         $dependency->evaluateDependency($cache);

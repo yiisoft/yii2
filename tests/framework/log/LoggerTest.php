@@ -102,7 +102,7 @@ class LoggerTest extends TestCase
         $dispatcher = $this->createMock(stdClass::class);
         $dispatcher->expects($this->never())->method($this->anything());
 
-        $this->logger->messages = ['anything'];
+        $this->logger->messages = [['anything', Logger::LEVEL_INFO, 'category', 10.0, [], 1048576]];
         // @phpstan-ignore assign.propertyType (We intentionally use an invalid value here to test its processing)
         $this->logger->dispatcher = $dispatcher;
         $this->logger->flush();
@@ -114,7 +114,7 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithDispatcherAndDefaultParam(): void
     {
-        $message = ['anything'];
+        $message = [['anything', Logger::LEVEL_INFO, 'category', 10.0, [], 1048576]];
         $this->dispatcher->expects($this->once())
             ->method('dispatch')->with($this->equalTo($message), $this->equalTo(false));
 
@@ -129,7 +129,7 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithDispatcherAndDefinedParam(): void
     {
-        $message = ['anything'];
+        $message = [['anything', Logger::LEVEL_INFO, 'category', 10.0, [], 1048576]];
         $this->dispatcher->expects($this->once())
             ->method('dispatch')->with($this->equalTo($message), $this->equalTo(true));
 
@@ -344,7 +344,7 @@ class LoggerTest extends TestCase
      */
     public function testGetProfilingWithEmptyCategoriesAndExcludeCategories(): void
     {
-        $messages = ['anyData'];
+        $messages = [['anyData', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, [], 1048576]];
         $returnValue = 'return value';
 
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
@@ -361,7 +361,7 @@ class LoggerTest extends TestCase
      */
     public function testGetProfilingWithNotEmptyCategoriesAndNotMatched(): void
     {
-        $messages = ['anyData'];
+        $messages = [['anyData', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, [], 1048576]];
         $returnValue = [
             [
                 'info' => 'token',
@@ -386,7 +386,7 @@ class LoggerTest extends TestCase
      */
     public function testGetProfilingWithNotEmptyCategoriesAndMatched(): void
     {
-        $messages = ['anyData'];
+        $messages = [['anyData', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, [], 1048576]];
         $matchedByCategoryName = [
             'info' => 'token',
             'category' => 'category',
@@ -435,7 +435,7 @@ class LoggerTest extends TestCase
      */
     public function testGetProfilingWithNotEmptyCategoriesMatchedAndExcludeCategories(): void
     {
-        $messages = ['anyData'];
+        $messages = [['anyData', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, [], 1048576]];
         $fistCategory = [
             'info' => 'fistToken',
             'category' => 'cat',

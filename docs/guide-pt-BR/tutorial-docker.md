@@ -92,7 +92,7 @@ Ao executar o MySQL como (`mysql`), você pode adicionar um contêiner do phpMyA
 
 ```
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin
         ports:
             - '8888:80'
         environment:

@@ -20,6 +20,12 @@ class TargetTest extends TestCase
 {
     public static $messages;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        static::$messages = [];
+    }
+
     public static function filters(): array
     {
         return [
@@ -59,8 +65,6 @@ class TargetTest extends TestCase
      */
     public function testFilter($filter, $expected): void
     {
-        static::$messages = [];
-
         $logger = new Logger();
         $dispatcher = new Dispatcher([
             'logger' => $logger,
@@ -228,7 +232,6 @@ class TargetTest extends TestCase
     public function testCollectMessageStructure(): void
     {
         $target = new TestTarget(['logVars' => ['_SERVER']]);
-        static::$messages = [];
 
         $messages = [
             ['test', 1, 'application', 1560428356.212978, [], 1888416]
@@ -275,14 +278,14 @@ class TargetTest extends TestCase
             ->willReturnCallback(
                 function (...$parameters) use ($matcher): void {
                     if ($matcher->getInvocationCount() === 1) {
-                        $callback = fn($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
+                        $callback = fn ($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
 
                         $this->assertTrue($callback($parameters[0]));
                         $this->assertFalse($parameters[1]);
                     }
 
                     if ($matcher->getInvocationCount() === 2) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.a'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
                             && $messages[1][0] === 'token.a'
@@ -319,7 +322,7 @@ class TargetTest extends TestCase
             ->willReturnCallback(
                 function (...$parameters) use ($matcher): void {
                     if ($matcher->getInvocationCount() === 1) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.a'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
                             && $messages[1][0] === 'token.b'
@@ -330,7 +333,7 @@ class TargetTest extends TestCase
                     }
 
                     if ($matcher->getInvocationCount() === 2) {
-                        $callback = fn($messages): bool => count($messages) === 1
+                        $callback = fn ($messages): bool => count($messages) === 1
                             && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
 
                         $this->assertTrue($callback($parameters[0]));
@@ -338,7 +341,7 @@ class TargetTest extends TestCase
                     }
 
                     if ($matcher->getInvocationCount() === 3) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.b'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_END
                             && $messages[1][0] === 'token.a'
@@ -402,6 +405,9 @@ class TargetTest extends TestCase
     }
 }
 
+/**
+ * @property-read string $contextMessage The context information. If an empty string, it means no context information.
+ */
 class TestTarget extends Target
 {
     public $exportInterval = 1;

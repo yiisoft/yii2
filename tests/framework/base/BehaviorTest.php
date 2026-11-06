@@ -15,8 +15,8 @@ use yii\base\Component;
 use yiiunit\TestCase;
 
 /**
- * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
  * @mixin BarBehavior
+ * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
  */
 class BarClass extends Component
 {

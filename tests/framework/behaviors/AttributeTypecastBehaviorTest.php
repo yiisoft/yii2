@@ -237,6 +237,9 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
         $this->assertSame('callback: update', $model->callback);
         $this->assertTrue($beforeUpdateHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($beforeInsertHappened);
     }
 
@@ -279,7 +282,13 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('callback: callback: update', $model->callback);
         $this->assertTrue($beforeUpdateHappened);
         $this->assertTrue($afterUpdateHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($beforeInsertHappened);
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the event handler)
         $this->assertFalse($afterInsertHappened);
     }
 
@@ -373,7 +382,7 @@ class AttributeTypecastBehaviorTest extends TestCase
  * @property bool|int|null $isActive
  * @property string|null $callback
  *
- * @property AttributeTypecastBehavior $attributeTypecastBehavior
+ * @property-read AttributeTypecastBehavior $attributeTypecastBehavior
  *
  * @mixin AttributeTypecastBehavior
  */
@@ -434,6 +443,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
  * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached with an enum field.
  *
  * @property StatusTypeString|string $status
+ * @property-read AttributeTypecastBehavior $attributeTypecastBehavior
  *
  * @mixin AttributeTypecastBehavior
  */

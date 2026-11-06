@@ -294,7 +294,6 @@ class ControllerTest extends TestCase
             'example' => 'data',
         ];
         $result = $this->controller->asJson($data);
-        $this->assertInstanceOf('yii\web\Response', $result);
         $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
         $this->assertEquals(Response::FORMAT_JSON, $result->format);
         $this->assertEquals($data, $result->data);
@@ -307,7 +306,6 @@ class ControllerTest extends TestCase
             'example' => 'data',
         ];
         $result = $this->controller->asXml($data);
-        $this->assertInstanceOf('yii\web\Response', $result);
         $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
         $this->assertEquals(Response::FORMAT_XML, $result->format);
         $this->assertEquals($data, $result->data);
@@ -334,7 +332,6 @@ class ControllerTest extends TestCase
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
         }
 
         // Use the PHP80 controller for this test
@@ -371,7 +368,6 @@ class ControllerTest extends TestCase
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
         }
         // Use the PHP80 controller for this test
         $this->controller = new FakePhp80Controller('fake', new Application([

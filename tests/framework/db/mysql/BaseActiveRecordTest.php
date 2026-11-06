@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db\mysql;
 
 use yiiunit\data\ar\Storage;
@@ -21,9 +27,6 @@ class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
     {
         if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
             $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');
-        }
-        if (version_compare(PHP_VERSION, '5.6', '<')) {
-            $this->markTestSkipped('JSON columns are not supported in PDO for PHP < 5.6');
         }
 
         $createdStorage = new Storage(['data' => $actual]);

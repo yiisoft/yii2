@@ -46,6 +46,20 @@ class GettextMoFileTest extends TestCase
         $this->assertTrue(in_array("тест1\\nтест2\n\\\nтест3", $context2));
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14402
+     */
+    public function testLoadDoesNotMatchContextByPrefix(): void
+    {
+        $moFile = new GettextMoFile();
+        $moFilePath = __DIR__ . '/../../data/i18n/test.mo';
+
+        $this->assertSame([], $moFile->load($moFilePath, 'context1/sub'));
+        $this->assertSame([], $moFile->load($moFilePath, 'context10'));
+        $this->assertSame([], $moFile->load($moFilePath, 'context'));
+        $this->assertCount(3, $moFile->load($moFilePath, 'context1'));
+    }
+
     public function testSave(): void
     {
         // initial data

@@ -78,7 +78,6 @@ namespace yiiunit\framework\log {
             $dispatcher = new Dispatcher([
                 'logger' => 'yii\log\Logger',
             ]);
-            $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
             $this->assertEquals(0, $dispatcher->getLogger()->traceLevel);
 
 
@@ -88,7 +87,6 @@ namespace yiiunit\framework\log {
                     'traceLevel' => 42,
                 ],
             ]);
-            $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
             $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
         }
 
@@ -101,14 +99,12 @@ namespace yiiunit\framework\log {
             $this->assertSame($this->logger, $this->dispatcher->getLogger());
 
             $this->dispatcher->setLogger('yii\log\Logger');
-            $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
             $this->assertEquals(0, $this->dispatcher->getLogger()->traceLevel);
 
             $this->dispatcher->setLogger([
                 'class' => 'yii\log\Logger',
                 'traceLevel' => 42,
             ]);
-            $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
             $this->assertEquals(42, $this->dispatcher->getLogger()->traceLevel);
         }
 
@@ -298,19 +294,14 @@ namespace yiiunit\framework\log {
             static::fail("Function '$name' has not implemented yet!");
         }
 
-        private $targetThrowFirstCount;
-        private $targetThrowSecondOutputs;
+        private $targetThrowFirstCount = 0;
+        private $targetThrowSecondOutputs = [];
 
         public function testTargetThrow(): void
         {
-            $this->targetThrowFirstCount = 0;
-            $this->targetThrowSecondOutputs = [];
             $targetFirst = new TargetMock([
                 'collectOverride' => function () {
                     $this->targetThrowFirstCount++;
-                    if (PHP_MAJOR_VERSION < 7) {
-                        throw new \RuntimeException('test');
-                    }
                     require_once __DIR__ . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR . 'typed_error.php';
                     typed_error_test_mock([]);
                 }

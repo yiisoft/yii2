@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
@@ -31,7 +33,13 @@ class ValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -48,7 +56,6 @@ class ValidatorTest extends TestCase
     public function testCreateValidator(): void
     {
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
-        /** @var NumberValidator $numberVal */
         $numberVal = TestValidator::createValidator('number', $model, ['attr_test1']);
         $this->assertInstanceOf(NumberValidator::class, $numberVal);
         $numberVal = TestValidator::createValidator('integer', $model, ['attr_test2']);
@@ -220,6 +227,23 @@ class ValidatorTest extends TestCase
         $val->validate('abc');
     }
 
+    public function testValidateFormatsMessageWithoutApplication(): void
+    {
+        $this->destroyApplication();
+
+        $validator = new BooleanValidator();
+
+        $this->assertFalse(
+            $validator->validate('yes', $error),
+            'Value outside the boolean pair must fail.',
+        );
+        $this->assertSame(
+            'the input value must be either "1" or "0".',
+            $error,
+            'Placeholders must be replaced without I18N.',
+        );
+    }
+
     public function testValidateAttribute(): void
     {
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
@@ -237,6 +261,23 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
+    public function testInlineValidatorResolvesStringMethodOnModel(): void
+    {
+        $model = new FakedValidationModel();
+
+        $model->val_attr_a = 'a';
+
+        $validator = new InlineValidator(['method' => 'inlineVal', 'params' => ['foo' => 'bar']]);
+
+        $validator->validateAttribute($model, 'val_attr_a');
+
+        $this->assertSame(
+            ['val_attr_a', ['foo' => 'bar'], $validator, 'a'],
+            $model->getInlineValArgs(),
+            'Model method must receive attribute, params, validator and current value.',
+        );
+    }
+
     public function testClientValidateAttribute(): void
     {
         $view = new View();
@@ -252,7 +293,8 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::class, $val);
 
         $val->clientValidate = 'clientInlineVal';
-        $args = $val->clientValidateAttribute($model, 'val_attr_a', $view);
+        $this->assertSame('clientInlineVal();', $val->clientValidateAttribute($model, 'val_attr_a', $view));
+        $args = $model->getClientInlineValArgs();
 
         $this->assertCount(5, $args);
         $this->assertEquals('val_attr_a', $args[0]);
@@ -350,5 +392,67 @@ class ValidatorTest extends TestCase
 
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
+    }
+
+    public function testInlineValidatorWithClosureMethod(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'method' => function ($attribute, $params, $validator, $current) use (&$boundModel) {
+                $boundModel = $this;
+            },
+        ]);
+
+        $validator->validateAttribute($model, 'attr');
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Closure must run bound to the validated model.',
+        );
+    }
+
+    public function testInlineValidatorWithClosureClientValidate(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) use (&$boundModel) {
+                $boundModel = $this;
+
+                return 'js';
+            },
+        ]);
+
+        $this->assertSame(
+            'js',
+            $validator->clientValidateAttribute($model, 'attr', new View()),
+            'Closure result must be returned verbatim.',
+        );
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Client closure must run bound to the validated model.',
+        );
+    }
+
+    public function testInlineValidatorClientValidateAttributeReturnsNullWithoutClientValidate(): void
+    {
+        $validator = new InlineValidator();
+
+        $this->assertNull(
+            $validator->clientValidateAttribute(new DynamicModel(['attr' => 1]), 'attr', new View()),
+            'Missing client callback must yield `null`.',
+        );
     }
 }

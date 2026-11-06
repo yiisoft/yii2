@@ -13,6 +13,39 @@ use yiiunit\TestCase;
 
 class MultipartFormDataParserTest extends TestCase
 {
+    public function testParseWithBoundaryFollowedByAdditionalParameters(): void
+    {
+        $parser = new MultipartFormDataParser();
+
+        $boundary = '---------------------------22472926011618';
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest-title";
+        $rawBody .= "\r\n--{$boundary}--";
+
+        foreach (
+            [
+                'multipart/form-data; boundary=' . $boundary . '; charset=utf-8',
+                'multipart/form-data; boundary="' . $boundary . '"; charset=utf-8',
+                'multipart/form-data; x-boundary=wrong; boundary=' . $boundary,
+                'multipart/form-data; foo="a; boundary=wrong"; boundary=' . $boundary,
+                'multipart/form-data; charset="boundary=abc"; boundary=' . $boundary,
+                'multipart/form-data; charset="boundary=abc"; boundary="' . $boundary . '"',
+            ] as $contentType
+        ) {
+            $bodyParams = $parser->parse($rawBody, $contentType);
+            $this->assertSame(['title' => 'test-title'], $bodyParams, 'Content-Type: ' . $contentType);
+        }
+    }
+
+    public function testParseWithoutBoundary(): void
+    {
+        $parser = new MultipartFormDataParser();
+
+        $this->assertSame([], $parser->parse("--irrelevant\r\n\r\ndata", 'multipart/form-data'));
+        $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary='));
+        $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary=""'));
+        $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary=""; charset=utf-8'));
+    }
+
     public function testParse(): void
     {
         if (defined('HHVM_VERSION')) {

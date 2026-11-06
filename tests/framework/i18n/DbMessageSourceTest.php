@@ -33,7 +33,7 @@ class DbMessageSourceTest extends I18NTest
     protected static $driverName = 'mysql';
 
     /**
-     * @var Connection
+     * @var Connection|null
      */
     protected static $db;
 

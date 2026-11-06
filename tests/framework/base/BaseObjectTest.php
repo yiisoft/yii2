@@ -141,7 +141,6 @@ class BaseObjectTest extends TestCase
 
     public function testObjectProperty(): void
     {
-        $this->assertInstanceOf(NewObject::class, $this->object->object);
         $this->assertEquals('object text', $this->object->object->text);
         $this->object->object->text = 'new text';
         $this->assertEquals('new text', $this->object->object->text);
@@ -163,6 +162,8 @@ class BaseObjectTest extends TestCase
     {
         $this->expectException('yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore expr.resultUnused (We intentionally read a write-only property to test that an exception is thrown)
         $this->object->writeOnly;
     }
 }
@@ -214,7 +215,7 @@ class NewObject extends BaseObject
         return $this->_items;
     }
 
-    public function setWriteOnly()
+    public function setWriteOnly($value)
     {
     }
 }

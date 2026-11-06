@@ -92,7 +92,7 @@ MySQL を (`mysql`) として実行するときは、以下のようにして ph
 
 ```
     phpmyadmin:
-        image: phpmyadmin/phpmyadmin
+        image: phpmyadmin
         ports:
             - '8888:80'
         environment:

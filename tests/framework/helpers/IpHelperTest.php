@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use Exception;
@@ -56,7 +62,7 @@ class IpHelperTest extends TestCase
     {
         try {
             IpHelper::expandIPv6('fa01::1/64');
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         } catch (Exception $exception) {
             $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
         }

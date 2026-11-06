@@ -36,7 +36,6 @@ abstract class ManagerTestCase extends TestCase
     public function testCreateRole(): void
     {
         $role = $this->auth->createRole('admin');
-        $this->assertInstanceOf(Role::class, $role);
         $this->assertEquals(Item::TYPE_ROLE, $role->type);
         $this->assertEquals('admin', $role->name);
     }
@@ -44,7 +43,6 @@ abstract class ManagerTestCase extends TestCase
     public function testCreatePermission(): void
     {
         $permission = $this->auth->createPermission('edit post');
-        $this->assertInstanceOf(Permission::class, $permission);
         $this->assertEquals(Item::TYPE_PERMISSION, $permission->type);
         $this->assertEquals('edit post', $permission->name);
     }
@@ -285,7 +283,7 @@ abstract class ManagerTestCase extends TestCase
         $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
         $this->assertEquals(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
-            $this->assertInstanceOf(Permission::class, $permissions[$permissionName]);
+            $this->assertArrayHasKey($permissionName, $permissions);
         }
     }
 
@@ -296,7 +294,7 @@ abstract class ManagerTestCase extends TestCase
         $expectedPermissions = ['deletePost', 'createPost', 'updatePost', 'readPost'];
         $this->assertEquals(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
-            $this->assertInstanceOf(Permission::class, $permissions[$permissionName]);
+            $this->assertArrayHasKey($permissionName, $permissions);
         }
     }
 
@@ -346,12 +344,10 @@ abstract class ManagerTestCase extends TestCase
 
         $roles = $this->auth->getChildRoles('withoutChildren');
         $this->assertCount(1, $roles);
-        $this->assertInstanceOf(Role::class, reset($roles));
         $this->assertSame(reset($roles)->name, 'withoutChildren');
 
         $roles = $this->auth->getChildRoles('reader');
         $this->assertCount(1, $roles);
-        $this->assertInstanceOf(Role::class, reset($roles));
         $this->assertSame(reset($roles)->name, 'reader');
 
         $roles = $this->auth->getChildRoles('author');
@@ -628,7 +624,6 @@ abstract class ManagerTestCase extends TestCase
         $rule = new ActionRule();
         $auth->add($rule);
 
-        /** @var ActionRule $rule */
         $rule = $this->auth->getRule('action_rule');
         $this->assertInstanceOf(ActionRule::class, $rule);
     }

@@ -33,6 +33,8 @@ use yii\di\Instance;
  *
  * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
  *
+ * @property-read Rule[] $rules The rules indexed by the rule names.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

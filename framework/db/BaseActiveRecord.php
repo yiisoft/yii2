@@ -690,6 +690,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the saving succeeded (i.e. no validation errors occurred).
      * @throws Exception in case update or insert failed.
+     *
+     * @phpstan-impure
      */
     public function save($runValidation = true, $attributeNames = null)
     {
@@ -1307,6 +1309,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * This parameter is only meaningful for a relationship involving a junction table
      * (i.e., a relation set with [[ActiveRelationTrait::via()]] or [[ActiveQuery::viaTable()]].)
      * @throws InvalidCallException if the method is unable to link two models.
+     *
+     * @phpstan-impure
      */
     public function link($name, $model, $extraColumns = [])
     {
@@ -1648,7 +1652,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 break;
             }
 
-            list ($relationName, $modelAttribute) = $parts;
+            list($relationName, $modelAttribute) = $parts;
 
             if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
                 $model = $model->$relationName;

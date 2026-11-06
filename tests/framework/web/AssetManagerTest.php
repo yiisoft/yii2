@@ -14,9 +14,7 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
-use yii\web\AssetBundle;
 use yii\web\AssetConverter;
-use yii\web\AssetConverterInterface;
 use yii\web\AssetManager;
 use yiiunit\data\web\AssetManagerTestSimpleBundle;
 use yiiunit\data\web\AssetManagerTestSourceBundle;
@@ -77,6 +75,7 @@ class AssetManagerTest extends TestCase
             'baseUrl' => '@testAssetsUrl',
         ], $config));
     }
+
     public function testInitResolvesBasePathAlias(): void
     {
         $am = $this->createManager();
@@ -90,6 +89,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame('/assets', $am->baseUrl);
     }
+
     public function testCheckBasePathPermissionThrowsOnNonExistentDir(): void
     {
         $am = $this->createManager();
@@ -134,6 +134,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame('/non/existent/path', $am->basePath);
     }
+
     public function testGetBundleReturnsDummyWhenBundlesDisabled(): void
     {
         $am = $this->createManager();
@@ -141,7 +142,7 @@ class AssetManagerTest extends TestCase
 
         $bundle = $am->getBundle(AssetManagerTestSimpleBundle::class);
 
-        $this->assertInstanceOf(AssetBundle::class, $bundle);
+        $this->assertInstanceOf(AssetManagerTestSimpleBundle::class, $bundle);
         $this->assertNull($bundle->sourcePath);
         $this->assertSame([], $bundle->js);
         $this->assertSame([], $bundle->css);
@@ -230,13 +231,13 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame($first, $second);
     }
+
     public function testGetConverterCreatesDefaultInstance(): void
     {
         $am = $this->createManager();
 
         $converter = $am->getConverter();
 
-        $this->assertInstanceOf(AssetConverterInterface::class, $converter);
         $this->assertInstanceOf(AssetConverter::class, $converter);
     }
 
@@ -279,6 +280,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame($first, $second);
     }
+
     public function testPublishFileByPath(): void
     {
         $am = $this->createManager();
@@ -550,9 +552,12 @@ class AssetManagerTest extends TestCase
         $this->setInaccessibleProperty($am, '_published', []);
         $am->publish($dirPath, ['forceCopy' => false]);
 
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the callback)
         $this->assertSame(0, $copyCount);
         $this->assertGreaterThan(0, $firstCopyCount);
     }
+
     public function testGetPublishedPathForPublishedFile(): void
     {
         $am = $this->createManager();
@@ -605,6 +610,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame($published[0], $am->getPublishedPath($filePath));
     }
+
     public function testGetPublishedUrlForPublishedFile(): void
     {
         $am = $this->createManager();
@@ -658,6 +664,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame($published[1], $am->getPublishedUrl($filePath));
     }
+
     public function testHashWithCustomCallback(): void
     {
         $am = $this->createManager([
@@ -672,6 +679,7 @@ class AssetManagerTest extends TestCase
         $this->assertSame($am->basePath . DIRECTORY_SEPARATOR . 'custom-hash' . DIRECTORY_SEPARATOR . 'data.txt', $result[0]);
         $this->assertSame('/assets/custom-hash/data.txt', $result[1]);
     }
+
     public function testGetAssetUrlWithRelativeAsset(): void
     {
         $am = $this->createManager();
@@ -799,6 +807,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame('/js/jquery.custom.js', $result);
     }
+
     public function testGetAssetPathForRelativeAsset(): void
     {
         $am = $this->createManager();
@@ -845,6 +854,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertFalse($am->getAssetPath($bundle, 'jquery.js'));
     }
+
     public function testResolveAssetWithSourcePathSuffixMatch(): void
     {
         $am = $this->createManager([
@@ -887,6 +897,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertFalse($result);
     }
+
     public function testGetActualAssetUrlWithWebAliasInAssetMap(): void
     {
         $am = $this->createManager([

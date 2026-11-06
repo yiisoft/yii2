@@ -18,11 +18,11 @@ use yii\db\ActiveQuery;
  * @property int $created_at
  * @property string $total
  *
- * @property-read Customer $customer
+ * @property-read Customer|null $customer
  * @property-read Customer $customer2
- * @property-read Customer $virtualCustomer
- * @property-read Customer $customerJoinedWithProfile
- * @property-read Customer $customerJoinedWithProfileIndexOrdered
+ * @property-read Customer|null $virtualCustomer
+ * @property-read Customer|null $customerJoinedWithProfile
+ * @property-read Customer[] $customerJoinedWithProfileIndexOrdered
  * @property-read Item[] $books
  * @property-read Item[] $books2
  * @property-read Item[] $booksExplicit
@@ -44,8 +44,9 @@ use yii\db\ActiveQuery;
  * @property-read OrderItem[] $orderItems
  * @property-read OrderItem[] $orderItems2
  * @property-read OrderItem[] $orderItems3
- * @property-read OrderItem[] $orderItemsWithNullFK
+ * @property-read OrderItemWithNullFK[] $orderItemsWithNullFK
  * @property-read OrderItem[] $quantityOrderItems
+ * @property-read OrderItemWithNullFK[] $orderItemsFor8
  */
 class Order extends ActiveRecord
 {

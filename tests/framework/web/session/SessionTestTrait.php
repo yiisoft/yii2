@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\web\session;
 
 use yii\web\Session;
@@ -14,12 +20,6 @@ trait SessionTestTrait
         $session->useStrictMode = false;
         $this->assertEquals(false, $session->getUseStrictMode());
 
-        if (PHP_VERSION_ID < 50502 && !$session->getUseCustomStorage()) {
-            $this->expectException('yii\base\InvalidConfigException');
-            $session->useStrictMode = true;
-            return;
-        }
-
         $session->useStrictMode = true;
         $this->assertEquals(true, $session->getUseStrictMode());
     }
@@ -31,11 +31,6 @@ trait SessionTestTrait
     {
         /** @var Session $session */
         $session = new $class();
-
-        if (PHP_VERSION_ID < 50502 && !$session->getUseCustomStorage()) {
-            $this->markTestSkipped('Can not be tested on PHP < 5.5.2 without custom storage class.');
-            return;
-        }
 
         //non-strict-mode test
         $session->useStrictMode = false;

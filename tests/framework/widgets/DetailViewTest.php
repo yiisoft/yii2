@@ -351,6 +351,8 @@ class ArrayableMock implements Arrayable
  * Helper Class.
  *
  * @property mixed $related
+ * @property-read mixed $displayedId
+ * @property-read mixed $displayedIdCallCount
  */
 class ModelMock extends Model
 {

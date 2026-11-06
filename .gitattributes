@@ -24,7 +24,6 @@
 # Ignore some meta files when creating an archive of this repository
 # We do not ignore any content, because this repo represents the
 # `yiisoft/yii2-dev` package, which is expected to ship all tests and docs.
-/.appveyor.yml              export-ignore
 /.github                    export-ignore
 /.editorconfig              export-ignore
 /.git-blame-ignore-revs     export-ignore

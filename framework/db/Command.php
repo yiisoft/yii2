@@ -50,7 +50,8 @@ use yii\base\NotSupportedException;
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]].
- * @property string $sql The SQL statement to be executed.
+ * @property-read string|null $sql The SQL statement to be executed.
+ * @property-write string $sql The SQL statement to be set.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -142,7 +143,7 @@ class Command extends Component
 
     /**
      * Returns the SQL statement for this command.
-     * @return string the SQL statement to be executed
+     * @return string|null the SQL statement to be executed
      */
     public function getSql()
     {
@@ -711,7 +712,7 @@ class Command extends Component
      * Creates a SQL command for adding a new DB column.
      * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
      * @param string $column the name of the new column. The name will be properly quoted by the method.
-     * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+     * @param string|ColumnSchemaBuilder $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
      * to convert the given column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return $this the command object itself
@@ -754,7 +755,7 @@ class Command extends Component
      * Creates a SQL command for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
+     * @param string|ColumnSchemaBuilder $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
      * to convert the give column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return $this the command object itself
@@ -1281,7 +1282,7 @@ class Command extends Component
      * }
      * ```
      *
-     * The callable will recieve a database exception thrown and a current attempt
+     * The callable will receive a database exception thrown and a current attempt
      * (to execute the command) number starting from 1.
      *
      * @param callable $handler a PHP callback to handle database exceptions.

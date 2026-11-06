@@ -75,7 +75,6 @@ trait ActiveRecordTestTrait
         $customerClass = $this->getCustomerClass();
         // find one
         $result = $customerClass::find();
-        $this->assertInstanceOf('\\yii\\db\\ActiveQueryInterface', $result);
         $customer = $result->one();
         $this->assertInstanceOf($customerClass, $customer);
 
@@ -1056,12 +1055,10 @@ trait ActiveRecordTestTrait
         $afterFindCalls = [];
 
         $customer = $customerClass::find()->where(['id' => 1])->all();
-        $this->assertNotNull($customer);
         $this->assertEquals([[$customerClass, false, 1, false]], $afterFindCalls);
         $afterFindCalls = [];
 
         $customer = $customerClass::find()->where(['id' => 1])->with('orders')->all();
-        $this->assertNotNull($customer);
         $this->assertEquals([
             [$this->getOrderClass(), false, 1, false],
             [$customerClass, false, 1, true],
@@ -1075,7 +1072,6 @@ trait ActiveRecordTestTrait
             // orderBy is needed to avoid random test failure
             $customer = $customerClass::find()->where(['id' => [1, 2]])->with('orders')->orderBy('name')->all();
         }
-        $this->assertNotNull($customer);
         $this->assertEquals([
             [$orderClass, false, 1, false],
             [$orderClass, false, 2, false],

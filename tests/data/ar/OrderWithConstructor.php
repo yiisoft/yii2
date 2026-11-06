@@ -20,9 +20,9 @@ use ReflectionClass;
  * @property int $created_at
  * @property string $total
  *
- * @property OrderItemWithConstructor[] $orderItems
- * @property CustomerWithConstructor $customer
- * @property CustomerWithConstructor $customerJoinedWithProfile
+ * @property-read OrderItemWithConstructor[] $orderItems
+ * @property-read CustomerWithConstructor|null $customer
+ * @property-read CustomerWithConstructor|null $customerJoinedWithProfile
  */
 class OrderWithConstructor extends ActiveRecord
 {

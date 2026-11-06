@@ -247,11 +247,11 @@ class TimestampBehaviorTest extends TestCase
  * Test Active Record class with [[TimestampBehavior]] behavior attached.
  *
  * @property int $id
- * @property int $created_at
- * @property int $updated_at
+ * @property int|ExpressionInterface $created_at
+ * @property int|ExpressionInterface $updated_at
  *
- * We use `mixin` here to avoid PHPStan errors.
  * @mixin TimestampBehavior
+ * We use `mixin` here to avoid PHPStan errors.
  */
 class ActiveRecordTimestamp extends ActiveRecord
 {

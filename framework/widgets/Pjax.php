@@ -13,6 +13,7 @@ use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 use yii\web\Response;
 
 /**
@@ -89,8 +90,10 @@ class Pjax extends Widget
      */
     public $timeout = 1000;
     /**
-     * @var bool|int how to scroll the page when pjax response is received. If false, no page scroll will be made.
-     * Use a number if you want to scroll to a particular place.
+     * @var JsExpression|bool|int how to scroll the page when pjax response is received. If false, no
+     * page scroll will be made. If true, the page will be scrolled to the pjax container. Use a number
+     * if you want to scroll to a particular place. A [[JsExpression]] with a callback function that
+     * receives the context and the current hash may be used to calculate the position dynamically.
      */
     public $scrollTo = false;
     /**

@@ -443,14 +443,6 @@ class ReleaseController extends Controller
         $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$frameworkPath]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$frameworkPath]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
         $this->stdout('sorting changelogs...', Console::BOLD);
         $this->dryRun || $this->resortChangelogs(['framework'], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
@@ -570,18 +562,6 @@ class ReleaseController extends Controller
 
         // adjustments
 
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->setAppAliases($name, $path);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path, 'skipFrameworkRequirements' => true]);
-        $this->resetAppAliases();
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->setAppAliases($name, $path);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$path, 'skipFrameworkRequirements' => true]);
-        $this->resetAppAliases();
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
         $this->stdout("updating composer stability...\n", Console::BOLD);
         $this->dryRun || $this->composerSetStability(["app-$name"], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
@@ -638,27 +618,6 @@ class ReleaseController extends Controller
         $this->stdout("\n");
     }
 
-    private $_oldAlias;
-
-    protected function setAppAliases($app, $path)
-    {
-        $this->_oldAlias = Yii::getAlias('@app');
-        switch ($app) {
-            case 'basic':
-                Yii::setAlias('@app', $path);
-                break;
-            case 'advanced':
-                // setup @frontend, @backend etc...
-                require "$path/common/config/bootstrap.php";
-                break;
-        }
-    }
-
-    protected function resetAppAliases()
-    {
-        Yii::setAlias('@app', $this->_oldAlias);
-    }
-
     protected function packageApplication($name, $version, $packagePath)
     {
         FileHelper::createDirectory($packagePath);
@@ -687,14 +646,6 @@ class ReleaseController extends Controller
         $this->runGit('git pull', $path);
 
         // adjustments
-
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
-        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/property', [$path]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('sorting changelogs...', Console::BOLD);
         $this->dryRun || $this->resortChangelogs([$name], $version);

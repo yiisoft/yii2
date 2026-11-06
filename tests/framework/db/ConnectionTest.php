@@ -16,6 +16,7 @@ use yii\db\conditions\AndCondition;
 use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
+use yii\log\Logger;
 
 abstract class ConnectionTest extends DatabaseTestCase
 {
@@ -208,6 +209,8 @@ abstract class ConnectionTest extends DatabaseTestCase
 
     public function testTransactionIsolation(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $connection = $this->getConnection(true);
 
         $transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
@@ -221,24 +224,37 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
-
-        $this->assertTrue(true); // should not be any exception so far
     }
 
     public function testTransactionShortcutException(): void
     {
         $connection = $this->getConnection(true);
 
-        $this->expectException(Exception::class);
+        // Captured rather than asserted inside the catch: this file imports the
+        // global Exception, so catching it would swallow PHPUnit's own failure.
+        $thrown = null;
+        $original = new Exception('Exception in transaction shortcut');
 
-        $connection->transaction(function () use ($connection) {
-            $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
-            throw new Exception('Exception in transaction shortcut');
-        });
+        try {
+            $connection->transaction(function () use ($connection, $original) {
+                $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+                throw $original;
+            });
+        } catch (Exception $e) {
+            $thrown = $e;
+        }
 
-        $profilesCount = $connection
-            ->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")
-            ->queryScalar();
+        $this->assertNotNull($thrown, 'transaction() should rethrow the exception from the callback');
+        $this->assertSame('Exception in transaction shortcut', $thrown->getMessage());
+        $this->assertSame($original, $thrown, 'transaction() should rethrow the same exception object');
+
+        // Quoted the way testTransactionShortcutCorrect below already does it:
+        // the Oracle fixture creates "profile" quoted, so an unquoted name folds
+        // to PROFILE and the query raises ORA-00942. Unreachable until now, so
+        // the raw form never had to run.
+        $profilesCount = $connection->createCommand(
+            "SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'test transaction shortcut'"
+        )->queryScalar();
         $this->assertEquals(0, $profilesCount, 'profile should not be inserted in transaction shortcut');
     }
 
@@ -304,6 +320,118 @@ abstract class ConnectionTest extends DatabaseTestCase
         });
     }
 
+    public function testNestedTransactionIgnoresIsolationLevel(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        $this->assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'",
+        );
+        $this->assertTrue(
+            $inner->isActive,
+            'Nested transaction should be active',
+        );
+
+        $warnings = [];
+
+        foreach ($this->getLoggerMessages() as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            1,
+            $warnings,
+            'There should be exactly one warning for nested transaction ignoring isolation level',
+        );
+        $this->assertStringContainsString(
+            Transaction::SERIALIZABLE,
+            $warnings[0][0],
+            'Nested transaction should warn about ignoring isolation level',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        Yii::getLogger()->messages = [];
+
+        $outer = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        $warnings = [];
+
+        foreach ($this->getLoggerMessages() as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for non-nested transaction',
+        );
+
+        $outer->rollBack();
+
+        $this->assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollback',
+        );
+        $this->assertSame(
+            0,
+            $outer->level,
+            'Outer transaction level should be 0 after rollback',
+        );
+    }
+
+    public function testNestedTransactionWithoutIsolationLevelDoesNotWarn(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction();
+
+        $this->assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'",
+        );
+
+        $warnings = [];
+
+        foreach ($this->getLoggerMessages() as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for nested transaction without isolation level',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        $this->assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollbacks',
+        );
+    }
+
     public function testEnableQueryLog(): void
     {
         $connection = $this->getConnection();
@@ -319,12 +447,12 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
-        $this->assertCount(3, Yii::getLogger()->messages);
+        $this->assertCount(3, $this->getLoggerMessages());
         $this->assertNotNull($connection->getTableSchema('qlog1', true));
 
         Yii::getLogger()->messages = [];
         $connection->createCommand('SELECT * FROM {{qlog1}}')->queryAll();
-        $this->assertCount(3, Yii::getLogger()->messages);
+        $this->assertCount(3, $this->getLoggerMessages());
 
         // profiling only
         $connection->enableLogging = false;
@@ -332,12 +460,12 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
-        $this->assertCount(2, Yii::getLogger()->messages);
+        $this->assertCount(2, $this->getLoggerMessages());
         $this->assertNotNull($connection->getTableSchema('qlog2', true));
 
         Yii::getLogger()->messages = [];
         $connection->createCommand('SELECT * FROM {{qlog2}}')->queryAll();
-        $this->assertCount(2, Yii::getLogger()->messages);
+        $this->assertCount(2, $this->getLoggerMessages());
 
         // logging only
         $connection->enableLogging = true;
@@ -345,12 +473,12 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog3', ['id' => 'pk'])->execute();
-        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, $this->getLoggerMessages());
         $this->assertNotNull($connection->getTableSchema('qlog3', true));
 
         Yii::getLogger()->messages = [];
         $connection->createCommand('SELECT * FROM {{qlog3}}')->queryAll();
-        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, $this->getLoggerMessages());
 
         // disabled
         $connection->enableLogging = false;
@@ -359,9 +487,9 @@ abstract class ConnectionTest extends DatabaseTestCase
         Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
         $this->assertNotNull($connection->getTableSchema('qlog4', true));
-        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, $this->getLoggerMessages());
         $connection->createCommand('SELECT * FROM {{qlog4}}')->queryAll();
-        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, $this->getLoggerMessages());
     }
 
     public function testExceptionContainsRawQuery(): void
@@ -509,11 +637,8 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->close();
 
         $masterPdo = $connection->getMasterPdo();
-        $this->assertNotFalse($masterPdo);
-        $this->assertNotNull($masterPdo);
 
         $slavePdo = $connection->getSlavePdo(false);
-        $this->assertNotFalse($slavePdo);
         $this->assertNotNull($slavePdo);
         $this->assertNotSame($masterPdo, $slavePdo);
     }
@@ -577,5 +702,13 @@ abstract class ConnectionTest extends DatabaseTestCase
         }
         $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
         $connection->close();
+    }
+
+    /**
+     * @return array the messages logged by the logger.
+     */
+    private function getLoggerMessages(): array
+    {
+        return Yii::getLogger()->messages;
     }
 }

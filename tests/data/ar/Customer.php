@@ -16,8 +16,8 @@ use yiiunit\framework\db\ActiveRecordTest;
 /**
  * Class Customer.
  *
- * @property int $id
- * @property string $name
+ * @property int|null $id
+ * @property string|null $name
  * @property string $email
  * @property string $address
  * @property int $status
@@ -30,8 +30,8 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property-read Order[] $orders
  * @property-read Order[] $expensiveOrders
  * @property-read Order[] $ordersWithItems
- * @property-read Order[] $expensiveOrdersWithNullFK
- * @property-read Order[] $ordersWithNullFK
+ * @property-read OrderWithNullFK[] $expensiveOrdersWithNullFK
+ * @property-read OrderWithNullFK[] $ordersWithNullFK
  * @property-read Order[] $orders2
  * @property-read Item[] $orderItems
  * @property-read OrderItem[] $orderItems2

@@ -1133,6 +1133,8 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
      * @param SqlToken $token
      * @return array
      */
+    // TODO: fix the ignore after switching to level 4.
+    // phpstan-ignore method.unused (The method is used manually to generate the expected tokens for tests)
     private function exportToken(SqlToken $token)
     {
         $result = get_object_vars($token);

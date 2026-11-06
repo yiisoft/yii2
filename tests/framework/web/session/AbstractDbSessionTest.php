@@ -28,6 +28,11 @@ abstract class AbstractDbSessionTest extends TestCase
     use SessionTestTrait;
 
     /**
+     * @var string|false `session.use_strict_mode` value captured by {@see setUp()}.
+     */
+    private $useStrictModeBackup;
+
+    /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
     abstract protected function getDriverNames();
@@ -35,6 +40,12 @@ abstract class AbstractDbSessionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->closeNativeSession();
+
+        $this->useStrictModeBackup = ini_get('session.use_strict_mode');
+
+        session_id('');
 
         $this->mockApplication();
         Yii::$app->set('db', $this->getDbConfig());
@@ -44,6 +55,14 @@ abstract class AbstractDbSessionTest extends TestCase
 
     protected function tearDown(): void
     {
+        $this->closeNativeSession();
+
+        session_id('');
+
+        if ($this->useStrictModeBackup !== false) {
+            ini_set('session.use_strict_mode', $this->useStrictModeBackup);
+        }
+
         $this->dropTableSession();
         parent::tearDown();
     }
@@ -60,7 +79,6 @@ abstract class AbstractDbSessionTest extends TestCase
         }
         if (!isset($driverAvailable)) {
             $this->markTestIncomplete(static::class . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
-            return [];
         }
         $config = $databases[$driverAvailable];
 
@@ -194,11 +212,6 @@ abstract class AbstractDbSessionTest extends TestCase
         $object->binary = base64_decode('5qS2UUcXWH7rjAmvhqGJTDNkYWFiOGMzNTFlMzNmMWIyMDhmOWIwYzAwYTVmOTFhM2E5MDg5YjViYzViN2RlOGZlNjllYWMxMDA0YmQxM2RQ3ZC0in5ahjNcehNB/oP/NtOWB0u3Skm67HWGwGt9MA==');
         $object->with_null_byte = 'hey!' . "\0" . 'y"ûƒ^äjw¾bðúl5êù-Ö=W¿Š±¬GP¥Œy÷&ø';
 
-        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-            unset($object->binary);
-            // Binary data can not be inserted on PHP <5.5
-        }
-
         return $object;
     }
 
@@ -286,5 +299,32 @@ abstract class AbstractDbSessionTest extends TestCase
     public function testUseStrictMode(): void
     {
         $this->useStrictModeTest(DbSession::class);
+    }
+
+    public function testStrictModeKeepsKnownIdWithEmptyPayload(): void
+    {
+        $session = new DbSession(['useStrictMode' => true]);
+
+        $session->close();
+
+        $session->writeSession('known-id', '');
+        $session->setId('known-id');
+
+        $session->open();
+
+        $this->assertSame(
+            'known-id',
+            $session->getId(),
+            'Stored ID must be kept even without data.',
+        );
+
+        $session->close();
+    }
+
+    private function closeNativeSession(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
     }
 }

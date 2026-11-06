@@ -9,15 +9,12 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecordInterface;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
-use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\TestCase;
 
 /**
  * @group db
@@ -196,8 +193,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             $this->assertEquals($expected, $value, 'In column ' . $attribute);
 
             if ($value instanceof ArrayExpression) {
-                $this->assertInstanceOf('\ArrayAccess', $value);
-                $this->assertInstanceOf('\Traversable', $value);
                 foreach ($type->$attribute as $key => $v) { // testing arrayaccess
                     $this->assertSame($expected[$key], $value[$key]);
                 }

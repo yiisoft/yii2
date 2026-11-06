@@ -387,7 +387,12 @@ class DateValidator extends Validator
         // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
-        $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
+        // since PHP 8.4.27 and 8.5.12 the parse position is counted in bytes instead of UTF-16 code units
+        if (PHP_VERSION_ID >= 80512 || (PHP_VERSION_ID >= 80427 && PHP_VERSION_ID < 80500)) {
+            $valueLength = strlen($value);
+        } else {
+            $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
+        }
         if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && $formatter->format($parsedDate) !== $value)) {
             return false;
         }

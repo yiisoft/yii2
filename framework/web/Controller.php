@@ -21,8 +21,10 @@ use yii\base\Module;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
- * @property Request $request The request object.
- * @property Response $response The response object.
+ * @property-read Request $request The request object.
+ * @property-read Response $response The response object.
+ * @property-write Request|array|string $request The request object.
+ * @property-write Response|array|string $response The response object.
  * @property View $view The view object that can be used to render views or view files.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -309,7 +311,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Run the according filter_var logic for teh given type.
+     * Run the according filter_var logic for the given type.
      * @param string $param The value to filter.
      * @param string $typeName The type name.
      * @return mixed|null The resulting value, or null if validation failed or the type can't be validated.

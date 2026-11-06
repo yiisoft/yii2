@@ -41,6 +41,11 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Migration, see the [guide article on Migration](guide:db-migrations).
  *
+ * @property-read Connection $db the DB connection object.
+ * @property-write Connection|array|string $db the DB connection object or the application component ID of the DB connection
+ * that this migration should work with. Starting from version 2.0.2, this can also be a configuration array
+ * for creating the object.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -379,7 +384,7 @@ class Migration extends Component implements MigrationInterface
      * Builds and executes a SQL statement for adding a new DB column.
      * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
      * @param string $column the name of the new column. The name will be properly quoted by the method.
-     * @param string $type the column type. The [[QueryBuilder::getColumnType()]] method will be invoked to convert abstract column type (if any)
+     * @param string|ColumnSchemaBuilder $type the column type. The [[QueryBuilder::getColumnType()]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      */
@@ -422,7 +427,7 @@ class Migration extends Component implements MigrationInterface
      * Builds and executes a SQL statement for changing the definition of a column.
      * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[QueryBuilder::getColumnType()]] method will be invoked to convert abstract column type (if any)
+     * @param string|ColumnSchemaBuilder $type the new column type. The [[QueryBuilder::getColumnType()]] method will be invoked to convert abstract column type (if any)
      * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
      * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      */

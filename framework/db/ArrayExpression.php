@@ -135,7 +135,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * Offset to set
      *
      * @link https://www.php.net/manual/en/arrayaccess.offsetset.php
-     * @param int|string $offset <p>
+     * @param int|string|null $offset <p>
      * The offset to assign the value to.
      * </p>
      * @param mixed $value <p>
@@ -147,7 +147,11 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
-        $this->value[$offset] = $value;
+        if ($offset === null) {
+            $this->value[] = $value;
+        } else {
+            $this->value[$offset] = $value;
+        }
     }
 
     /**
