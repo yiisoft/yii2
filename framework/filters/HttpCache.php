@@ -121,7 +121,7 @@ class HttpCache extends ActionFilter
         }
 
         $verb = Yii::$app->getRequest()->getMethod();
-        if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
+        if ($verb !== 'GET' && $verb !== 'HEAD' && $verb !== 'QUERY' || $this->lastModified === null && $this->etagSeed === null) {
             return true;
         }
 

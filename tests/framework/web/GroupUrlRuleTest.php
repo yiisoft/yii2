@@ -111,6 +111,18 @@ class GroupUrlRuleTest extends TestCase
         $this->assertContains('POST', $rules->rules[0]->verb);
         $this->assertContains('GET', $rules->rules[0]->verb);
         $this->assertEquals('admin/user/login', $rules->rules[0]->route);
+
+        $config = [
+            'prefix' => 'admin',
+            'rules' => [
+                'QUERY search' => 'user/search'
+            ],
+        ];
+        $rules = new GroupUrlRule($config);
+        $this->assertInstanceOf(UrlRule::class, $rules->rules[0]);
+        $this->assertCount(1, $rules->rules[0]->verb);
+        $this->assertContains('QUERY', $rules->rules[0]->verb);
+        $this->assertEquals('admin/user/search', $rules->rules[0]->route);
     }
 
     protected function getTestsForCreateUrl()

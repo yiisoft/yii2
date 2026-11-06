@@ -251,6 +251,24 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testQueryMethodCsrfTokenValidation(): void
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+        $request->enableCsrfValidation = true;
+
+        $token = $request->getCsrfToken();
+
+        $_SERVER['REQUEST_METHOD'] = 'QUERY';
+
+        $this->assertTrue($request->validateCsrfToken($token));
+        $this->assertTrue($request->validateCsrfToken($token . 'a'));
+        $this->assertTrue($request->validateCsrfToken(null));
+        $this->assertTrue($request->validateCsrfToken());
+    }
+
     public function testCsrfHeaderValidation(): void
     {
         $this->mockWebApplication();
@@ -1014,6 +1032,17 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
+    public function testGetIsQuery(): void
+    {
+        $request = new Request();
+
+        $_SERVER['REQUEST_METHOD'] = 'QUERY';
+        $this->assertTrue($request->getIsQuery());
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $this->assertFalse($request->getIsQuery());
+    }
+
     public static function getIsAjaxDataProvider(): array
     {
         return [
@@ -1261,6 +1290,7 @@ class RequestTest extends TestCase
      * @testWith    ["POST", "GET", "POST"]
      *              ["POST", "OPTIONS", "POST"]
      *              ["POST", "HEAD", "POST"]
+     *              ["POST", "QUERY", "POST"]
      *              ["POST", "DELETE", "DELETE"]
      *              ["POST", "CUSTOM", "CUSTOM"]
      */

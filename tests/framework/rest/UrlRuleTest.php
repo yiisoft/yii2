@@ -63,6 +63,21 @@ class UrlRuleTest extends TestCase
         }
     }
 
+    public function testParseRequestWithQueryMethod(): void
+    {
+        $manager = new UrlManager(['cache' => null]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $rule = new UrlRule(['controller' => 'post']);
+
+        $_SERVER['REQUEST_METHOD'] = 'QUERY';
+
+        $request->pathInfo = 'posts';
+        $this->assertEquals(['post/index', []], $rule->parseRequest($manager, $request));
+
+        $request->pathInfo = 'posts/123';
+        $this->assertEquals(['post/options', ['id' => '123']], $rule->parseRequest($manager, $request));
+    }
+
     protected function getTestsForParseRequest()
     {
         // structure of each test
