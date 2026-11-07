@@ -80,8 +80,6 @@ Yii Framework 2 Change Log
 - Bug #21136: Fix `@param` annotation for `$models` in `yii\db\ActiveRelationTrait::populateInverseRelation()` (mspirkov)
 - Bug #21136: Fix `@param` and `@return` annotations for `yii\db\QueryTrait::filterCondition()` (mspirkov)
 - Bug #21136: Fix `@param` annotations for `$content` in `isOperator()`, `isIdentifier()`, `isStringLiteral()` and `isKeyword()` of `yii\db\SqlTokenizer` (mspirkov)
-- Bug #21136: Fix `@var` and `@param` annotations for the column in `yii\db\conditions\InCondition` (mspirkov)
-- Bug #21136: Fix `@var`, `@param` and `@return` annotations for the values in `yii\db\conditions\InCondition` (mspirkov)
 - Bug #21136: Fix `@param` annotation for `$columns` in `yii\db\conditions\InConditionBuilder::buildSubqueryInCondition()` (mspirkov)
 - Bug #21136: Fix `@param` and `@return` annotations for `yii\di\Container::normalizeDefinition()` (mspirkov)
 - Bug #21136: Fix `@var` annotation for `yii\filters\AccessRule::$matchCallback` (mspirkov)

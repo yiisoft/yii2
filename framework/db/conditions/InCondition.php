@@ -9,9 +9,7 @@
 namespace yii\db\conditions;
 
 use yii\base\InvalidArgumentException;
-use yii\db\Expression;
 use yii\db\ExpressionInterface;
-use yii\db\Query;
 
 /**
  * Class InCondition represents `IN` condition.
@@ -27,12 +25,12 @@ class InCondition implements ConditionInterface
      */
     private $operator;
     /**
-     * @var string|Expression|array<string|Expression> the column name. If it is an array, a composite `IN` condition
+     * @var string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
      */
     private $column;
     /**
-     * @var array<ExpressionInterface|array<string, mixed>|string|int|null>|\Traversable|Query|string|int an array of values that [[column]] value should be among.
+     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
      * [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
@@ -42,10 +40,10 @@ class InCondition implements ConditionInterface
     /**
      * SimpleCondition constructor
      *
-     * @param string|Expression|array<string|Expression> $column the column name. If it is an array, a composite `IN` condition
+     * @param string|string[] $column the column name. If it is an array, a composite `IN` condition
      * will be generated.
      * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array<ExpressionInterface|array<string, mixed>|string|int|null>|\Traversable|Query|string|int $values an array of values that [[column]] value should be among. If it is an empty array the generated
+     * @param array $values an array of values that [[column]] value should be among. If it is an empty array the generated
      * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
     public function __construct($column, $operator, $values)
@@ -72,7 +70,7 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return array<ExpressionInterface|array<string, mixed>|string|int|null>|\Traversable|Query|string|int
+     * @return ExpressionInterface[]|string[]|int[]
      */
     public function getValues()
     {
