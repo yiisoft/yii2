@@ -288,7 +288,7 @@ class ActiveForm extends Widget
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models the model(s) associated with this form.
+     * @param Model|array<Model> $models the model(s) associated with this form.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - `header`: string, the header HTML for the error summary. If not set, a default prompt string will be used.

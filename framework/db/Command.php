@@ -900,6 +900,8 @@ class Command extends Component
      * @param string $expression the SQL of the `CHECK` constraint.
      * @return $this the command object itself.
      * @since 2.0.13
+     *
+     * @phpstan-impure
      */
     public function addCheck($name, $table, $expression)
     {

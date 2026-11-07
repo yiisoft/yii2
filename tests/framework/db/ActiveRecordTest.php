@@ -1997,8 +1997,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $orderItem = new OrderItem();
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore expr.resultUnused (We intentionally load the relation before it is populated manually)
+        // @phpstan-ignore expr.resultUnused (We intentionally load the relation before it is populated manually)
         $order->orderItems;
         $order->populateRelation('orderItems', [$orderItem]);
         $order->save();

@@ -299,6 +299,8 @@ class DataFilter extends Model
     /**
      * @param Model|array|string|callable $model model instance or its DI compatible configuration.
      * @throws InvalidConfigException on invalid configuration.
+     *
+     * @phpstan-impure
      */
     public function setSearchModel($model)
     {

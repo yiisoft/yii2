@@ -49,16 +49,34 @@ parameters:
 			path: framework/db/Command.php
 
 		-
-			message: '#^Parameter &\$constraints by\-ref type of method yii\\db\\QueryBuilder\:\:getTableUniqueColumnNames\(\) expects array\<yii\\db\\Constraint\>, array\<string, yii\\db\\Constraint\>\|false given\.$#'
-			identifier: parameterByRef.type
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
 			count: 1
-			path: framework/db/QueryBuilder.php
+			path: framework/helpers/BaseArrayHelper.php
 
 		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
 			count: 2
 			path: framework/web/Controller.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/web/Request.php
+
+		-
+			message: '#^Dead catch \- yii\\base\\InvalidConfigException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: tests/framework/base/ComponentTest.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: tests/framework/base/ComponentTest.php
 
 		-
 			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
@@ -79,6 +97,12 @@ parameters:
 			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
 
 		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\stubs\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
+
+		-
 			message: '#^Access to constant Off on an unknown class yiiunit\\framework\\db\\stubs\\IntBackedStatus\.$#'
 			identifier: class.notFound
 			count: 1
@@ -86,12 +110,6 @@ parameters:
 
 		-
 			message: '#^Access to constant On on an unknown class yiiunit\\framework\\db\\stubs\\IntBackedStatus\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
-
-		-
-			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\stubs\\StringBackedStatus\.$#'
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
@@ -113,15 +131,3 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/db/CommandTest.php
-
-		-
-			message: '#^Function str_contains not found\.$#'
-			identifier: function.notFound
-			count: 1
-			path: framework/db/sqlite/Schema.php
-
-		-
-			message: '#^Class ValueError not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php

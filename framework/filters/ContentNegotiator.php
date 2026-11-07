@@ -125,7 +125,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $languages;
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
     /**

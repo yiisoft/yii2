@@ -93,6 +93,8 @@ interface ConstraintFinderInterface
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param bool $refresh whether to reload the information even if it is found in the cache.
      * @return CheckConstraint[] table check constraints.
+     *
+     * @phpstan-impure
      */
     public function getTableChecks($name, $refresh = false);
 

@@ -552,8 +552,7 @@ class AssetManagerTest extends TestCase
         $this->setInaccessibleProperty($am, '_published', []);
         $am->publish($dirPath, ['forceCopy' => false]);
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the callback)
+        // @phpstan-ignore method.alreadyNarrowedType (PHPStan does not know that the variable is changed by reference in the callback)
         $this->assertSame(0, $copyCount);
         $this->assertGreaterThan(0, $firstCopyCount);
     }

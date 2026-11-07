@@ -33,7 +33,7 @@ trait ActiveRelationTrait
      */
     public $multiple;
     /**
-     * @var ActiveRecord the primary model of a relational query.
+     * @var BaseActiveRecord|null the primary model of a relational query.
      * This is used only in lazy loading with dynamic query options.
      */
     public $primaryModel;
@@ -330,7 +330,7 @@ trait ActiveRelationTrait
 
     /**
      * @param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $primaryModels primary models
-     * @param ActiveRecordInterface[] $models models
+     * @param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
      */
@@ -626,7 +626,7 @@ trait ActiveRelationTrait
             return [];
         }
         $this->filterByModels($primaryModels);
-        /** @var ActiveRecord $primaryModel */
+        /** @var ActiveRecord|array<string, mixed> $primaryModel */
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)

@@ -408,8 +408,7 @@ class ValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'attr');
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
+        // @phpstan-ignore method.impossibleType (The closure is bound to the validated model)
         $this->assertSame(
             $model,
             $boundModel,
@@ -437,8 +436,7 @@ class ValidatorTest extends TestCase
             'Closure result must be returned verbatim.',
         );
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.impossibleType (The closure is bound to the validated model)
+        // @phpstan-ignore method.impossibleType (The closure is bound to the validated model)
         $this->assertSame(
             $model,
             $boundModel,

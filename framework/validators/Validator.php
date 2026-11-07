@@ -322,6 +322,8 @@ class Validator extends Component
      * @return bool whether the data is valid.
      *
      * @param-out string|null $error
+     *
+     * @phpstan-impure
      */
     public function validate($value, &$error = null)
     {

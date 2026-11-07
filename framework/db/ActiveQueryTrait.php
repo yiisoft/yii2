@@ -26,7 +26,7 @@ trait ActiveQueryTrait
      */
     public $with;
     /**
-     * @var bool whether to return each record as an array. If false (default), an object
+     * @var bool|null whether to return each record as an array. If false (default), an object
      * of [[modelClass]] will be created to represent each record.
      */
     public $asArray;

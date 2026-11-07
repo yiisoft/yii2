@@ -658,6 +658,8 @@ class Connection extends Component
     /**
      * Closes the currently active DB connection.
      * It does nothing if the connection is already closed.
+     *
+     * @phpstan-impure
      */
     public function close()
     {

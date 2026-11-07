@@ -10,6 +10,7 @@ namespace yii\db\conditions;
 
 use yii\base\InvalidArgumentException;
 use yii\db\ExpressionInterface;
+use yii\db\Query;
 
 /**
  * Class InCondition represents `IN` condition.
@@ -30,7 +31,7 @@ class InCondition implements ConditionInterface
      */
     private $column;
     /**
-     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
+     * @var ExpressionInterface[]|string[]|int[]|\Traversable|Query an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
      * [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
@@ -43,7 +44,7 @@ class InCondition implements ConditionInterface
      * @param string|string[] $column the column name. If it is an array, a composite `IN` condition
      * will be generated.
      * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array $values an array of values that [[column]] value should be among. If it is an empty array the generated
+     * @param ExpressionInterface[]|string[]|int[]|\Traversable|Query $values an array of values that [[column]] value should be among. If it is an empty array the generated
      * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
     public function __construct($column, $operator, $values)
@@ -70,7 +71,7 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return ExpressionInterface[]|string[]|int[]
+     * @return ExpressionInterface[]|string[]|int[]|\Traversable|Query
      */
     public function getValues()
     {

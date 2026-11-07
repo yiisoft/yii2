@@ -31,7 +31,7 @@ use yii\di\Instance;
 class DbQueryDependency extends Dependency
 {
     /**
-     * @var string|array|object the application component ID of the database connection, connection object or
+     * @var string|array|object|null the application component ID of the database connection, connection object or
      * its array configuration.
      * This field can be left blank, allowing query to determine connection automatically.
      */
