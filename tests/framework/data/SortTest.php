@@ -336,6 +336,144 @@ class SortTest extends TestCase
         $this->assertEquals($link, $sort->link('age'));
     }
 
+    public function testNormalizeAttributesWithPartialConfig(): void
+    {
+        $sort = new Sort([
+            'attributes' => [
+                'age' => [
+                    'label' => 'Age',
+                ],
+            ],
+        ]);
+
+        $this->assertSame(SORT_ASC, $sort->attributes['age']['asc']['age']);
+        $this->assertSame(SORT_DESC, $sort->attributes['age']['desc']['age']);
+        $this->assertSame('Age', $sort->attributes['age']['label']);
+    }
+
+    public function testLinkWithExistingCssClass(): void
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+        ]);
+
+        $sort = new Sort([
+            'attributes' => ['age'],
+            'params' => ['sort' => 'age'],
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $link = $sort->link('age', ['class' => 'custom']);
+        $this->assertSame('<a class="custom asc" href="/index.php?r=site%2Findex&amp;sort=-age" data-sort="-age">Age</a>', $link);
+    }
+
+    public function testLinkWithLabelOption(): void
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+        ]);
+
+        $sort = new Sort([
+            'attributes' => ['age'],
+            'params' => ['sort' => 'age'],
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $link = $sort->link('age', ['label' => 'Custom Label']);
+        $this->assertSame('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age" data-sort="-age">Custom Label</a>', $link);
+    }
+
+    public function testLinkWithAttributeLabel(): void
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+        ]);
+
+        $sort = new Sort([
+            'attributes' => [
+                'age' => [
+                    'asc' => ['age' => SORT_ASC],
+                    'desc' => ['age' => SORT_DESC],
+                    'label' => 'Custom Age',
+                ],
+            ],
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $link = $sort->link('age');
+        $this->assertSame('<a href="/index.php?r=site%2Findex&amp;sort=age" data-sort="age">Custom Age</a>', $link);
+    }
+
+    public function testLinkWithModelClass(): void
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+        ]);
+
+        $sort = new Sort([
+            'attributes' => ['name'],
+            'modelClass' => SortTestModel::class,
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $link = $sort->link('name');
+        $this->assertSame('<a href="/index.php?r=site%2Findex&amp;sort=name" data-sort="name">Test Name</a>', $link);
+    }
+
+    public function testCreateAbsoluteUrl(): void
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'cache' => null,
+            'hostInfo' => 'http://example.com',
+        ]);
+
+        $sort = new Sort([
+            'attributes' => ['age'],
+            'params' => ['sort' => 'age'],
+            'urlManager' => $manager,
+            'route' => 'site/index',
+        ]);
+
+        $url = $sort->createUrl('age', true);
+        $this->assertSame('http://example.com/index.php?r=site%2Findex&sort=-age', $url);
+    }
+
+    public function testCreateSortParamWithUnknownAttribute(): void
+    {
+        $sort = new Sort([
+            'attributes' => ['age'],
+            'route' => 'site/index',
+        ]);
+
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $sort->createSortParam('unknown');
+    }
+
+    public function testHasAttribute(): void
+    {
+        $sort = new Sort([
+            'attributes' => ['age', 'name'],
+        ]);
+
+        $this->assertTrue($sort->hasAttribute('age'));
+        $this->assertTrue($sort->hasAttribute('name'));
+        $this->assertFalse($sort->hasAttribute('unknown'));
+    }
+
     public function testParseSortParam(): void
     {
         $sort = new CustomSort([
@@ -379,6 +517,16 @@ class SortTest extends TestCase
         $orders = $sort->getOrders(true);
         $this->assertEquals(1, count($orders));
         $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+    }
+}
+
+class SortTestModel extends \yii\base\Model
+{
+    public $name;
+
+    public function attributeLabels()
+    {
+        return ['name' => 'Test Name'];
     }
 }
 
