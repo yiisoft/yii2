@@ -76,7 +76,9 @@ class Cookie extends \yii\base\BaseObject
      */
     public $httpOnly = true;
     /**
-     * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
+     * @var string|null the SameSite attribute, which controls whether the browser sends this cookie along with
+     * cross-site requests. Defaults to [[SAME_SITE_LAX]]. If `null`, the attribute is omitted and the browser's
+     * default policy applies.
      *
      * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite for more information about sameSite.
      *

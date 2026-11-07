@@ -225,8 +225,8 @@ trait QueryTrait
     /**
      * Removes [[isEmpty()|empty operands]] from the given query condition.
      *
-     * @param array $condition the original condition
-     * @return array the condition with [[isEmpty()|empty operands]] removed.
+     * @param array|string|int|ExpressionInterface|null $condition the original condition
+     * @return array|string|int|ExpressionInterface|null the condition with [[isEmpty()|empty operands]] removed.
      * @throws NotSupportedException if the condition operator is not supported
      */
     protected function filterCondition($condition)

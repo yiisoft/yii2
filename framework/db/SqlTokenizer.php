@@ -141,7 +141,7 @@ abstract class SqlTokenizer extends Component
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
      * @param int $length length of the matched string.
-     * @param string $content optional content instead of the matched string.
+     * @param string|null $content optional content instead of the matched string.
      * @return bool whether there's an operator at the current offset.
      */
     abstract protected function isOperator(&$length, &$content);
@@ -151,7 +151,7 @@ abstract class SqlTokenizer extends Component
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
      * @param int $length length of the matched string.
-     * @param string $content optional content instead of the matched string.
+     * @param string|null $content optional content instead of the matched string.
      * @return bool whether there's an identifier at the current offset.
      */
     abstract protected function isIdentifier(&$length, &$content);
@@ -161,7 +161,7 @@ abstract class SqlTokenizer extends Component
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
      * @param int $length length of the matched string.
-     * @param string $content optional content instead of the matched string.
+     * @param string|null $content optional content instead of the matched string.
      * @return bool whether there's a string literal at the current offset.
      */
     abstract protected function isStringLiteral(&$length, &$content);
@@ -170,7 +170,7 @@ abstract class SqlTokenizer extends Component
      * Returns whether the given string is a keyword.
      * The method may set `$content` to a string that will be used as a token content.
      * @param string $string string to be matched.
-     * @param string $content optional content instead of the matched string.
+     * @param string|null $content optional content instead of the matched string.
      * @return bool whether the given string is a keyword.
      */
     abstract protected function isKeyword($string, &$content);

@@ -106,7 +106,7 @@ class Logger extends Component
      */
     public $traceLevel = 0;
     /**
-     * @var Dispatcher the message dispatcher.
+     * @var Dispatcher|null the message dispatcher.
      */
     public $dispatcher;
     /**

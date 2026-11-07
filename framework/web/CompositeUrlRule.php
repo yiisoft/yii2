@@ -101,6 +101,8 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * @return bool|string the created URL, or `false` if none of specified rules cannot be used for creating this URL.
      * @see createUrl()
      * @since 2.0.12
+     *
+     * @phpstan-impure
      */
     protected function iterateRules($rules, $manager, $route, $params)
     {

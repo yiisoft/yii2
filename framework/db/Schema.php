@@ -189,6 +189,8 @@ abstract class Schema extends BaseObject
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param bool $refresh whether to reload the table schema even if it is found in the cache.
      * @return TableSchema|null table metadata. `null` if the named table does not exist.
+     *
+     * @phpstan-impure
      */
     public function getTableSchema($name, $refresh = false)
     {
@@ -281,7 +283,7 @@ abstract class Schema extends BaseObject
      */
     public function refresh()
     {
-        /** @var CacheInterface $cache */
+        /** @var CacheInterface|null $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             TagDependency::invalidate($cache, $this->getCacheTag());
@@ -302,7 +304,7 @@ abstract class Schema extends BaseObject
         $rawName = $this->getRawTableName($name);
         unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
-        /** @var CacheInterface $cache */
+        /** @var CacheInterface|null $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             $cache->delete($this->getCacheKey($rawName));

@@ -290,8 +290,6 @@ SQL;
         $command->fetchMode = PDO::FETCH_OBJ;
         $result = $command->queryOne();
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.impossibleType (The row is returned as an object because of the PDO::FETCH_OBJ fetch mode)
         $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
