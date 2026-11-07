@@ -80,6 +80,7 @@ Yii Framework 2 Change Log
 - Bug #21136: Fix `@param` annotation for `$models` in `yii\db\ActiveRelationTrait::populateInverseRelation()` (mspirkov)
 - Bug #21136: Fix `@param` and `@return` annotations for `yii\db\QueryTrait::filterCondition()` (mspirkov)
 - Bug #21136: Fix `@param` annotations for `$content` in `isOperator()`, `isIdentifier()`, `isStringLiteral()` and `isKeyword()` of `yii\db\SqlTokenizer` (mspirkov)
+- Bug #21136: Fix `@var` and `@param` annotations for the column in `yii\db\conditions\InCondition` (mspirkov)
 - Bug #21136: Fix `@var`, `@param` and `@return` annotations for the values in `yii\db\conditions\InCondition` (mspirkov)
 - Bug #21136: Fix `@param` annotation for `$columns` in `yii\db\conditions\InConditionBuilder::buildSubqueryInCondition()` (mspirkov)
 - Bug #21136: Fix `@param` and `@return` annotations for `yii\di\Container::normalizeDefinition()` (mspirkov)
@@ -94,7 +95,7 @@ Yii Framework 2 Change Log
 - Bug #21136: Fix `@var` annotation for `yii\web\Cookie::$sameSite` (mspirkov)
 - Bug #21136: Fix inline `@var` annotations in `yii\db\ActiveRelationTrait::findJunctionRows()`, `refresh()` and `refreshTableSchema()` in `yii\db\Schema`, and `yii\log\Target::getMessagePrefix()` (mspirkov)
 - Enh #21136: Add `@throws` annotation for `UrlNormalizerRedirectException` in `yii\web\Request::resolve()` (mspirkov)
-- Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
+- Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTablePrimaryKey()` and `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
 
 
 2.0.55 May 09, 2026
