@@ -109,9 +109,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     }
 
     /**
-     * @param array|object|string $object
+     * @param mixed $object
      * @param bool $isProperty
-     * @return array|object|string
+     * @return mixed
      */
     private static function convertPropertiesToAnycase($object, $isProperty = false)
     {

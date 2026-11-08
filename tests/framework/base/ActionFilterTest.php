@@ -137,7 +137,7 @@ class ActionFilterTest extends TestCase
         $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
         $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
-        $filter->only;
+        $filter->only = [];
         $filter->except = ['view'];
         $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
         $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));

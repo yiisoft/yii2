@@ -364,6 +364,8 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirWithSameName(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $this->createFileStructure([
             'data' => [],
             'data-backup' => [],
@@ -373,8 +375,6 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
-
-        $this->assertTrue(true);
     }
 
     public function testRemoveDirectory(): void

@@ -366,41 +366,47 @@ class UserTest extends TestCase
         Yii::$app->user->loginRequired();
     }
 
-    public function testAccessChecker(): void
+    public static function accessCheckerProvider(): array
     {
-        $this->mockWebApplication([
-            'components' => [
-                'user' => [
-                    'identityClass' => UserIdentity::class,
-                    'accessChecker' => AccessChecker::class
-                ]
+        return [
+            'class name' => [
+                [
+                    'user' => [
+                        'identityClass' => UserIdentity::class,
+                        'accessChecker' => AccessChecker::class
+                    ]
+                ],
             ],
-        ]);
-        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
-
-        $this->mockWebApplication([
-            'components' => [
-                'user' => [
-                    'identityClass' => UserIdentity::class,
-                    'accessChecker' => [
-                        'class' => AccessChecker::class,
+            'configuration array' => [
+                [
+                    'user' => [
+                        'identityClass' => UserIdentity::class,
+                        'accessChecker' => [
+                            'class' => AccessChecker::class,
+                        ],
                     ],
                 ],
             ],
-        ]);
-        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
-
-        $this->mockWebApplication([
-            'components' => [
-                'user' => [
-                    'identityClass' => UserIdentity::class,
-                    'accessChecker' => 'accessChecker',
+            'component ID' => [
+                [
+                    'user' => [
+                        'identityClass' => UserIdentity::class,
+                        'accessChecker' => 'accessChecker',
+                    ],
+                    'accessChecker' => [
+                        'class' => AccessChecker::class,
+                    ]
                 ],
-                'accessChecker' => [
-                    'class' => AccessChecker::class,
-                ]
             ],
-        ]);
+        ];
+    }
+
+    /**
+     * @dataProvider accessCheckerProvider
+     */
+    public function testAccessChecker(array $components): void
+    {
+        $this->mockWebApplication(['components' => $components]);
         $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
     }
 
@@ -457,19 +463,20 @@ class UserTest extends TestCase
         $am->addChild($role, $perm);
         $am->assign($role, 'user1');
 
-        $this->assertNull(Yii::$app->user->identity);
-        $this->assertFalse(Yii::$app->user->can('doSomething'));
+        $user = Yii::$app->user;
+        $this->assertNull($user->getIdentity());
+        $this->assertFalse($user->can('doSomething'));
 
-        Yii::$app->user->setIdentity(UserIdentity::findIdentity('user1'));
-        $this->assertInstanceOf(UserIdentity::class, Yii::$app->user->identity);
-        $this->assertTrue(Yii::$app->user->can('doSomething'));
+        $user->setIdentity(UserIdentity::findIdentity('user1'));
+        $this->assertInstanceOf(UserIdentity::class, $user->getIdentity());
+        $this->assertTrue($user->can('doSomething'));
 
-        Yii::$app->user->setIdentity(null);
-        $this->assertNull(Yii::$app->user->identity);
-        $this->assertFalse(Yii::$app->user->can('doSomething'));
+        $user->setIdentity(null);
+        $this->assertNull($user->getIdentity());
+        $this->assertFalse($user->can('doSomething'));
 
         $this->expectException('\yii\base\InvalidValueException');
-        Yii::$app->user->setIdentity(new \stdClass());
+        $user->setIdentity(new \stdClass());
     }
 
     public function testSessionAuthWithNonExistingId(): void
@@ -566,6 +573,24 @@ class UserTest extends TestCase
 
         $this->assertNull(Yii::$app->user->getIdentity());
         $this->assertNotSame($id, Yii::$app->session->id);
+    }
+
+    public function testLoginByAccessTokenRejectsNonString(): void
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::class,
+                ],
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        // Hardening: non-string tokens are rejected without authenticating.
+        $this->assertNull(Yii::$app->user->loginByAccessToken(['token1']));
+        $this->assertTrue(Yii::$app->user->isGuest);
+        $this->assertNull(Yii::$app->user->loginByAccessToken(0));
+        $this->assertTrue(Yii::$app->user->isGuest);
     }
 }
 

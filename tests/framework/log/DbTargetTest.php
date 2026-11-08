@@ -31,7 +31,7 @@ abstract class DbTargetTest extends TestCase
     protected static $driverName = 'mysql';
 
     /**
-     * @var Connection
+     * @var Connection|null
      */
     protected static $db;
 

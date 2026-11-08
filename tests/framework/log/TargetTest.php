@@ -20,6 +20,12 @@ class TargetTest extends TestCase
 {
     public static $messages;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        static::$messages = [];
+    }
+
     public static function filters(): array
     {
         return [
@@ -59,8 +65,6 @@ class TargetTest extends TestCase
      */
     public function testFilter($filter, $expected): void
     {
-        static::$messages = [];
-
         $logger = new Logger();
         $dispatcher = new Dispatcher([
             'logger' => $logger,
@@ -228,7 +232,6 @@ class TargetTest extends TestCase
     public function testCollectMessageStructure(): void
     {
         $target = new TestTarget(['logVars' => ['_SERVER']]);
-        static::$messages = [];
 
         $messages = [
             ['test', 1, 'application', 1560428356.212978, [], 1888416]

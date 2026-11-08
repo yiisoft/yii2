@@ -18,7 +18,6 @@ use ArrayObject;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\ConstraintFinderInterface;
-use yii\db\DataReader;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
@@ -101,7 +100,7 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertInstanceOf(DataReader::class, $reader);
+        $this->assertCount(3, $reader->readAll());
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
@@ -290,6 +289,9 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = PDO::FETCH_OBJ;
         $result = $command->queryOne();
+
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore method.impossibleType (The row is returned as an object because of the PDO::FETCH_OBJ fetch mode)
         $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
@@ -1679,9 +1681,10 @@ SQL;
     // TODO: Remove in Yii 2.1
     public function testBindValuesSupportsDeprecatedPDOCastingFormat(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $db = $this->getConnection();
         $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, PDO::PARAM_STR]]);
-        $this->assertTrue(true);
     }
 
     public function testBindValuesSupportsEnums(): void

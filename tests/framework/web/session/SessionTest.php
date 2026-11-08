@@ -20,6 +20,35 @@ class SessionTest extends TestCase
     use SessionTestTrait;
 
     /**
+     * @var string|false `session.use_strict_mode` value captured by {@see setUp()}.
+     */
+    private $useStrictModeBackup;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->closeNativeSession();
+
+        $this->useStrictModeBackup = ini_get('session.use_strict_mode');
+
+        session_id('');
+    }
+
+    protected function tearDown(): void
+    {
+        $this->closeNativeSession();
+
+        session_id('');
+
+        if ($this->useStrictModeBackup !== false) {
+            ini_set('session.use_strict_mode', $this->useStrictModeBackup);
+        }
+
+        parent::tearDown();
+    }
+
+    /**
      * Test to prove that after Session::destroy session id set to old value.
      */
     public function testDestroySessionId(): void
@@ -214,5 +243,12 @@ class SessionTest extends TestCase
             $handler->validateId($id),
             'Created ID must be forgotten when the session opens.',
         );
+    }
+
+    private function closeNativeSession(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
     }
 }

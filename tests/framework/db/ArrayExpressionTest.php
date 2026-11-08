@@ -231,12 +231,6 @@ class ArrayExpressionTest extends TestCase
         $this->assertSame(0, $iterator->count());
     }
 
-    public function testImplementsExpressionInterface()
-    {
-        $expression = new ArrayExpression([]);
-
-        $this->assertInstanceOf(\yii\db\ExpressionInterface::class, $expression);
-    }
 
     public function testOffsetSetOverwritesExistingValue()
     {

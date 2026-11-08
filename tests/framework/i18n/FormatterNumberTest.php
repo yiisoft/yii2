@@ -519,6 +519,8 @@ class FormatterNumberTest extends TestCase
         // see https://github.com/yiisoft/yii2/issues/17708
         $this->markTestSkipped('The test is unreliable since output depends on ICU version');
 
+        // TODO: fix the ignore after switching to level 4.
+        // phpstan-ignore deadCode.unreachable (The test is kept to be enabled when its output no longer depends on the ICU version)
         $this->assertSame('1.23E2', $this->formatter->asScientific('123'));
         $this->assertSame('1.23456E5', $this->formatter->asScientific('123456'));
         $this->assertSame('-1.23456123E5', $this->formatter->asScientific('-123456.123'));
