@@ -26,8 +26,10 @@ trait ActiveQueryTrait
      */
     public $with;
     /**
-     * @var bool whether to return each record as an array. If false (default), an object
-     * of [[modelClass]] will be created to represent each record.
+     * @var bool|null whether to return each record as an array. If true, each record is returned
+     * as an array. If false, an object of [[modelClass]] will be created to represent each record.
+     * Defaults to null, which means that a relation query used for eager loading inherits this
+     * setting from the primary query. If no setting is inherited, objects are returned.
      */
     public $asArray;
 

@@ -702,6 +702,8 @@ class Component extends BaseObject
      *
      * @phpstan-return Behavior<static>
      * @psalm-return Behavior<self>
+     *
+     * @phpstan-impure
      */
     public function attachBehavior($name, $behavior)
     {

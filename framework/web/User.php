@@ -230,6 +230,8 @@ class User extends Component
      * @param T|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
      * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
+     *
+     * @phpstan-impure
      */
     public function setIdentity($identity)
     {

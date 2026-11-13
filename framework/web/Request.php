@@ -312,6 +312,7 @@ class Request extends \yii\base\Request
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
      * @throws NotFoundHttpException if the request cannot be resolved.
+     * @throws UrlNormalizerRedirectException if normalization requires redirection.
      */
     public function resolve()
     {

@@ -59,7 +59,7 @@ abstract class ErrorHandler extends Component
      */
     private $_memoryReserve;
     /**
-     * @var \Throwable from HHVM error that stores backtrace
+     * @var \Throwable|null from HHVM error that stores backtrace
      */
     private $_hhvmException;
     /**

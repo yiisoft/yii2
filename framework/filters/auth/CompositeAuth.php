@@ -46,7 +46,7 @@ use yii\base\InvalidConfigException;
 class CompositeAuth extends AuthMethod
 {
     /**
-     * @var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})> the supported authentication methods. This property should take a list of supported
+     * @var list<(AuthInterface|class-string<AuthInterface>|array{class: class-string<AuthInterface>})> the supported authentication methods. This property should take a list of supported
      * authentication methods, each represented by an authentication class or configuration.
      *
      * If this property is empty, no authentication will be performed.

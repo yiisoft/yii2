@@ -1,6 +1,66 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Expression in empty\(\) is always falsy\.$#'
+			identifier: empty.expr
+			count: 1
+			path: build/controllers/ReleaseController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: build/controllers/ReleaseController.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: framework/base/Application.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: framework/base/Component.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<70400, 80699\> and 70400 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: framework/base/ErrorHandler.php
+
+		-
+			message: '#^Property yii\\base\\ErrorHandler\:\:\$_memoryReserve is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: framework/base/ErrorHandler.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: framework/base/Event.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70000 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/base/Model.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 2
+			path: framework/base/Security.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-falsy\-string and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: framework/base/Security.php
+
+		-
 			message: '#^Call to an undefined method T of yii\\base\\Model \= yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -17,6 +77,18 @@ parameters:
 			identifier: foreach.nonIterable
 			count: 1
 			path: framework/caching/Dependency.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/caching/FileCache.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: framework/caching/FileCache.php
 
 		-
 			message: '#^Method yii\\caching\\WinCache\:\:addValues\(\) should return array but returns bool\.$#'
@@ -37,16 +109,46 @@ parameters:
 			path: framework/captcha/CaptchaAction.php
 
 		-
+			message: '#^Comparison operation "\>" between int\<7, 8\> and 5 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 1
+			path: framework/console/Controller.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70100 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 2
+			path: framework/console/Controller.php
+
+		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$args$#'
 			identifier: parameter.notFound
 			count: 2
 			path: framework/console/Controller.php
 
 		-
+			message: '#^Instanceof between mixed and yii\\console\\Exception will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/console/ErrorHandler.php
+
+		-
 			message: '#^Access to an undefined property yii\\base\\BaseObject&yii\\db\\MigrationInterface\:\:\$compact\.$#'
 			identifier: property.notFound
 			count: 1
 			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int\<2, max\> and 1 will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/console/controllers/HelpController.php
 
 		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
@@ -181,12 +283,6 @@ parameters:
 			path: framework/db/BaseActiveRecord.php
 
 		-
-			message: '#^Property yii\\db\\ActiveQuery\<yii\\db\\ActiveRecord\>\:\:\$primaryModel \(yii\\db\\ActiveRecord\) does not accept \$this\(yii\\db\\BaseActiveRecord\)\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
 			message: '#^Variable \$viaClass might not be defined\.$#'
 			identifier: variable.undefined
 			count: 5
@@ -197,6 +293,18 @@ parameters:
 			identifier: variable.undefined
 			count: 5
 			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/db/BatchQueryResult.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\db\\Query will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/db/ColumnSchema.php
 
 		-
 			message: '#^Access to an undefined property yii\\db\\ExpressionInterface\:\:\$params\.$#'
@@ -215,6 +323,12 @@ parameters:
 			identifier: variable.undefined
 			count: 1
 			path: framework/db/Query.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\db\\Query will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 2
+			path: framework/db/QueryBuilder.php
 
 		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalEndColumn\(\)\.$#'
@@ -331,12 +445,6 @@ parameters:
 			path: framework/db/conditions/InConditionBuilder.php
 
 		-
-			message: '#^Variable \$rawValues in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -415,16 +523,40 @@ parameters:
 			path: framework/db/cubrid/Schema.php
 
 		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: framework/db/cubrid/Schema.php
+
+		-
 			message: '#^Access to an undefined property yii\\db\\ColumnSchema\:\:\$isComputed\.$#'
 			identifier: property.notFound
 			count: 1
 			path: framework/db/mssql/QueryBuilder.php
 
 		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: framework/db/mssql/Schema.php
+
+		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: framework/db/mysql/JsonExpressionBuilder.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: framework/db/oci/Schema.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: framework/db/oci/Schema.php
 
 		-
 			message: '#^PHPDoc tag @param for parameter \$condition with type yii\\db\\ExpressionInterface is not subtype of native type yii\\db\\conditions\\InCondition\.$#'
@@ -457,6 +589,36 @@ parameters:
 			path: framework/db/sqlite/SqlTokenizer.php
 
 		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 79999\> and 70000 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/di/Container.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 50600 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 2
+			path: framework/di/Container.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70100 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/di/Container.php
+
+		-
+			message: '#^Dead catch \- ReflectionException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/di/Container.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/filters/HttpCache.php
+
+		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
 			identifier: property.notFound
 			count: 1
@@ -479,6 +641,138 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: framework/helpers/BaseFileHelper.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: framework/helpers/BaseFileHelper.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 50500 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/helpers/BaseJson.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: framework/helpers/BaseJson.php
+
+		-
+			message: '#^Offset ''decimal_point'' on array\{decimal_point\: string, thousands_sep\: string, int_curr_symbol\: string, currency_symbol\: string, mon_decimal_point\: string, mon_thousands_sep\: string, positive_sign\: string, negative_sign\: string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: framework/helpers/BaseStringHelper.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: framework/helpers/BaseStringHelper.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/i18n/MessageFormatter.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between MessageFormatter and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: framework/i18n/MessageFormatter.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int\<0, max\> and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/i18n/MessageFormatter.php
+
+		-
+			message: '#^Dead catch \- Exception is already caught above\.$#'
+			identifier: catch.alreadyCaught
+			count: 1
+			path: framework/log/Dispatcher.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<70400, 80699\> and 70400 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: framework/mail/BaseMessage.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: framework/mail/BaseMessage.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/validators/IpValidator.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70000 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/web/Controller.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70100 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 4
+			path: framework/web/Controller.php
+
+		-
+			message: '#^Dead catch \- yii\\web\\HttpException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/web/Controller.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\web\\HttpException will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/web/ErrorHandler.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70300 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/web/Response.php
+
+		-
+			message: '#^Offset ''seekable'' on array\{timed_out\: bool, blocked\: bool, eof\: bool, unread_bytes\: int, stream_type\: string, wrapper_type\: string, wrapper_data\: mixed, mode\: string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: framework/web/Response.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70300 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: framework/web/Session.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: framework/web/UploadedFile.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<70400, 80699\> and 70400 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: framework/widgets/ActiveField.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: framework/widgets/ActiveField.php
 
 		-
 			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'

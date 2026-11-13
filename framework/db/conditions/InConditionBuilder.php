@@ -153,7 +153,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * Builds SQL for IN condition.
      *
      * @param string $operator
-     * @param array|string $columns
+     * @param string|array|Expression $columns
      * @param Query $values
      * @param array $params
      * @return string SQL

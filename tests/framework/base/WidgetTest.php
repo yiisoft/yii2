@@ -65,8 +65,6 @@ class WidgetTest extends TestCase
 
         $widget = TestWidgetB::begin(['id' => 'test']);
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.impossibleType (The DI container creates TestWidget instead of TestWidgetB)
         $this->assertInstanceOf(TestWidget::class, $widget);
         TestWidgetB::end();
 
@@ -89,8 +87,6 @@ class WidgetTest extends TestCase
 
         $widget = TestWidgetB::begin(['id' => 'test']);
 
-        // TODO: fix the ignore after switching to level 4.
-        // phpstan-ignore method.impossibleType (The DI container creates TestWidget instead of TestWidgetB)
         $this->assertInstanceOf(TestWidget::class, $widget);
         TestWidgetB::end();
 
