@@ -140,7 +140,26 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function all($db = null)
     {
-        return parent::all($db);
+        // Short-circuit before `createCommand()` if `emulateExecution` is already set: otherwise,
+        // building the command still runs `prepare()`, which for a `via()` relation queries the
+        // junction relation regardless of the flag set on this (outer) query.
+        if ($this->emulateExecution) {
+            return [];
+        }
+
+        // Build the command before re-checking `emulateExecution`: for a relation lazily accessed on
+        // a model whose link attribute(s) are not set (e.g. a new, unsaved record), `createCommand()`
+        // triggers `prepare()`, which may enable `emulateExecution` once it determines the relation
+        // can't match any row. Checking the flag again after building the command lets that
+        // determination happen before we hit the database.
+        // https://github.com/yiisoft/yii2/issues/21077
+        $command = $this->createCommand($db);
+
+        if ($this->emulateExecution) {
+            return [];
+        }
+
+        return $this->populate($command->queryAll());
     }
 
     /**
@@ -311,7 +330,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
-        $row = parent::one($db);
+        // See the notes in `all()` about why `emulateExecution` is checked both before and after
+        // building the command.
+        // https://github.com/yiisoft/yii2/issues/21077
+        if ($this->emulateExecution) {
+            return null;
+        }
+
+        $command = $this->createCommand($db);
+
+        if ($this->emulateExecution) {
+            return null;
+        }
+
+        $row = $command->queryOne();
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
