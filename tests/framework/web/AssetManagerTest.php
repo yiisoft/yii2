@@ -503,12 +503,12 @@ class AssetManagerTest extends TestCase
         $dirPath = Yii::getAlias('@testSourcePath');
 
         $am->publish($dirPath);
-        $copyCount = 0;
+        $copyCountBefore = $copyCount;
         $this->setInaccessibleProperty($am, '_published', []);
 
         $am->publish($dirPath, ['forceCopy' => true]);
 
-        $this->assertGreaterThan(0, $copyCount);
+        $this->assertGreaterThan($copyCountBefore, $copyCount);
     }
 
     public function testPublishDirectoryWithForceCopyProperty(): void
@@ -524,12 +524,12 @@ class AssetManagerTest extends TestCase
         $dirPath = Yii::getAlias('@testSourcePath');
 
         $am->publish($dirPath);
-        $copyCount = 0;
+        $copyCountBefore = $copyCount;
         $this->setInaccessibleProperty($am, '_published', []);
 
         $am->publish($dirPath);
 
-        $this->assertGreaterThan(0, $copyCount);
+        $this->assertGreaterThan($copyCountBefore, $copyCount);
     }
 
     public function testPublishDirectoryForceCopyOptionFalseOverridesProperty(): void
