@@ -16,6 +16,8 @@ use yii\helpers\FileHelper;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;
 use yii\web\View;
+use yiiunit\data\web\AssetBundleTestScssConverter;
+use yiiunit\data\web\AssetBundleTestScssSourceBundle;
 
 /**
  * @group web
@@ -93,6 +95,132 @@ class AssetBundleTest extends TestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
         $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
+    }
+
+    public function testChangedScssSourceStaysStaleByDefaultAcrossRequests(): void
+    {
+        $sourcePath = $this->createScssSourcePath();
+
+        $sourceFile = "{$sourcePath}/scss/main.scss";
+
+        file_put_contents($sourceFile, 'red');
+
+        try {
+            $first = AssetBundleTestScssSourceBundle::register($this->getScssView());
+
+            $this->assertSame(
+                'red',
+                file_get_contents("{$first->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+
+            file_put_contents($sourceFile, 'blue');
+
+            $second = AssetBundleTestScssSourceBundle::register($this->getScssView());
+
+            $this->assertSame(
+                $first->basePath,
+                $second->basePath,
+                'The existing published directory should be reused.',
+            );
+            $this->assertSame(
+                'red',
+                file_get_contents("{$second->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    public function testChangedScssSourceIsReconvertedAcrossRequests(): void
+    {
+        $sourcePath = $this->createScssSourcePath();
+
+        $sourceFile = "{$sourcePath}/scss/main.scss";
+
+        file_put_contents($sourceFile, 'red');
+
+        try {
+            $first = AssetBundleTestScssSourceBundle::register($this->getScssView(['hashSourceContents' => true]));
+
+            $this->assertSame(
+                'red',
+                file_get_contents("{$first->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+
+            file_put_contents($sourceFile, 'blue');
+
+            $second = AssetBundleTestScssSourceBundle::register($this->getScssView(['hashSourceContents' => true]));
+
+            $this->assertNotSame(
+                $first->basePath,
+                $second->basePath,
+                'The changed source should be published to a new directory.',
+            );
+            $this->assertSame(
+                'blue',
+                file_get_contents("{$second->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    public function testChangedScssImportIsReconvertedAcrossRequests(): void
+    {
+        $sourcePath = $this->createScssSourcePath();
+
+        file_put_contents("$sourcePath/scss/main.scss", '@import "colors";');
+
+        $importFile = $sourcePath . '/scss/_colors.scss';
+
+        file_put_contents($importFile, 'red');
+
+        try {
+            $first = AssetBundleTestScssSourceBundle::register($this->getScssView(['hashSourceContents' => true]));
+
+            $this->assertSame(
+                'red',
+                file_get_contents("{$first->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+
+            file_put_contents($importFile, 'blue');
+
+            $second = AssetBundleTestScssSourceBundle::register($this->getScssView(['hashSourceContents' => true]));
+
+            $this->assertNotSame(
+                $first->basePath,
+                $second->basePath,
+                'The changed source should be published to a new directory.',
+            );
+            $this->assertSame(
+                'blue',
+                file_get_contents("{$second->basePath}/scss/main.css"),
+                'The published CSS file does not match the source SCSS file.',
+            );
+        } finally {
+            FileHelper::removeDirectory($sourcePath);
+        }
+    }
+
+    private function createScssSourcePath(): string
+    {
+        $sourcePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('yii-scss-source-', true);
+
+        FileHelper::createDirectory("$sourcePath/scss");
+
+        Yii::setAlias('@testScssSourcePath', $sourcePath);
+
+        return $sourcePath;
+    }
+
+    private function getScssView(array $config = []): View
+    {
+        return $this->getView(array_merge(['converter' => new AssetBundleTestScssConverter()], $config));
     }
 
     public function testSourcesPublishedBySymlink(): void
