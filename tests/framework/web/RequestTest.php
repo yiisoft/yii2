@@ -1095,6 +1095,7 @@ class RequestTest extends TestCase
         return [
             'not a base64 at all' => ['not a base64 at all', [null, null]],
             'invalid base64 characters' => ['foo:bar', [null, null]],
+            'invalid character after credentials' => [base64_encode('user:pw') . '!', [null, null]],
             'decoded value is not valid UTF-8' => [base64_encode("\xff\xfe:pw"), [null, null]],
             'decoded UTF-8 credentials' => [base64_encode('üser:pässwörd'), ['üser', 'pässwörd']],
             [base64_encode('user:'), ['user', null]],
