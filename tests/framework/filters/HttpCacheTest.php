@@ -48,6 +48,25 @@ class HttpCacheTest extends TestCase
         $this->assertNotSame($response->getHeaders()->get('Pragma'), '');
     }
 
+    public function testQueryMethodIsCached(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'QUERY';
+
+        $httpCache = new HttpCache();
+        $httpCache->etagSeed = function ($action, $params) {
+            return 'foo';
+        };
+
+        $this->assertTrue($httpCache->beforeAction(null));
+
+        $etag = Yii::$app->getResponse()->getHeaders()->get('Etag');
+        $this->assertNotNull($etag);
+
+        Yii::$app->getRequest()->headers->set('If-None-Match', $etag);
+        $this->assertFalse($httpCache->beforeAction(null));
+        $this->assertSame(304, Yii::$app->getResponse()->getStatusCode());
+    }
+
     /**
      * @covers \yii\filters\HttpCache::validateCache
      */
