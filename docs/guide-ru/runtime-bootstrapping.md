@@ -30,7 +30,7 @@
 В производственном режиме включите байткод кэшеры, такие как [PHP OPcache] или [APC], для минимизации времени 
 подключения и парсинг php файлов.
 
-[PHP OPcache]: https://www.php.net/manual/ru/intro.opcache.php
+[PHP OPcache]: https://www.php.net/manual/ru/book.opcache.php
 [APC]: https://www.php.net/manual/ru/book.apcu.php
 
 Некоторые большие приложения могут иметь сложную [конфигурацию](concept-configurations.md), которая разделена на несколько мелких файлов.

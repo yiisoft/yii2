@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: Parameter formatting requires the installation of the [intl PHP extension](https://www.php.net/manual/en/intro.intl.php).
+> Note: Parameter formatting requires the installation of the [intl PHP extension](https://www.php.net/manual/en/book.intl.php).
 
 You can use either the short form or the full form to specify a placeholder with formatting:
 
