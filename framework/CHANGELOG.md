@@ -95,6 +95,7 @@ Yii Framework 2 Change Log
 - Enh #21136: Add `@throws` annotation for `UrlNormalizerRedirectException` in `yii\web\Request::resolve()` (mspirkov)
 - Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTablePrimaryKey()` and `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
 - Bug #21141: Allow the `__class` key in configuration arrays in `@return` annotations for `yii\base\Component::behaviors()` and `yii\base\Controller::actions()`, and in the `@var` annotation for `yii\filters\auth\CompositeAuth::$authMethods` (mspirkov)
+- Enh #21142: Add `@throws` annotation for `InvalidConfigException` in `yii\base\Component::__set()` (mspirkov)
 
 
 2.0.55 May 09, 2026

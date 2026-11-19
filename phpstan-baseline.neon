@@ -625,6 +625,12 @@ parameters:
 			path: framework/grid/DataColumn.php
 
 		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
 			message: '#^Unsafe call to private method yii\\helpers\\BaseConsole\:\:getProgressbarWidth\(\) through static\:\:\.$#'
 			identifier: staticClassAccess.privateMethod
 			count: 1
@@ -739,6 +745,12 @@ parameters:
 			path: framework/web/ErrorHandler.php
 
 		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/web/Request.php
+
+		-
 			message: '#^Comparison operation "\>\=" between int\<70400, 80699\> and 70300 is always true\.$#'
 			identifier: greaterOrEqual.alwaysTrue
 			count: 1
@@ -773,9 +785,3 @@ parameters:
 			identifier: deadCode.unreachable
 			count: 1
 			path: framework/widgets/ActiveField.php
-
-		-
-			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/framework/base/ComponentTest.php
