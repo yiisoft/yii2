@@ -521,6 +521,20 @@ class ControllerTest extends TestCase
         );
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20694
+     */
+    public function testGetOptionValuesForEmptyActionIdUsesDefaultAction(): void
+    {
+        $controller = $this->createControllerWithActionSpecificOption(dryRun: true);
+        $controller->defaultAction = 'deploy';
+
+        self::assertTrue(
+            $controller->getOptionValues('')['dryRun'],
+            'Options of the default action should be returned for an empty action ID.',
+        );
+    }
+
     private function createControllerWithActionSpecificOption(bool $dryRun = false): Controller
     {
         $controller = new class('fake', Yii::$app) extends Controller {
