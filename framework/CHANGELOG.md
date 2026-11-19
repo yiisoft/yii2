@@ -95,6 +95,7 @@ Yii Framework 2 Change Log
 - Enh #21136: Add `@throws` annotation for `UrlNormalizerRedirectException` in `yii\web\Request::resolve()` (mspirkov)
 - Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTablePrimaryKey()` and `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
 
+- Bug #17717: Fix `isset()` and `empty()` with array access on public properties of `yii\db\BaseActiveRecord` by using `yii\base\Model::offsetExists()` (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
