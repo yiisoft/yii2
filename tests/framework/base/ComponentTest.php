@@ -381,6 +381,7 @@ class ComponentTest extends TestCase
         }
 
         $component = new NewComponent();
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $component->{'as f'} = function () {
             return new NewBehavior();
         };

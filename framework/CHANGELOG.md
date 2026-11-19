@@ -94,6 +94,7 @@ Yii Framework 2 Change Log
 - Bug #21136: Fix inline `@var` annotations in `yii\db\ActiveRelationTrait::findJunctionRows()`, `refresh()` and `refreshTableSchema()` in `yii\db\Schema`, and `yii\log\Target::getMessagePrefix()` (mspirkov)
 - Enh #21136: Add `@throws` annotation for `UrlNormalizerRedirectException` in `yii\web\Request::resolve()` (mspirkov)
 - Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTablePrimaryKey()` and `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
+- Enh #21142: Add `@throws` annotation for `InvalidConfigException` in `yii\base\Component::__set()` (mspirkov)
 
 
 2.0.55 May 09, 2026
