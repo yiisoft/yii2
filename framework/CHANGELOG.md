@@ -158,6 +158,7 @@ Yii Framework 2 Change Log
 - Chg #21059: Delegate `CaptchaValidator::getClientOptions()` to `clientScript`; fix `generateValidationHash()` `@return` to `int` (terabytesoftw)
 - Enh #21060: Add PSR-3 logging interoperability with `yii\log\PsrLogger` and `yii\log\PsrTarget` (terabytesoftw)
 - Enh #21061: Add precise PHPStan array shapes for logger messages, profiling timings, and target filtering; remove an unreachable dispatcher exception branch (terabytesoftw)
+- Bug #20694: Fix `yii\console\Controller::getOptionValues()` to return the option values of the given `$actionID` instead of the current action (hrompik)
 
 2.0.56 under development
 ------------------------

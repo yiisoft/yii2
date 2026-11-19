@@ -471,14 +471,13 @@ class Controller extends BaseController
      * Returns properties corresponding to the options for the action id
      * Child classes may override this method to specify possible properties.
      *
-     * @param string $actionID the action id of the current request
+     * @param string $actionID the action id to return the option values for
      * @return array properties corresponding to the options for the action
      */
     public function getOptionValues($actionID)
     {
-        // $actionId might be used in subclasses to provide properties specific to action id
         $properties = [];
-        foreach ($this->options($this->action->id) as $property) {
+        foreach ($this->options($actionID) as $property) {
             $properties[$property] = $this->$property;
         }
 
