@@ -131,7 +131,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
-     * @return array<array-key, class-string|array{class?: class-string, __class?: class-string, ...}>
+     * @return array<array-key, class-string|array{class: class-string, __class?: class-string, ...}|array{__class: class-string, class?: class-string, ...}>
      */
     public function actions()
     {

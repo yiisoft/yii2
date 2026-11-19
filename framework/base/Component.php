@@ -464,7 +464,7 @@ class Component extends BaseObject
      *
      * Behaviors declared in this method will be attached to the component automatically (on demand).
      *
-     * @return array<array-key, class-string|array{class?: class-string, __class?: class-string, ...}|Behavior> the behavior configurations.
+     * @return array<array-key, class-string|array{class: class-string, __class?: class-string, ...}|array{__class: class-string, class?: class-string, ...}|Behavior> the behavior configurations.
      */
     public function behaviors()
     {
