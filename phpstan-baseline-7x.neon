@@ -49,34 +49,10 @@ parameters:
 			path: framework/db/Command.php
 
 		-
-			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
-			identifier: catch.neverThrown
-			count: 1
-			path: framework/helpers/BaseArrayHelper.php
-
-		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
 			count: 2
 			path: framework/web/Controller.php
-
-		-
-			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
-			identifier: catch.neverThrown
-			count: 1
-			path: framework/web/Request.php
-
-		-
-			message: '#^Dead catch \- yii\\base\\InvalidConfigException is never thrown in the try block\.$#'
-			identifier: catch.neverThrown
-			count: 1
-			path: tests/framework/base/ComponentTest.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
-			count: 1
-			path: tests/framework/base/ComponentTest.php
 
 		-
 			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
