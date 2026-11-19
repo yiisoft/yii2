@@ -317,13 +317,18 @@ Notable changes include:
   types; `getRawValuesFromTraversableObject()` was removed.
 - MSSQL `PDO`, `DBLibPDO`, and `SqlsrvPDO` overrides now declare native PDO-compatible parameter and return types.
 - `yii\rbac\DbManager` and its new cascade extension points declare native parameter and return types.
+- `CookieCollection`, `HeaderCollection`, `Session`, `SessionHandler`, and `SessionIterator` declare native return
+  types on their `IteratorAggregate`, `Countable`, `ArrayAccess`, `Iterator`, and `SessionHandlerInterface` methods
+  (for example, `count(): int`, `offsetGet($offset): mixed`, `offsetSet($offset, $value): void`,
+  `getIterator(): \Traversable`, `read($id): string|false`) instead of `#[\ReturnTypeWillChange]`.
+  `HeaderCollection::getCount()` now declares `int`. Overrides of these methods must declare compatible return types.
 - The database connection used to fetch query results is now passed through `Query::populate()`,
   `ActiveQueryTrait::createModels()`, `ActiveRecord::populateRecord()`, and `ActiveRecord::getTableSchema()`. Overrides
   of these methods must accept the new optional `$db` parameter and forward it when calling the parent implementation.
 
 Run the application's static analysis and test suite after upgrading. Pay particular attention to classes extending
 `Action`, `InlineAction`, `InConditionBuilder`, a database query builder, a database schema class, an MSSQL PDO wrapper,
-or `DbManager`.
+`DbManager`, `Session`, `CookieCollection`, or `HeaderCollection`.
 
 `#[\SensitiveParameter]` is now applied to secret-bearing parameters in `Security`, `User`, and `IdentityInterface` so
 that their values are redacted from stack traces. This does not require a call-site change, but reflection-based tests may

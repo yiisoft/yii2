@@ -71,8 +71,7 @@ class SessionHandler implements SessionHandlerInterface
     /**
      * @inheritDoc
      */
-    #[\ReturnTypeWillChange]
-    public function gc($max_lifetime)
+    public function gc($max_lifetime): int|false
     {
         return $this->_session->gcSession($max_lifetime);
     }
@@ -90,8 +89,7 @@ class SessionHandler implements SessionHandlerInterface
     /**
      * @inheritDoc
      */
-    #[\ReturnTypeWillChange]
-    public function read($id)
+    public function read($id): string|false
     {
         return $this->_session->readSession($id);
     }
