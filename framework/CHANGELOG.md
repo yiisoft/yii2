@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #21150: Fix `yii\web\AssetManager` ignoring the `only`, `except`, `beforeCopy` and `afterCopy` publish options when `linkAssets` is enabled, which published files excluded by these options (rob006)
 - Enh #21150: Add the `files` publish option to `yii\web\AssetManager::publish()` to publish only the listed files and directories of an asset bundle (rob006)
+- Bug #21145: Fix Latin letters in Cyrillic words of the Serbian (`sr`) framework messages (bardrop)
 - Bug #21073: Fix `MultipartFormDataParser` boundary extraction when `Content-Type` has additional parameters (iliaal)
 - Bug #21121: Fix `yii\validators\DateValidator` rejecting non-ASCII dates on PHP 8.4.27 and 8.5.12 (eluhr)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
