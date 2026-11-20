@@ -17,7 +17,7 @@ In Yii 2.0, DAO supports the following databases out of the box:
 - [PostgreSQL](https://www.postgresql.org/): version 8.4 or higher
 - [CUBRID](https://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](https://www.oracle.com/database/)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
+- [MSSQL](https://www.microsoft.com/en-us/sql-server): version 2008 or higher.
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
