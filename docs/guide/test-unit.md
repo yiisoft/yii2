@@ -9,7 +9,7 @@ Unit testing in Yii is built on top of PHPUnit and, optionally, Codeception so i
 
 - [Codeception for Yii framework](https://codeception.com/for/yii)
 - [Codeception Unit Tests](https://codeception.com/docs/05-UnitTests)
-- [PHPUnit docs starting from chapter 2](https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html)
+- [PHPUnit docs starting from chapter 2](https://docs.phpunit.de/en/13.4/writing-tests-for-phpunit.html)
 
 ## Running basic and advanced template tests
 
