@@ -83,6 +83,16 @@ Upgrade from Yii 2.0.55
     Custom storage classes should override `sessionIdExists()` instead and drop that code. The default
     implementation accepts every ID, so a class that does neither is not protected by strict mode.
 
+* `yii\web\AssetManager` with `linkAssets` enabled now honours the `only`, `except`, `beforeCopy` and `afterCopy`
+  publish options (and the `beforeCopy` / `afterCopy` properties of the asset manager). Previously, the whole source
+  directory of an asset bundle was symlinked and these options were ignored. Now, the directory structure is
+  recreated and only the files that pass the filters are symlinked, one by one, so a file that was accessible only
+  because the filters were ignored is not published anymore. A file added to the source directory later is published
+  only after the published directory is removed (or with `forceCopy`, which now recreates the links in this case).
+  To symlink whole subdirectories, list them in the new `files` publish option instead of `only`.
+  When using a custom `hashCallback` that keeps the name of the published directory across the upgrade, the existing
+  symlink is replaced automatically on the next publish.
+
 Upgrade from Yii 2.0.53
 -----------------------
 

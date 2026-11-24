@@ -10,6 +10,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\Exception;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
@@ -49,6 +50,7 @@ use yii\helpers\Url;
  *     beforeCopy?: callable,
  *     afterCopy?: callable,
  *     forceCopy?: bool,
+ *     files?: string[],
  * }
  */
 class AssetManager extends Component
@@ -132,6 +134,26 @@ class AssetManager extends Component
      * ```
      * Options FollowSymLinks
      * ```
+     *
+     * How a directory is published with symbolic links depends on the publish options ([[AssetBundle::publishOptions]]):
+     *
+     * - Without "files" and the options listed below, the whole directory is symlinked.
+     * - With only the "files" option, each listed file or sub-directory is symlinked as a whole. A file added
+     *   to a listed sub-directory later is published immediately. Note that the files whose name starts with a dot
+     *   are not skipped inside a listed sub-directory.
+     * - With any of "only", "except", "beforeCopy", "afterCopy" (also combined with "files"), or when [[beforeCopy]]
+     *   or [[afterCopy]] is set, the directory structure is recreated and each file that passes the filters is
+     *   symlinked separately, so that the files excluded by the filters are not accessible to Web users. The result
+     *   is the same as when the files are copied, except that the callbacks receive a target path inside
+     *   a temporary directory, which is renamed into place when the directory is published, and the target is
+     *   a symlink. Changes of the published files are reflected immediately, but a file added to the source
+     *   directory later is not published until the directory is published again.
+     *
+     * Before version 2.0.56, all publish options were ignored when this property was true and the whole directory
+     * was published.
+     *
+     * Unless [[forceCopy]] is enabled, a directory that has already been published is not published again, even if
+     * the publish options changed, because the name of the published directory does not depend on them.
      */
     public $linkAssets = false;
     /**
@@ -171,6 +193,10 @@ class AssetManager extends Component
      * You may want to set this to be `true` during the development stage to make sure the published
      * directory is always up-to-date. Do not set this to true on production servers as it will
      * significantly degrade the performance.
+     *
+     * When [[linkAssets]] is true, the symlinks are recreated, so that the files added to or removed from the source
+     * directory and the changes of the publish options are reflected. This has no effect when the whole directory
+     * is symlinked.
      */
     public $forceCopy = false;
     /**
@@ -471,10 +497,15 @@ class AssetManager extends Component
      * - forceCopy: boolean, whether the directory being published should be copied even if
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
+     * - files: array, list of files and sub-directories (relative to the published directory) to be published
+     *   instead of the whole directory, e.g. `['css', 'js', 'img/logo.png']`. This is an alternative to the "only"
+     *   option and cannot be combined with "only" and "except". This option is available since version 2.0.56.
+     *
+     * See [[linkAssets]] for how these options are applied when the assets are symlinked.
      *
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
-     * @throws InvalidConfigException if the target directory [[basePath]] is not writeable.
+     * @throws InvalidConfigException if the target directory [[basePath]] is not writeable or the "files" option is invalid.
      */
     public function publish($path, $options = [])
     {
@@ -551,6 +582,8 @@ class AssetManager extends Component
      * - only: array, list of patterns that the file paths should match if they want to be copied.
      * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
      * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
+     * - files: array, list of files and sub-directories (relative to `$src`) to be published instead of the whole
+     *   directory. It cannot be combined with "only" and "except". Available since 2.0.56.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -559,8 +592,11 @@ class AssetManager extends Component
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
      *
+     * See [[linkAssets]] for how these options are applied when the assets are symlinked.
+     *
      * @return string[] the path directory and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
+     * @throws InvalidConfigException if the "files" option is invalid.
      */
     protected function publishDirectory($src, $options)
     {
@@ -568,42 +604,253 @@ class AssetManager extends Component
 
         $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
-        if ($this->linkAssets) {
-            if (!is_dir($dstDir)) {
-                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
-                try { // fix #6226 symlinking multi threaded
-                    symlink($src, $dstDir);
-                } catch (\Exception $e) {
-                    if (!is_dir($dstDir)) {
-                        throw $e;
+        $forceCopy = isset($options['forceCopy']) ? (bool) $options['forceCopy'] : $this->forceCopy;
+        $files = isset($options['files']) ? $this->normalizePublishFiles($src, $options) : null;
+        // must be checked before "files" is turned into a filter
+        $linkEachFile = $this->linkAssets && $this->hasPublishFilters($options);
+        if ($files !== null) {
+            unset($options['files']);
+            $options['filter'] = $this->createPublishFilesFilter($src, $files);
+        }
+
+        if (!$this->linkAssets) {
+            if ($forceCopy || !is_dir($dstDir)) {
+                FileHelper::copyDirectory($src, $dstDir, $this->getCopyOptions($options));
+            }
+        } elseif ($linkEachFile || $files !== null) {
+            // a symlink in place of the target was created without the options and exposes the whole directory
+            if ($forceCopy || !is_dir($dstDir) || is_link($dstDir)) {
+                $this->buildPublishedDirectory($src, $dstDir, $forceCopy, function ($tmpDir) use ($src, $options, $files, $linkEachFile) {
+                    if ($linkEachFile) {
+                        $this->linkDirectoryFiles($src, $tmpDir, $options);
+                    } else {
+                        $this->linkDirectoryEntries($src, $tmpDir, $files);
                     }
+                });
+            }
+        } elseif (!is_dir($dstDir)) {
+            FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
+            try { // fix #6226 symlinking multi threaded
+                symlink($src, $dstDir);
+            } catch (\Exception $e) {
+                if (!is_dir($dstDir)) {
+                    throw $e;
                 }
             }
-        } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
-            $opts = array_merge(
-                $options,
-                [
-                    'dirMode' => $this->dirMode,
-                    'fileMode' => $this->fileMode,
-                    'copyEmptyDirectories' => false,
-                ]
-            );
-            if (!isset($opts['beforeCopy'])) {
-                if ($this->beforeCopy !== null) {
-                    $opts['beforeCopy'] = $this->beforeCopy;
-                } else {
-                    $opts['beforeCopy'] = function ($from, $to) {
-                        return strncmp(basename($from), '.', 1) !== 0;
-                    };
-                }
-            }
-            if (!isset($opts['afterCopy']) && $this->afterCopy !== null) {
-                $opts['afterCopy'] = $this->afterCopy;
-            }
-            FileHelper::copyDirectory($src, $dstDir, $opts);
         }
 
         return [$dstDir, $this->baseUrl . '/' . $dir];
+    }
+
+    /**
+     * Returns the options for [[FileHelper::copyDirectory()]] used to publish a directory.
+     * @param array $options the publish options.
+     * @return array the options for [[FileHelper::copyDirectory()]].
+     */
+    private function getCopyOptions($options)
+    {
+        $opts = array_merge(
+            $options,
+            [
+                'dirMode' => $this->dirMode,
+                'fileMode' => $this->fileMode,
+                'copyEmptyDirectories' => false,
+            ]
+        );
+        if (!isset($opts['beforeCopy'])) {
+            if ($this->beforeCopy !== null) {
+                $opts['beforeCopy'] = $this->beforeCopy;
+            } else {
+                $opts['beforeCopy'] = function ($from, $to) {
+                    return strncmp(basename($from), '.', 1) !== 0;
+                };
+            }
+        }
+        if (!isset($opts['afterCopy']) && $this->afterCopy !== null) {
+            $opts['afterCopy'] = $this->afterCopy;
+        }
+
+        return $opts;
+    }
+
+    /**
+     * Checks whether the publish options (other than "files") select only a part of a directory or need to be called
+     * for each file, so that each file must be symlinked separately.
+     * @param array $options the publish options.
+     * @return bool whether the options filter the published files.
+     */
+    private function hasPublishFilters($options)
+    {
+        return !empty($options['only'])
+            || !empty($options['except'])
+            || isset($options['filter'])
+            || isset($options['beforeCopy'])
+            || isset($options['afterCopy'])
+            || (isset($options['recursive']) && !$options['recursive'])
+            || $this->beforeCopy !== null
+            || $this->afterCopy !== null;
+    }
+
+    /**
+     * Recreates the structure of a directory and symlinks each file that passes the filters of the publish options.
+     *
+     * The directory is walked by [[FileHelper::copyDirectory()]], so the filters have exactly the same meaning as
+     * when the directory is copied, but each file is symlinked instead of being copied.
+     *
+     * @param string $src the asset directory to be published.
+     * @param string $dst the directory to create the symlinks in.
+     * @param array $options the publish options.
+     */
+    private function linkDirectoryFiles($src, $dst, $options)
+    {
+        $opts = $this->getCopyOptions($options);
+        $beforeCopy = $opts['beforeCopy'];
+        $afterCopy = isset($opts['afterCopy']) ? $opts['afterCopy'] : null;
+        $dirMode = $this->dirMode;
+        $opts['beforeCopy'] = function ($from, $to) use ($beforeCopy, $afterCopy, $dirMode) {
+            if (!call_user_func($beforeCopy, $from, $to)) {
+                return false;
+            }
+            if (!is_file($from)) {
+                // directories are traversed by copyDirectory(), they must not be linked as a whole
+                return true;
+            }
+            FileHelper::createDirectory(dirname($to), $dirMode, true);
+            symlink($from, $to);
+            if ($afterCopy !== null) {
+                call_user_func($afterCopy, $from, $to);
+            }
+
+            // the file is linked, copyDirectory() must not copy it
+            return false;
+        };
+
+        FileHelper::copyDirectory($src, $dst, $opts);
+    }
+
+    /**
+     * Symlinks each entry of the "files" publish option as a whole.
+     * @param string $src the asset directory to be published.
+     * @param string $dst the directory to create the symlinks in.
+     * @param string[] $files the entries of the "files" publish option, as returned by [[normalizePublishFiles()]].
+     */
+    private function linkDirectoryEntries($src, $dst, $files)
+    {
+        foreach ($files as $file) {
+            $to = $dst . DIRECTORY_SEPARATOR . $file;
+            FileHelper::createDirectory(dirname($to), $this->dirMode, true);
+            symlink($src . DIRECTORY_SEPARATOR . $file, $to);
+        }
+    }
+
+    /**
+     * Creates a "filter" callback for [[FileHelper::copyDirectory()]] that accepts the entries of the "files"
+     * publish option, everything inside them and the directories that contain them.
+     * @param string $src the asset directory to be published.
+     * @param string[] $files the entries of the "files" publish option, as returned by [[normalizePublishFiles()]].
+     * @return callable the filter callback.
+     */
+    private function createPublishFilesFilter($src, $files)
+    {
+        $prefix = FileHelper::normalizePath($src) . DIRECTORY_SEPARATOR;
+
+        return function ($path) use ($prefix, $files) {
+            $path = substr(FileHelper::normalizePath($path), strlen($prefix)) . DIRECTORY_SEPARATOR;
+            foreach ($files as $file) {
+                $file .= DIRECTORY_SEPARATOR;
+                // the entry itself or a file inside it, or a directory on the way to the entry
+                if (strpos($path, $file) === 0 || strpos($file, $path) === 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+
+    /**
+     * Validates and normalizes the "files" publish option.
+     * @param string $src the asset directory to be published.
+     * @param array $options the publish options.
+     * @return string[] the listed entries, relative to `$src`, with the system directory separator.
+     * @throws InvalidConfigException if the "files" option is invalid.
+     */
+    private function normalizePublishFiles($src, $options)
+    {
+        $filters = array_intersect(['only', 'except', 'filter'], array_keys($options));
+        if (!empty($filters)) {
+            throw new InvalidConfigException(
+                'The "files" publish option cannot be combined with "' . implode('", "', $filters) . "\" (publishing \"$src\")."
+            );
+        }
+        if (!is_array($options['files']) || empty($options['files'])) {
+            throw new InvalidConfigException("The \"files\" publish option must be a non-empty array (publishing \"$src\").");
+        }
+
+        $files = [];
+        foreach ($options['files'] as $file) {
+            $parts = is_string($file) ? preg_split('~[/\\\\]~', rtrim($file, '/\\')) : [];
+            if (
+                empty($parts)
+                || array_intersect($parts, ['', '.', '..']) !== []
+                || strpos($parts[0], ':') !== false
+                || !file_exists($src . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $parts))
+            ) {
+                throw new InvalidConfigException(
+                    'The "files" publish option lists ' . (is_string($file) ? "\"$file\"" : 'a non-string value')
+                    . ", which is not an existing relative path inside \"$src\"."
+                );
+            }
+            $files[] = implode(DIRECTORY_SEPARATOR, $parts);
+        }
+
+        foreach ($files as $i => $a) {
+            foreach ($files as $j => $b) {
+                if ($i !== $j && strpos($b . DIRECTORY_SEPARATOR, $a . DIRECTORY_SEPARATOR) === 0) {
+                    throw new InvalidConfigException(
+                        "The \"files\" publish option lists \"$b\", which is already published by \"$a\" (publishing \"$src\")."
+                    );
+                }
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * Builds a published directory in a temporary directory next to the target and renames it into place.
+     *
+     * If another process publishes the same directory at the same time, its result is kept and the temporary
+     * directory is removed.
+     *
+     * @param string $src the asset directory to be published.
+     * @param string $dstDir the target directory.
+     * @param bool $replace whether to replace an existing target directory.
+     * @param callable $build a callback that builds the published directory, called with the temporary directory.
+     * @throws Exception if the target directory cannot be created.
+     */
+    private function buildPublishedDirectory($src, $dstDir, $replace, $build)
+    {
+        $tmpDir = $dstDir . '.tmp-' . bin2hex(random_bytes(8));
+        FileHelper::createDirectory($tmpDir, $this->dirMode, true);
+        try {
+            call_user_func($build, $tmpDir);
+            if (is_link($dstDir)) {
+                // a symlink to the whole source directory, created without the publish options
+                @FileHelper::unlink($dstDir);
+            } elseif ($replace && is_dir($dstDir)) {
+                FileHelper::removeDirectory($dstDir);
+            }
+            // if another process has published the directory in the meantime, its result is kept
+            if (!@rename($tmpDir, $dstDir) && (!is_dir($dstDir) || is_link($dstDir))) {
+                throw new Exception("Unable to publish \"$src\" to \"$dstDir\".");
+            }
+        } finally {
+            // symlinks are not followed, so the linked source files are not touched
+            if (is_dir($tmpDir)) {
+                FileHelper::removeDirectory($tmpDir);
+            }
+        }
     }
 
     /**
