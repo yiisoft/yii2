@@ -206,7 +206,7 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
 
 Instead of patterns, you may list the published files and subdirectories explicitly in the `files` publishing option
 (available since version 2.0.56). Each listed entry is published with all its contents, so this is the simplest way
-to publish only the client side part of a package that also contains server side code:
+to publish only the client-side part of a package that also contains server-side code:
 
 ```php
 public $sourcePath = '@vendor/studio-42/elfinder';
@@ -219,8 +219,9 @@ The `files` option is an alternative to `only` and cannot be combined with `only
 `beforeCopy` and `afterCopy`, work with it as usual.
 
 > Note: The name of the published directory does not depend on the publishing options. A directory that has already
-  been published is not updated when you change them, so remove it from the `@webroot/assets` directory (or use
-  the `forceCopy` option) after such a change.
+  been published is not updated when you change them, so remove it from the `@webroot/assets` directory after such
+  a change. The `forceCopy` option recreates a directory published by symbolic links, but it does not remove the
+  files that are no longer selected from a copied directory.
 
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>

@@ -152,8 +152,10 @@ class AssetManager extends Component
      * Before version 2.0.56, all publish options were ignored when this property was true and the whole directory
      * was published.
      *
-     * Unless [[forceCopy]] is enabled, a directory that has already been published is not published again, even if
-     * the publish options changed, because the name of the published directory does not depend on them.
+     * A directory that has already been published is not published again, even if the publish options changed,
+     * because the name of the published directory does not depend on them. With [[forceCopy]], a directory published
+     * by symbolic links is recreated, so that the files no longer selected by the options are removed (a copied
+     * directory is copied again, but the files no longer selected stay there until it is removed).
      */
     public $linkAssets = false;
     /**
@@ -637,6 +639,17 @@ class AssetManager extends Component
                     throw $e;
                 }
             }
+        } elseif ($forceCopy && !is_link($dstDir)) {
+            // a directory published with the filters before, replaced by a symlink to the whole directory
+            $tmpLink = $dstDir . '.tmp-' . bin2hex(random_bytes(8));
+            $this->createSymlink($src, $tmpLink);
+            try {
+                $this->moveIntoPlace($src, $tmpLink, $dstDir, true);
+            } finally {
+                if (is_link($tmpLink)) {
+                    FileHelper::unlink($tmpLink);
+                }
+            }
         }
 
         return [$dstDir, $this->baseUrl . '/' . $dir];
@@ -716,7 +729,7 @@ class AssetManager extends Component
                 return true;
             }
             FileHelper::createDirectory(dirname($to), $dirMode, true);
-            symlink($from, $to);
+            $this->createSymlink($from, $to);
             if ($afterCopy !== null) {
                 call_user_func($afterCopy, $from, $to);
             }
@@ -739,7 +752,20 @@ class AssetManager extends Component
         foreach ($files as $file) {
             $to = $dst . DIRECTORY_SEPARATOR . $file;
             FileHelper::createDirectory(dirname($to), $this->dirMode, true);
-            symlink($src . DIRECTORY_SEPARATOR . $file, $to);
+            $this->createSymlink($src . DIRECTORY_SEPARATOR . $file, $to);
+        }
+    }
+
+    /**
+     * Creates a symbolic link.
+     * @param string $target the target of the link.
+     * @param string $link the path of the link.
+     * @throws Exception if the link cannot be created.
+     */
+    private function createSymlink($target, $link)
+    {
+        if (!symlink($target, $link)) {
+            throw new Exception("Unable to create a symbolic link \"$link\" to \"$target\".");
         }
     }
 
@@ -818,7 +844,7 @@ class AssetManager extends Component
     }
 
     /**
-     * Builds a published directory in a temporary directory next to the target and renames it into place.
+     * Builds a published directory in a temporary directory next to the target and moves it into place.
      *
      * If another process publishes the same directory at the same time, its result is kept and the temporary
      * directory is removed.
@@ -835,20 +861,53 @@ class AssetManager extends Component
         FileHelper::createDirectory($tmpDir, $this->dirMode, true);
         try {
             call_user_func($build, $tmpDir);
+            // a symlink to the whole source directory exposes the files excluded by the options, so it is always replaced
+            $this->moveIntoPlace($src, $tmpDir, $dstDir, $replace || is_link($dstDir));
             if (is_link($dstDir)) {
-                // a symlink to the whole source directory, created without the publish options
-                @FileHelper::unlink($dstDir);
-            } elseif ($replace && is_dir($dstDir)) {
-                FileHelper::removeDirectory($dstDir);
-            }
-            // if another process has published the directory in the meantime, its result is kept
-            if (!@rename($tmpDir, $dstDir) && (!is_dir($dstDir) || is_link($dstDir))) {
-                throw new Exception("Unable to publish \"$src\" to \"$dstDir\".");
+                throw new Exception("Unable to publish \"$src\" to \"$dstDir\": it is a symbolic link to the whole directory.");
             }
         } finally {
             // symlinks are not followed, so the linked source files are not touched
             if (is_dir($tmpDir)) {
                 FileHelper::removeDirectory($tmpDir);
+            }
+        }
+    }
+
+    /**
+     * Moves a newly published directory or symbolic link into place.
+     *
+     * An existing target is moved aside first and removed afterwards, so that the target is missing only between
+     * two renames. If another process publishes the target in the meantime, its result is kept.
+     *
+     * @param string $src the asset directory to be published.
+     * @param string $path the newly published directory or symbolic link.
+     * @param string $dstDir the target directory.
+     * @param bool $replace whether to replace an existing target.
+     * @throws Exception if the target cannot be created.
+     */
+    private function moveIntoPlace($src, $path, $dstDir, $replace)
+    {
+        $oldDir = null;
+        if ($replace && (is_dir($dstDir) || is_link($dstDir))) {
+            $oldDir = $dstDir . '.old-' . bin2hex(random_bytes(8));
+            if (!@rename($dstDir, $oldDir)) {
+                // moved by another process in the meantime
+                $oldDir = null;
+            }
+        }
+        try {
+            if (!@rename($path, $dstDir) && !is_dir($dstDir)) {
+                throw new Exception("Unable to publish \"$src\" to \"$dstDir\".");
+            }
+        } finally {
+            if ($oldDir !== null) {
+                // symlinks are not followed, so the linked source files are not touched
+                if (is_link($oldDir)) {
+                    FileHelper::unlink($oldDir);
+                } else {
+                    FileHelper::removeDirectory($oldDir);
+                }
             }
         }
     }

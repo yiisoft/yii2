@@ -118,8 +118,9 @@ class AssetBundle extends BaseObject
      * is being published. This property is used only when [[sourcePath]] is set.
      *
      * Note that the name of the published directory does not depend on these options, so an already published
-     * directory is not updated when they change. The change takes effect after the published directory is removed
-     * (or with the "forceCopy" option).
+     * directory is not updated when they change. The change takes effect after the published directory is removed.
+     * The "forceCopy" option recreates a directory published by symbolic links, but it does not remove the files
+     * that are no longer selected from a copied directory.
      *
      * @see AssetManager::publish() for the supported options.
      * @see AssetManager::linkAssets for how the options are applied when the assets are symlinked.

@@ -104,6 +104,7 @@ class AssetManagerPublishOptionsTest extends TestCase
     private function assertNoTemporaryDirectories(): void
     {
         $this->assertSame([], glob($this->assetsPath . DIRECTORY_SEPARATOR . '*.tmp-*'));
+        $this->assertSame([], glob($this->assetsPath . DIRECTORY_SEPARATOR . '*.old-*'));
     }
 
     public function testLinkAssetsWithoutFiltersLinksWholeDirectory(): void
@@ -145,14 +146,29 @@ class AssetManagerPublishOptionsTest extends TestCase
      */
     public function testLinkAssetsPublishesSameFilesAsCopy(array $options): void
     {
+        $calls = [];
+        $afterCopy = isset($options['afterCopy']) ? $options['afterCopy'] : null;
+        $options['afterCopy'] = function ($from, $to) use (&$calls, $afterCopy) {
+            $calls[] = str_replace('\\', '/', substr($from, strlen($this->sourcePath) + 1));
+            if ($afterCopy !== null) {
+                $afterCopy($from, $to);
+            }
+        };
+
         [$copied] = $this->createManager()->publish($this->sourcePath, $options);
         $copiedFiles = $this->listFiles($copied);
+        $copiedCalls = $calls;
         FileHelper::removeDirectory($copied);
+        $calls = [];
 
         [$linked] = $this->createManager(['linkAssets' => true])->publish($this->sourcePath, $options);
 
         $this->assertSame($copiedFiles, $this->listFiles($linked));
         $this->assertAllLinked($linked);
+        sort($copiedCalls);
+        sort($calls);
+        $this->assertNotEmpty($calls);
+        $this->assertSame($copiedCalls, $calls, 'afterCopy must be called for the same files and directories.');
     }
 
     public static function filterOptionsProvider(): array
@@ -204,9 +220,13 @@ class AssetManagerPublishOptionsTest extends TestCase
 
         [$path] = $am->publish($this->sourcePath);
 
-        $this->assertFalse(is_link($path));
         $this->assertFileDoesNotExist($path . '/php/secret.php');
-        $this->assertFileExists($path . '/js/app.js');
+        // the custom beforeCopy replaces the default one, which skips the dotfiles
+        $this->assertSame(
+            ['.hidden', 'css/app.css', 'img/logo.png', 'js/.hidden.js', 'js/app.js', 'js/i18n/en.js'],
+            $this->listFiles($path)
+        );
+        $this->assertAllLinked($path);
     }
 
     public function testLinkAssetsCallsAfterCopyForLinks(): void
@@ -276,6 +296,19 @@ class AssetManagerPublishOptionsTest extends TestCase
 
         $this->assertTrue(is_link($path));
         $this->assertFileExists($this->sourcePath . '/php/secret.php');
+    }
+
+    public function testLinkAssetsWithoutFiltersAndForceCopyReplacesFilteredDirectory(): void
+    {
+        [$path] = $this->createManager(['linkAssets' => true])->publish($this->sourcePath, ['only' => ['/js/*']]);
+        $this->assertFalse(is_link($path));
+
+        $this->createManager(['linkAssets' => true, 'forceCopy' => true])->publish($this->sourcePath);
+
+        $this->assertTrue(is_link($path));
+        $this->assertFileExists($path . '/css/app.css');
+        $this->assertFileExists($this->sourcePath . '/js/app.js', 'The source must not be touched.');
+        $this->assertNoTemporaryDirectories();
     }
 
     public function testLinkAssetsWithFiltersReplacesWholeDirectoryLink(): void
