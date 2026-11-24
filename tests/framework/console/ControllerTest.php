@@ -486,4 +486,69 @@ class ControllerTest extends TestCase
         $helpSummary = $controller->getActionHelpSummary(null);
         $this->assertEquals($controller->ansiFormat('Action not found.', Console::FG_RED), $helpSummary);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20694
+     */
+    public function testGetOptionValuesUsesGivenActionId(): void
+    {
+        $controller = $this->createControllerWithActionSpecificOption();
+        $controller->action = new InlineAction('index', $controller, 'actionIndex');
+
+        self::assertSame(
+            ['color', 'interactive', 'help', 'silentExitOnException'],
+            array_keys($controller->getOptionValues('index')),
+            'Options of the given action should be returned.',
+        );
+        self::assertSame(
+            ['color', 'interactive', 'help', 'silentExitOnException', 'dryRun'],
+            array_keys($controller->getOptionValues('deploy')),
+            'Options of the given action should be returned, not those of the current action.',
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20694
+     */
+    public function testGetOptionValuesWithoutCurrentAction(): void
+    {
+        $controller = $this->createControllerWithActionSpecificOption(dryRun: true);
+
+        self::assertNull($controller->action);
+        self::assertTrue(
+            $controller->getOptionValues('deploy')['dryRun'],
+            'Option values should be available before an action is run.',
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20694
+     */
+    public function testGetOptionValuesForEmptyActionIdUsesDefaultAction(): void
+    {
+        $controller = $this->createControllerWithActionSpecificOption(dryRun: true);
+        $controller->defaultAction = 'deploy';
+
+        self::assertTrue(
+            $controller->getOptionValues('')['dryRun'],
+            'Options of the default action should be returned for an empty action ID.',
+        );
+    }
+
+    private function createControllerWithActionSpecificOption(bool $dryRun = false): Controller
+    {
+        $controller = new class('fake', Yii::$app) extends Controller {
+            public bool $dryRun = false;
+
+            public function options($actionID)
+            {
+                $options = parent::options($actionID);
+
+                return $actionID === 'deploy' ? [...$options, 'dryRun'] : $options;
+            }
+        };
+        $controller->dryRun = $dryRun;
+
+        return $controller;
+    }
 }
