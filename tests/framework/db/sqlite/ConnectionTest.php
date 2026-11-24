@@ -55,6 +55,8 @@ class ConnectionTest extends BaseConnection
 
     public function testTransactionIsolation(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $connection = $this->getConnection(true);
 
         $transaction = $connection->beginTransaction(Transaction::READ_UNCOMMITTED);
@@ -62,8 +64,6 @@ class ConnectionTest extends BaseConnection
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->rollBack();
-
-        $this->assertTrue(true); // No exceptions means test is passed.
     }
 
     public function testMasterSlave(): void

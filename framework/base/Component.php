@@ -174,6 +174,7 @@ class Component extends BaseObject
      * @param mixed $value the property value
      * @throws UnknownPropertyException if the property is not defined
      * @throws InvalidCallException if the property is read-only.
+     * @throws InvalidConfigException if the behavior configuration is invalid.
      * @see __get()
      */
     public function __set($name, $value)
@@ -464,7 +465,7 @@ class Component extends BaseObject
      *
      * Behaviors declared in this method will be attached to the component automatically (on demand).
      *
-     * @return array<array-key, class-string|array{class: class-string, ...}|Behavior> the behavior configurations.
+     * @return array<array-key, class-string|array{class?: class-string, __class?: class-string, ...}|Behavior> the behavior configurations.
      */
     public function behaviors()
     {
@@ -702,6 +703,8 @@ class Component extends BaseObject
      *
      * @phpstan-return Behavior<static>
      * @psalm-return Behavior<self>
+     *
+     * @phpstan-impure
      */
     public function attachBehavior($name, $behavior)
     {

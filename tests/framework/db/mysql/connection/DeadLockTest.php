@@ -67,7 +67,6 @@ class DeadLockTest extends ConnectionTest
             }
             if (0 === $pidSecond) {
                 // SECOND child
-                $this->setErrorHandler();
                 exit($this->childrenUpdateLocked());
             }
 
@@ -77,7 +76,6 @@ class DeadLockTest extends ConnectionTest
             }
             if (0 === $pidFirst) {
                 // FIRST child
-                $this->setErrorHandler();
                 exit($this->childrenSelectAndAccidentUpdate($pidSecond));
             }
 
@@ -258,18 +256,6 @@ class DeadLockTest extends ConnectionTest
         }
         $this->log('child 2: exit');
         return 0;
-    }
-
-    /**
-     * Set own error handler.
-     * In case of error in child process its execution bubbles up to phpunit to continue
-     * all the rest tests. So, all the rest tests in this case will run both in the child
-     * and parent processes. Such mess must be prevented with child's own error handler.
-     *
-     * @phpstan-impure
-     */
-    private function setErrorHandler(): void
-    {
     }
 
     /**

@@ -36,7 +36,7 @@ on:
 
 jobs:
   php-cs-fixer:
-    uses: yiisoft/yii2-actions/.github/workflows/php-cs-fixer.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+    uses: yiisoft/yii2-actions/.github/workflows/php-cs-fixer.yml@master
     with:
       configuration: .php-cs-fixer.dist.php
       php-version: '["8.3"]'

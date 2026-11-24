@@ -132,7 +132,7 @@ class AccessRule extends Component
      */
     public $verbs;
     /**
-     * @var callable a callback that will be called to determine if the rule should be applied.
+     * @var callable|null a callback that will be called to determine if the rule should be applied.
      * The signature of the callback should be as follows:
      *
      * ```

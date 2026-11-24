@@ -208,7 +208,7 @@ final class ComponentTest extends TestCase
             'Getting unknown property: yiiunit\data\base\NewComponent::Caption',
         );
 
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound, expr.resultUnused (We intentionally access a non-existent property to test that an exception is thrown)
         $this->component->Caption;
     }
 
@@ -1019,6 +1019,7 @@ final class ComponentTest extends TestCase
             'Getting write-only property: yiiunit\data\base\NewComponent::writeOnly',
         );
 
+        // @phpstan-ignore expr.resultUnused (We intentionally read a write-only property to test that an exception is thrown)
         $this->component->writeOnly;
     }
 

@@ -71,12 +71,16 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
 
     /**
      * Returns the named header(s).
+     * @template TDefault of string|string[]|null
      * @param string $name the name of the header to return
-     * @param ($first is true ? string|null : string[]|null) $default the value to return in case the named header does not exist
+     * @param TDefault $default the value to return in case the named header does not exist
      * @param bool $first whether to only return the first header of the specified name.
      * If false, all headers of the specified name will be returned.
-     * @return ($first is true ? string|null : string[]|null) the named header(s). If `$first` is true, a string will be returned;
-     * If `$first` is false, an array will be returned.
+     * @return ($first is true ? string|false|TDefault : string[]|TDefault) the named header(s). If `$first` is true, a string will be returned.
+     * @return ($first is true ? string|false|TDefault : string[]|TDefault)
+     * If the named header does not exist, returns `$default` unchanged regardless of `$first`.
+     * If `$first` is `false`, returns the array of values for the header.
+     * Otherwise, returns the first value as a `string`, or `false` if the array is empty.
      */
     public function get($name, $default = null, $first = true)
     {

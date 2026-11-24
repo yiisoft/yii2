@@ -23,7 +23,7 @@ abstract class DatabaseTestCase extends TestCase
     protected $driverName;
     protected static string $driverNameStatic = '';
     /**
-     * @var Connection
+     * @var Connection|null
      */
     private $_db;
 

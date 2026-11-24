@@ -8,8 +8,6 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use ArrayAccess;
-use Traversable;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
@@ -203,8 +201,6 @@ class ActiveRecordTest extends BaseActiveRecord
             $this->assertEquals($expected, $value, 'In column ' . $attribute);
 
             if ($value instanceof ArrayExpression) {
-                $this->assertInstanceOf(ArrayAccess::class, $value);
-                $this->assertInstanceOf(Traversable::class, $value);
                 /** testing arrayaccess */
                 foreach ($type->$attribute as $key => $v) {
                     $this->assertSame($expected[$key], $value[$key]);

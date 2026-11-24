@@ -381,7 +381,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();
@@ -389,7 +389,7 @@ abstract class Target extends Component
             $userID = '-';
         }
 
-        /** @var \yii\web\Session $session */
+        /** @var \yii\web\Session|null $session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 

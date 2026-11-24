@@ -51,10 +51,10 @@ final class EmailTargetTest extends TestCase
             ],
         );
 
-        self::assertInstanceOf(
-            EmailTarget::class,
-            $target,
-            'A configured recipient must allow target initialization.',
+        self::assertSame(
+            'developer1@example.com',
+            $target->message['to'],
+            'A configured recipient must be kept after target initialization.',
         );
     }
 

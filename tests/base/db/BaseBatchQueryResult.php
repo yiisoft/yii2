@@ -31,7 +31,6 @@ abstract class BaseBatchQueryResult extends DatabaseTestCase
         $query = new Query();
         $query->from('customer')->orderBy('id');
         $result = $query->batch(2, $db);
-        $this->assertInstanceOf(BatchQueryResult::class, $result);
         $this->assertEquals(2, $result->batchSize);
         $this->assertSame($result->query, $query);
 

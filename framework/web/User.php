@@ -230,6 +230,8 @@ class User extends Component
      * @param T|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
      * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
+     *
+     * @phpstan-impure
      */
     public function setIdentity($identity)
     {
@@ -301,7 +303,8 @@ class User extends Component
      * This method will first authenticate the user by calling [[IdentityInterface::findIdentityByAccessToken()]]
      * with the provided access token. If successful, it will call [[login()]] to log in the authenticated user.
      * If authentication fails or [[login()]] is unsuccessful, it will return null.
-     * @param string $token the access token
+     * @param string $token the access token. A non-string value is rejected
+     * (returns null) without querying the identity class.
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
      * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
      * @return T|null the identity associated with the given access token. Null is returned if
@@ -309,6 +312,10 @@ class User extends Component
      */
     public function loginByAccessToken(#[SensitiveParameter] $token, $type = null)
     {
+        if (!is_string($token)) {
+            return null;
+        }
+
         $class = $this->identityClass;
         $identity = $class::findIdentityByAccessToken($token, $type);
         if ($identity && $this->login($identity)) {

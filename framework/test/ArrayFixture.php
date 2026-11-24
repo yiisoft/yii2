@@ -38,6 +38,8 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
      *
      * The default implementation simply stores the data returned by [[getData()]] in [[data]].
      * You should usually override this method by putting the data into the underlying database.
+     *
+     * @phpstan-impure
      */
     public function load()
     {

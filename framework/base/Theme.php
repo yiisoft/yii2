@@ -64,8 +64,10 @@ use yii\helpers\FileHelper;
  *
  * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
  *
- * @property string $basePath The root path of this theme. All resources of this theme are located under this
- * directory.
+ * @property-read string|null $basePath The root path of this theme. All resources of this theme are located
+ * under this directory.
+ * @property-write string $basePath The root path or [path alias](guide:concept-aliases) of this theme. All
+ * resources of this theme are located under this directory.
  * @property string|null $baseUrl The base URL (without ending slash) for this theme. All resources of this
  * theme are considered to be under this base URL.
  *
@@ -104,11 +106,11 @@ class Theme extends Component
         $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
 
-    /** @var string */
+    /** @var string|null */
     private $_basePath;
 
     /**
-     * @return string the root path of this theme. All resources of this theme are located under this directory.
+     * @return string|null the root path of this theme. All resources of this theme are located under this directory.
      * @see pathMap
      */
     public function getBasePath()

@@ -650,6 +650,8 @@ EXPECTED;
      */
     public function testMinimumWidth(array|string $smallString): void
     {
+        $this->expectNotToPerformAssertions();
+
         $bigString = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
         (new Table())
@@ -659,9 +661,6 @@ EXPECTED;
             ])
             ->setScreenWidth(20)
             ->run();
-
-        // Without exceptions
-        $this->assertTrue(true);
     }
 
     public static function dataMinimumWidth(): array

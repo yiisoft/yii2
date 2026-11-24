@@ -1262,7 +1262,7 @@ class BaseHtml
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param Model|array<Model> $models the model(s) whose validation errors are to be displayed.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
@@ -1303,7 +1303,7 @@ class BaseHtml
 
     /**
      * Return array of the validation errors
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param Model|array<Model> $models the model(s) whose validation errors are to be displayed.
      * @param $encode boolean, if set to false then the error messages won't be encoded.
      * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
@@ -2207,7 +2207,7 @@ class BaseHtml
      *
      * @param array $style the CSS style array. The array keys are the CSS property names,
      * and the array values are the corresponding CSS property values.
-     * @return string the CSS style string. If the CSS style is empty, a null will be returned.
+     * @return string|null the CSS style string. If the CSS style is empty, a null will be returned.
      */
     public static function cssStyleFromArray(array $style)
     {
@@ -2285,7 +2285,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array|null the corresponding attribute value
+     * @return mixed the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)

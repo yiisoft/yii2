@@ -1924,7 +1924,9 @@ abstract class BaseQueryBuilder extends DatabaseTestCase
      */
     public function testInitFixtures(): void
     {
-        $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
+        $this->expectNotToPerformAssertions();
+
+        $this->getQueryBuilder(true, true);
     }
 
     public static function batchInsertProvider(): array

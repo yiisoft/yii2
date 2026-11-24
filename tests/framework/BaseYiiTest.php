@@ -83,7 +83,6 @@ class BaseYiiTest extends TestCase
             'a' => 42,
         ]);
 
-        $this->assertInstanceOf(Qux::class, $qux);
         $this->assertSame(42, $qux->a);
     }
 
@@ -124,7 +123,6 @@ class BaseYiiTest extends TestCase
             'fooDependent' => ['__class' => FooDependentSubclass::class],
         ]);
 
-        $this->assertInstanceOf(FooBaz::class, $object);
         $this->assertInstanceOf(FooDependentSubclass::class, $object->fooDependent);
     }
 
@@ -141,7 +139,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertInstanceOf(Logger::class, $defaultLogger);
+        $this->assertNotSame($logger, $defaultLogger);
     }
 
     /**

@@ -21,7 +21,7 @@ class CallbackDependencyTest extends TestCase
 
         $dependency = new CallbackDependency();
         $dependency->callback = function () use (&$dependencyValue) {
-            return $dependencyValue === true;
+            return $dependencyValue;
         };
 
         $dependency->evaluateDependency($cache);

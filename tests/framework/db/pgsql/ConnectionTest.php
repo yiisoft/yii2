@@ -46,7 +46,7 @@ class ConnectionTest extends BaseConnection
 
     public function testConnection(): void
     {
-        $this->assertIsObject($this->getConnection(true));
+        $this->assertTrue($this->getConnection(true)->getIsActive());
     }
 
     public function testConfiguredDefaultSchemaIsAppliedToSession(): void

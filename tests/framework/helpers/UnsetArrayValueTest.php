@@ -20,6 +20,6 @@ class UnsetArrayValueTest extends TestCase
     {
         $object = new UnsetArrayValue();
         $result = $object::__set_state([]);
-        $this->assertInstanceOf('yii\helpers\UnsetArrayValue', $result);
+        $this->assertEquals($object, $result);
     }
 }

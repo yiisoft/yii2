@@ -86,7 +86,6 @@ class BaseMailerTest extends TestCase
         ];
         $mailer->setView($viewConfig);
         $view = $mailer->getView();
-        $this->assertIsObject($view, 'Unable to setup view via config!');
         $this->assertEquals($viewConfig['params'], $view->params, 'Unable to configure view via config array!');
     }
 
@@ -97,7 +96,7 @@ class BaseMailerTest extends TestCase
     {
         $mailer = new TestMailer();
         $view = $mailer->getView();
-        $this->assertIsObject($view, 'Unable to get default view!');
+        $this->assertSame($view, $mailer->getView());
     }
 
     public function testCreateMessage(): void

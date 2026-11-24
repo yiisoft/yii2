@@ -264,6 +264,7 @@ final class EventTest extends TestCase
 
         $someClass->emitEvent();
 
+        // @phpstan-ignore staticMethod.impossibleType (PHPStan does not know that the variable is changed by reference in the event handler)
         self::assertTrue(
             $triggered,
             'Should trigger on instance-level event.',
@@ -273,13 +274,9 @@ final class EventTest extends TestCase
         $triggered = false;
 
         // class-level
-        self::assertFalse(
-            $triggered,
-            'Should not have triggered after reset.',
-        );
-
         Event::trigger(SomeClass::class, 'super.test');
 
+        // @phpstan-ignore staticMethod.impossibleType (PHPStan does not know that the variable is changed by reference in the event handler)
         self::assertTrue(
             $triggered,
             'Should trigger on class-level event.',

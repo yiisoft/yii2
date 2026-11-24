@@ -1841,6 +1841,7 @@ class MagicModel extends Model
         return 42;
     }
 
+    // @phpstan-ignore property.unused (The property is intentionally inaccessible from outside to test that the getter is used)
     private $moreMagic;
 
     public function getMoreMagic()

@@ -1166,7 +1166,7 @@ class BaseConsole
 
     /**
      * Generates a summary of the validation errors.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param Model|array<Model> $models the model(s) whose validation errors are to be displayed.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
@@ -1185,7 +1185,7 @@ class BaseConsole
 
     /**
      * Return array of the validation errors
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param Model|array<Model> $models the model(s) whose validation errors are to be displayed.
      * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
      * @return array of the validation errors
