@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\web;
 
+use ArrayObject;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
@@ -146,9 +147,10 @@ class AssetManagerPublishOptionsTest extends TestCase
      */
     public function testLinkAssetsPublishesSameFilesAsCopy(array $options): void
     {
-        $calls = [];
+        /** @var ArrayObject<int, string> $calls */
+        $calls = new ArrayObject();
         $afterCopy = isset($options['afterCopy']) ? $options['afterCopy'] : null;
-        $options['afterCopy'] = function ($from, $to) use (&$calls, $afterCopy) {
+        $options['afterCopy'] = function ($from, $to) use ($calls, $afterCopy) {
             $calls[] = str_replace('\\', '/', substr($from, strlen($this->sourcePath) + 1));
             if ($afterCopy !== null) {
                 $afterCopy($from, $to);
@@ -157,18 +159,19 @@ class AssetManagerPublishOptionsTest extends TestCase
 
         [$copied] = $this->createManager()->publish($this->sourcePath, $options);
         $copiedFiles = $this->listFiles($copied);
-        $copiedCalls = $calls;
+        $copiedCalls = $calls->getArrayCopy();
         FileHelper::removeDirectory($copied);
-        $calls = [];
+        $calls->exchangeArray([]);
 
         [$linked] = $this->createManager(['linkAssets' => true])->publish($this->sourcePath, $options);
 
         $this->assertSame($copiedFiles, $this->listFiles($linked));
         $this->assertAllLinked($linked);
+        $linkedCalls = $calls->getArrayCopy();
         sort($copiedCalls);
-        sort($calls);
-        $this->assertNotEmpty($calls);
-        $this->assertSame($copiedCalls, $calls, 'afterCopy must be called for the same files and directories.');
+        sort($linkedCalls);
+        $this->assertNotEmpty($linkedCalls);
+        $this->assertSame($copiedCalls, $linkedCalls, 'afterCopy must be called for the same files and directories.');
     }
 
     public static function filterOptionsProvider(): array

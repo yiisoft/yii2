@@ -501,7 +501,8 @@ class AssetManager extends Component
      *   This overrides [[forceCopy]] if set.
      * - files: array, list of files and sub-directories (relative to the published directory) to be published
      *   instead of the whole directory, e.g. `['css', 'js', 'img/logo.png']`. This is an alternative to the "only"
-     *   option and cannot be combined with "only" and "except". This option is available since version 2.0.56.
+     *   option and cannot be combined with "only" and "except". The paths must match the names in the file system
+     *   exactly, including the case. This option is available since version 2.0.56.
      *
      * See [[linkAssets]] for how these options are applied when the assets are symlinked.
      *
@@ -585,7 +586,8 @@ class AssetManager extends Component
      * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
      * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - files: array, list of files and sub-directories (relative to `$src`) to be published instead of the whole
-     *   directory. It cannot be combined with "only" and "except". Available since 2.0.56.
+     *   directory. It cannot be combined with "only" and "except". The paths must match the names in the file
+     *   system exactly, including the case. Available since 2.0.56.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -878,7 +880,9 @@ class AssetManager extends Component
      * Moves a newly published directory or symbolic link into place.
      *
      * An existing target is moved aside first and removed afterwards, so that the target is missing only between
-     * two renames. If another process publishes the target in the meantime, its result is kept.
+     * two renames. If the new target cannot be moved into place, the previous directory is restored (but not
+     * a symlink to the whole source directory). If another process publishes the target in the meantime, its result
+     * is kept.
      *
      * @param string $src the asset directory to be published.
      * @param string $path the newly published directory or symbolic link.
@@ -896,19 +900,19 @@ class AssetManager extends Component
                 $oldDir = null;
             }
         }
-        try {
-            if (!@rename($path, $dstDir) && !is_dir($dstDir)) {
-                throw new Exception("Unable to publish \"$src\" to \"$dstDir\".");
+        // if another process has published the target in the meantime, its result is kept
+        $installed = @rename($path, $dstDir) || is_dir($dstDir);
+        if ($oldDir !== null) {
+            if (is_link($oldDir)) {
+                // a symlink to the whole source directory is never restored, as it may expose excluded files
+                FileHelper::unlink($oldDir);
+            } elseif ($installed || !@rename($oldDir, $dstDir)) {
+                // symlinks inside are not followed, so the linked source files are not touched
+                FileHelper::removeDirectory($oldDir);
             }
-        } finally {
-            if ($oldDir !== null) {
-                // symlinks are not followed, so the linked source files are not touched
-                if (is_link($oldDir)) {
-                    FileHelper::unlink($oldDir);
-                } else {
-                    FileHelper::removeDirectory($oldDir);
-                }
-            }
+        }
+        if (!$installed) {
+            throw new Exception("Unable to publish \"$src\" to \"$dstDir\".");
         }
     }
 
