@@ -37,7 +37,7 @@ on:
 jobs:
   tests:
     name: MariaDB tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
     with:
       concurrency-group: mariadb-${{ github.ref }}
       coverage-driver: pcov
@@ -48,15 +48,16 @@ jobs:
       database-type: mysql
       database-versions: '["10.6","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
+      ignore-platform-reqs-php-version: "[8.6]"
       os: '["ubuntu-latest"]'
-      php-version: '["8.5"]'
+      php-version: "[8.6]"
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   tests-dev:
     name: MariaDB tests
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
     with:
       concurrency-group: mariadb-dev-${{ github.ref }}
       coverage-driver: none
@@ -68,5 +69,5 @@ jobs:
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-latest"]'
-      php-version: '["8.3","8.4"]'
+      php-version: "[8.3, 8.4, 8.5]"
       phpunit-group: mysql

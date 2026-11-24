@@ -627,6 +627,9 @@ class Connection extends Component
      * Establishes a DB connection.
      * It does nothing if a DB connection has already been established.
      * @throws Exception if connection fails
+     * @throws InvalidConfigException if [[dsn]] is empty or none of the [[masters]] is available
+     *
+     * @phpstan-impure
      */
     public function open()
     {
@@ -677,6 +680,8 @@ class Connection extends Component
     /**
      * Closes the currently active DB connection.
      * It does nothing if the connection is already closed.
+     *
+     * @phpstan-impure
      */
     public function close()
     {

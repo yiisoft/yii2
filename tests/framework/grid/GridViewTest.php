@@ -235,7 +235,5 @@ class GridViewTest extends TestCase
         ]);
         $grid->renderTableHeader();
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
-
-        $this->assertTrue(true);
     }
 }

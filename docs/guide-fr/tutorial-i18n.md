@@ -149,7 +149,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://www.php.net/manual/fr/intro.intl.php).
+> Note: le formatage des valeurs de remplacement nécessite l'installation de [extension intl de PHP](https://www.php.net/manual/fr/book.intl.php).
 
 Vous pouvez utiliser, soit la forme raccourcie, soit la forme complète pour spécifier une valeur à remplacer avec un format :
 ```

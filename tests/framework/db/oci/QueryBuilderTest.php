@@ -860,7 +860,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
      */
     public function testInitFixtures(): void
     {
-        $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
+        $this->expectNotToPerformAssertions();
+
+        $this->getQueryBuilder(true, true);
     }
 
 

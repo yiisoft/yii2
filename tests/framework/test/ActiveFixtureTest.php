@@ -155,8 +155,6 @@ class ProfileFixture extends ActiveFixture
         if ($this->db->driverName === 'sqlsrv') {
             $this->db->createCommand()->truncateTable('profile')->execute();
         }
-
-        parent::beforeLoad();
     }
 
     protected function getData()
@@ -186,8 +184,6 @@ class CustomerFixture extends ActiveFixture
         if ($this->db->driverName === 'sqlsrv') {
             $this->db->createCommand()->truncateTable('customer')->execute();
         }
-
-        parent::beforeLoad();
     }
 }
 
@@ -202,8 +198,6 @@ class CustomDirectoryFixture extends ActiveFixture
         if ($this->db->driverName === 'sqlsrv') {
             $this->db->createCommand()->truncateTable('customer')->execute();
         }
-
-        parent::beforeLoad();
     }
 }
 

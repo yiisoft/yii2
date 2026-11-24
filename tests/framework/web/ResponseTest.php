@@ -529,7 +529,7 @@ class ResponseTest extends TestCase
         $content = ob_get_clean();
         $this->assertSame($content, '');
 
-        if ($callback && is_callable($callback)) {
+        if ($callback !== null) {
             $callback($response);
         }
     }

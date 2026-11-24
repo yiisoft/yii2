@@ -40,9 +40,7 @@ class FormatterTest extends TestCase
             'timeZone' => 'UTC',
             'language' => 'ru-RU',
         ]);
-        if (!isset($this->formatter)) {
-            $this->formatter = new Formatter(['locale' => 'en-US']);
-        }
+        $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
     protected function tearDown(): void

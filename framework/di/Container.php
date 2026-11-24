@@ -331,8 +331,8 @@ class Container extends Component
     /**
      * Normalizes the class definition.
      * @param string $class class name
-     * @param string|array|callable $definition the class definition
-     * @return array the normalized class definition
+     * @param string|array|callable|object $definition the class definition
+     * @return array|callable|object the normalized class definition
      * @throws InvalidConfigException if the definition is invalid.
      */
     protected function normalizeDefinition($class, $definition)

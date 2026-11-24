@@ -696,6 +696,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Removes errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to remove errors for all attributes.
+     *
+     * @phpstan-impure
      */
     public function clearErrors($attribute = null)
     {

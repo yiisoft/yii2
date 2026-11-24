@@ -29,6 +29,11 @@ abstract class BaseDbSession extends TestCase
     use SessionTestTrait;
 
     /**
+     * @var string|false `session.use_strict_mode` value captured by {@see setUp()}.
+     */
+    private $useStrictModeBackup;
+
+    /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
     abstract protected function getDriverNames();
@@ -36,6 +41,12 @@ abstract class BaseDbSession extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->closeNativeSession();
+
+        $this->useStrictModeBackup = ini_get('session.use_strict_mode');
+
+        session_id('');
 
         $this->mockApplication();
         Yii::$app->set('db', $this->getDbConfig());
@@ -45,6 +56,14 @@ abstract class BaseDbSession extends TestCase
 
     protected function tearDown(): void
     {
+        $this->closeNativeSession();
+
+        session_id('');
+
+        if ($this->useStrictModeBackup !== false) {
+            ini_set('session.use_strict_mode', $this->useStrictModeBackup);
+        }
+
         $this->dropTableSession();
         parent::tearDown();
     }
@@ -61,7 +80,6 @@ abstract class BaseDbSession extends TestCase
         }
         if (!isset($driverAvailable)) {
             $this->markTestIncomplete(static::class . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
-            return [];
         }
         $config = $databases[$driverAvailable];
 
@@ -301,5 +319,12 @@ abstract class BaseDbSession extends TestCase
         );
 
         $session->close();
+    }
+
+    private function closeNativeSession(): void
+    {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
     }
 }

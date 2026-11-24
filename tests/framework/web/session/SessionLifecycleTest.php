@@ -14,7 +14,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\helpers\FileHelper;
 use yii\web\Session;
-use yii\web\SessionIterator;
 use yiiunit\TestCase;
 
 use function basename;
@@ -260,12 +259,6 @@ final class SessionLifecycleTest extends TestCase
         $session->set('b', 2);
 
         $iterator = $session->getIterator();
-
-        $this->assertInstanceOf(
-            SessionIterator::class,
-            $iterator,
-            'Iterator type must be the session iterator.',
-        );
 
         $data = iterator_to_array($iterator);
 

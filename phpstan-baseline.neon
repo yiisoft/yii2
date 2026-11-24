@@ -1,6 +1,60 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Expression in empty\(\) is always falsy\.$#'
+			identifier: empty.expr
+			count: 1
+			path: build/controllers/ReleaseController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: build/controllers/ReleaseController.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: framework/base/Application.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: framework/base/Component.php
+
+		-
+			message: '#^Property yii\\base\\ErrorHandler\:\:\$_memoryReserve is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: framework/base/ErrorHandler.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: framework/base/Event.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<yii\\base\\Action\> and ''yii\\\\base\\\\Controller'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: framework/base/Module.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 2
+			path: framework/base/Security.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-falsy\-string and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: framework/base/Security.php
+
+		-
 			message: '#^Call to an undefined method T of yii\\base\\Model \= yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -17,6 +71,18 @@ parameters:
 			identifier: foreach.nonIterable
 			count: 1
 			path: framework/caching/Dependency.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/caching/FileCache.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: framework/caching/FileCache.php
 
 		-
 			message: '#^Method yii\\caching\\WinCache\:\:addValues\(\) should return array but returns bool\.$#'
@@ -37,10 +103,28 @@ parameters:
 			path: framework/console/Controller.php
 
 		-
+			message: '#^Instanceof between mixed and yii\\console\\Exception will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/console/ErrorHandler.php
+
+		-
 			message: '#^Access to an undefined property yii\\base\\BaseObject&yii\\db\\MigrationInterface\:\:\$compact\.$#'
 			identifier: property.notFound
 			count: 1
 			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int\<2, max\> and 1 will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/console/controllers/HelpController.php
 
 		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
@@ -175,12 +259,6 @@ parameters:
 			path: framework/db/BaseActiveRecord.php
 
 		-
-			message: '#^Property yii\\db\\ActiveQuery\<yii\\db\\ActiveRecord\>\:\:\$primaryModel \(yii\\db\\ActiveRecord\) does not accept \$this\(yii\\db\\BaseActiveRecord\)\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
 			message: '#^Variable \$viaClass might not be defined\.$#'
 			identifier: variable.undefined
 			count: 5
@@ -191,6 +269,18 @@ parameters:
 			identifier: variable.undefined
 			count: 5
 			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/db/BatchQueryResult.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\db\\Query will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/db/ColumnSchema.php
 
 		-
 			message: '#^Access to an undefined property yii\\db\\ExpressionInterface\:\:\$params\.$#'
@@ -209,6 +299,12 @@ parameters:
 			identifier: variable.undefined
 			count: 1
 			path: framework/db/Query.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\db\\Query will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 2
+			path: framework/db/QueryBuilder.php
 
 		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalEndColumn\(\)\.$#'
@@ -403,10 +499,28 @@ parameters:
 			path: framework/di/Container.php
 
 		-
+			message: '#^Dead catch \- ReflectionException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/di/Container.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/filters/HttpCache.php
+
+		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
 			identifier: property.notFound
 			count: 1
 			path: framework/grid/DataColumn.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/helpers/BaseArrayHelper.php
 
 		-
 			message: '#^Unsafe call to private method yii\\helpers\\BaseConsole\:\:getProgressbarWidth\(\) through static\:\:\.$#'
@@ -427,10 +541,100 @@ parameters:
 			path: framework/helpers/BaseFileHelper.php
 
 		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: framework/helpers/BaseFileHelper.php
+
+		-
+			message: '#^Offset ''decimal_point'' on array\{decimal_point\: string, thousands_sep\: string, int_curr_symbol\: string, currency_symbol\: string, mon_decimal_point\: string, mon_thousands_sep\: string, positive_sign\: string, negative_sign\: string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: framework/helpers/BaseStringHelper.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: framework/helpers/BaseStringHelper.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between MessageFormatter and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: framework/i18n/MessageFormatter.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between int\<0, max\> and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/i18n/MessageFormatter.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between true and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: framework/log/SyslogTarget.php
+
+		-
 			message: '#^Property yii\\test\\DbFixture\:\:\$db \(array\|string\|yii\\db\\Connection\) does not accept yii\\base\\BaseObject\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: framework/test/DbFixture.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: framework/validators/IpValidator.php
+
+		-
+			message: '#^Instanceof between mixed and yii\\web\\HttpException will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: framework/web/ErrorHandler.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: framework/web/Request.php
+
+		-
+			message: '#^Offset ''seekable'' on array\{timed_out\: bool, blocked\: bool, eof\: bool, unread_bytes\: int, stream_type\: string, wrapper_type\: string, wrapper_data\: mixed, mode\: string, \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: framework/web/Response.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\<mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: framework/web/UploadedFile.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true and ''All isolation…'' will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/base/db/BaseConnection.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 3
+			path: tests/base/db/BaseConnection.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertSame\(\) with arguments array\{array\{id\: 4, name\: 4\}, 3, 1\}, array\{array\{id\: 4, name\: 4\}, 3, 1\} and ''Aggregation must…'' will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/base/db/BaseQuery.php
 
 		-
 			message: '#^PHPDoc tag @param for parameter \$condition with type array\|string is not subtype of native type array\.$#'
@@ -439,10 +643,28 @@ parameters:
 			path: tests/base/db/BaseQueryBuilder.php
 
 		-
+			message: '#^Comparison operation "\<" between int\<80300, 80699\> and 80100 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 4
+			path: tests/framework/ReleaseControllerTest.php
+
+		-
 			message: '#^Access to an undefined property yiiunit\\data\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1
 			path: tests/framework/base/ComponentTest.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''old'' and ''new'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: tests/framework/base/SecurityTest.php
+
+		-
+			message: '#^Dead catch \- ValueError is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: tests/framework/base/SensitiveParameterAttributionTest.php
 
 		-
 			message: '#^Parameter &\$args by\-ref type of method yiiunit\\framework\\base\\stub\\controller\\InjectingController\:\:bindInjectedFor\(\) expects array\<int, mixed\>, array given\.$#'
@@ -469,6 +691,18 @@ parameters:
 			path: tests/framework/console/controllers/FixtureControllerTest.php
 
 		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: tests/framework/console/widgets/TableTest.php
+
+		-
+			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 3
+			path: tests/framework/db/mysql/connection/DeadLockTest.php
+
+		-
 			message: '#^Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&yii\\web\\User\:\:\$identityCLass\.$#'
 			identifier: property.notFound
 			count: 1
@@ -491,6 +725,12 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: tests/framework/helpers/FileHelperTest.php
+
+		-
+			message: '#^Comparison operation "\>\=" between int\<80300, 80699\> and 80300 is always true\.$#'
+			identifier: greaterOrEqual.alwaysTrue
+			count: 1
+			path: tests/framework/helpers/VarDumperTest.php
 
 		-
 			message: '#^PHPDoc tag @throws with type yii\\base\\InvalidConfigException\|yii\\base\\InvalidParamException\|yii\\db\\Exception is not subtype of Throwable$#'
@@ -565,6 +805,18 @@ parameters:
 			path: tests/framework/i18n/FormatterTest.php
 
 		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with arguments ''yii\\\\log\\\\Logger'', yii\\log\\Logger and ''setLogger\(\) must…'' will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/framework/log/DispatcherTest.php
+
+		-
+			message: '#^Empty array passed to foreach\.$#'
+			identifier: foreach.emptyArray
+			count: 1
+			path: tests/framework/log/TargetTest.php
+
+		-
 			message: '#^PHPDoc tag @var with type yii\\log\\Target is not subtype of native type PHPUnit\\Framework\\MockObject\\MockObject\.$#'
 			identifier: varTag.nativeType
 			count: 2
@@ -581,6 +833,12 @@ parameters:
 			identifier: parameter.phpDocType
 			count: 1
 			path: tests/framework/rest/SerializerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with arguments ''yii\\\\validators\\\\client\\\\ClientValidatorScriptInterface'', yiiunit\\framework\\validators\\stub\\FakeClientValidatorScript and ''Materialized \\''…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/framework/validators/ClientScriptDispatchTestTrait.php
 
 		-
 			message: '#^PHPDoc tag @param for parameter \$_ with type mixed is not subtype of native type string\.$#'
@@ -653,3 +911,9 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: tests/framework/widgets/BreadcrumbsTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with arguments ''yii\\\\web\\\\client\\\\ClientScriptInterface'', yiiunit\\framework\\widgets\\stub\\FakeClientScript and ''Materialized \\''…'' will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/framework/widgets/ClientScriptDispatchTestTrait.php

@@ -1134,6 +1134,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
      * Use this to export SqlToken for tests.
      * @return array
      */
+    // @phpstan-ignore method.unused (The method is used manually to generate the expected tokens for tests)
     private function exportToken(SqlToken $token): array
     {
         $result = get_object_vars($token);

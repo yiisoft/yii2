@@ -17,14 +17,14 @@ use Yii;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\validators\NumberValidator;
-use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
-use yiiunit\data\ar\Type;
+use yiiunit\framework\di\stubs\AbstractColor;
 use yiiunit\framework\di\stubs\Alpha;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Beta;
 use yiiunit\framework\di\stubs\Car;
+use yiiunit\framework\di\stubs\Color;
 use yiiunit\framework\di\stubs\Corge;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
@@ -64,7 +64,7 @@ class ContainerTest extends TestCase
         $container = new Container();
         $container->set($QuxInterface, $Qux);
         $foo = $container->get($Foo);
-        $this->assertInstanceOf($Foo, $foo);
+        $this->assertSame($Foo, get_class($foo));
         $this->assertInstanceOf($Bar, $foo->bar);
         $this->assertInstanceOf($Qux, $foo->bar->qux);
         $foo2 = $container->get($Foo);
@@ -77,7 +77,7 @@ class ContainerTest extends TestCase
         $container->set($Qux);
         $container->set($Foo);
         $foo = $container->get($Foo);
-        $this->assertInstanceOf($Foo, $foo);
+        $this->assertSame($Foo, get_class($foo));
         $this->assertInstanceOf($Bar, $foo->bar);
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
@@ -124,7 +124,7 @@ class ContainerTest extends TestCase
         $container->set('qux', $Qux);
         $foo = $container->get('foo');
         $this->assertInstanceOf($fooSetter, $foo);
-        $this->assertInstanceOf($barSetter, $foo->bar);
+        $this->assertSame($barSetter, get_class($foo->bar));
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // wiring by closure
@@ -167,26 +167,26 @@ class ContainerTest extends TestCase
         // use component of application
         $callback = function ($param, QuxInterface $qux, Bar $bar) {
             /** @var Qux $qux */
-            return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
+            return [$param, get_class($qux), $qux->a, $bar->qux->a];
         };
         $result = Yii::$container->invoke($callback, ['D426']);
-        $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
+        $this->assertEquals(['D426', Qux::class, 'belongApp', 'independent'], $result);
 
         // another component of application
         $callback = function ($param, QuxInterface $qux2, $other = 'default') {
             /** @var Qux $qux2 */
-            return [$param, $qux2 instanceof Qux, $qux2->a, $other];
+            return [$param, get_class($qux2), $qux2->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['M2792684']);
-        $this->assertEquals(['M2792684', true, 'belongAppQux2', 'default'], $result);
+        $this->assertEquals(['M2792684', Qux::class, 'belongAppQux2', 'default'], $result);
 
         // component not belong application
         $callback = function ($param, QuxInterface $notBelongApp, $other) {
             /** @var Qux $notBelongApp */
-            return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
+            return [$param, get_class($notBelongApp), $notBelongApp->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
-        $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
+        $this->assertEquals(['MDM', Qux::class, 'independent', 'not_default'], $result);
 
 
         $myFunc = fn ($a, NumberValidator $b, $c = 'default') => [$a, $b::class, $c];
@@ -264,7 +264,7 @@ class ContainerTest extends TestCase
         $container = new Container();
         $container->setDefinitions([
             'model.order' => Order::class,
-            Cat::class => Type::class,
+            AbstractColor::class => Color::class,
             'test\TraversableInterface' => [
                 ['class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
@@ -276,7 +276,7 @@ class ContainerTest extends TestCase
         $container->setDefinitions([]);
 
         $this->assertInstanceOf(Order::class, $container->get('model.order'));
-        $this->assertInstanceOf(Type::class, $container->get(Cat::class));
+        $this->assertInstanceOf(Color::class, $container->get(AbstractColor::class));
 
         $traversable = $container->get('test\TraversableInterface');
         $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
@@ -420,8 +420,8 @@ class ContainerTest extends TestCase
 
         $one = $container->get(Qux::class);
         $two = $container->get(Qux::class);
-        $this->assertInstanceOf(Qux::class, $one);
-        $this->assertInstanceOf(Qux::class, $two);
+        $this->assertSame(Qux::class, get_class($one));
+        $this->assertSame(Qux::class, get_class($two));
         $this->assertSame(1, $one->a);
         $this->assertSame(1, $two->a);
         $this->assertNotSame($one, $two);
@@ -596,22 +596,22 @@ class ContainerTest extends TestCase
     public function testUnionTypeWithNullConstructorParameters(): void
     {
         $unionType = (new Container())->get(UnionTypeNull::class);
-        $this->assertInstanceOf(UnionTypeNull::class, $unionType);
+        $this->assertSame(UnionTypeNull::class, get_class($unionType));
     }
 
     public function testUnionTypeWithoutNullConstructorParameters(): void
     {
         $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 'a']);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $this->assertSame(UnionTypeNotNull::class, get_class($unionType));
 
         $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 1]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $this->assertSame(UnionTypeNotNull::class, get_class($unionType));
 
         $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => 2.3]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $this->assertSame(UnionTypeNotNull::class, get_class($unionType));
 
         $unionType = (new Container())->get(UnionTypeNotNull::class, ['value' => true]);
-        $this->assertInstanceOf(UnionTypeNotNull::class, $unionType);
+        $this->assertSame(UnionTypeNotNull::class, get_class($unionType));
 
         $this->expectException('TypeError');
         (new Container())->get(UnionTypeNotNull::class);
@@ -620,7 +620,7 @@ class ContainerTest extends TestCase
     public function testUnionTypeWithClassConstructorParameters(): void
     {
         $unionType = (new Container())->get(UnionTypeWithClass::class, ['value' => new Beta()]);
-        $this->assertInstanceOf(UnionTypeWithClass::class, $unionType);
+        $this->assertSame(UnionTypeWithClass::class, get_class($unionType));
         $this->assertInstanceOf(Beta::class, $unionType->value);
 
         $this->expectException('TypeError');

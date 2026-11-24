@@ -37,7 +37,7 @@ on:
 jobs:
   tests:
     name: MySQL ANSI tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
     with:
       concurrency-group: mysql-ansi-${{ github.ref }}
       coverage-driver: pcov
@@ -50,8 +50,9 @@ jobs:
       extensions: curl, intl, pdo, pdo_mysql
       hook: |
         docker exec -i database mysql -uroot -proot -e "SET GLOBAL sql_mode = 'ANSI';"
+      ignore-platform-reqs-php-version: "[8.6]"
       os: '["ubuntu-latest"]'
-      php-version: '["8.5"]'
+      php-version: "[8.6]"
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

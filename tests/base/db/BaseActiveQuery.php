@@ -69,7 +69,7 @@ abstract class BaseActiveQuery extends DatabaseTestCase
         $query = new ActiveQuery(Customer::class);
         $builder = new QueryBuilder(new Connection());
         $result = $query->prepare($builder);
-        $this->assertInstanceOf('yii\db\Query', $result);
+        $this->assertSame(['customer'], $result->from);
     }
 
     public function testPopulateEmptyRows(): void
@@ -108,7 +108,7 @@ abstract class BaseActiveQuery extends DatabaseTestCase
     {
         $query = new ActiveQuery(Customer::class);
         $result = $query->createCommand();
-        $this->assertInstanceOf('yii\db\Command', $result);
+        $this->assertStringContainsString('customer', $result->getSql());
     }
 
     /**
@@ -246,7 +246,7 @@ abstract class BaseActiveQuery extends DatabaseTestCase
     {
         $query = new ActiveQuery(Customer::class, ['primaryModel' => new Order()]);
         $result = $query->viaTable(Profile::class, ['id' => 'item_id']);
-        $this->assertInstanceOf('yii\db\ActiveQuery', $result);
+        $this->assertSame($query, $result);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);
     }
 
@@ -254,7 +254,7 @@ abstract class BaseActiveQuery extends DatabaseTestCase
     {
         $query = new ActiveQuery(Customer::class);
         $result = $query->alias('alias');
-        $this->assertInstanceOf('yii\db\ActiveQuery', $result);
+        $this->assertSame($query, $result);
         $this->assertEquals(['alias' => 'customer'], $result->from);
     }
 
@@ -264,7 +264,7 @@ abstract class BaseActiveQuery extends DatabaseTestCase
         $query = new ActiveQuery(Customer::class);
         $query->from = $aliasOld;
         $result = $query->alias('alias');
-        $this->assertInstanceOf('yii\db\ActiveQuery', $result);
+        $this->assertSame($query, $result);
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
 
@@ -302,20 +302,15 @@ abstract class BaseActiveQuery extends DatabaseTestCase
     {
         $categories = Category::find()->with('orders')->indexBy('id')->all();
         $category = $categories[1];
-        $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertEquals(2, count($orders));
-        $this->assertInstanceOf(Order::class, $orders[0]);
-        $this->assertInstanceOf(Order::class, $orders[1]);
         $ids = [$orders[0]->id, $orders[1]->id];
         sort($ids);
         $this->assertEquals([1, 3], $ids);
 
         $category = $categories[2];
-        $this->assertNotNull($category);
         $orders = $category->orders;
         $this->assertEquals(1, count($orders));
-        $this->assertInstanceOf(Order::class, $orders[0]);
         $this->assertEquals(2, $orders[0]->id);
     }
 

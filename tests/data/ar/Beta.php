@@ -11,7 +11,7 @@ namespace yiiunit\data\ar;
 /**
  * @property int $id
  * @property string $alpha_string_identifier
- * @property-read Alpha $alpha
+ * @property-read Alpha|null $alpha
  */
 class Beta extends ActiveRecord
 {

@@ -18,7 +18,7 @@ use yii\db\ActiveQuery;
  * @property int $employee_id
  * @property string $summary
  *
- * @property-read Employee $employee
+ * @property-read Employee|null $employee
  *
  * @author Kolyunya <OleynikovNY@mail.ru>
  * @since 2.0.12

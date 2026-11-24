@@ -36,9 +36,10 @@ on:
 
 jobs:
   phpstan:
-    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@d90cdb5bb58df697c808bb66928864f574c6d07b # master
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master
     with:
-      configuration: phpstan.dist.neon
       concurrency-group: phpstan-${{ github.ref }}
+      configuration: phpstan.dist.neon
       extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-      php-version: '["8.5"]'
+      ignore-platform-reqs-php-version: "[8.6]"
+      php-version: '["8.6"]'

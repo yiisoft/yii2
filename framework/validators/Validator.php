@@ -254,6 +254,8 @@ class Validator extends Component
      * @param array|string|null $attributes the list of attributes to be validated.
      * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     *
+     * @phpstan-impure
      */
     public function validateAttributes($model, $attributes = null)
     {
@@ -307,6 +309,8 @@ class Validator extends Component
      * Child classes must implement this method to provide the actual validation logic.
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
+     *
+     * @phpstan-impure
      */
     public function validateAttribute($model, $attribute)
     {
@@ -324,6 +328,8 @@ class Validator extends Component
      * @return bool whether the data is valid.
      *
      * @param-out string|null $error
+     *
+     * @phpstan-impure
      */
     public function validate($value, &$error = null)
     {
