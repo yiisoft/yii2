@@ -50,8 +50,9 @@ jobs:
       extensions: curl, intl, pdo, pdo_mysql
       hook: |
         docker exec -i database mysql -uroot -proot -e "SET GLOBAL sql_mode = 'ANSI';"
+      ignore-platform-reqs-php-version: "[8.6]"
       os: '["ubuntu-latest"]'
-      php-version: '["8.5"]'
+      php-version: "[8.6]"
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -48,8 +48,9 @@ jobs:
       database-type: mysql
       database-versions: '["8.0","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
+      ignore-platform-reqs-php-version: "[8.6]"
       os: '["ubuntu-latest"]'
-      php-version: '["8.5"]'
+      php-version: "[8.6]"
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -68,5 +69,5 @@ jobs:
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-latest"]'
-      php-version: '["8.3","8.4"]'
+      php-version: "[8.3, 8.4, 8.5]"
       phpunit-group: mysql
