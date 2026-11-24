@@ -51,7 +51,7 @@ class AssetManagerPublishOptionsTest extends TestCase
         parent::setUp();
         $this->mockApplication();
 
-        $this->runtimePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . 'assetPublishOptions';
+        $this->runtimePath = FileHelper::normalizePath(Yii::getAlias('@yiiunit/runtime') . '/assetPublishOptions');
         FileHelper::removeDirectory($this->runtimePath);
         $this->sourcePath = $this->runtimePath . DIRECTORY_SEPARATOR . 'source';
         $this->assetsPath = $this->runtimePath . DIRECTORY_SEPARATOR . 'assets';
