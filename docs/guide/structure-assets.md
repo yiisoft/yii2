@@ -204,6 +204,25 @@ class FontAwesomeAsset extends AssetBundle
 The above example defines an asset bundle for the ["fontawesome" package](https://fontawesome.com/). By specifying 
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
+Instead of patterns, you may list the published files and subdirectories explicitly in the `files` publishing option
+(available since version 2.0.56). Each listed entry is published with all its contents, so this is the simplest way
+to publish only the client-side part of a package that also contains server-side code:
+
+```php
+public $sourcePath = '@vendor/studio-42/elfinder';
+public $publishOptions = [
+    'files' => ['css', 'img', 'js', 'sounds'],
+];
+```
+
+The `files` option is an alternative to `only` and cannot be combined with `only` and `except`. Other options, like
+`beforeCopy` and `afterCopy`, work with it as usual.
+
+> Note: The name of the published directory does not depend on the publishing options. A directory that has already
+  been published is not updated when you change them, so remove it from the `@webroot/assets` directory after such
+  a change. The `forceCopy` option recreates a directory published by symbolic links, but it does not remove the
+  files that are no longer selected from a copied directory.
+
 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
@@ -531,6 +550,24 @@ return [
 With the above configuration, the asset manager will create a symbolic link to the source path of an asset bundle
 when it is being published. This is faster than file copying and can also ensure that the published assets are
 always up-to-date.
+
+The [[yii\web\AssetBundle::publishOptions|publishing options]] are honoured when the assets are linked:
+
+- If an asset bundle uses the `only`, `except`, `beforeCopy` or `afterCopy` publishing options (also together with
+  `files`), or [[yii\web\AssetManager::beforeCopy|beforeCopy]] or [[yii\web\AssetManager::afterCopy|afterCopy]] of
+  the asset manager are set, the directory structure is recreated and each file that passes the filters is linked
+  separately, so that the excluded files are not accessible from the Web. Changes of the linked files are reflected
+  immediately, but a file added to the source path later is published only after the published directory is removed,
+  or on every publishing with [[yii\web\AssetManager::forceCopy|forceCopy]] enabled, which recreates the links.
+  The `afterCopy` callback receives the symlink as the target of a file, so writing to it modifies the source file.
+  Use `is_link($to)` in the callback to detect this case.
+- If an asset bundle uses only the `files` publishing option, each listed entry is linked as a whole, so files added
+  to a listed directory are published immediately. Note that files whose name starts with a dot are not skipped
+  inside a listed directory in this case.
+- Otherwise, the whole source path is linked.
+
+> Note: Before version 2.0.56, these publishing options were ignored when `linkAssets` was enabled and the whole
+  source path was published.
 
 
 ### Cache Busting <span id="cache-busting"></span>

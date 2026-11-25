@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #21150: Fix `yii\web\AssetManager` ignoring the `only`, `except`, `beforeCopy` and `afterCopy` publish options when `linkAssets` is enabled, which published files excluded by these options (rob006)
+- Enh #21150: Add the `files` publish option to `yii\web\AssetManager::publish()` to publish only the listed files and directories of an asset bundle (rob006)
 - Bug #21073: Fix `MultipartFormDataParser` boundary extraction when `Content-Type` has additional parameters (iliaal)
 - Bug #21121: Fix `yii\validators\DateValidator` rejecting non-ASCII dates on PHP 8.4.27 and 8.5.12 (eluhr)
 - Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
@@ -96,6 +98,7 @@ Yii Framework 2 Change Log
 - Enh #21136: Add `@phpstan-impure` annotations for `yii\base\Component::attachBehavior()`, `yii\base\Model::clearErrors()`, `yii\data\DataFilter::setSearchModel()`, `yii\db\Command::addCheck()`, `yii\db\Connection::close()`, `yii\db\Schema::getTableSchema()`, `getTablePrimaryKey()` and `getTableChecks()` in `yii\db\ConstraintFinderInterface` and `yii\db\ConstraintFinderTrait`, `yii\validators\Validator::validate()`, `yii\web\CompositeUrlRule::iterateRules()` and `yii\web\User::setIdentity()` (mspirkov)
 - Bug #21141: Allow the `__class` key in configuration arrays in `@return` annotations for `yii\base\Component::behaviors()` and `yii\base\Controller::actions()`, and in the `@var` annotation for `yii\filters\auth\CompositeAuth::$authMethods` (mspirkov)
 - Enh #21142: Add `@throws` annotation for `InvalidConfigException` in `yii\base\Component::__set()` (mspirkov)
+- Enh #21147: Add `@template` annotation for `$default` in `yii\web\HeaderCollection::get()` (mspirkov)
 
 
 2.0.55 May 09, 2026
