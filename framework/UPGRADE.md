@@ -83,6 +83,23 @@ Upgrade from Yii 2.0.55
     Custom storage classes should override `sessionIdExists()` instead and drop that code. The default
     implementation accepts every ID, so a class that does neither is not protected by strict mode.
 
+* `yii\web\AssetManager` with `linkAssets` enabled now honours the `only`, `except`, `beforeCopy` and `afterCopy`
+  publish options (and the `beforeCopy` / `afterCopy` properties of the asset manager). Previously, the whole source
+  directory of an asset bundle was symlinked and these options were ignored. Now, the directory structure is
+  recreated and only the files that pass the filters are symlinked, one by one, so a file that was accessible only
+  because the filters were ignored is not published anymore. A file added to the source directory later is published
+  only after the published directory is removed (or with `forceCopy`, which now recreates the links in this case).
+  To symlink whole subdirectories, list them in the new `files` publish option instead of `only`.
+  **The `afterCopy` callback now receives a symlink to the source file as `$to`**, so a callback that writes to
+  `$to` (e.g. to minify or post-process the published file) modifies the source file instead of a published copy.
+  Check `is_link($to)` in such callbacks and skip the modification, replace the symlink with a copy of the file
+  (`unlink($to); copy($from, $to);`), or disable `linkAssets`.
+  **Remove the directories published by the previous version from the assets directory (`@webroot/assets` by
+  default) after the upgrade.** The name of a published directory depends on the Yii version, so the new version
+  publishes to new directories, and the old symlinks to the whole source directories, including the files excluded
+  by the filters, stay accessible under the old URLs. Only when a custom `hashCallback` keeps the name of the
+  published directory across the upgrade is the existing symlink replaced automatically on the next publish.
+
 Upgrade from Yii 2.0.53
 -----------------------
 
