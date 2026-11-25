@@ -559,6 +559,8 @@ The [[yii\web\AssetBundle::publishOptions|publishing options]] are honoured when
   separately, so that the excluded files are not accessible from the Web. Changes of the linked files are reflected
   immediately, but a file added to the source path later is published only after the published directory is removed,
   or on every publishing with [[yii\web\AssetManager::forceCopy|forceCopy]] enabled, which recreates the links.
+  The `afterCopy` callback receives the symlink as the target of a file, so writing to it modifies the source file.
+  Use `is_link($to)` in the callback to detect this case.
 - If an asset bundle uses only the `files` publishing option, each listed entry is linked as a whole, so files added
   to a listed directory are published immediately. Note that files whose name starts with a dot are not skipped
   inside a listed directory in this case.

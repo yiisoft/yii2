@@ -147,7 +147,8 @@ class AssetManager extends Component
      *   is the same as when the files are copied, except that the callbacks receive a target path inside
      *   a temporary directory, which is renamed into place when the directory is published, and the target is
      *   a symlink. Changes of the published files are reflected immediately, but a file added to the source
-     *   directory later is not published until the directory is published again.
+     *   directory later is not published until the directory is published again. Note that writing to the target
+     *   of a file in the "afterCopy" callback modifies the source file; use `is_link($to)` to detect this case.
      *
      * Before version 2.0.56, all publish options were ignored when this property was true and the whole directory
      * was published.
@@ -187,6 +188,9 @@ class AssetManager extends Component
      * This option is used only when publishing a directory. The signature of the callback is the same as
      * for [[beforeCopy]].
      * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     *
+     * When [[linkAssets]] is true, the target of a file is a symlink to the source file, so writing to it modifies
+     * the source file. Use `is_link($to)` to detect this case.
      */
     public $afterCopy;
     /**

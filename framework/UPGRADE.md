@@ -90,6 +90,10 @@ Upgrade from Yii 2.0.55
   because the filters were ignored is not published anymore. A file added to the source directory later is published
   only after the published directory is removed (or with `forceCopy`, which now recreates the links in this case).
   To symlink whole subdirectories, list them in the new `files` publish option instead of `only`.
+  **The `afterCopy` callback now receives a symlink to the source file as `$to`**, so a callback that writes to
+  `$to` (e.g. to minify or post-process the published file) modifies the source file instead of a published copy.
+  Check `is_link($to)` in such callbacks and skip the modification, replace the symlink with a copy of the file
+  (`unlink($to); copy($from, $to);`), or disable `linkAssets`.
   **Remove the directories published by the previous version from the assets directory (`@webroot/assets` by
   default) after the upgrade.** The name of a published directory depends on the Yii version, so the new version
   publishes to new directories, and the old symlinks to the whole source directories, including the files excluded
