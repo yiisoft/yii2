@@ -48,6 +48,10 @@ final class FrameworkMessagesTest extends TestCase
      */
     public function testSerbianPluralTranslations(string $message, array $params, string $expected): void
     {
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
+        }
+
         $this->mockApplication();
 
         $this->assertSame($expected, Yii::t('yii', $message, $params, 'sr'));
