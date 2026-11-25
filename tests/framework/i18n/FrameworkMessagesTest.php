@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\i18n;
 
+use Yii;
 use yiiunit\TestCase;
 
 /**
@@ -40,5 +41,37 @@ final class FrameworkMessagesTest extends TestCase
         }
 
         $this->assertSame([], array_values(array_unique($invalid)));
+    }
+
+    /**
+     * @dataProvider serbianMessageProvider
+     */
+    public function testSerbianPluralTranslations(string $message, array $params, string $expected): void
+    {
+        $this->mockApplication();
+
+        $this->assertSame($expected, Yii::t('yii', $message, $params, 'sr'));
+    }
+
+    public static function serbianMessageProvider(): array
+    {
+        return [
+            'pagination uses one for 21 items' => [
+                'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> '
+                    . '{totalCount, plural, one{item} other{items}}.',
+                ['begin' => 1, 'end' => 10, 'totalCount' => 21],
+                'Приказано <b>1-10</b> од <b>21</b> ставке.',
+            ],
+            'upload limit uses few for two files' => [
+                'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.',
+                ['limit' => 2],
+                'Можете поставити највише 2 фајла.',
+            ],
+            'relative time uses few for two seconds' => [
+                'in {delta, plural, =1{a second} other{# seconds}}',
+                ['delta' => 2],
+                'за 2 секунде',
+            ],
+        ];
     }
 }
