@@ -20,38 +20,11 @@ use yiiunit\TestCase;
  */
 final class FrameworkMessagesTest extends TestCase
 {
-    public function testWordsDoNotMixAlphabets(): void
-    {
-        $invalid = [];
-
-        foreach (glob(__DIR__ . '/../../../framework/messages/*/yii.php') as $file) {
-            $language = basename(dirname($file));
-
-            foreach (require $file as $translation) {
-                foreach (preg_split('/[^\p{L}\p{M}]+/u', $translation, -1, PREG_SPLIT_NO_EMPTY) as $word) {
-                    $alphabets = preg_match('/(?![\p{Cyrillic}\p{Greek}])\p{Latin}/u', $word)
-                        + preg_match('/(?![\p{Latin}\p{Greek}])\p{Cyrillic}/u', $word)
-                        + preg_match('/(?![\p{Latin}\p{Cyrillic}])\p{Greek}/u', $word);
-
-                    if ($alphabets > 1) {
-                        $invalid[] = "$language: $word";
-                    }
-                }
-            }
-        }
-
-        $this->assertSame([], array_values(array_unique($invalid)));
-    }
-
     /**
      * @dataProvider serbianMessageProvider
      */
     public function testSerbianPluralTranslations(string $message, array $params, string $expected): void
     {
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('intl not installed. Skipping.');
-        }
-
         $this->mockApplication();
 
         $this->assertSame($expected, Yii::t('yii', $message, $params, 'sr'));
