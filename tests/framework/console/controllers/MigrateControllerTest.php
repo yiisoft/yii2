@@ -24,6 +24,7 @@ use yiiunit\TestCase;
  *
  * @group console
  * @group db
+ * @group sqlite
  */
 class MigrateControllerTest extends TestCase
 {
@@ -495,16 +496,10 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Test the migrate:fresh command.
-     * @dataProvider refreshMigrationDataProvider
-     * @param $db
      * @throws Exception
      */
-    public function testRefreshMigration($db): void
+    public function testRefreshMigration(): void
     {
-        if ($db !== 'default') {
-            $this->switchDbConnection($db);
-        }
-
         Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')->execute();
 
         Yii::$app->db->createCommand("insert into hall_of_fame values(1, 'Qiang Xue');")->execute();
@@ -521,14 +516,6 @@ class MigrateControllerTest extends TestCase
 
         // Migration was restarted
         $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
-    }
-
-    public static function refreshMigrationDataProvider(): array
-    {
-        return [
-            ['default'],
-            ['mysql'],
-        ];
     }
 
     /**

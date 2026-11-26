@@ -19,6 +19,7 @@ use yiiunit\TestCase;
 /**
  * @group mutex
  * @group db
+ * @group sqlite
  */
 class DbMutexTest extends TestCase
 {

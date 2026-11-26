@@ -16,7 +16,6 @@ use yii\db\Query;
 use yiiunit\TestCase;
 
 /**
- * @group db
  * @covers \yii\db\ArrayExpression
  */
 class ArrayExpressionTest extends TestCase

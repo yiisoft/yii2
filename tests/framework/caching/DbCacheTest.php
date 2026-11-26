@@ -15,6 +15,7 @@ use yii\caching\DbCache;
  * Class for testing file cache backend.
  * @group db
  * @group caching
+ * @group mysql
  */
 class DbCacheTest extends CacheTestCase
 {

@@ -13,7 +13,6 @@ use yii\db\Expression;
 use yiiunit\framework\db\AnyCaseValue;
 
 /**
- * @group db
  * @group cubrid
  */
 class SchemaTest extends \yiiunit\framework\db\SchemaTest

@@ -20,7 +20,7 @@ use yiiunit\framework\db\DatabaseTestCase;
  * @group fixture
  * @group db
  */
-class ActiveFixtureTest extends DatabaseTestCase
+abstract class ActiveFixtureTest extends DatabaseTestCase
 {
     protected $driverName = 'mysql';
 
