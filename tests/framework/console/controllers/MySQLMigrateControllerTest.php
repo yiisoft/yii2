@@ -6,8 +6,6 @@
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
