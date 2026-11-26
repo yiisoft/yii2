@@ -61,6 +61,13 @@ final class CookieCollectionProvider
                 ],
                 true,
             ],
+            'default expiration, repeated' => [
+                'test',
+                [
+                    'test' => new Cookie(['value' => 'test']),
+                ],
+                true,
+            ],
         ];
     }
 
