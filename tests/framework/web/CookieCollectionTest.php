@@ -8,19 +8,21 @@
 
 namespace yiiunit\framework\web;
 
-use DateTime;
-use DateTimeImmutable;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yiiunit\TestCase;
 
 /**
+ * Unit tests for {@see CookieCollection}.
+ *
+ * {@see \yiiunit\framework\web\providers\CookieCollectionProvider} for test case data providers.
+ *
  * @group web
  */
 class CookieCollectionTest extends TestCase
 {
     /**
-     * @dataProvider provideHasData
+     * @dataProvider \yiiunit\framework\web\providers\CookieCollectionProvider::has
      */
     public function testHas(string $name, array $cookies, bool $expectedResult): void
     {
@@ -30,161 +32,18 @@ class CookieCollectionTest extends TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
-    public static function provideHasData(): array
+    /**
+     * @dataProvider \yiiunit\framework\web\providers\CookieCollectionProvider::hasWithExpire
+     */
+    public function testHasWithExpire(callable $expire, int $offset, bool $expectedResult): void
     {
-        $pastTime = time() - 100;
-        $futureTime = time() + 100;
+        $cookieCollection = new CookieCollection([
+            'test' => new Cookie([
+                'value' => 'test',
+                'expire' => $expire(time() + $offset),
+            ]),
+        ]);
 
-        return [
-            [
-                'test',
-                [],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'abc' => new Cookie([
-                        'value' => 'abc',
-                    ]),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie(),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => null,
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (string) $futureTime,
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (string) $pastTime,
-                    ]),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => $futureTime,
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => $pastTime,
-                    ]),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => date('Y-m-d H:i:s', $futureTime),
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => date('Y-m-d', $pastTime),
-                    ]),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (new DateTimeImmutable())->setTimestamp($futureTime),
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (new DateTimeImmutable())->setTimestamp($pastTime),
-                    ]),
-                ],
-                false,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (new DateTime())->setTimestamp($futureTime),
-                    ]),
-                ],
-                true,
-            ],
-            [
-                'test',
-                [
-                    'test' => new Cookie([
-                        'value' => 'test',
-                        'expire' => (new DateTime())->setTimestamp($pastTime),
-                    ]),
-                ],
-                false,
-            ],
-        ];
+        $this->assertSame($expectedResult, $cookieCollection->has('test'));
     }
 }
