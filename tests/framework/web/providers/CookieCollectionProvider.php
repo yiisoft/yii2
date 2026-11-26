@@ -107,6 +107,11 @@ final class CookieCollectionProvider
                 100,
                 true,
             ],
+            'date and time string with offset in the future' => [
+                static fn (int $time): string => date('Y-m-d H:i:sP', $time),
+                100,
+                true,
+            ],
             'date string in the past' => [
                 static fn (int $time): string => date('Y-m-d', $time),
                 -100,
