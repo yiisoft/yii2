@@ -13,7 +13,6 @@ use PDO;
 use yii\base\NotSupportedException;
 
 /**
- * @group db
  * @group cubrid
  */
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest

@@ -13,7 +13,6 @@ use yii\db\Schema;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Cubrid.
- * @group db
  * @group cubrid
  */
 class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest

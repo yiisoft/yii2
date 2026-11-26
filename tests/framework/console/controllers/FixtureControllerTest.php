@@ -21,6 +21,7 @@ use yiiunit\framework\db\DatabaseTestCase;
  *
  * @group console
  * @group db
+ * @group mysql
  */
 class FixtureControllerTest extends DatabaseTestCase
 {

@@ -9,7 +9,6 @@
 namespace yiiunit\framework\db\cubrid;
 
 /**
- * @group db
  * @group cubrid
  */
 class CommandTest extends \yiiunit\framework\db\CommandTest

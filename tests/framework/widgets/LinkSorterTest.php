@@ -18,6 +18,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 /**
  * @group widgets
  * @group db
+ * @group sqlite
  */
 class LinkSorterTest extends DatabaseTestCase
 {
