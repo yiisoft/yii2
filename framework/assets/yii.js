@@ -355,10 +355,18 @@ window.yii = (function ($) {
 
     function initCsrfHandler()
     {
-        // automatically send CSRF token for all AJAX requests
+        // automatically send CSRF token for all AJAX requests, and pick up the new token
+        // that the server sends in the response header when it issues one
         $.ajaxPrefilter(function (options, originalOptions, xhr) {
             if (!options.crossDomain && pub.getCsrfParam()) {
                 xhr.setRequestHeader('X-CSRF-Token', pub.getCsrfToken());
+                xhr.always(function () {
+                    var token = xhr.getResponseHeader('X-CSRF-Token');
+                    if (typeof token === 'string' && token !== '') {
+                        pub.setCsrfToken(pub.getCsrfParam(), token);
+                        pub.refreshCsrfToken();
+                    }
+                });
             }
         });
         pub.refreshCsrfToken();

@@ -215,6 +215,152 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testCsrfTokenResponseHeaderIsSetWhenTokenIsGeneratedOnPost(): void
+    {
+        $this->mockWebApplication();
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $request = new Request();
+
+        $request->enableCookieValidation = false;
+
+        $token = $request->getCsrfToken();
+
+        $this->assertSame(
+            $token,
+            Yii::$app->getResponse()->getHeaders()->get(Request::CSRF_HEADER),
+            'Header must carry the masked token.',
+        );
+        $this->assertTrue(
+            $this->createRequestWithIssuedCsrfCookie()->validateCsrfToken($token),
+            'Header value must validate against the issued cookie.',
+        );
+    }
+
+    public function testCsrfTokenResponseHeaderIsSetWhenTokenIsRegeneratedOnPost(): void
+    {
+        $this->mockWebApplication();
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $_COOKIE['_csrf'] = Yii::$app->getSecurity()->generateRandomString();
+        $request = new Request();
+
+        $request->enableCookieValidation = false;
+
+        $request->getCsrfToken();
+
+        $token = $request->getCsrfToken(true);
+
+        $this->assertSame(
+            $token,
+            Yii::$app->getResponse()->getHeaders()->get(Request::CSRF_HEADER),
+            'Header must carry the regenerated token.',
+        );
+        $this->assertTrue(
+            $this->createRequestWithIssuedCsrfCookie()->validateCsrfToken($token),
+            'Header value must validate against the issued cookie.',
+        );
+    }
+
+    public function testCsrfTokenResponseHeaderIsNotSetOnSafeMethods(): void
+    {
+        $this->mockWebApplication();
+
+        $methods = ['GET', 'HEAD', 'OPTIONS'];
+
+        foreach ($methods as $method) {
+            Yii::$app->getResponse()->getCookies()->removeAll();
+
+            $_SERVER['REQUEST_METHOD'] = $method;
+
+            $request = new Request();
+
+            $request->enableCookieValidation = false;
+
+            $this->assertNotEmpty(
+                $request->getCsrfToken(),
+                "Token must be generated on '{$method}'.",
+            );
+            $this->assertNotNull(
+                Yii::$app->getResponse()->getCookies()->get($request->csrfParam),
+                "Cookie must be issued on '$method'.",
+            );
+            $this->assertFalse(
+                Yii::$app->getResponse()->getHeaders()->has(Request::CSRF_HEADER),
+                "Header must be absent on '$method'.",
+            );
+        }
+    }
+
+    public function testCsrfTokenResponseHeaderIsNotSetWhenExistingTokenIsLoaded(): void
+    {
+        $this->mockWebApplication();
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $_COOKIE['_csrf'] = Yii::$app->getSecurity()->generateRandomString();
+
+        $request = new Request();
+
+        $request->enableCookieValidation = false;
+
+        $token = $request->getCsrfToken();
+
+        $this->assertTrue(
+            $request->validateCsrfToken($token),
+            'Loaded token must stay valid.',
+        );
+        $this->assertFalse(
+            Yii::$app->getResponse()->getHeaders()->has(Request::CSRF_HEADER),
+            'Header must be absent when no token is generated.',
+        );
+    }
+
+    public function testCsrfTokenResponseHeaderIsNotSetWhenValidateCsrfHeaderOnlyIsEnabled(): void
+    {
+        $this->mockWebApplication();
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $request = new Request();
+
+        $request->enableCookieValidation = false;
+        $request->validateCsrfHeaderOnly = true;
+
+        $this->assertNull(
+            $request->getCsrfToken(),
+            "Token must be 'null'.",
+        );
+        $this->assertFalse(
+            Yii::$app->getResponse()->getHeaders()->has(Request::CSRF_HEADER),
+            'Header must be absent.',
+        );
+    }
+
+    /**
+     * Simulates the next POST request of the same visitor, sending back the CSRF cookie issued by the current response.
+     */
+    private function createRequestWithIssuedCsrfCookie(): Request
+    {
+        $cookie = Yii::$app->getResponse()->getCookies()->get('_csrf');
+
+        $this->assertNotNull(
+            $cookie,
+            'Cookie must be issued.',
+        );
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_COOKIE['_csrf'] = $cookie->value;
+
+        $request = new Request();
+
+        $request->enableCookieValidation = false;
+
+        return $request;
+    }
+
     public function testCustomSafeMethodsCsrfTokenValidation(): void
     {
         $this->mockWebApplication();

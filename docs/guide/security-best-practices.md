@@ -182,6 +182,15 @@ In order to avoid CSRF you should always:
    See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
+When the page includes the meta tags rendered by [[yii\helpers\Html::csrfMetaTags()]] and registers
+[[yii\web\YiiAsset]], `yii.js` sends the CSRF token in the `X-CSRF-Token` header of every same-origin jQuery AJAX
+request. When a new token is issued while handling a request whose method is not listed in
+[[yii\web\Request::$csrfTokenSafeMethods]], the response, including an error response such as the 400 sent after a
+failed CSRF validation, carries the masked token in the header named by [[yii\web\Request::$csrfHeader]].
+`yii.js` reads that header from same-origin jQuery AJAX responses and updates the CSRF `<meta>` tags and the CSRF
+inputs of the forms on the page, so pages that are not fully reloaded, for example when navigating with pjax, keep
+sending a valid token.
+
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:
 
 ```php

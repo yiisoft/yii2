@@ -126,6 +126,7 @@ class Request extends \yii\base\Request
      * @var string the name of the HTTP header for sending CSRF token. Defaults to [[CSRF_HEADER]].
      * This property may be changed for Yii API applications only.
      * Don't change this property for Yii Web application.
+     * The same name is used for the response header that carries a newly generated token. See [[getCsrfToken()]].
      */
     public $csrfHeader = self::CSRF_HEADER;
     /**
@@ -1803,6 +1804,11 @@ class Request extends \yii\base\Request
      *
      * This token is generated in a way to prevent [BREACH attacks](https://en.wikipedia.org/wiki/BREACH). It may be passed
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
+     *
+     * When a new token is generated while handling a request whose method is not listed in [[csrfTokenSafeMethods]],
+     * the masked token is also sent in the response header named by [[csrfHeader]], so that `yii.js` can update the
+     * CSRF meta tags and form inputs of a page that is not reloaded.
+     *
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return null|string the token used to perform CSRF validation. Null is returned if the [[validateCsrfHeaderOnly]] is true.
@@ -1815,10 +1821,19 @@ class Request extends \yii\base\Request
 
         if ($this->_csrfToken === null || $regenerate) {
             $token = $this->loadCsrfToken();
+            $generated = false;
             if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
+                $generated = true;
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
+
+            // Only responses to unsafe methods carry the new token: responses to safe methods are the ones usually
+            // stored by HTTP caches or by `yii\filters\PageCache` (which caches headers by default), and a replayed
+            // token would not match the cookie or session of the visitor who receives it.
+            if ($generated && !in_array($this->getMethod(), $this->csrfTokenSafeMethods, true)) {
+                Yii::$app->getResponse()->getHeaders()->set($this->csrfHeader, $this->_csrfToken);
+            }
         }
 
         return $this->_csrfToken;
