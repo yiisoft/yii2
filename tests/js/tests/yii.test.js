@@ -948,15 +948,25 @@ describe('yii', function () {
                 });
             });
 
+            var matchingHeaders = {'X-CSRF-Token': 'newtoken', 'X-CSRF-Param': '_csrf'};
+
             withData({
-                'same-origin success response with header': [false, 200, {'X-CSRF-Token': 'newtoken'}, 'newtoken'],
-                'same-origin success response without header': [false, 200, {}, 'foobar'],
-                'same-origin success response with empty header': [false, 200, {'X-CSRF-Token': ''}, 'foobar'],
-                'same-origin error response with header': [false, 400, {'X-CSRF-Token': 'newtoken'}, 'newtoken'],
-                'cross-domain success response with header': [true, 200, {'X-CSRF-Token': 'newtoken'}, 'foobar']
+                'same-origin success response with matching headers': [false, 200, matchingHeaders, 'newtoken'],
+                'same-origin success response without headers': [false, 200, {}, 'foobar'],
+                'same-origin success response with empty token': [
+                    false, 200, {'X-CSRF-Token': '', 'X-CSRF-Param': '_csrf'}, 'foobar'
+                ],
+                'same-origin success response without param header': [
+                    false, 200, {'X-CSRF-Token': 'newtoken'}, 'foobar'
+                ],
+                'same-origin success response with different param header': [
+                    false, 200, {'X-CSRF-Token': 'newtoken', 'X-CSRF-Param': '_csrf-backend'}, 'foobar'
+                ],
+                'same-origin error response with matching headers': [false, 400, matchingHeaders, 'newtoken'],
+                'cross-domain success response with matching headers': [true, 200, matchingHeaders, 'foobar']
             }, function (crossDomain, status, headers, expectedToken) {
                 var message = 'should update CSRF meta tag and form inputs only when a same-origin response ' +
-                    'carries a non-empty token';
+                    'carries a non-empty token for the CSRF parameter of the page';
                 it(message, function () {
                     $.ajax({
                         url: '/tests/index',

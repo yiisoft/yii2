@@ -17,6 +17,7 @@ use yii\base\DynamicContentAwareTrait;
 use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;
+use yii\web\Request;
 use yii\web\Response;
 
 /**
@@ -149,6 +150,8 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * @var bool|array a boolean value indicating whether to cache all HTTP headers, or an array of
      * HTTP header names (case-sensitive) indicating which HTTP headers can be cached.
      * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
+     * The CSRF token headers named by [[\yii\web\Request::$csrfHeader]] and [[\yii\web\Request::CSRF_PARAM_HEADER]]
+     * are never cached.
      * @since 2.0.4
      */
     public $cacheHeaders = true;
@@ -320,6 +323,21 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
             }
             $all = $filtered;
         }
+
+        // The CSRF token headers belong to the visitor of the current request and must never be replayed to others.
+        // The keys of `toOriginalArray()` keep the case used when the header was set, so names are compared
+        // case-insensitively.
+        $request = Yii::$app->getRequest();
+
+        $csrfHeaders = [strtolower(Request::CSRF_PARAM_HEADER)];
+        $csrfHeaders[] = strtolower($request instanceof Request ? $request->csrfHeader : Request::CSRF_HEADER);
+
+        foreach (array_keys($all) as $name) {
+            if (in_array(strtolower($name), $csrfHeaders, true)) {
+                unset($all[$name]);
+            }
+        }
+
         $data['headers'] = $all;
     }
 
