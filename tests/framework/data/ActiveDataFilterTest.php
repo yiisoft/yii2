@@ -183,6 +183,45 @@ class ActiveDataFilterTest extends TestCase
         $this->assertEquals($expectedResult, $builder->build());
     }
 
+    public function testBuildWithQueryOperatorMap(): void
+    {
+        $builder = new ActiveDataFilter();
+        $builder->queryOperatorMap = [
+            'AND' => 'MY_AND',
+            'NOT' => 'MY_NOT',
+            '>' => 'MY_GT',
+        ];
+        $searchModel = (new DynamicModel(['name' => null, 'number' => null]))
+            ->addRule('name', 'string')
+            ->addRule('number', 'integer');
+        $builder->setSearchModel($searchModel);
+
+        $builder->filter = ['and' => [['name' => 'a'], ['name' => 'b']]];
+        $result = $builder->build();
+        $this->assertSame(['MY_AND', ['name' => 'a'], ['name' => 'b']], $result);
+
+        $builder->filter = ['not' => ['name' => 'a']];
+        $result = $builder->build();
+        $this->assertSame(['MY_NOT', ['name' => 'a']], $result);
+
+        $builder->filter = ['number' => ['gt' => 5]];
+        $result = $builder->build();
+        $this->assertSame(['MY_GT', 'number', 5], $result);
+    }
+
+    public function testBuildAttributeConditionWithoutConditionBuilder(): void
+    {
+        $builder = new ActiveDataFilter();
+        $searchModel = (new DynamicModel(['number' => null]))
+            ->addRule('number', 'integer');
+        $builder->setSearchModel($searchModel);
+
+        unset($builder->conditionBuilders['>']);
+        $builder->filter = ['number' => ['gt' => 5]];
+        $result = $builder->build();
+        $this->assertSame(['>', 'number', 5], $result);
+    }
+
     /**
      * @depends testBuild
      */

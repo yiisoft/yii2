@@ -205,6 +205,13 @@ class ArrayDataProviderTest extends TestCase
         $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
     }
 
+    public function testPrepareModelsWithNullAllModels(): void
+    {
+        $dataProvider = new ArrayDataProvider();
+        $this->assertSame([], $dataProvider->getModels());
+        $this->assertSame(0, $dataProvider->getTotalCount());
+    }
+
     public function testSortFlags(): void
     {
         $simpleArray = [['sortField' => 1], ['sortField' => 2], ['sortField' => 11]];
