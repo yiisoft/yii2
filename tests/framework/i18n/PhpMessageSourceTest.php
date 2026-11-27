@@ -47,6 +47,7 @@ final class PhpMessageSourceTest extends TestCase
             'embedded traversal segment with leading space' => ['app/ ../config/db'],
             'embedded traversal segment with trailing space' => ['app/.. /config/db'],
             'leading traversal segment' => ['../secret'],
+            'long run of dots before traversal segment' => [str_repeat('.', 8192) . 'x/../secret'],
             'parent traversal' => ['../../etc/passwd'],
             'phar stream wrapper' => ['phar://archive.phar/config'],
             'php stream wrapper' => ['php://filter/resource=config/db'],

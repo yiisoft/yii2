@@ -190,10 +190,12 @@ class PhpMessageSource extends MessageSource
         $normalizedCategory = str_replace('\\', '/', (string) $category);
 
         // A segment made only of dots and spaces with at least two dots is rejected, not just a literal `..`:
-        // Windows may trim trailing dots and spaces from path components.
-        $pattern = '~(?:^|/)[. ]*\.[. ]*\.[. ]*(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~';
+        // Windows may trim trailing dots and spaces from path components. The quantifiers are possessive so a long
+        // run of dots cannot exhaust the backtrack limit.
+        $pattern = '~(?:^|/) *+\. *+\.[. ]*+(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~';
 
-        if (preg_match($pattern, $normalizedCategory)) {
+        // `preg_match()` returns `false` when matching fails to complete; such a category is rejected as well.
+        if (preg_match($pattern, $normalizedCategory) !== 0) {
             throw new InvalidArgumentException(
                 sprintf('Invalid message category: "%s".', (string) $category),
             );
