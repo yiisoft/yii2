@@ -235,8 +235,9 @@ Upgrade from Yii 2.0.52
 Upgrade from Yii 2.0.51
 -----------------------
 
-* The function signature for `yii\web\Session::readSession()` and `yii\web\Session::gcSession()` have been changed.
-  They now have the same return types as `\SessionHandlerInterface::read()` and `\SessionHandlerInterface::gc()` respectively.
+* The return values of `yii\web\Session::readSession()` and `yii\web\Session::gcSession()` have been changed.
+  They now follow `\SessionHandlerInterface::read()` (`string|false`) and `\SessionHandlerInterface::gc()` (`int|false`,
+  the number of deleted sessions) respectively; no native return type has been added.
   In case those methods have overwritten you will need to update your child classes accordingly.
 
 Upgrade from Yii 2.0.50
@@ -371,6 +372,14 @@ class m251103_091000_example_migration extends Migration {
   }
   ```
 
+Upgrade from Yii 2.0.49
+-----------------------
+
+* Raised minimum supported PHP version to `7.3`.
+
+* The compatibility class `yii\base\Object`, deprecated since 2.0.13, has been removed. Classes extending it must extend
+  `yii\base\BaseObject` instead.
+
 Upgrade from Yii 2.0.48
 -----------------------
 
@@ -459,9 +468,11 @@ Upgrade from Yii 2.0.43
 Upgrade from Yii 2.0.42
 -----------------------
 
-* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore.
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore. It is only appended to the
+  message written with `error_log()` when `YII_DEBUG` is enabled.
 * The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
-  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
+  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`. The same applies to any other numeric
+  column whose PHP type is `string`, such as `DECIMAL` and `MONEY`.
   * I.e. it affects update and insert queries. For example:
   ```php
   \Yii::$app->db->createCommand()->insert('{{some_table}}', ['int_unsigned_col' => 22])->execute();
@@ -471,7 +482,8 @@ Upgrade from Yii 2.0.42
   INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
   ```
 * Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
-  and `setCategoryMap()`.
+  and `setCategoryMap()`. The map is now stored in the static `yii\db\ColumnSchemaBuilder::$typeCategoryMap` property,
+  so a `$categoryMap` property redeclared in a subclass is ignored.
 
 Upgrade from Yii 2.0.41
 -----------------------
@@ -495,8 +507,9 @@ Upgrade from Yii 2.0.39.3
 -------------------------
 
 * Priority of processing `yii\base\Arrayable`, and `JsonSerializable` data has been reversed (`Arrayable` data is checked
-  first now) in `yii\base\Model`, and `yii\rest\Serializer`. If your application relies on the previous priority you need 
-  to fix it manually based on the complexity of desired (de)serialization result.
+  first now) in `yii\base\ArrayableTrait` (used by `yii\base\Model`), and `yii\rest\Serializer`. If your application
+  relies on the previous priority you need to fix it manually based on the complexity of desired (de)serialization
+  result.
 
 Upgrade from Yii 2.0.38
 -----------------------
@@ -549,7 +562,8 @@ Upgrade from Yii 2.0.36
 -----------------------
 
 * `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
-  with an integer value, adjust your code.
+  with an integer value, adjust your code. In 2.0.37 this applies to errors raised while executing a statement; errors
+  raised while preparing a statement or opening the connection return the full code since 2.0.46.
 
 Upgrade from Yii 2.0.35
 -----------------------
@@ -673,7 +687,8 @@ Upgrade from Yii 2.0.32
 
 * Exception will be thrown if `UrlManager::$cache` configuration is incorrect (previously misconfiguration was silently 
   ignored and `UrlManager` continue to work without cache). Make sure that `UrlManager::$cache` is correctly configured 
-  or set it to `null` to explicitly disable cache.
+  or set it to `null` to explicitly disable cache. This applies to 2.0.33 only: since 2.0.34 the misconfiguration is
+  logged as a warning and `UrlManager` continues to work without cache.
 
 Upgrade from Yii 2.0.31
 -----------------------
@@ -692,7 +707,8 @@ Upgrade from Yii 2.0.28
 
 * `yii\helpers\Html::tag()` now generates boolean attributes
   [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
-  For `true` value attribute is present, for `false` value it is absent.  
+  For `true` value attribute is present, for `false` value it is absent. The change affects boolean values nested in
+  data attribute arrays such as `data`, `data-ng` and `ng`; top-level boolean attributes already behaved this way.
 
 Upgrade from Yii 2.0.20
 -----------------------
@@ -827,7 +843,8 @@ Upgrade from Yii 2.0.13
   assigned for further saving it into the database.
 
   In case this change makes the upgrade process to Yii 2.0.14 too hard in your project, you can [switch off the described behavior](https://github.com/yiisoft/yii2/issues/15716#issuecomment-368143206)
-  Then you can take your time to change your code and then re-enable arrays or JSON support.
+  Then you can take your time to change your code and then re-enable arrays or JSON support. The properties used to
+  switch it off are available since 2.0.14.1.
 
 * `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
   when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
@@ -883,7 +900,8 @@ Upgrade from Yii 2.0.12
   
   `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
   running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
-  have classes that extend from `yii\base\Object` these would still work.
+  have classes that extend from `yii\base\Object` these would still work. The compatibility class has been removed in
+  2.0.50, together with support for PHP versions below 7.3.
   
   What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
   for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
