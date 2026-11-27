@@ -483,7 +483,8 @@ Upgrade from Yii 2.0.42
   ```
 * Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
   and `setCategoryMap()`. The map is now stored in the static `yii\db\ColumnSchemaBuilder::$typeCategoryMap` property,
-  so a `$categoryMap` property redeclared in a subclass is ignored.
+  which both methods read and write. A `$categoryMap` property redeclared in a subclass is not synchronized with it:
+  `getTypeCategory()` still reads the redeclared property, while `getCategoryMap()` does not.
 
 Upgrade from Yii 2.0.41
 -----------------------
@@ -708,7 +709,9 @@ Upgrade from Yii 2.0.28
 * `yii\helpers\Html::tag()` now generates boolean attributes
   [according to HTML specification](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute).
   For `true` value attribute is present, for `false` value it is absent. The change affects boolean values nested in
-  data attribute arrays such as `data`, `data-ng` and `ng`; top-level boolean attributes already behaved this way.
+  the `data`, `data-ng` and `ng` attribute arrays; top-level boolean attributes already behaved this way. The `aria`
+  attribute array, supported since 2.0.32, renders nested boolean values the same way, so pass ARIA states as the
+  strings `'true'` and `'false'`.
 
 Upgrade from Yii 2.0.20
 -----------------------
