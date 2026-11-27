@@ -100,6 +100,7 @@ Yii Framework 2 Change Log
 - Enh #21142: Add `@throws` annotation for `InvalidConfigException` in `yii\base\Component::__set()` (mspirkov)
 - Enh #21147: Add `@template` annotation for `$default` in `yii\web\HeaderCollection::get()` (mspirkov)
 
+- Bug #17717: Fix `isset()` and `empty()` with array access on public properties of `yii\db\BaseActiveRecord` by using `yii\base\Model::offsetExists()` (theluckystrike)
 
 2.0.55 May 09, 2026
 -------------------
