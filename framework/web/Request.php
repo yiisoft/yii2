@@ -96,6 +96,10 @@ class Request extends \yii\base\Request
      */
     public const CSRF_HEADER = 'X-CSRF-Token';
     /**
+     * Name of the HTTP response header for sending [[csrfParam]] along with a CSRF token sent in [[csrfHeader]].
+     */
+    public const CSRF_PARAM_HEADER = 'X-CSRF-Param';
+    /**
      * The length of the CSRF token mask.
      * @deprecated since 2.0.12. The mask length is now equal to the token length.
      */
@@ -126,6 +130,8 @@ class Request extends \yii\base\Request
      * @var string the name of the HTTP header for sending CSRF token. Defaults to [[CSRF_HEADER]].
      * This property may be changed for Yii API applications only.
      * Don't change this property for Yii Web application.
+     * The same name is used for the response header that carries the masked token after a token is generated on an
+     * unsafe request or after CSRF validation fails. See [[getCsrfToken()]] and [[validateCsrfToken()]].
      */
     public $csrfHeader = self::CSRF_HEADER;
     /**
@@ -1803,6 +1809,12 @@ class Request extends \yii\base\Request
      *
      * This token is generated in a way to prevent [BREACH attacks](https://en.wikipedia.org/wiki/BREACH). It may be passed
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
+     *
+     * When a new token is generated while handling a request whose method is not listed in [[csrfTokenSafeMethods]],
+     * the masked token is also sent in the response header named by [[csrfHeader]], and [[csrfParam]] in the
+     * [[CSRF_PARAM_HEADER]] response header, so that `yii.js` can update the CSRF meta tags and form inputs of a page
+     * that is not reloaded and uses the same parameter name.
+     *
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return null|string the token used to perform CSRF validation. Null is returned if the [[validateCsrfHeaderOnly]] is true.
@@ -1815,10 +1827,19 @@ class Request extends \yii\base\Request
 
         if ($this->_csrfToken === null || $regenerate) {
             $token = $this->loadCsrfToken();
+            $generated = false;
             if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
+                $generated = true;
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
+
+            // Only responses to unsafe methods carry the new token: responses to safe methods may be stored by HTTP
+            // caches, and a replayed token would not match the cookie or session of the visitor who receives it.
+            // `yii\filters\PageCache` never stores these headers, whatever the request method.
+            if ($generated && !in_array($this->getMethod(), $this->csrfTokenSafeMethods, true)) {
+                $this->sendCsrfTokenHeaders($this->_csrfToken);
+            }
         }
 
         return $this->_csrfToken;
@@ -1889,6 +1910,10 @@ class Request extends \yii\base\Request
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
      * is among GET, HEAD or OPTIONS.
      *
+     * When the validation fails, the current masked token is sent in the response header named by [[csrfHeader]],
+     * and [[csrfParam]] in the [[CSRF_PARAM_HEADER]] response header, so that `yii.js` can recover a page whose token
+     * is outdated. Nothing is sent when [[validateCsrfHeaderOnly]] is true.
+     *
      * @param string|null $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
@@ -1911,11 +1936,32 @@ class Request extends \yii\base\Request
         $trueToken = $this->getCsrfToken();
 
         if ($clientSuppliedToken !== null) {
-            return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
+            $valid = $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
+        } else {
+            $valid = $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
         }
 
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        if (!$valid) {
+            // A page whose token is outdated, for example because the token was regenerated in another tab, receives
+            // the current token. A cross-origin page cannot read this response, just as it cannot read the HTML pages
+            // that contain the same token.
+            $this->sendCsrfTokenHeaders($trueToken);
+        }
+
+        return $valid;
+    }
+
+    /**
+     * Sends the masked CSRF token and [[csrfParam]] in the [[csrfHeader]] and [[CSRF_PARAM_HEADER]] response headers.
+     *
+     * @param string $token the masked CSRF token.
+     */
+    private function sendCsrfTokenHeaders($token)
+    {
+        $headers = Yii::$app->getResponse()->getHeaders();
+        $headers->set($this->csrfHeader, $token);
+        $headers->set(self::CSRF_PARAM_HEADER, $this->csrfParam);
     }
 
     /**

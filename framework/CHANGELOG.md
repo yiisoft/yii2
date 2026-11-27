@@ -99,6 +99,7 @@ Yii Framework 2 Change Log
 - Bug #21141: Allow the `__class` key in configuration arrays in `@return` annotations for `yii\base\Component::behaviors()` and `yii\base\Controller::actions()`, and in the `@var` annotation for `yii\filters\auth\CompositeAuth::$authMethods` (mspirkov)
 - Enh #21142: Add `@throws` annotation for `InvalidConfigException` in `yii\base\Component::__set()` (mspirkov)
 - Enh #21147: Add `@template` annotation for `$default` in `yii\web\HeaderCollection::get()` (mspirkov)
+- Enh #21156: Send a newly generated CSRF token in the `X-CSRF-Token` response header and let `yii.js` update the page from it (terabytesoftw)
 
 
 2.0.55 May 09, 2026

@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\Cookie;
+use yii\web\Request;
 use yii\web\View;
 use yiiunit\framework\caching\CacheTestCase;
 use yiiunit\TestCase;
@@ -251,6 +252,103 @@ class PageCacheTest extends TestCase
                     $this->assertSame($headers[$name], Yii::$app->response->headers->get($name), $testCase['name']);
                     $this->assertArrayHasKey($name, $headersExpected);
                 }
+            }
+        }
+    }
+
+    public function testCsrfResponseHeadersAreNotCached(): void
+    {
+        $testCases = [
+            'allHeaders' => [
+                'cacheHeaders' => true,
+                'csrfHeader' => Request::CSRF_HEADER,
+                'names' => [Request::CSRF_HEADER, Request::CSRF_PARAM_HEADER],
+            ],
+            'listedHeaders' => [
+                'cacheHeaders' => ['test-header', Request::CSRF_HEADER, Request::CSRF_PARAM_HEADER],
+                'csrfHeader' => Request::CSRF_HEADER,
+                'names' => [Request::CSRF_HEADER, Request::CSRF_PARAM_HEADER],
+            ],
+            'otherCase' => [
+                'cacheHeaders' => true,
+                'csrfHeader' => Request::CSRF_HEADER,
+                'names' => ['x-csrf-token', 'X-CSRF-PARAM'],
+            ],
+            'customCsrfHeader' => [
+                'cacheHeaders' => true,
+                'csrfHeader' => 'X-Backend-CSRF-Token',
+                'names' => ['X-Backend-CSRF-Token', Request::CSRF_PARAM_HEADER],
+            ],
+        ];
+
+        foreach ($testCases as $name => $testCase) {
+            if (isset(Yii::$app)) {
+                $this->destroyApplication();
+            }
+
+            // Prepares the test response
+            $this->mockWebApplication(['components' => ['request' => ['csrfHeader' => $testCase['csrfHeader']]]]);
+
+            $controller = new Controller('test', Yii::$app);
+            $action = new Action('test', $controller);
+            $filter = new PageCache([
+                'cache' => $cache = new ArrayCache(),
+                'view' => new View(),
+                'cacheHeaders' => $testCase['cacheHeaders'],
+            ]);
+
+            $this->assertTrue($filter->beforeAction($action), $name);
+
+            Yii::$app->response->headers->add('test-header', $value = Yii::$app->security->generateRandomString());
+
+            foreach ($testCase['names'] as $csrfName) {
+                Yii::$app->response->headers->add($csrfName, Yii::$app->security->generateRandomString());
+            }
+
+            Yii::$app->params['dynamic'] = Yii::$app->security->generateRandomString();
+
+            $content = $filter->view->render('@yiiunit/data/views/pageCacheLayout.php', ['static' => 'static']);
+
+            Yii::$app->response->content = $content;
+
+            ob_start();
+            Yii::$app->response->send();
+            ob_end_clean();
+
+            $this->assertNotEmpty(
+                $this->getInaccessibleProperty($filter->cache, '_cache'),
+                $name,
+            );
+
+            // Verifies the cached response
+            $this->destroyApplication();
+            $this->mockWebApplication(['components' => ['request' => ['csrfHeader' => $testCase['csrfHeader']]]]);
+
+            $controller = new Controller('test', Yii::$app);
+            $action = new Action('test', $controller);
+            $filter = new PageCache([
+                'cache' => $cache,
+                'view' => new View(),
+                'cacheHeaders' => $testCase['cacheHeaders'],
+            ]);
+
+            Yii::$app->params['dynamic'] = Yii::$app->security->generateRandomString();
+
+            $this->assertFalse(
+                $filter->beforeAction($action),
+                $name,
+            );
+            $this->assertSame(
+                $value,
+                Yii::$app->response->headers->get('test-header'),
+                "Other headers must be restored ('$name')."
+            );
+
+            foreach ($testCase['names'] as $csrfName) {
+                $this->assertFalse(
+                    Yii::$app->response->headers->has($csrfName),
+                    "Header '$csrfName' must not be restored ('$name')."
+                );
             }
         }
     }

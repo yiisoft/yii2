@@ -920,6 +920,69 @@ describe('yii', function () {
                 assert.equal(server.requests[0].requestHeaders['X-CSRF-Token'], expectedHeaderValue);
             });
         });
+
+        describe('with CSRF token in response header', function () {
+            var initialCsrfParam;
+            var initialCsrfToken;
+            var initialInputValues;
+
+            beforeEach(function () {
+                initialCsrfParam = $('meta[name="csrf-param"]').attr('content');
+                initialCsrfToken = $('meta[name="csrf-token"]').attr('content');
+                initialInputValues = $('form input[name="_csrf"]').map(function () {
+                    return $(this).val();
+                }).get();
+
+                fakeCsrfParam = '_csrf';
+                $('meta[name="csrf-token"]').attr('content', 'foobar');
+                $('form input[name="_csrf"]').val('foobar');
+            });
+
+            // Restore CSRF parameter name, value and form inputs because they are used in different tests
+
+            afterEach(function () {
+                $('meta[name="csrf-param"]').attr('content', initialCsrfParam);
+                $('meta[name="csrf-token"]').attr('content', initialCsrfToken);
+                $('form input[name="_csrf"]').each(function (index) {
+                    $(this).val(initialInputValues[index]);
+                });
+            });
+
+            var matchingHeaders = {'X-CSRF-Token': 'newtoken', 'X-CSRF-Param': '_csrf'};
+
+            withData({
+                'same-origin success response with matching headers': [false, 200, matchingHeaders, 'newtoken'],
+                'same-origin success response without headers': [false, 200, {}, 'foobar'],
+                'same-origin success response with empty token': [
+                    false, 200, {'X-CSRF-Token': '', 'X-CSRF-Param': '_csrf'}, 'foobar'
+                ],
+                'same-origin success response without param header': [
+                    false, 200, {'X-CSRF-Token': 'newtoken'}, 'foobar'
+                ],
+                'same-origin success response with different param header': [
+                    false, 200, {'X-CSRF-Token': 'newtoken', 'X-CSRF-Param': '_csrf-backend'}, 'foobar'
+                ],
+                'same-origin error response with matching headers': [false, 400, matchingHeaders, 'newtoken'],
+                'cross-domain success response with matching headers': [true, 200, matchingHeaders, 'foobar']
+            }, function (crossDomain, status, headers, expectedToken) {
+                var message = 'should update CSRF meta tag and form inputs only when a same-origin response ' +
+                    'carries a non-empty token for the CSRF parameter of the page';
+                it(message, function () {
+                    $.ajax({
+                        url: '/tests/index',
+                        type: 'POST',
+                        crossDomain: crossDomain
+                    });
+                    server.requests[0].respond(status, headers, '');
+
+                    assert.lengthOf(server.requests, 1);
+                    assert.equal($('meta[name="csrf-param"]').attr('content'), '_csrf');
+                    assert.equal($('meta[name="csrf-token"]').attr('content'), expectedToken);
+                    assert.equal($('#form1').find('input[name="_csrf"]').val(), expectedToken);
+                    assert.equal($('#form2').find('input[name="_csrf"]').val(), expectedToken);
+                });
+            });
+        });
     });
 
     describe('redirect handler', function () {
