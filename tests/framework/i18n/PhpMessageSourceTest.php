@@ -13,6 +13,7 @@ namespace yiiunit\framework\i18n;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yiiunit\framework\i18n\stubs\ExposedPhpMessageSource;
+use yiiunit\framework\i18n\stubs\OverriddenPathPhpMessageSource;
 use yiiunit\TestCase;
 
 /**
@@ -192,6 +193,57 @@ final class PhpMessageSourceTest extends TestCase
             $expected,
             $source->exposeMessageFilePath('weird/../category', 'en'),
             'fileMap entry must bypass category validation.',
+        );
+    }
+
+    /**
+     * @dataProvider unsafeCategoryProvider
+     */
+    public function testThrowInvalidArgumentExceptionForUnsafeCategoryWithOverriddenMessageFilePath(
+        string $category
+    ): void {
+        $source = new OverriddenPathPhpMessageSource(['basePath' => '@yiiunit/data/i18n/messages']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid message category:');
+
+        $source->translate($category, 'Hello world!', 'de');
+    }
+
+    public function testTranslateSafeCategoryWithOverriddenMessageFilePath(): void
+    {
+        $source = new OverriddenPathPhpMessageSource(['basePath' => '@yiiunit/data/i18n/messages']);
+
+        $this->assertSame(
+            'Hallo Welt!',
+            $source->translate('test', 'Hello world!', 'de'),
+            'Override must still resolve valid categories.',
+        );
+        $this->assertSame(
+            ['test'],
+            $source->requestedCategories,
+            'Valid category must reach the override unchanged.',
+        );
+    }
+
+    public function testTranslateMappedCategoryWithOverriddenMessageFilePath(): void
+    {
+        $source = new OverriddenPathPhpMessageSource(
+            [
+                'basePath' => '@yiiunit/data/i18n/messages',
+                'fileMap' => ['weird/../category' => 'test.php'],
+            ],
+        );
+
+        $this->assertSame(
+            'Hallo Welt!',
+            $source->translate('weird/../category', 'Hello world!', 'de'),
+            'fileMap entry must bypass category validation.',
+        );
+        $this->assertSame(
+            ['weird/../category'],
+            $source->requestedCategories,
+            'Mapped category must reach the override unchanged.',
         );
     }
 }

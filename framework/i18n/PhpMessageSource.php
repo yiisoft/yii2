@@ -65,14 +65,20 @@ class PhpMessageSource extends MessageSource
      * load the messages for [[sourceLanguage]]. For example: [[sourceLanguage]] is `en-GB`,
      * $language is `en`. The method will load the messages for `en` and merge them over `en-GB`.
      *
+     * The category is validated before [[getMessageFilePath()]] is called, so the check described there also applies
+     * when a subclass overrides that method.
+     *
      * @param string $category the message category
      * @param string $language the target language
      * @return array the loaded messages. The keys are original messages, and the values are the translated messages.
+     * @throws InvalidArgumentException if the category resolves to an unsafe path, or the language code is invalid.
      * @see loadFallbackMessages
      * @see sourceLanguage
      */
     protected function loadMessages($category, $language)
     {
+        $this->validateCategory($category);
+
         $messageFile = $this->getMessageFilePath($category, $language);
         $messages = $this->loadMessagesFromFile($messageFile);
 
@@ -133,7 +139,10 @@ class PhpMessageSource extends MessageSource
      *
      * The category may use `/` or `\` as namespace separators (for example, `app/error`). Categories that contain `..`
      * segments, an absolute path, or a stream-wrapper scheme (such as `php://`) are rejected so the resolved path
-     * cannot escape [[basePath]].
+     * cannot escape [[basePath]]. Categories listed in [[fileMap]] are not checked.
+     *
+     * [[loadMessages()]] applies the same category check before calling this method, so an overriding implementation
+     * receives only categories that passed it.
      *
      * @param string $category the message category
      * @param string $language the target language
@@ -143,25 +152,47 @@ class PhpMessageSource extends MessageSource
     protected function getMessageFilePath($category, $language)
     {
         $language = (string) $language;
+
         if ($language !== '' && !preg_match('/^[a-z0-9_-]+$/i', $language)) {
             throw new InvalidArgumentException(sprintf('Invalid language code: "%s".', $language));
         }
+
+        $this->validateCategory($category);
+
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";
+
         if (isset($this->fileMap[$category])) {
             $messageFile .= $this->fileMap[$category];
         } else {
-            $normalizedCategory = str_replace('\\', '/', (string) $category);
-
-            if (preg_match('~(?:^|/)\.\.(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~', $normalizedCategory)) {
-                throw new InvalidArgumentException(
-                    sprintf('Invalid message category: "%s".', (string) $category),
-                );
-            }
-
-            $messageFile .= "{$normalizedCategory}.php";
+            $messageFile .= str_replace('\\', '/', (string) $category) . '.php';
         }
 
         return $messageFile;
+    }
+
+    /**
+     * Rejects a category that would resolve to a path outside [[basePath]].
+     *
+     * Backslashes are treated as `/` separators. A category that contains a `..` segment, starts with `/` or a drive
+     * letter (such as `C:/`), or starts with a stream-wrapper scheme (such as `php://`) is rejected. Categories listed
+     * in [[fileMap]] are trusted configuration and are not checked.
+     *
+     * @param string $category the message category
+     * @throws InvalidArgumentException if the category resolves to an unsafe path.
+     */
+    private function validateCategory($category)
+    {
+        if (isset($this->fileMap[$category])) {
+            return;
+        }
+
+        $normalizedCategory = str_replace('\\', '/', (string) $category);
+
+        if (preg_match('~(?:^|/)\.\.(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~', $normalizedCategory)) {
+            throw new InvalidArgumentException(
+                sprintf('Invalid message category: "%s".', (string) $category),
+            );
+        }
     }
 
     /**

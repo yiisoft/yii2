@@ -99,6 +99,10 @@ Upgrade from Yii 2.0.55
   publishes to new directories, and the old symlinks to the whole source directories, including the files excluded
   by the filters, stay accessible under the old URLs. Only when a custom `hashCallback` keeps the name of the
   published directory across the upgrade is the existing symlink replaced automatically on the next publish.
+* `yii\i18n\PhpMessageSource` now rejects message categories that contain `..` segments, an absolute path or a
+  stream-wrapper scheme (such as `php://`) with `yii\base\InvalidArgumentException`, unless they are listed in
+  `fileMap`. The check runs when messages are loaded, before `getMessageFilePath()` is called, so it also applies to
+  subclasses that override `getMessageFilePath()`, and such overrides receive only categories that passed it.
 
 Upgrade from Yii 2.0.53
 -----------------------
