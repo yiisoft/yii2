@@ -174,8 +174,9 @@ class PhpMessageSource extends MessageSource
      * Rejects a category that would resolve to a path outside [[basePath]].
      *
      * Backslashes are treated as `/` separators. A category that contains a `..` segment, starts with `/` or a drive
-     * letter (such as `C:/`), or starts with a stream-wrapper scheme (such as `php://`) is rejected. Categories listed
-     * in [[fileMap]] are trusted configuration and are not checked.
+     * letter (such as `C:/`), or starts with a stream-wrapper scheme (such as `php://`) is rejected. A segment that
+     * consists only of dots and spaces and has two or more dots (such as `.. ` or `...`) is treated as a `..` segment.
+     * Categories listed in [[fileMap]] are trusted configuration and are not checked.
      *
      * @param string $category the message category
      * @throws InvalidArgumentException if the category resolves to an unsafe path.
@@ -188,7 +189,11 @@ class PhpMessageSource extends MessageSource
 
         $normalizedCategory = str_replace('\\', '/', (string) $category);
 
-        if (preg_match('~(?:^|/)\.\.(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~', $normalizedCategory)) {
+        // A segment made only of dots and spaces with at least two dots is rejected, not just a literal `..`:
+        // Windows may trim trailing dots and spaces from path components.
+        $pattern = '~(?:^|/)[. ]*\.[. ]*\.[. ]*(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~';
+
+        if (preg_match($pattern, $normalizedCategory)) {
             throw new InvalidArgumentException(
                 sprintf('Invalid message category: "%s".', (string) $category),
             );
