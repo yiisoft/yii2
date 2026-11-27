@@ -30,6 +30,49 @@ class CookieCollectionTest extends TestCase
         $this->assertEquals($expectedResult, $result);
     }
 
+    public function testCountAndIterator(): void
+    {
+        $first = new Cookie(['name' => 'first', 'value' => '1']);
+        $second = new Cookie(['name' => 'second', 'value' => '2']);
+
+        $cookieCollection = new CookieCollection(['first' => $first, 'second' => $second]);
+
+        $this->assertSame(2, count($cookieCollection), 'Countable must report the number of cookies.');
+        $this->assertSame(
+            ['first' => $first, 'second' => $second],
+            iterator_to_array($cookieCollection),
+            'Iterator must traverse the cookies indexed by their names.',
+        );
+    }
+
+    public function testArrayAccess(): void
+    {
+        $first = new Cookie(['name' => 'first', 'value' => '1']);
+        $second = new Cookie(['name' => 'second', 'value' => '2']);
+
+        $cookieCollection = new CookieCollection(['first' => $first]);
+
+        $this->assertTrue(isset($cookieCollection['first']), 'Existing cookie must be reported by isset().');
+        $this->assertFalse(isset($cookieCollection['missing']), 'Missing cookie must not be reported by isset().');
+        $this->assertSame($first, $cookieCollection['first'], 'Reading by offset must return the cookie.');
+        $this->assertNull($cookieCollection['missing'], 'Reading a missing offset must return null.');
+
+        $cookieCollection['second'] = $second;
+
+        $this->assertSame($second, $cookieCollection->get('second'), 'Writing by offset must add the cookie.');
+
+        unset($cookieCollection['second']);
+
+        $this->assertFalse(isset($cookieCollection['second']), 'Unset cookie must not be reported by isset().');
+        $this->assertSame(
+            2,
+            count($cookieCollection),
+            'Unset cookie must stay in the collection as expired so that it is removed from the browser.',
+        );
+        $this->assertSame('', $cookieCollection['second']->value, 'Unset cookie must have an empty value.');
+        $this->assertSame(1, $cookieCollection['second']->expire, 'Unset cookie must be expired.');
+    }
+
     public static function provideHasData(): array
     {
         /**

@@ -41,8 +41,7 @@ class SessionIterator implements \Iterator
      * Rewinds internal array pointer.
      * This method is required by the interface [[\Iterator]].
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->_key = reset($this->_keys);
     }
@@ -52,8 +51,7 @@ class SessionIterator implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return string|int|null the key of the current array element
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): mixed
     {
         return $this->_key === false ? null : $this->_key;
     }
@@ -63,8 +61,7 @@ class SessionIterator implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return mixed the current array element
      */
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): mixed
     {
         return $this->_key !== false && isset($_SESSION[$this->_key]) ? $_SESSION[$this->_key] : null;
     }
@@ -73,8 +70,7 @@ class SessionIterator implements \Iterator
      * Moves the internal pointer to the next array element.
      * This method is required by the interface [[\Iterator]].
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         do {
             $this->_key = next($this->_keys);
@@ -86,8 +82,7 @@ class SessionIterator implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return bool
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return $this->_key !== false;
     }

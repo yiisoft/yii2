@@ -184,6 +184,42 @@ class SessionTest extends TestCase
         );
     }
 
+    public function testSessionHandlerGcReturnsResultOfSessionGc(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $this->assertSame(0, $handler->gc(100), 'Default storage must report no deleted sessions.');
+
+        $failingSession = new class extends Session {
+            public function gcSession($maxLifetime)
+            {
+                return false;
+            }
+        };
+
+        $handler = new SessionHandler($failingSession);
+
+        $this->assertFalse($handler->gc(100), 'Failure of the session storage must be passed through.');
+    }
+
+    public function testSessionHandlerReadReturnsResultOfSessionRead(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $this->assertSame('', $handler->read('id'), 'Default storage must report empty session data.');
+
+        $failingSession = new class extends Session {
+            public function readSession($id)
+            {
+                return false;
+            }
+        };
+
+        $handler = new SessionHandler($failingSession);
+
+        $this->assertFalse($handler->read('id'), 'Failure of the session storage must be passed through.');
+    }
+
     public function testStrictModeReplacesUnknownIdWithoutCustomStorage(): void
     {
         $session = new Session(['useStrictMode' => true]);
