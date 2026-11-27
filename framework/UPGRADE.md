@@ -903,8 +903,7 @@ Upgrade from Yii 2.0.12
   
   `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
   running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
-  have classes that extend from `yii\base\Object` these would still work. The compatibility class has been removed in
-  2.0.50, together with support for PHP versions below 7.3.
+  have classes that extend from `yii\base\Object` these would still work.
   
   What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
   for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
