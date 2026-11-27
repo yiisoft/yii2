@@ -27,7 +27,7 @@ class OptionsAction extends BaseAction
     /**
      * @var array the HTTP verbs that are supported by the collection URL
      */
-    public $collectionOptions = ['GET', 'POST', 'HEAD', 'OPTIONS'];
+    public $collectionOptions = ['GET', 'POST', 'HEAD', 'OPTIONS', 'QUERY'];
     /**
      * @var array the HTTP verbs that are supported by the resource URL
      */
